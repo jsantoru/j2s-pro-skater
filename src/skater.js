@@ -150,7 +150,9 @@ export class Skater {
       const origin = _v2.copy(this.pos).addScaledVector(this.normal, 0.42);
       const hit = this.raycast(origin, travel, 0.5 + sp * dt);
       if (hit && hit.normal.dot(travel) < -0.5 && hit.normal.y < 0.35) {
-        if (sp > T.splatSpeed) { this.bail('wall'); return; }
+        // tall wall at speed = slam; a low box / kicker side is just a bonk
+        const tall = this.raycast(_v3.copy(this.pos).addScaledVector(this.normal, 1.0), travel, 0.5 + sp * dt);
+        if (sp > T.splatSpeed && tall && tall.normal.y < 0.35) { this.bail('wall'); return; }
         this.speed = sp * 0.05;
         this.pos.copy(hit.point).addScaledVector(hit.normal, 0.45).addScaledVector(this.normal, -0.42);
         this.vel.set(0, 0, 0);
@@ -259,9 +261,11 @@ export class Skater {
       if (inp.flipPressed) {
         const [name, base, dur] = FLIPS[inp.dir8] || FLIPS.C;
         this.trick = { kind: 'flip', name, base, t: 0, dur, dir: inp.dir8 };
+        this.emit('trickStart', name);
       } else if (inp.grabPressed) {
         const [name, base] = GRABS[inp.dir8] || GRABS.C;
         this.trick = { kind: 'grab', name, base, t: 0, dur: T.grabMin, dir: inp.dir8, held: true };
+        this.emit('trickStart', name);
       }
     }
     if (this.trick) {
@@ -335,7 +339,7 @@ export class Skater {
 
   land(point, n) {
     const T = this.T;
-    const tiny = !this.popped && this.airTime < 0.22 && this.combo.tricks.length === this.airTrickIndex && Math.abs(this.spinDeg) < 40;
+    const tiny = !this.popped && this.airTime < 0.22 && this.combo.tricks.length === 0 && Math.abs(this.spinDeg) < 40;
     if (n.y < 0.3 && this.vel.dot(n) < -T.splatSpeed) { this.pos.copy(point); this.bail('wall'); return; }
     if (n.y < 0.3 && !this.vertAir) { // brushed a wall mid-air: scrub along it, keep flying
       this.pos.copy(point).addScaledVector(n, 0.3);
@@ -389,13 +393,15 @@ export class Skater {
   findRail(tol, dt, assist) {
     let best = null, bestD = tol;
     for (const r of this.level.rails) {
-      if (r === this.lastRail && this.railCooldown > 0) continue;
+      if (this.railCooldown > 0 && (r === this.lastRail || this.railCooldown > 0.25)) continue; // 0.2s global, 0.45s same rail
       if (assist && this.vel.y > 3.5) continue;
       if (r.kind === 'coping' && !assist) continue;
       _v.copy(this.pos).sub(r.a);
       let t = _v.dot(r.dir) / r.len;
       if (t < -0.02 || t > 1.02) continue;
       t = Math.max(0, Math.min(1, t));
+      const along = this.vel.x * r.dir.x + this.vel.z * r.dir.z;
+      if ((t > 0.97 && along > 0) || (t < 0.03 && along < 0)) continue; // would exit the end immediately
       _v2.copy(r.a).addScaledVector(r.dir, t * r.len);
       const dy = this.pos.y - _v2.y;
       const fall = -this.vel.y * dt;

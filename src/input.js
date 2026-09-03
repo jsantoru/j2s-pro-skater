@@ -81,6 +81,15 @@ export class Input {
 
   get hasGamepad() { return this.gamepadIndex >= 0; }
 
+  // Haptics (Chrome/Edge dual-rumble). Silently no-ops where unsupported.
+  rumble(strong, weak, ms) {
+    if (this.gamepadIndex < 0 || typeof navigator === 'undefined') return;
+    const gp = navigator.getGamepads()[this.gamepadIndex];
+    const act = gp && gp.vibrationActuator;
+    if (!act || !act.playEffect) return;
+    try { act.playEffect('dual-rumble', { startDelay: 0, duration: ms, strongMagnitude: strong, weakMagnitude: weak }).catch(() => {}); } catch { /* ignore */ }
+  }
+
   poll(dt) {
     const s = this.state;
     const prev = { ollie: s.ollie, grab: s.grab, grind: s.grind };

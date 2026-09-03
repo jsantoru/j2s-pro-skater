@@ -23,8 +23,8 @@ export function spinName(deg, dir) {
 
 export class Combo {
   constructor() { this.reset(); this.runCounts = {}; }
-  reset() { this.tricks = []; this.points = 0; this.active = false; }
-  get multiplier() { return this.tricks.length; }
+  reset() { this.tricks = []; this.points = 0; this.active = false; this.mult = 0; this.comboCounts = {}; }
+  get multiplier() { return this.mult; }
   get total() { return this.points * this.multiplier; }
   get text() { return this.tricks.map((t) => t.name).join(' + '); }
   add(name, base) {
@@ -32,6 +32,9 @@ export class Combo {
     const c = (this.runCounts[name] || 0);
     this.runCounts[name] = c + 1;
     const pts = Math.max(10, Math.round(base * Math.max(0.25, 1 - c * 0.25) / 10) * 10);
+    // the same trick only grows the multiplier three times per combo (keeps rail-hop loops from exploding)
+    const cc = (this.comboCounts[name] || 0); this.comboCounts[name] = cc + 1;
+    if (cc < 3) this.mult++;
     this.tricks.push({ name, points: pts });
     this.points += pts; this.active = true;
     return pts;

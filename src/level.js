@@ -23,7 +23,7 @@ function noise(ctx, size, base, amount, count) {
   for (let i = 0; i < count; i++) {
     const v = Math.floor(Math.random() * amount);
     ctx.fillStyle = `rgba(${v},${v},${v},${Math.random() * 0.25})`;
-    ctx.fillRect(Math.random() * size, Math.random() * size, 2 + Math.random() * 6, 2 + Math.random() * 6);
+    ctx.fillRect(Math.random() * size, Math.random() * size, 1 + Math.random() * 3, 1 + Math.random() * 3);
   }
 }
 
@@ -34,7 +34,7 @@ export function makeMaterials() {
     ctx.strokeRect(1, 1, s - 2, s - 2);
   }, 256, 1);
   const floor = canvasTexture((ctx, s) => {
-    noise(ctx, s, '#7c7f84', 80, 1400);
+    noise(ctx, s, '#7c7f84', 80, 2600);
     ctx.strokeStyle = 'rgba(30,30,35,0.5)'; ctx.lineWidth = 4;
     ctx.strokeRect(0, 0, s, s);
     ctx.fillStyle = 'rgba(255,205,60,0.85)'; ctx.fillRect(0, s / 2 - 5, s, 10);

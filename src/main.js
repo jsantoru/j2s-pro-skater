@@ -12,8 +12,9 @@ const FIXED_DT = 1 / 120;
 
 const canvas = document.getElementById('game');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-renderer.shadowMap.enabled = true;
+const LOWFX = new URLSearchParams(location.search).has('lowfx'); // ?lowfx for weak GPUs: no shadows, 1x pixels
+renderer.setPixelRatio(LOWFX ? 1 : Math.min(window.devicePixelRatio, 1.5));
+renderer.shadowMap.enabled = !LOWFX;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -52,18 +53,21 @@ let accumulator = 0, last = performance.now();
 const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed'];
 const pending = {};
 
-skater.events.ollie = (charge) => audio.pop(charge);
+skater.events.ollie = (charge) => { audio.pop(charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
+skater.events.trickStart = (name) => { const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier, false); };
 skater.events.land = (points, text, mult) => {
   audio.land(skater.landSquash);
+  input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
   if (points > 0) { hud.landed(points); audio.score(); }
 };
 skater.events.bail = (reason) => {
   audio.bail();
+  input.rumble(1, 1, 320);
   const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST' }[reason] || 'BAILED';
   hud.combo(why + (skater.lostCombo ? '  (' + skater.lostCombo + ')' : ''), 0, 0, true);
 };
 skater.events.trick = () => { audio.trick(); refreshCombo(); };
-skater.events.grindStart = () => { audio.burst(3000, 0.08, 0.3, 'highpass'); refreshCombo(); };
+skater.events.grindStart = () => { audio.burst(3000, 0.08, 0.3, 'highpass'); input.rumble(0.2, 0.5, 80); refreshCombo(); };
 skater.events.grindEnd = () => refreshCombo();
 
 function refreshCombo() {
