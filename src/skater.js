@@ -179,7 +179,8 @@ export class Skater {
   }
 
   handleCrouch(dt, inp) {
-    if (inp.olliePressed) { this.crouching = true; this.crouchTime = 0; }
+    if (!inp.ollie) this.bufferedOllie = false;
+    if (inp.olliePressed || (inp.ollie && this.bufferedOllie)) { this.crouching = true; this.crouchTime = 0; this.bufferedOllie = false; }
     if (this.crouching) {
       this.crouchTime += dt;
       if (inp.ollieReleased || !inp.ollie) this.pop();
@@ -272,7 +273,8 @@ export class Skater {
       }
     }
     // crouch-in-air for the next pop? no; but allow pre-pressing ollie to land & re-pop quickly
-    if (inp.olliePressed) this.crouching = false;
+    if (inp.olliePressed) { this.crouching = false; this.bufferedOllie = true; } // buffered: crouch on touchdown
+    if (!inp.ollie) this.bufferedOllie = false;
 
     // grind snap
     this.railCooldown -= dt;

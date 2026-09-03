@@ -49,6 +49,8 @@ const audio = new Audio();
 let mode = 'title'; // title | playing | over
 let timeLeft = RUN_TIME;
 let accumulator = 0, last = performance.now();
+const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed'];
+const pending = {};
 
 skater.events.ollie = (charge) => audio.pop(charge);
 skater.events.land = (points, text, mult) => {
@@ -111,14 +113,15 @@ function frame(now) {
   }
   if (mode === 'title' && inp.anyPressed && !inp.selectPressed) startRun();
 
-  // fixed-step simulation
+  // fixed-step simulation. Edge inputs are latched until a substep consumes them, so a press is never
+  // dropped on frames that run zero substeps (high-refresh displays) and never fires twice.
   const simInput = mode === 'playing' ? inp : idle;
+  for (const k of EDGES) pending[k] = pending[k] || inp[k];
   accumulator += dt;
   let steps = 0;
   while (accumulator >= FIXED_DT && steps < 8) {
+    if (mode === 'playing') for (const k of EDGES) { simInput[k] = pending[k]; pending[k] = false; }
     skater.update(FIXED_DT, simInput);
-    // edge inputs must only fire once per frame
-    simInput.olliePressed = simInput.ollieReleased = simInput.flipPressed = simInput.grabPressed = simInput.grindPressed = false;
     accumulator -= FIXED_DT; steps++;
   }
   if (mode === 'playing') {
