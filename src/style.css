@@ -1,0 +1,44 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; font-family: "Arial Narrow", Impact, "Franklin Gothic Medium", Arial, sans-serif; color: #fff; }
+#game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+#hud { position: fixed; inset: 0; pointer-events: none; user-select: none; }
+#hud > div { position: absolute; }
+.label { font-size: 14px; letter-spacing: 3px; color: #ffcf3a; text-shadow: 2px 2px 0 #000; }
+#top-left { top: 18px; left: 22px; }
+#score { font-size: 44px; font-weight: 900; font-style: italic; letter-spacing: 1px; text-shadow: 3px 3px 0 #000, -1px -1px 0 #000; font-family: Impact, "Arial Black", sans-serif; }
+#top-center { top: 14px; left: 50%; transform: translateX(-50%); text-align: center; }
+#timer { font-size: 40px; font-family: Impact, "Arial Black", sans-serif; text-shadow: 3px 3px 0 #000; color: #fff; }
+#timer.low { color: #ff5a3a; }
+#top-right { top: 18px; right: 22px; text-align: right; font-size: 15px; letter-spacing: 1px; text-shadow: 2px 2px 0 #000; }
+#pad-status { color: #9ad4ff; font-weight: bold; }
+#pad-status.connected { color: #7dff8a; }
+.hint { color: #bbb; font-size: 12px; margin-top: 4px; }
+#bottom { bottom: 60px; left: 0; right: 0; text-align: center; }
+#combo-line { font-size: 34px; font-family: Impact, "Arial Black", sans-serif; text-shadow: 3px 3px 0 #000; min-height: 40px; }
+#combo-points { color: #fff; }
+#combo-mult { color: #ffcf3a; margin-left: 14px; }
+#trick-text { font-size: 26px; font-weight: bold; font-style: italic; color: #ffe9a3; text-shadow: 2px 2px 0 #000; min-height: 32px; padding: 0 40px; }
+#trick-text.bail { color: #ff5a3a; }
+#landed-text { font-size: 30px; font-family: Impact, "Arial Black", sans-serif; color: #7dff8a; text-shadow: 3px 3px 0 #000; min-height: 36px; opacity: 0; transition: opacity 0.25s; }
+#landed-text.show { opacity: 1; }
+#speed-bar { bottom: 24px; left: 50%; transform: translateX(-50%); width: 160px; height: 6px; background: rgba(0,0,0,0.5); border: 1px solid #555; }
+#speed-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #7dff8a, #ffcf3a, #ff5a3a); }
+#toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); border: 2px solid #ffcf3a; padding: 8px 18px; font-size: 16px; letter-spacing: 1px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+#toast.show { opacity: 1; }
+#controls-panel { position: fixed; inset: 40px; background: rgba(12,14,20,0.94); border: 3px solid #ffcf3a; padding: 20px 30px; overflow: auto; z-index: 10; }
+#controls-panel.hidden, #overlay.hidden { display: none; }
+#controls-panel h2 { margin: 0 0 12px; font-family: Impact, sans-serif; letter-spacing: 4px; color: #ffcf3a; }
+#controls-panel h3 { margin: 8px 0; color: #9ad4ff; }
+#controls-panel .cols { display: flex; gap: 40px; flex-wrap: wrap; }
+#controls-panel table { border-collapse: collapse; font-size: 15px; }
+#controls-panel td { padding: 4px 14px 4px 0; vertical-align: top; }
+#controls-panel td:first-child { color: #ffcf3a; font-weight: bold; white-space: nowrap; }
+#controls-panel .tricks { margin-top: 18px; font-size: 14px; line-height: 1.7; color: #ddd; border-top: 1px solid #444; padding-top: 12px; }
+#overlay { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(6,8,14,0.72); z-index: 5; text-align: center; }
+#overlay .title { font-family: Impact, "Arial Black", sans-serif; font-size: 84px; font-style: italic; letter-spacing: 2px; color: #fff; text-shadow: 5px 5px 0 #000, 8px 8px 0 #ffcf3a; }
+#overlay .title span { color: #ffcf3a; text-shadow: 5px 5px 0 #000, 8px 8px 0 #c0392b; }
+#overlay .sub { font-size: 20px; letter-spacing: 5px; margin: 14px 0 30px; color: #9ad4ff; }
+#overlay-msg { font-size: 28px; font-weight: bold; animation: blink 1.2s infinite; }
+#final-score { font-family: Impact, sans-serif; font-size: 56px; color: #ffcf3a; text-shadow: 4px 4px 0 #000; margin: 10px 0; }
+#overlay .small { margin-top: 28px; color: #bbb; font-size: 14px; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }

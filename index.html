@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J2S Pro Skater</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="hud">
+    <div id="top-left">
+      <div class="label">SCORE</div>
+      <div id="score">0</div>
+    </div>
+    <div id="top-center">
+      <div id="timer">2:00</div>
+    </div>
+    <div id="top-right">
+      <div id="pad-status">⌨ KEYBOARD</div>
+      <div class="hint">TAB / BACK: controls</div>
+    </div>
+    <div id="bottom">
+      <div id="combo-line">
+        <span id="combo-points"></span><span id="combo-mult"></span>
+      </div>
+      <div id="trick-text"></div>
+      <div id="landed-text"></div>
+    </div>
+    <div id="speed-bar"><div id="speed-fill"></div></div>
+  </div>
+  <div id="toast"></div>
+  <div id="controls-panel" class="hidden">
+    <h2>CONTROLS</h2>
+    <div class="cols">
+      <div>
+        <h3>🎮 Gamepad (Xbox / XInput)</h3>
+        <table>
+          <tr><td>Left stick</td><td>Steer (analog) · Spin in air · Trick direction</td></tr>
+          <tr><td>Left stick ↑ / RT</td><td>Push / accelerate</td></tr>
+          <tr><td>Left stick ↓ / LT</td><td>Brake / slow down</td></tr>
+          <tr><td>A</td><td>Hold to crouch, release to ollie (hold longer = higher)</td></tr>
+          <tr><td>X + direction</td><td>Flip trick</td></tr>
+          <tr><td>B + direction</td><td>Grab trick (hold)</td></tr>
+          <tr><td>Y + direction</td><td>Grind (press near a rail / ledge / coping)</td></tr>
+          <tr><td>LB / RB</td><td>Spin left / right in air</td></tr>
+          <tr><td>Right stick</td><td>Nudge camera</td></tr>
+          <tr><td>Start</td><td>Start / restart run</td></tr>
+          <tr><td>Back</td><td>Toggle this panel</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>⌨ Keyboard</h3>
+        <table>
+          <tr><td>← → / A D</td><td>Steer · Spin · Trick direction</td></tr>
+          <tr><td>↑ / W</td><td>Push</td></tr>
+          <tr><td>↓ / S</td><td>Brake</td></tr>
+          <tr><td>Space</td><td>Hold to crouch, release to ollie</td></tr>
+          <tr><td>J</td><td>Flip trick</td></tr>
+          <tr><td>K</td><td>Grab trick (hold)</td></tr>
+          <tr><td>L</td><td>Grind</td></tr>
+          <tr><td>Q / E</td><td>Spin left / right in air</td></tr>
+          <tr><td>Enter</td><td>Start / restart</td></tr>
+          <tr><td>Tab</td><td>Toggle this panel</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="tricks">
+      <b>Flips:</b> Kickflip (←) · Heelflip (→) · Pop Shove-it (↓) · Impossible (↑) · 360 Flip (↙) · Varial Heelflip (↘) · Hardflip (↖) · Inward Heel (↗)<br/>
+      <b>Grabs:</b> Indy (→) · Melon (←) · Nosegrab (↑) · Tailgrab (↓) · Method (↖) · Stalefish (↗) · Judo (↙) · Airwalk (↘)<br/>
+      <b>Grinds:</b> 50-50 (neutral) · Nosegrind (↑) · 5-0 (↓) · Boardslide (←) · Lipslide (→) · Crooked (↖) · Overcrook (↗) · Smith (↙) · Feeble (↘)
+    </div>
+  </div>
+  <div id="overlay">
+    <div class="title">J2S <span>PRO SKATER</span></div>
+    <div class="sub">WAREHOUSE · FREE SKATE · 2:00</div>
+    <div id="overlay-msg">Press START / ENTER to skate</div>
+    <div id="final-score"></div>
+    <div class="small">Plug in an Xbox-style USB controller and press any button</div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
