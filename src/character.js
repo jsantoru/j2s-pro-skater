@@ -1,5 +1,8 @@
 // Low-poly procedural skater + board with pose-blend animation.
-// Local frame: +z = nose / travel forward, +y up, +x right. Body faces +x (regular stance).
+// Root frame: +z = nose / travel forward, +y up, so the RIGHT of travel is -x (right-handed frame).
+// The body group is rotated so the chest (+z body) faces root -x: regular stance, left foot forward.
+// Body frame: +x = toward the nose, +z = toward the chest. Pose keys ending in Z swing limbs toward the
+// nose (+) / tail (-); keys ending in X fold limbs toward the chest (+).
 import * as THREE from 'three';
 
 const L1 = 0.42, L2 = 0.42, BOARD_TOP = 0.13;
@@ -24,8 +27,12 @@ export const POSES = {
   method: P({ torsoX: -18, headY: -50, headX: -25, lArmX: 70, lArmZ: 10, lElbow: 45, rArmX: -30, rArmZ: -80, rElbow: 20, lHip: 15, lKnee: 135, rHip: 12, rKnee: 130 }),
   grind: P({ torsoX: 18, headY: -55, lArmX: 0, lArmZ: 75, lElbow: 25, rArmX: 0, rArmZ: -75, rElbow: 25, lHip: 48, lKnee: 68, rHip: 46, rKnee: 64 }),
   bail: P({ torsoX: -35, headX: -25, headY: 0, lArmX: -40, lArmZ: 150, lElbow: 60, rArmX: -40, rArmZ: -150, rElbow: 60, lHip: -15, lKnee: 35, rHip: 20, rKnee: 60, lLegZ: 20, rLegZ: -20 }),
-  pushA: P({ torsoX: 22, headY: -55, lArmX: -20, lArmZ: 20, lElbow: 40, rArmX: 30, rArmZ: -20, rElbow: 30, lHip: 32, lKnee: 48, rHip: 45, rKnee: 30, rLegZ: -18 }),
-  pushB: P({ torsoX: 22, headY: -55, lArmX: 25, lArmZ: 20, lElbow: 40, rArmX: -30, rArmZ: -20, rElbow: 30, lHip: 32, lKnee: 48, rHip: -35, rKnee: 8, rLegZ: -20 }),
+  // push cycle: the back (right) foot leaves the deck, lands beside it on the toe side (rHip) and strokes
+  // nose -> tail along the travel axis (rLegZ + -> -) with a straight knee; the front leg bends so the
+  // pushing foot reaches the ground (deck top is 0.13 m up); the torso turns toward the nose.
+  pushPlant: P({ torsoX: 14, torsoY: -32, headY: -50, lArmX: -15, lArmZ: 18, lElbow: 35, rArmX: 25, rArmZ: -18, rElbow: 30, lHip: 55, lKnee: 80, rHip: 14, rKnee: 3, rLegZ: 20 }),
+  pushStroke: P({ torsoX: 18, torsoY: -24, headY: -50, lArmX: 20, lArmZ: 18, lElbow: 35, rArmX: -25, rArmZ: -18, rElbow: 30, lHip: 55, lKnee: 80, rHip: 14, rKnee: 5, rLegZ: -22 }),
+  pushReturn: P({ torsoX: 16, torsoY: -28, headY: -50, lArmX: 5, lArmZ: 18, lElbow: 35, rArmX: 0, rArmZ: -18, rElbow: 30, lHip: 52, lKnee: 76, rHip: 40, rKnee: 70, rLegZ: -4 }),
 };
 const GRAB_POSE = { Indy: 'indy', Melon: 'melon', Nosegrab: 'nosegrab', Tailgrab: 'tailgrab', Method: 'method', Stalefish: 'melon', Judo: 'method', Airwalk: 'nosegrab' };
 const FLIP_POSE = { Kickflip: 'kickflip', Heelflip: 'heelflip', 'Pop Shove-it': 'shoveit', Impossible: 'shoveit', '360 Flip': 'kickflip', 'Varial Heelflip': 'heelflip', Hardflip: 'kickflip', 'Inward Heelflip': 'heelflip' };
@@ -43,8 +50,8 @@ function box(w, h, d, mat, x = 0, y = 0, z = 0) {
 export class Character {
   constructor() {
     this.root = new THREE.Group();          // placed at skater.pos with skater.modelQuat
-    this.body = new THREE.Group();          // rotated so the chest faces +x
-    this.body.rotation.y = Math.PI / 2;
+    this.body = new THREE.Group();          // rotated so the chest faces root -x (the right of travel: regular)
+    this.body.rotation.y = -Math.PI / 2;
     this.root.add(this.body);
     this.cur = P({}); this.cur.hipsY = STAND_DROP;
     this.pushPhase = 0; this.bobT = 0;
@@ -91,7 +98,7 @@ export class Character {
       el.add(box(0.08, 0.28, 0.08, skin, 0, -0.14, 0)); el.add(box(0.09, 0.08, 0.09, skin, 0, -0.3, 0));
       return { sh, el };
     };
-    this.lArm = arm(-1); this.rArm = arm(1);
+    this.lArm = arm(1); this.rArm = arm(-1); // body +x = nose side = the skater's left (regular stance)
     const leg = (side) => {
       const hp = new THREE.Group(); hp.position.set(side * 0.11, 0, 0); this.hips.add(hp);
       hp.add(box(0.14, L1, 0.15, pants, 0, -L1 / 2, 0));
@@ -102,7 +109,7 @@ export class Character {
       an.add(box(0.11, 0.08, 0.27, shoe, 0, 0, 0.05));
       return { hp, kn, an };
     };
-    this.lLeg = leg(-1); this.rLeg = leg(1); // body -x = toward the nose (front foot = left)
+    this.lLeg = leg(1); this.rLeg = leg(-1); // front foot = left (nose side), back / pushing foot = right
   }
 
   // ---- animation ----
@@ -122,20 +129,25 @@ export class Character {
     } else {
       const c = Math.min(1, sk.crouch + sk.landSquash * 0.7);
       if (sk.pushing > 0 && c < 0.3) {
-        this.pushPhase += dt * 4.2;
-        const s = 0.5 + 0.5 * Math.sin(this.pushPhase);
-        mix(POSES.pushA, s * (1 - c)); mix(POSES.pushB, (1 - s) * (1 - c));
+        // one cycle = 2π: first half the foot is on the ground stroking plant -> back, second half it
+        // lifts (return pose) and swings forward to plant again
+        this.pushPhase += dt * 7.5;
+        const p = this.pushPhase % (Math.PI * 2);
+        let a, b, s;
+        if (p < Math.PI) { a = POSES.pushPlant; b = POSES.pushStroke; s = p / Math.PI; }
+        else { const u = (p - Math.PI) / Math.PI; if (u < 0.5) { a = POSES.pushStroke; b = POSES.pushReturn; s = u * 2; } else { a = POSES.pushReturn; b = POSES.pushPlant; s = (u - 0.5) * 2; } }
+        mix(a, (1 - s) * (1 - c)); mix(b, s * (1 - c));
       } else { mix(POSES.ride, 1 - c); this.pushPhase = 0; }
       mix(POSES.crouch, c);
     }
     // normalise weights
     if (T._w && Math.abs(T._w - 1) > 1e-3) for (const k of KEYS) T[k] /= T._w;
-    // fakie: look the other way
-    if (sk.stance < 0 && st !== 'bail') T.headY = -T.headY;
-    // carve lean
-    T.hipsZ += -sk.lean * 40;
-    // leg drop / hips height
-    const drop = legDrop((T.lHip + T.rHip) / 2, (T.lKnee + T.rKnee) / 2);
+    // fakie: look (and turn the push) the other way
+    if (sk.stance < 0 && st !== 'bail') { T.headY = -T.headY; T.torsoY = -T.torsoY; }
+    // carve lean: tilt sideways into the turn (about the body's nose axis)
+    T.hipsX += sk.lean * 40;
+    // leg drop / hips height from the front (standing) leg, so an extended pushing leg reaches the ground
+    const drop = legDrop(T.lHip, T.lKnee);
     T.hipsY = st === 'air' ? STAND_DROP - 0.06 : drop;
     T._boardLift = st === 'air' ? Math.max(0, STAND_DROP - 0.06 - drop) : 0;
     return T;
@@ -152,16 +164,18 @@ export class Character {
     this.bobT += dt * (2 + sk.speed * 0.4);
     const bob = sk.state === 'ride' ? Math.sin(this.bobT) * 0.006 * Math.min(1, sk.speed / 4) : 0;
     this.hips.position.set(0, BOARD_TOP + c.hipsY + bob, 0);
-    this.hips.rotation.set(c.hipsX * D2R, 0, c.hipsZ * D2R);
-    this.torso.rotation.set(c.torsoX * D2R, c.torsoY * D2R, c.torsoZ * D2R);
-    this.head.rotation.set(c.headX * D2R, c.headY * D2R, 0);
-    this.lArm.sh.rotation.set(-c.lArmX * D2R, 0, -c.lArmZ * D2R);
-    this.rArm.sh.rotation.set(-c.rArmX * D2R, 0, -c.rArmZ * D2R);
+    // Y / Z keys are authored as "toward the nose = negative torsoY / positive limb Z"; body +x is the nose,
+    // so rotations about y/z that should move things nose-ward get the signs below.
+    this.hips.rotation.set(c.hipsX * D2R, 0, -c.hipsZ * D2R);
+    this.torso.rotation.set(c.torsoX * D2R, -c.torsoY * D2R, -c.torsoZ * D2R);
+    this.head.rotation.set(c.headX * D2R, -c.headY * D2R, 0);
+    this.lArm.sh.rotation.set(-c.lArmX * D2R, 0, c.lArmZ * D2R);
+    this.rArm.sh.rotation.set(-c.rArmX * D2R, 0, c.rArmZ * D2R);
     this.lArm.el.rotation.x = -c.lElbow * D2R; this.rArm.el.rotation.x = -c.rElbow * D2R;
     // hips flex forward (knee travels toward the chest, +z), knees fold the shin back behind the thigh;
-    // the ankle counter-rotates so the foot stays flat on the board whatever the squat depth
-    this.lLeg.hp.rotation.set(-c.lHip * D2R, 0, c.lLegZ * D2R); this.lLeg.kn.rotation.x = c.lKnee * D2R; this.lLeg.an.rotation.x = (c.lHip - c.lKnee) * D2R;
-    this.rLeg.hp.rotation.set(-c.rHip * D2R, 0, -c.rLegZ * D2R); this.rLeg.kn.rotation.x = c.rKnee * D2R; this.rLeg.an.rotation.x = (c.rHip - c.rKnee) * D2R;
+    // the ankle counter-rotates on both axes so the foot stays flat whatever the squat depth or leg swing
+    this.lLeg.hp.rotation.set(-c.lHip * D2R, 0, c.lLegZ * D2R); this.lLeg.kn.rotation.x = c.lKnee * D2R; this.lLeg.an.rotation.set((c.lHip - c.lKnee) * D2R, 0, -c.lLegZ * D2R);
+    this.rLeg.hp.rotation.set(-c.rHip * D2R, 0, c.rLegZ * D2R); this.rLeg.kn.rotation.x = c.rKnee * D2R; this.rLeg.an.rotation.set((c.rHip - c.rKnee) * D2R, 0, -c.rLegZ * D2R);
 
     // board: follows feet in the air, flips during flip tricks, tumbles on bail
     const b = this.board;
@@ -173,7 +187,9 @@ export class Character {
         const [r, y, p] = FLIP_SPIN[tr.name] || [1, 0, 0];
         const t = Math.min(1, tr.t / tr.dur);
         const e = t < 1 ? 1 - Math.pow(1 - t, 1.6) : 1; // snappy start, settle at the end
-        b.rotation.set(p * e * Math.PI * 2, y * e * Math.PI * 2, -r * e * Math.PI * 2);
+        // the stance flip mirrored the skater across the board's long axis, so roll and yaw invert
+        // (pitch is about that axis and is unchanged) to keep each trick flipping the way it should
+        b.rotation.set(p * e * Math.PI * 2, -y * e * Math.PI * 2, r * e * Math.PI * 2);
         b.position.y += Math.sin(t * Math.PI) * 0.08;
       } else if (tr && tr.kind === 'grab') {
         b.rotation.x = (tr.name === 'Nosegrab' ? 0.25 : tr.name === 'Tailgrab' ? -0.25 : 0);
@@ -186,10 +202,10 @@ export class Character {
     // whole-body tumble while bailing
     if (sk.state === 'bail') {
       const t = Math.min(1, sk.bailT / 0.5);
-      this.body.rotation.set(0, Math.PI / 2, 0); this.body.rotation.x = 1.35 * t;
+      this.body.rotation.set(0, -Math.PI / 2, 0); this.body.rotation.x = 1.35 * t;
       this.body.position.set(0, -0.5 * t * (STAND_DROP + 0.1) + 0.3 * t, 0.5 * t);
     } else {
-      this.body.rotation.set(0, Math.PI / 2, 0); this.body.position.set(0, 0, 0);
+      this.body.rotation.set(0, -Math.PI / 2, 0); this.body.position.set(0, 0, 0);
     }
   }
 }

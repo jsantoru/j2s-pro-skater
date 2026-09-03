@@ -75,13 +75,13 @@ skater.events.land = (points, text, mult) => {
 skater.events.bail = (reason) => {
   audio.bail();
   fx.burst(skater.pos, 24, [0.8, 0.76, 0.7], 2.5, 0.6);
-  input.rumble(1, 1, 320);
+  input.rumbleSustainStop(); input.rumble(1, 1, 320);
   const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST' }[reason] || 'BAILED';
   hud.combo(why + (skater.lostCombo ? '  (' + skater.lostCombo + ')' : ''), 0, 0, true);
 };
 skater.events.trick = () => { audio.trick(); refreshCombo(); };
-skater.events.grindStart = () => { audio.burst(3000, 0.08, 0.3, 'highpass'); input.rumble(0.2, 0.5, 80); refreshCombo(); };
-skater.events.grindEnd = () => refreshCombo();
+skater.events.grindStart = () => { audio.burst(3000, 0.08, 0.3, 'highpass'); input.rumble(0.35, 0.75, 110); input.rumbleSustainStop(); refreshCombo(); };
+skater.events.grindEnd = () => { input.rumbleSustainStop(); input.rumble(0.25, 0.4, 70); refreshCombo(); };
 
 function refreshCombo() {
   const c = skater.combo;
@@ -152,6 +152,13 @@ function frame(now) {
   followCam.update(dt, skater, inp.camX);
   audio.update(skater);
   fx.update(dt, skater);
+  // grinding buzzes continuously: metal (rail / coping) rides the high-frequency motor, concrete ledges
+  // are a coarser low rumble. Both scale with how fast you are travelling along the rail.
+  if (mode === 'playing' && skater.state === 'grind' && skater.grind) {
+    const g = Math.min(1, skater.speed / 10);
+    const metal = skater.grind.rail.kind !== 'ledge';
+    input.rumbleSustain(metal ? 0.1 + g * 0.14 : 0.24 + g * 0.26, metal ? 0.42 + g * 0.38 : 0.2 + g * 0.2, dt);
+  }
   hud.update(dt, skater.score, timeLeft, skater.speed / 14);
   if (skater.combo.tricks.length && skater.state === 'grind') refreshCombo();
   renderer.render(scene, camera);

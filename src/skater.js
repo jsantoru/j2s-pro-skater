@@ -8,7 +8,8 @@ export const TUNING = {
   uphillGrav: 0.55,    // ramp assist: slopes slow you less than they speed you up
   maxPush: 9.6,        // top speed from pushing
   pushAcc: 7.5,        // m/s² while pushing (stick up / RT)
-  crouchAcc: 6.0,      // m/s² while holding crouch on the ground (THPS: crouch = speed)
+  crouchAcc: 9.5,      // m/s² while holding crouch on the ground (THPS: crouch = speed)
+  crouchMax: 10.8,     // crouch is the fastest way to go: it tops out above the stick push
   autoPushSpeed: 5.4,  // below this on flat ground the skater pushes by itself
   autoPushAcc: 5.0,
   rollFriction: 0.32,  // constant decel
@@ -153,7 +154,7 @@ export class Skater {
       sp = Math.min(T.maxPush, sp + acc * dt); this.pushing = inp.push;
     }
     // THPS speed model: the skater pushes by himself when slow on flat ground, and holding crouch is the gas pedal
-    if (this.crouching && sp < T.maxPush && inp.brake === 0) sp = Math.min(T.maxPush, sp + T.crouchAcc * dt);
+    if (this.crouching && sp < T.crouchMax && inp.brake === 0) sp = Math.min(T.crouchMax, sp + T.crouchAcc * (sp < 2 ? 1.4 : 1) * dt);
     else if (!this.pushing && !this.crouching && inp.brake === 0 && inp.autoPush !== false && sp < T.autoPushSpeed
       && this.normal.y > 0.92 && this.groundTime > 0.35) {
       sp = Math.min(T.autoPushSpeed, sp + T.autoPushAcc * (sp < 2 ? 1.5 : 1) * dt); this.pushing = 0.8;

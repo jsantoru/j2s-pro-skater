@@ -62,8 +62,9 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 
 - Gravity 22 m/s²: snappier than earth, floaty enough for tricks. Tap ollie ≈ 0.9 m / 0.57 s,
   full crouch ≈ 1.7 m / 0.79 s. Flip tricks take 0.38–0.55 s so a tap ollie can still land a kickflip.
-- Holding crouch accelerates at 6 m/s² to the 9.6 m/s cap (rest to top speed in ~2 s); the skater auto-pushes
-  to 5.4 m/s on flat so you never crawl; stick-up / RT push still works on top. Rolling friction is gentle.
+- Holding crouch is the fastest way to move: 9.5 m/s² up to 10.8 m/s, above the 9.6 m/s stick push, so it
+  reaches 9.3 m/s in a second and tops out in about 1.4 s. The skater auto-pushes to 5.4 m/s on flat so you
+  never crawl; stick-up / RT push still works on top. Rolling friction is gentle.
 - Grind magnet: a tap of Y arms 0.6 s; rails within 2.6 m pull at up to 18 m/s² (4.5 m/s max closing speed)
   and snap from 1.3 m away, even when the rail is up to 0.45 m above the feet. In the sim, a line 1.4 m off
   the flat rail with a single tap becomes a 50-50; the same line without the tap lands on the floor.
@@ -72,6 +73,12 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - Turn rate 3.1 rad/s at a standstill down to 1.75 rad/s at speed; crouching tightens turns by 30%.
 - Spin 560°/s at full stick, so a full ollie is a comfortable 360 and a tap is a 180.
 - Uphill gravity is scaled by 0.55 so a pushed run reaches every lip; downhill is full gravity.
+- The skater rides regular: left foot forward, chest toward the right of travel. The push cycle plants the
+  back foot on the ground beside the deck and strokes nose→tail along the travel axis, with the front leg
+  bent so the pushing foot actually reaches the floor.
+- Haptics: landings scale rumble with impact, and grinds buzz continuously for as long as you are on the
+  rail. Metal (rails, coping) drives the high-frequency motor; concrete ledges use a coarser low rumble.
+  Both scale with grind speed.
 
 ## Graphics
 
@@ -89,16 +96,16 @@ The home page—press START or ENTER to begin a 2-minute free-skate session.
 
 ![Kickflip](screenshots/closeup_flip.png)
 
-Executing a kickflip mid-air with board rotation, character pose blending, and procedural animation.
+A kickflip caught mid-rotation: the board spins under the tucked legs while the trick name reads out in the HUD.
 
 ### Grind
 
 ![Grind screenshot](screenshots/gfx_grind.png)
 
-A 50-50 grind on a chrome rail showing orange sparks, soft PCF shadows, PBR material reflections, and glass HUD panels.
+A 50-50 down the chrome flat rail, sparks trailing off the trucks, with the live combo readout underneath.
 
 ### Riding
 
 ![Ride screenshot](screenshots/gfx_ride.png)
 
-Riding toward a quarter pipe with ACES tone mapping, image-based lighting, mipmapped textures, and vignette overlay.
+Carving toward the west quarter pipe at speed, in regular stance with the knees loaded over the deck.

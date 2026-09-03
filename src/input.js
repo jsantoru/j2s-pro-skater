@@ -90,6 +90,16 @@ export class Input {
     try { act.playEffect('dual-rumble', { startDelay: 0, duration: ms, strongMagnitude: strong, weakMagnitude: weak }).catch(() => {}); } catch { /* ignore */ }
   }
 
+  // Continuous rumble for states that last (grinding). playEffect takes a fixed duration, so this
+  // re-issues a slightly longer pulse than the re-trigger interval: the overlap keeps it seamless.
+  rumbleSustain(strong, weak, dt) {
+    this._sustainT = (this._sustainT || 0) - dt;
+    if (this._sustainT > 0) return;
+    this._sustainT = 0.1;
+    this.rumble(strong, weak, 150);
+  }
+  rumbleSustainStop() { this._sustainT = 0; }
+
   poll(dt) {
     const s = this.state;
     const prev = { ollie: s.ollie, grab: s.grab, grind: s.grind };
