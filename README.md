@@ -21,12 +21,12 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 | Input | Action |
 |---|---|
 | Left stick | Analog steering on the ground, spin in the air, trick direction |
-| Left stick up / RT | Push (analog) |
-| Left stick down / LT | Brake |
-| A | Hold to crouch, release to ollie – longer hold = bigger pop (0.55 s to full) |
-| X + direction | Flip trick (Kickflip, Heelflip, Pop Shove-it, Impossible, 360 Flip, Varial Heel, Hardflip, Inward Heel) |
+| A (hold) | Crouch **= speed up** (THPS style); release to ollie – longer hold = bigger pop (0.55 s to full) |
+| X + direction | Flip trick (Kickflip, Heelflip, Pop Shove-it, Impossible, 360 Flip, Varial Heel, Hardflip, Inward Heel). Can be pressed during the crouch or on the release frame – it fires on takeoff |
 | B + direction | Grab trick (hold; Indy, Melon, Nosegrab, Tailgrab, Method, Stalefish, Judo, Airwalk) |
-| Y + direction | Grind – widens the rail snap window and lets you take coping (50-50, Nosegrind, 5-0, Boardslide, Lipslide, Crooked, Overcrook, Smith, Feeble) |
+| Y + direction | Grind – a tap in the air arms a 0.6 s window; any rail within 2.6 m pulls you onto it like a magnet, coping included (50-50, Nosegrind, 5-0, Boardslide, Lipslide, Crooked, Overcrook, Smith, Feeble) |
+| Left stick down / LT | Brake |
+| Left stick up / RT | Extra push – optional, the skater pushes by himself below 5.4 m/s on flat |
 | LB / RB | Spin left / right (digital, handy with the d-pad) |
 | Right stick | Nudge the camera |
 | Start | Start / restart the 2-minute free skate |
@@ -40,7 +40,9 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   a 3-D travel vector that stays tangent to banks, transitions and vert; ramp-assisted uphill gravity;
   crouch "pump" in transitions; late-release ollie forgiveness at lips; vert airs auto-turn 180;
   forgiving landing snap (65°) with sketchy-landing speed scrub; rail snapping with a cooldown so rail
-  exits are clean; wall splat vs. wall scrub; tiny hops don't break combos. All tuning lives in `TUNING`.
+  exits are clean; wall splat vs. wall scrub; tiny hops don't break combos. THPS-style input forgiveness:
+  flip/grab presses are buffered through the pop, a grind tap arms a magnet window that steers you onto
+  the nearest rail, crouch is the accelerator and the skater auto-pushes when slow. All tuning lives in `TUNING`.
 - `src/input.js` – Gamepad API (standard mapping) with radial deadzone, analog triggers, d-pad mirror,
   hot-plug detection, and a keyboard fallback smoothed to behave like a stick. Key taps are latched so
   they can never fall between frames.
@@ -60,7 +62,13 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 
 - Gravity 22 m/s²: snappier than earth, floaty enough for tricks. Tap ollie ≈ 0.9 m / 0.57 s,
   full crouch ≈ 1.7 m / 0.79 s. Flip tricks take 0.38–0.55 s so a tap ollie can still land a kickflip.
-- Push tops out at 9.6 m/s in about 1.5 s; rolling friction is gentle so lines carry across the park.
+- Holding crouch accelerates at 6 m/s² to the 9.6 m/s cap (rest to top speed in ~2 s); the skater auto-pushes
+  to 5.4 m/s on flat so you never crawl; stick-up / RT push still works on top. Rolling friction is gentle.
+- Grind magnet: a tap of Y arms 0.6 s; rails within 2.6 m pull at up to 18 m/s² (4.5 m/s max closing speed)
+  and snap from 1.3 m away, even when the rail is up to 0.45 m above the feet. In the sim, a line 1.4 m off
+  the flat rail with a single tap becomes a 50-50; the same line without the tap lands on the floor.
+- Flip/grab presses on the ground are buffered 0.25 s (indefinitely while crouched) and fire on takeoff, so
+  X on the same frame as the A release, or during the crouch, always produces the trick.
 - Turn rate 3.1 rad/s at a standstill down to 1.75 rad/s at speed; crouching tightens turns by 30%.
 - Spin 560°/s at full stick, so a full ollie is a comfortable 360 and a tap is a 180.
 - Uphill gravity is scaled by 0.55 so a pushed run reaches every lip; downhill is full gravity.

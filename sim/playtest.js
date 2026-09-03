@@ -86,6 +86,26 @@ S.gap = () => run('kicker gap', (sk) => { sk.pos.set(0, 0, 12); sk.heading.set(1
 S.spin = () => run('full crouch ollie + full-stick spin, land', (sk) => { sk.pos.set(-10, 0, 14); sk.heading.set(1, 0, 0); sk.speed = 8; },
   (inp, t) => { inp.ollie = t > 0.2 && t < 0.8; inp.steer = t > 0.8 && t < 1.5 ? 1 : 0; }, 3);
 
+S.autoPush = () => run('no input: skater auto-pushes to cruise on flat', (sk) => { sk.pos.set(-20, 0, 14); sk.heading.set(1, 0, 0); },
+  () => {}, 6, { sample: 1 });
+S.crouchAccel = () => run('hold crouch from rest = accelerate, release = big ollie', (sk) => { sk.pos.set(-20, 0, 14); sk.heading.set(1, 0, 0); },
+  (inp, t) => { inp.ollie = t > 0.1 && t < 2.6; }, 4.5, { sample: 0.5 });
+S.earlyFlip = () => run('flip pressed ON the release frame, then flip pressed DURING the crouch', (sk) => { sk.pos.set(-14, 0, 14); sk.heading.set(1, 0, 0); sk.speed = 8; },
+  (inp, t) => {
+    inp.ollie = (t > 0.2 && t < 0.5) || (t > 2.0 && t < 2.5);
+    inp.flipPressed = Math.abs(t - 0.5) < DT / 2 || Math.abs(t - 2.3) < DT / 2;
+    inp.dir8 = 'W';
+  }, 4);
+S.magnet = () => {
+  // approach the flat rail (z=10) 1.4 m off its line, ollie, TAP grind once right after takeoff
+  run('grind magnet: 1.4 m off-line, single tap of grind', (sk) => { sk.pos.set(-13, 0, 11.4); sk.heading.set(1, 0, 0); sk.speed = 7; },
+    (inp, t, sk) => { inp.ollie = sk.pos.x > -10.6 && sk.pos.x < -10.2 && sk.state === 'ride'; inp.grind = sk.state === 'air' && sk.airTime > 0.03 && sk.airTime < 0.05; inp.dir8 = 'C'; }, 4);
+  run('control: same line, grind never pressed (should land on the floor, no grind)', (sk) => { sk.pos.set(-13, 0, 11.4); sk.heading.set(1, 0, 0); sk.speed = 7; },
+    (inp, t, sk) => { inp.ollie = sk.pos.x > -10.6 && sk.pos.x < -10.2 && sk.state === 'ride'; }, 4);
+  run('grind magnet: tapped while still crouching, before the pop', (sk) => { sk.pos.set(-13, 0, 11.0); sk.heading.set(1, 0, 0); sk.speed = 7; },
+    (inp, t, sk) => { const c = sk.pos.x > -10.9 && sk.pos.x < -10.2 && sk.state === 'ride'; inp.ollie = c; inp.grind = c && sk.crouchTime > 0.05 && sk.crouchTime < 0.07; inp.dir8 = 'C'; }, 4);
+};
+
 const which = process.argv.slice(2);
 const names = which.length ? which : Object.keys(S);
 for (const n of names) { if (S[n]) S[n](); else console.log('unknown scenario', n); }

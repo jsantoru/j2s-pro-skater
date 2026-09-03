@@ -97,8 +97,10 @@ export class Character {
       hp.add(box(0.14, L1, 0.15, pants, 0, -L1 / 2, 0));
       const kn = new THREE.Group(); kn.position.y = -L1; hp.add(kn);
       kn.add(box(0.12, L2, 0.13, pants, 0, -L2 / 2, 0));
-      kn.add(box(0.11, 0.08, 0.27, shoe, 0, -L2 + 0.02, 0.05));
-      return { hp, kn };
+      kn.add(box(0.13, 0.1, 0.13, pants, 0, 0, 0)); // knee cap hides the joint seam
+      const an = new THREE.Group(); an.position.y = -L2 + 0.02; kn.add(an); // ankle: keeps the shoe flat on the deck
+      an.add(box(0.11, 0.08, 0.27, shoe, 0, 0, 0.05));
+      return { hp, kn, an };
     };
     this.lLeg = leg(-1); this.rLeg = leg(1); // body -x = toward the nose (front foot = left)
   }
@@ -156,8 +158,10 @@ export class Character {
     this.lArm.sh.rotation.set(-c.lArmX * D2R, 0, -c.lArmZ * D2R);
     this.rArm.sh.rotation.set(-c.rArmX * D2R, 0, -c.rArmZ * D2R);
     this.lArm.el.rotation.x = -c.lElbow * D2R; this.rArm.el.rotation.x = -c.rElbow * D2R;
-    this.lLeg.hp.rotation.set(c.lHip * D2R, 0, c.lLegZ * D2R); this.lLeg.kn.rotation.x = -c.lKnee * D2R;
-    this.rLeg.hp.rotation.set(c.rHip * D2R, 0, -c.rLegZ * D2R); this.rLeg.kn.rotation.x = -c.rKnee * D2R;
+    // hips flex forward (knee travels toward the chest, +z), knees fold the shin back behind the thigh;
+    // the ankle counter-rotates so the foot stays flat on the board whatever the squat depth
+    this.lLeg.hp.rotation.set(-c.lHip * D2R, 0, c.lLegZ * D2R); this.lLeg.kn.rotation.x = c.lKnee * D2R; this.lLeg.an.rotation.x = (c.lHip - c.lKnee) * D2R;
+    this.rLeg.hp.rotation.set(-c.rHip * D2R, 0, -c.rLegZ * D2R); this.rLeg.kn.rotation.x = c.rKnee * D2R; this.rLeg.an.rotation.x = (c.rHip - c.rKnee) * D2R;
 
     // board: follows feet in the air, flips during flip tricks, tumbles on bail
     const b = this.board;

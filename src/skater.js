@@ -7,7 +7,10 @@ export const TUNING = {
   gravity: 22,
   uphillGrav: 0.55,    // ramp assist: slopes slow you less than they speed you up
   maxPush: 9.6,        // top speed from pushing
-  pushAcc: 7.5,        // m/s² while pushing
+  pushAcc: 7.5,        // m/s² while pushing (stick up / RT)
+  crouchAcc: 6.0,      // m/s² while holding crouch on the ground (THPS: crouch = speed)
+  autoPushSpeed: 5.4,  // below this on flat ground the skater pushes by itself
+  autoPushAcc: 5.0,
   rollFriction: 0.32,  // constant decel
   drag: 0.0045,        // v² decel
   brakeAcc: 14,
@@ -28,7 +31,13 @@ export const TUNING = {
   grindMinSpeed: 3.2,
   grindFriction: 0.25,
   grindSnapAuto: 0.62,
-  grindSnapAssist: 1.15,
+  grindSnapAssist: 1.3,   // horizontal snap window while grind intent is live
+  grindSnapBelow: 0.45,   // rail may sit this far above the feet and still pull you up onto it
+  grindIntentTime: 0.6,   // a tap of grind stays "armed" this long (holding keeps it armed)
+  grindMagnetRadius: 2.6, // rails inside this (horizontal) steer you in while armed
+  grindMagnetAcc: 18,     // m/s² lateral pull
+  grindMagnetSpeed: 4.5,  // max lateral closing speed
+  trickBuffer: 0.25,      // flip/grab pressed this long before the pop still fires on takeoff
   grabMin: 0.3,
   pump: 4.0,           // m/s² while crouching down a transition
   vertKick: 1.3,       // outward push when leaving a vert lip without popping
@@ -77,6 +86,9 @@ export class Skater {
     this.lastRail = null; this.railCooldown = 0;
     this.landSquash = 0; this.groundTime = 1;
     this.lastAirWasTiny = false;
+    this.queued = null;                       // trick pressed on the ground, fired on the next takeoff
+    this.grindIntent = 0; this.grindIntentDir = 'C'; // "I want to grind" window armed by a tap of Y
+    this._inp = null;
     this.combo.newRun();
     this.score = 0;
     this.modelQuat = new THREE.Quaternion();
@@ -97,6 +109,18 @@ export class Skater {
   // ---------- main update (fixed dt) ----------
   update(dt, inp) {
     this.steer = shapeStick(inp.steer);
+    this._inp = inp;
+    // input buffers (THPS forgiveness): a flip/grab pressed just before or exactly on the pop fires on takeoff,
+    // and a tap of grind arms a window during which nearby rails pull you in.
+    if (this.state === 'ride' || this.state === 'grind') {
+      if (inp.flipPressed) this.queued = { kind: 'flip', dir: inp.dir8, age: 0 };
+      else if (inp.grabPressed) this.queued = { kind: 'grab', dir: inp.dir8, age: 0 };
+      else if (this.queued && !this.crouching) { this.queued.age += dt; if (this.queued.age > this.T.trickBuffer) this.queued = null; }
+    }
+    if (this.state !== 'bail') {
+      if (inp.grindPressed || inp.grind) { this.grindIntent = this.T.grindIntentTime; if (inp.dir8 !== 'C' || inp.grindPressed) this.grindIntentDir = inp.dir8; }
+      else this.grindIntent = Math.max(0, this.grindIntent - dt);
+    }
     switch (this.state) {
       case 'ride': this.updateRide(dt, inp); break;
       case 'air': this.updateAir(dt, inp); break;
@@ -127,6 +151,12 @@ export class Skater {
     if (inp.push > 0 && sp < T.maxPush) {
       const acc = T.pushAcc * inp.push * (sp < 2 ? 1.5 : 1);
       sp = Math.min(T.maxPush, sp + acc * dt); this.pushing = inp.push;
+    }
+    // THPS speed model: the skater pushes by himself when slow on flat ground, and holding crouch is the gas pedal
+    if (this.crouching && sp < T.maxPush && inp.brake === 0) sp = Math.min(T.maxPush, sp + T.crouchAcc * dt);
+    else if (!this.pushing && !this.crouching && inp.brake === 0 && inp.autoPush !== false && sp < T.autoPushSpeed
+      && this.normal.y > 0.92 && this.groundTime > 0.35) {
+      sp = Math.min(T.autoPushSpeed, sp + T.autoPushAcc * (sp < 2 ? 1.5 : 1) * dt); this.pushing = 0.8;
     }
     if (inp.brake > 0) sp = Math.max(0, sp - T.brakeAcc * inp.brake * dt);
     if (this.crouching && this.normal.y < 0.85 && this.heading.y < -0.2) sp += T.pump * dt; // pumping transitions
@@ -227,6 +257,25 @@ export class Skater {
     this.launchNormal = launchNormal.clone();
     this.popped = popped;
     this.normal.set(0, 1, 0);
+    // fire a buffered trick on takeoff (pressed during the crouch or on the same frame as the release)
+    const q = this.queued; this.queued = null;
+    if (q) {
+      const inp = this._inp;
+      const dir = inp && inp.dir8 !== 'C' ? inp.dir8 : q.dir;
+      if (q.kind === 'flip' || (inp && inp.grab)) this.startTrick(q.kind, dir);
+    }
+  }
+
+  startTrick(kind, dir8) {
+    const T = this.T;
+    if (kind === 'flip') {
+      const [name, base, dur] = FLIPS[dir8] || FLIPS.C;
+      this.trick = { kind: 'flip', name, base, t: 0, dur, dir: dir8 };
+    } else {
+      const [name, base] = GRABS[dir8] || GRABS.C;
+      this.trick = { kind: 'grab', name, base, t: 0, dur: T.grabMin, dir: dir8, held: true };
+    }
+    this.emit('trickStart', this.trick.name);
   }
 
   // ---------- AIR ----------
@@ -258,15 +307,8 @@ export class Skater {
     }
     // tricks
     if (!this.trick) {
-      if (inp.flipPressed) {
-        const [name, base, dur] = FLIPS[inp.dir8] || FLIPS.C;
-        this.trick = { kind: 'flip', name, base, t: 0, dur, dir: inp.dir8 };
-        this.emit('trickStart', name);
-      } else if (inp.grabPressed) {
-        const [name, base] = GRABS[inp.dir8] || GRABS.C;
-        this.trick = { kind: 'grab', name, base, t: 0, dur: T.grabMin, dir: inp.dir8, held: true };
-        this.emit('trickStart', name);
-      }
+      if (inp.flipPressed) this.startTrick('flip', inp.dir8);
+      else if (inp.grabPressed) this.startTrick('grab', inp.dir8);
     }
     if (this.trick) {
       const tr = this.trick; tr.t += dt;
@@ -280,11 +322,26 @@ export class Skater {
     if (inp.olliePressed) { this.crouching = false; this.bufferedOllie = true; } // buffered: crouch on touchdown
     if (!inp.ollie) this.bufferedOllie = false;
 
-    // grind snap
+    // grind magnet: while grind intent is armed, the nearest rail in range steers you onto it
     this.railCooldown -= dt;
-    if (this.vel.y < 0.5 || inp.grind) {
-      const tol = inp.grind ? T.grindSnapAssist : T.grindSnapAuto;
-      const r = this.findRail(tol, dt, inp.grind);
+    const armed = this.grindIntent > 0;
+    if (armed && this.airTime > 0.04) {
+      const r = this.findRail(T.grindMagnetRadius, dt, true, { dyMin: -T.grindSnapBelow, dyMax: 2.2, anyVy: true });
+      if (r) {
+        const ox = r.point.x - this.pos.x, oz = r.point.z - this.pos.z, d = Math.hypot(ox, oz);
+        if (d > 0.03) {
+          const nx = ox / d, nz = oz / d;
+          const closing = this.vel.x * nx + this.vel.z * nz;
+          const want = Math.min(T.grindMagnetSpeed, d * 5);
+          const dv = THREE.MathUtils.clamp(want - closing, -T.grindMagnetAcc * dt, T.grindMagnetAcc * dt);
+          this.vel.x += nx * dv; this.vel.z += nz * dv;
+        }
+      }
+    }
+    // grind snap
+    if (this.vel.y < 0.5 || armed) {
+      const tol = armed ? T.grindSnapAssist : T.grindSnapAuto;
+      const r = this.findRail(tol, dt, armed, armed ? { dyMin: -T.grindSnapBelow } : null);
       if (r) { this.startGrind(r, inp); return; }
     }
     // move
@@ -374,6 +431,7 @@ export class Skater {
     this.speed = sp;
     this.state = 'ride';
     this.groundTime = 0;
+    this.grindIntent = 0; this.queued = null;
     this.landSquash = Math.min(1, 0.4 + Math.max(0, -this.vel.dot(n)) / 12);
     this.vel.copy(this.heading).multiplyScalar(sp);
     if (tiny) return;
@@ -390,11 +448,13 @@ export class Skater {
   }
 
   // ---------- GRIND ----------
-  findRail(tol, dt, assist) {
+  findRail(tol, dt, assist, opts) {
+    const dyMin = opts && opts.dyMin !== undefined ? opts.dyMin : -0.3;
+    const dyMax = opts && opts.dyMax !== undefined ? opts.dyMax : null;
     let best = null, bestD = tol;
     for (const r of this.level.rails) {
       if (this.railCooldown > 0 && (r === this.lastRail || this.railCooldown > 0.25)) continue; // 0.2s global, 0.45s same rail
-      if (assist && this.vel.y > 3.5) continue;
+      if (assist && this.vel.y > 3.5 && !(opts && opts.anyVy)) continue;
       if (r.kind === 'coping' && !assist) continue;
       _v.copy(this.pos).sub(r.a);
       let t = _v.dot(r.dir) / r.len;
@@ -405,7 +465,7 @@ export class Skater {
       _v2.copy(r.a).addScaledVector(r.dir, t * r.len);
       const dy = this.pos.y - _v2.y;
       const fall = -this.vel.y * dt;
-      if (dy < -0.3 || dy > 0.5 + fall) continue;
+      if (dy < dyMin || dy > (dyMax !== null ? dyMax : 0.5 + fall)) continue;
       const d = Math.hypot(this.pos.x - _v2.x, this.pos.z - _v2.z);
       if (d < bestD) { bestD = d; best = { rail: r, t, point: _v2.clone() }; }
     }
@@ -421,7 +481,9 @@ export class Skater {
     let dir = along >= 0 ? 1 : -1;
     if (Math.abs(along) < 0.3) dir = this.facing.dot(r.dir) >= 0 ? 1 : -1;
     const speed = Math.max(this.T.grindMinSpeed, hv.length());
-    const [gname, base] = GRINDS[inp.dir8] || GRINDS.C;
+    const gdir = inp.dir8 !== 'C' ? inp.dir8 : this.grindIntentDir; // a tapped grind remembers the direction it was tapped with
+    const [gname, base] = GRINDS[gdir] || GRINDS.C;
+    this.grindIntent = 0; this.grindIntentDir = 'C'; this.queued = null;
     const slide = gname.includes('slide');
     const prefix = this.bankSpin(true);
     this.grind = { rail: r, t: found.t, dir, speed, name: gname, slide, time: 0 };
@@ -481,7 +543,7 @@ export class Skater {
   bail(reason) {
     if (this.state === 'grind') this.grind = null;
     this.state = 'bail'; this.bailT = 0; this.bailReason = reason;
-    this.trick = null; this.crouching = false;
+    this.trick = null; this.crouching = false; this.queued = null; this.grindIntent = 0;
     if (reason === 'wall') this.vel.multiplyScalar(-0.15).y += 2.5;
     else { this.vel.multiplyScalar(0.6); this.vel.y = Math.max(this.vel.y, 1.5); }
     this.lostCombo = this.combo.text; this.combo.reset();
