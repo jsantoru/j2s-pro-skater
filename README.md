@@ -64,3 +64,21 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - Turn rate 3.1 rad/s at a standstill down to 1.75 rad/s at speed; crouching tightens turns by 30%.
 - Spin 560°/s at full stick, so a full ollie is a comfortable 360 and a tap is a 180.
 - Uphill gravity is scaled by 0.55 so a pushed run reaches every lip; downhill is full gravity.
+
+## Graphics
+
+The game uses modern Three.js rendering with physically-based materials, image-based lighting, soft shadows,
+and ACES filmic tone mapping for a polished look. The procedural low-poly art style (0.84 m tall character,
+simple geometric level) keeps the focus on movement and feel while supporting clear visual readout at distance.
+
+### Grind
+
+![Grind screenshot](screenshots/gfx_grind.png)
+
+A 50-50 grind on a chrome rail showing orange sparks, soft PCF shadows, PBR material reflections, and glass HUD panels.
+
+### Riding
+
+![Ride screenshot](screenshots/gfx_ride.png)
+
+Riding toward a quarter pipe with ACES tone mapping, image-based lighting, mipmapped textures, and vignette overlay.
