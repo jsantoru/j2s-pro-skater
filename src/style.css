@@ -2,8 +2,10 @@
 html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; font-family: "Arial Narrow", Impact, "Franklin Gothic Medium", Arial, sans-serif; color: #fff; }
 #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 #hud { position: fixed; inset: 0; pointer-events: none; user-select: none; }
+#hud::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.42) 100%); }
 #hud > div { position: absolute; }
 .label { font-size: 14px; letter-spacing: 3px; color: #ffcf3a; text-shadow: 2px 2px 0 #000; }
+#top-left, #top-center, #top-right { background: rgba(8,10,16,0.35); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 8px 16px; }
 #top-left { top: 18px; left: 22px; }
 #score { font-size: 44px; font-weight: 900; font-style: italic; letter-spacing: 1px; text-shadow: 3px 3px 0 #000, -1px -1px 0 #000; font-family: Impact, "Arial Black", sans-serif; }
 #top-center { top: 14px; left: 50%; transform: translateX(-50%); text-align: center; }
@@ -13,7 +15,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #pad-status { color: #9ad4ff; font-weight: bold; }
 #pad-status.connected { color: #7dff8a; }
 .hint { color: #bbb; font-size: 12px; margin-top: 4px; }
-#bottom { bottom: 60px; left: 0; right: 0; text-align: center; }
+#bottom { bottom: 60px; left: 0; right: 0; text-align: center; z-index: 1; }
 #combo-line { font-size: 34px; font-family: Impact, "Arial Black", sans-serif; text-shadow: 3px 3px 0 #000; min-height: 40px; }
 #combo-points { color: #fff; }
 #combo-mult { color: #ffcf3a; margin-left: 14px; }

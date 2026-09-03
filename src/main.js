@@ -6,6 +6,8 @@ import { FollowCamera } from './camera.js';
 import { Input } from './input.js';
 import { HUD } from './hud.js';
 import { Audio } from './audio.js';
+import { Effects } from './fx.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const RUN_TIME = 120;
 const FIXED_DT = 1 / 120;
@@ -15,24 +17,32 @@ const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPrefere
 const LOWFX = new URLSearchParams(location.search).has('lowfx'); // ?lowfx for weak GPUs: no shadows, 1x pixels
 renderer.setPixelRatio(LOWFX ? 1 : Math.min(window.devicePixelRatio, 1.5));
 renderer.shadowMap.enabled = !LOWFX;
-renderer.shadowMap.type = THREE.PCFShadowMap;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.95;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x35405a);
 scene.fog = new THREE.Fog(0x35405a, 50, 120);
+{ // image-based lighting for the PBR materials (chrome rails, coping, trucks)
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.55;
+  pmrem.dispose();
+}
 
 const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
-const hemi = new THREE.HemisphereLight(0xdcecff, 0x5a5044, 1.25);
+const hemi = new THREE.HemisphereLight(0xdcecff, 0x5a5044, 0.55);
 scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xfff1d6, 1.7);
+const sun = new THREE.DirectionalLight(0xfff1d6, 2.2);
 sun.position.set(18, 30, 10);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
 sun.shadow.camera.left = -40; sun.shadow.camera.right = 40;
 sun.shadow.camera.top = 30; sun.shadow.camera.bottom = -30;
 sun.shadow.camera.near = 5; sun.shadow.camera.far = 80;
-sun.shadow.bias = -0.0015; sun.shadow.normalBias = 0.02;
+sun.shadow.bias = -0.0008; sun.shadow.normalBias = 0.03; sun.shadow.radius = 4;
 scene.add(sun);
 const fill = new THREE.DirectionalLight(0x8fb7ff, 0.35); fill.position.set(-20, 15, -15); scene.add(fill);
 
@@ -45,6 +55,7 @@ const followCam = new FollowCamera(camera, level);
 const input = new Input();
 const hud = new HUD();
 const audio = new Audio();
+const fx = new Effects(scene);
 
 // ---- game state ----
 let mode = 'title'; // title | playing | over
@@ -57,11 +68,13 @@ skater.events.ollie = (charge) => { audio.pop(charge); input.rumble(0.15 + charg
 skater.events.trickStart = (name) => { const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier, false); };
 skater.events.land = (points, text, mult) => {
   audio.land(skater.landSquash);
+  fx.burst(skater.pos, 10 + Math.round(skater.landSquash * 16), [0.75, 0.72, 0.68], 1.6 + skater.landSquash * 1.5, 0.5);
   input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
   if (points > 0) { hud.landed(points); audio.score(); }
 };
 skater.events.bail = (reason) => {
   audio.bail();
+  fx.burst(skater.pos, 24, [0.8, 0.76, 0.7], 2.5, 0.6);
   input.rumble(1, 1, 320);
   const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST' }[reason] || 'BAILED';
   hud.combo(why + (skater.lostCombo ? '  (' + skater.lostCombo + ')' : ''), 0, 0, true);
@@ -138,6 +151,7 @@ function frame(now) {
   character.update(skater, dt, now / 1000);
   followCam.update(dt, skater, inp.camX);
   audio.update(skater);
+  fx.update(dt, skater);
   hud.update(dt, skater.score, timeLeft, skater.speed / 14);
   if (skater.combo.tricks.length && skater.state === 'grind') refreshCombo();
   renderer.render(scene, camera);

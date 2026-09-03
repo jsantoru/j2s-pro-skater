@@ -13,7 +13,7 @@ function canvasTexture(draw, size = 256, repeat = 1) {
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(repeat, repeat);
-  t.magFilter = THREE.NearestFilter;
+  t.minFilter = THREE.LinearMipmapLinearFilter; t.magFilter = THREE.LinearFilter; t.anisotropy = 8;
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
@@ -34,45 +34,51 @@ export function makeMaterials() {
     ctx.strokeRect(1, 1, s - 2, s - 2);
   }, 256, 1);
   const floor = canvasTexture((ctx, s) => {
-    noise(ctx, s, '#7c7f84', 80, 2600);
-    ctx.strokeStyle = 'rgba(30,30,35,0.5)'; ctx.lineWidth = 4;
-    ctx.strokeRect(0, 0, s, s);
-    ctx.fillStyle = 'rgba(255,205,60,0.85)'; ctx.fillRect(0, s / 2 - 5, s, 10);
-  }, 256, 1);
-  const wood = canvasTexture((ctx, s) => {
-    ctx.fillStyle = '#b48a55'; ctx.fillRect(0, 0, s, s);
-    for (let i = 0; i < 40; i++) {
-      ctx.fillStyle = `rgba(90,55,25,${0.15 + Math.random() * 0.2})`;
-      ctx.fillRect(0, Math.random() * s, s, 1 + Math.random() * 3);
+    noise(ctx, s, '#6f7278', 70, 4000);
+    // large soft stains + fine speckle, then slab seams
+    for (let i = 0; i < 14; i++) {
+      const cx = Math.random() * s, cy = Math.random() * s;
+      const g = ctx.createRadialGradient(cx, cy, 2, cx, cy, 40 + Math.random() * 90);
+      g.addColorStop(0, `rgba(40,40,48,${0.08 + Math.random() * 0.14})`); g.addColorStop(1, 'rgba(40,40,48,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, s, s);
     }
-    ctx.fillStyle = 'rgba(60,35,15,0.6)';
+    ctx.strokeStyle = 'rgba(25,25,30,0.55)'; ctx.lineWidth = 3; ctx.strokeRect(1, 1, s - 2, s - 2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1; ctx.strokeRect(5, 5, s - 10, s - 10);
+  }, 512, 1);
+  const wood = canvasTexture((ctx, s) => {
+    ctx.fillStyle = '#b8905c'; ctx.fillRect(0, 0, s, s);
+    for (let i = 0; i < 90; i++) {
+      ctx.fillStyle = `rgba(95,60,28,${0.08 + Math.random() * 0.18})`;
+      ctx.fillRect(0, Math.random() * s, s, 1 + Math.random() * 2);
+    }
+    for (let i = 0; i < 400; i++) { ctx.fillStyle = `rgba(60,35,15,${Math.random() * 0.12})`; ctx.fillRect(Math.random() * s, Math.random() * s, 1 + Math.random() * 12, 1); }
+    ctx.fillStyle = 'rgba(50,30,12,0.7)';
     for (let i = 0; i < 4; i++) ctx.fillRect(0, i * (s / 4), s, 2);
+    ctx.fillStyle = 'rgba(30,30,30,0.5)'; for (let i = 0; i < 24; i++) { ctx.beginPath(); ctx.arc((i % 6) * (s / 6) + 20, Math.floor(i / 6) * (s / 4) + 8, 2, 0, 7); ctx.fill(); } // screws
   }, 256, 1);
   const wall = canvasTexture((ctx, s) => {
-    noise(ctx, s, '#5f6b78', 70, 400);
-    ctx.fillStyle = '#3c4652';
-    for (let y = 0; y < s; y += 32) { ctx.fillRect(0, y, s, 3); }
-    for (let x = 0; x < s; x += 64) { ctx.fillRect(x, 0, 3, s); }
-    ctx.fillStyle = 'rgba(255,60,40,0.9)'; ctx.fillRect(0, s * 0.72, s, s * 0.06);
+    noise(ctx, s, '#6b7480', 60, 900);
+    ctx.fillStyle = 'rgba(35,40,48,0.9)';
+    for (let r = 0; r < 8; r++) { ctx.fillRect(0, r * 32, s, 3); const off = (r % 2) * 32; for (let x = off; x < s; x += 64) ctx.fillRect(x, r * 32, 3, 32); }
+    ctx.fillStyle = 'rgba(255,255,255,0.06)'; for (let r = 0; r < 8; r++) ctx.fillRect(0, r * 32 + 3, s, 2);
+    ctx.fillStyle = 'rgba(230,60,45,0.95)'; ctx.fillRect(0, s * 0.72, s, s * 0.06);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(0, s * 0.72, s, 2);
   }, 256, 1);
   const metal = canvasTexture((ctx, s) => { noise(ctx, s, '#c9ccd2', 60, 300); }, 128, 1);
   const roof = canvasTexture((ctx, s) => {
     ctx.fillStyle = '#2a2e36'; ctx.fillRect(0, 0, s, s);
     ctx.fillStyle = '#3a3f4a'; for (let x = 0; x < s; x += 16) ctx.fillRect(x, 0, 6, s);
   }, 128, 1);
-  const M = (color, map, extra = {}) => new THREE.MeshLambertMaterial({ color, map: map || null, ...extra });
+  const M = (color, map, roughness = 0.9, metalness = 0, extra = {}) => new THREE.MeshStandardMaterial({ color, map: map || null, roughness, metalness, ...extra });
   return {
-    floor: M(0xffffff, floor), concrete: M(0xffffff, concrete), wood: M(0xffffff, wood),
-    wall: M(0xffffff, wall), metal: M(0xffffff, metal), roof: M(0xffffff, roof),
-    coping: new THREE.MeshLambertMaterial({ color: 0xe8e2d2 }),
-    rail: new THREE.MeshLambertMaterial({ color: 0xd8dce5 }),
-    railDark: new THREE.MeshLambertMaterial({ color: 0x3a3f4a }),
-    yellow: new THREE.MeshLambertMaterial({ color: 0xffcf3a }),
-    red: new THREE.MeshLambertMaterial({ color: 0xc0392b }),
-    blue: new THREE.MeshLambertMaterial({ color: 0x2f6fb5 }),
-    green: new THREE.MeshLambertMaterial({ color: 0x3c9d5a }),
-    dark: new THREE.MeshLambertMaterial({ color: 0x23262d }),
-    sky: new THREE.MeshBasicMaterial({ color: 0xbfe3ff }),
+    floor: M(0xffffff, floor, 0.85), concrete: M(0xffffff, concrete, 0.92), wood: M(0xffffff, wood, 0.7),
+    wall: M(0xffffff, wall, 0.95), metal: M(0xffffff, metal, 0.45, 0.8), roof: M(0xffffff, roof, 0.9),
+    coping: M(0xe8e6df, null, 0.3, 0.9),
+    rail: M(0xdfe3ea, null, 0.28, 0.95),
+    railDark: M(0x3a3f4a, null, 0.5, 0.7),
+    yellow: M(0xffcf3a, null, 0.6), red: M(0xc0392b, null, 0.6), blue: M(0x2f6fb5, null, 0.6), green: M(0x3c9d5a, null, 0.6),
+    dark: M(0x23262d, null, 0.6, 0.4),
+    sky: new THREE.MeshBasicMaterial({ color: 0xdff1ff }),
   };
 }
 
@@ -197,7 +203,7 @@ export class Level {
     const M = this.mats;
     const W = 72, D = 46, H = 9;
     // floor
-    if (M.floor.map) M.floor.map.repeat.set(W / 4, D / 4);
+    if (M.floor.map) M.floor.map.repeat.set(W / 6, D / 6);
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), M.floor);
     floor.rotation.x = -Math.PI / 2; this.add(floor, true, false);
     // walls (single-sided, facing inward) + roof

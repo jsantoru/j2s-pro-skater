@@ -52,8 +52,8 @@ export class Character {
   }
 
   buildBoard() {
-    const M = (c) => new THREE.MeshLambertMaterial({ color: c });
-    const grip = M(0x1b1b1f), graphic = M(0xd9483b), edge = M(0xc8a878), truck = M(0xb8bcc4), wheel = M(0xf3efe0);
+    const M = (c, r = 0.7, m = 0) => new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m });
+    const grip = M(0x1b1b1f, 1), graphic = M(0xd9483b, 0.5), edge = M(0xc8a878, 0.6), truck = M(0xc4c8d0, 0.35, 0.9), wheel = M(0xf3efe0, 0.5);
     this.board = new THREE.Group(); this.root.add(this.board);
     const deck = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.022, 0.62), [edge, edge, grip, graphic, edge, edge]);
     deck.position.y = BOARD_TOP - 0.011; deck.castShadow = true; this.board.add(deck);
@@ -69,21 +69,24 @@ export class Character {
   }
 
   buildBody() {
-    const M = (c) => new THREE.MeshLambertMaterial({ color: c });
-    const skin = M(0xe0b08a), shirt = M(0x2f6fb5), pants = M(0x3b3a45), shoe = M(0xf0efe8), cap = M(0xc0392b), hair = M(0x3a2718);
+    const M = (c, r = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: r });
+    const skin = M(0xe0b08a), shirt = M(0x2f6fb5), pants = M(0x3b3a45), shoe = M(0xf0efe8, 0.6), cap = M(0xc0392b), hair = M(0x3a2718), eye = M(0x1a1a1a, 0.3), white = M(0xf4f4f4);
     this.hips = new THREE.Group(); this.body.add(this.hips);
     this.hips.add(box(0.3, 0.14, 0.2, pants, 0, 0.03, 0));
     this.torso = new THREE.Group(); this.torso.position.y = 0.1; this.hips.add(this.torso);
     this.torso.add(box(0.36, 0.44, 0.2, shirt, 0, 0.24, 0));
     this.torso.add(box(0.38, 0.06, 0.22, shirt, 0, 0.44, 0));
+    this.torso.add(box(0.16, 0.12, 0.012, white, 0, 0.27, 0.105)); // shirt graphic
+    this.torso.add(box(0.06, 0.04, 0.014, cap, 0, 0.27, 0.106));
     this.head = new THREE.Group(); this.head.position.y = 0.5; this.torso.add(this.head);
     this.head.add(box(0.2, 0.22, 0.22, skin, 0, 0.13, 0));
     this.head.add(box(0.21, 0.06, 0.23, hair, 0, 0.25, 0));
     this.head.add(box(0.22, 0.05, 0.24, cap, 0, 0.27, 0.0));
     this.head.add(box(0.2, 0.02, 0.14, cap, 0, 0.26, 0.17));
+    this.head.add(box(0.03, 0.03, 0.012, eye, -0.05, 0.14, 0.112)); this.head.add(box(0.03, 0.03, 0.012, eye, 0.05, 0.14, 0.112));
     const arm = (side) => {
       const sh = new THREE.Group(); sh.position.set(side * 0.22, 0.42, 0); this.torso.add(sh);
-      sh.add(box(0.09, 0.3, 0.09, shirt, 0, -0.14, 0)); sh.add(box(0.1, 0.06, 0.1, shirt, 0, 0, 0));
+      sh.add(box(0.09, 0.3, 0.09, white, 0, -0.14, 0)); sh.add(box(0.1, 0.06, 0.1, shirt, 0, 0, 0));
       const el = new THREE.Group(); el.position.y = -0.29; sh.add(el);
       el.add(box(0.08, 0.28, 0.08, skin, 0, -0.14, 0)); el.add(box(0.09, 0.08, 0.09, skin, 0, -0.3, 0));
       return { sh, el };
