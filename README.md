@@ -71,6 +71,18 @@ The game uses modern Three.js rendering with physically-based materials, image-b
 and ACES filmic tone mapping for a polished look. The procedural low-poly art style (0.84 m tall character,
 simple geometric level) keeps the focus on movement and feel while supporting clear visual readout at distance.
 
+### Title Screen
+
+![Title screen](screenshots/title.png)
+
+The home page—press START or ENTER to begin a 2-minute free-skate session.
+
+### Kickflip
+
+![Kickflip](screenshots/closeup_flip.png)
+
+Executing a kickflip mid-air with board rotation, character pose blending, and procedural animation.
+
 ### Grind
 
 ![Grind screenshot](screenshots/gfx_grind.png)
