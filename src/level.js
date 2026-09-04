@@ -271,7 +271,9 @@ export class Level {
     this.box(12, PH, 12, 28, PH / 2, 16, M.concrete);                   // platform x:22..34, z:10..22
     this.bank(5, PH, 12, 17, 0, 16, 0, M.concrete);                     // bank approaching toward +x
     const steps = 5, rise = PH / steps, tread = 0.5;
-    for (let i = 0; i < steps; i++) {
+    // The floor is the final landing; a fifth box would have zero height and
+    // put its faces directly on the floor, causing visible z-fighting.
+    for (let i = 0; i < steps - 1; i++) {
       const h = PH - rise * (i + 1);
       this.box(6, h, tread, 26.5, h / 2, 10 - tread / 2 - i * tread, M.concrete);
     }
