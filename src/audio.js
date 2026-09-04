@@ -30,9 +30,15 @@ export class Audio {
     this.reverbGain = c.createGain(); this.reverbGain.gain.value = 0.11;
     this.reverb.connect(this.reverbGain).connect(this.master);
 
-    this.noise = { white: this.makeNoise(3, 0), pink: this.makeNoise(3, 0.72), brown: this.makeNoise(3, 0.965) };
-    [this.rollBodyFilter, this.rollBodyGain] = this.loopNoise('brown', 'lowpass', 620, 0.6);
-    [this.rollGritFilter, this.rollGritGain] = this.loopNoise('pink', 'bandpass', 1700, 0.8);
+    this.noise = {
+      white: this.makeNoise(3, 0), pink: this.makeNoise(3, 0.72), brown: this.makeNoise(3, 0.965),
+      road: this.makeRoadNoise(3),
+    };
+    // Road noise is deliberately mid-focused. Low-passed brown noise sounds like wind or surf;
+    // sparse micro-impacts read as hard urethane vibrating over concrete instead.
+    [this.rollDeckFilter, this.rollDeckGain] = this.loopNoise('road', 'bandpass', 340, 1.35);
+    [this.rollBodyFilter, this.rollBodyGain] = this.loopNoise('road', 'bandpass', 720, 0.7);
+    [this.rollGritFilter, this.rollGritGain] = this.loopNoise('road', 'bandpass', 2100, 0.9);
     // A separate, light bearing/wheel voice remains after ground contact drops away during an ollie.
     [this.wheelWhirFilter, this.wheelWhirGain] = this.loopNoise('pink', 'bandpass', 2500, 1.4);
     [this.grindFilter, this.grindGain] = this.loopNoise('pink', 'bandpass', 2700, 2.4);
@@ -49,6 +55,19 @@ export class Audio {
     for (let i = 0; i < data.length; i++) {
       last = last * memory + (Math.random() * 2 - 1) * (1 - memory);
       data[i] = memory ? last * (memory > 0.9 ? 5.5 : 2.2) : last;
+    }
+    return buffer;
+  }
+
+  makeRoadNoise(seconds) {
+    const c = this.ctx, buffer = c.createBuffer(1, c.sampleRate * seconds, c.sampleRate), data = buffer.getChannelData(0);
+    let smooth = 0, pebble = 0;
+    for (let i = 0; i < data.length; i++) {
+      const white = Math.random() * 2 - 1;
+      smooth += (white - smooth) * 0.075;
+      if (Math.random() < 0.0007) pebble += (Math.random() * 2 - 1) * 0.75;
+      pebble *= 0.91;
+      data[i] = (white - smooth) * 0.28 + pebble;
     }
     return buffer;
   }
@@ -172,10 +191,12 @@ export class Audio {
     const rolling = onGround ? Math.min(1, speed / 11) : 0, steer = Math.min(1, Math.abs(sk.steer || 0));
     // Pavement contact trails off rather than being gated. The quieter high wheel whir then carries
     // across the air until the landing transient and rolling bed take over again.
-    this.rollBodyGain.gain.setTargetAtTime(rolling * (0.11 + steer * 0.025), t, onGround ? 0.045 : 0.13);
-    this.rollGritGain.gain.setTargetAtTime(rolling * rolling * (0.055 + steer * 0.045), t, onGround ? 0.04 : 0.1);
-    this.rollBodyFilter.frequency.setTargetAtTime(260 + speed * 39, t, 0.06);
-    this.rollGritFilter.frequency.setTargetAtTime(1150 + speed * 105 + steer * 420, t, 0.055);
+    this.rollDeckGain.gain.setTargetAtTime(rolling * (0.032 + steer * 0.006), t, onGround ? 0.055 : 0.14);
+    this.rollBodyGain.gain.setTargetAtTime(rolling * (0.075 + steer * 0.012), t, onGround ? 0.045 : 0.13);
+    this.rollGritGain.gain.setTargetAtTime(rolling * rolling * (0.04 + steer * 0.026), t, onGround ? 0.04 : 0.1);
+    this.rollDeckFilter.frequency.setTargetAtTime(285 + speed * 13, t, 0.075);
+    this.rollBodyFilter.frequency.setTargetAtTime(480 + speed * 34, t, 0.06);
+    this.rollGritFilter.frequency.setTargetAtTime(1400 + speed * 92 + steer * 280, t, 0.055);
     const freewheel = inAir ? Math.min(1, speed / 11) * Math.exp(-(sk.airTime || 0) * 0.45) : 0;
     this.wheelWhirGain.gain.setTargetAtTime(freewheel * freewheel * 0.028, t, inAir ? 0.08 : 0.035);
     this.wheelWhirFilter.frequency.setTargetAtTime(1750 + speed * 115, t, 0.07);
