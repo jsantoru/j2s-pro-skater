@@ -2,15 +2,18 @@
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => n.toLocaleString('en-US');
 
+const HOLD = 2.2; // seconds the trick names stay up after a land or a bail
+const FADE = 0.35; // last stretch of the hold, where the readout dims out
+
 export class HUD {
   constructor() {
     this.el = {
       score: $('score'), timer: $('timer'), pad: $('pad-status'), comboPts: $('combo-points'), comboMult: $('combo-mult'),
       trick: $('trick-text'), landed: $('landed-text'), toast: $('toast'), controls: $('controls-panel'),
       overlay: $('overlay'), overlayMsg: $('overlay-msg'), finalScore: $('final-score'), speed: $('speed-fill'),
-      balance: $('balance'), balanceNeedle: $('balance-needle'),
+      bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'),
     };
-    this.shownScore = 0; this.landedTimer = 0; this.toastTimer = 0; this.trickTimer = 0;
+    this.shownScore = 0; this.holdTimer = 0; this.toastTimer = 0;
     this.balanceShown = false;
   }
   setPad(connected, id) {
@@ -25,12 +28,35 @@ export class HUD {
     if (msg) this.el.overlayMsg.textContent = msg;
     this.el.finalScore.textContent = score !== undefined ? 'FINAL SCORE  ' + fmt(score) : '';
   }
-  combo(text, points, mult, bail) {
-    this.el.trick.textContent = text;
-    this.el.trick.classList.toggle('bail', !!bail);
+  // live readout while the combo is still running
+  combo(text, points, mult) {
+    this.holdTimer = 0;
+    this.el.bottom.classList.remove('fading', 'lost');
+    this.el.trick.classList.remove('bail');
+    this.el.landed.classList.remove('show', 'bail');
+    this.setLine(text, points, mult);
+  }
+  // combo banked: keep the trick names and the maths up next to the payout
+  landed(total, text, mult) {
+    if (total <= 0) { this.combo('', 0, 0); return; }
+    this.combo(text, Math.round(total / Math.max(1, mult)), mult);
+    this.el.landed.textContent = '+' + fmt(total);
+    this.el.landed.classList.add('show');
+    this.holdTimer = HOLD;
+  }
+  // combo lost: same layout, red, so you can see what you threw away
+  bailed(msg, text, points, mult) {
+    this.combo(text, points, mult);
+    this.el.trick.classList.add('bail');
+    this.el.bottom.classList.add('lost'); // the points line is what you just threw away, not a payout
+    this.el.landed.textContent = msg;
+    this.el.landed.classList.add('show', 'bail');
+    this.holdTimer = HOLD;
+  }
+  setLine(text, points, mult) {
+    this.el.trick.textContent = text || '';
     if (mult > 0) { this.el.comboPts.textContent = fmt(points); this.el.comboMult.textContent = 'x' + mult; }
     else { this.el.comboPts.textContent = ''; this.el.comboMult.textContent = ''; }
-    this.trickTimer = bail ? 1.6 : 0;
   }
   // Grind balance meter: only on screen while it matters, so it never becomes wallpaper.
   balance(show, x) {
@@ -38,10 +64,6 @@ export class HUD {
     if (!show) return;
     this.el.balanceNeedle.style.left = (50 + Math.max(-1, Math.min(1, x)) * 50) + '%';
     this.el.balance.classList.toggle('danger', Math.abs(x) > 0.62);
-  }
-  landed(points) {
-    this.el.landed.textContent = '+' + fmt(points); this.el.landed.classList.add('show'); this.landedTimer = 1.4;
-    this.el.trick.textContent = ''; this.el.comboPts.textContent = ''; this.el.comboMult.textContent = '';
   }
   update(dt, score, timeLeft, speedFrac) {
     this.shownScore += (score - this.shownScore) * Math.min(1, dt * 6);
@@ -51,8 +73,17 @@ export class HUD {
     this.el.timer.textContent = m + ':' + (s < 10 ? '0' : '') + s;
     this.el.timer.classList.toggle('low', t < 15);
     this.el.speed.style.width = Math.round(Math.min(1, speedFrac) * 100) + '%';
-    if (this.landedTimer > 0) { this.landedTimer -= dt; if (this.landedTimer <= 0) this.el.landed.classList.remove('show'); }
     if (this.toastTimer > 0) { this.toastTimer -= dt; if (this.toastTimer <= 0) this.el.toast.classList.remove('show'); }
-    if (this.trickTimer > 0) { this.trickTimer -= dt; if (this.trickTimer <= 0) { this.el.trick.textContent = ''; this.el.trick.classList.remove('bail'); } }
+    if (this.holdTimer > 0) {
+      this.holdTimer -= dt;
+      if (this.holdTimer <= FADE) this.el.bottom.classList.add('fading');
+      if (this.holdTimer <= 0) {
+        this.el.landed.classList.remove('show', 'bail');
+        this.el.landed.textContent = '';
+        this.el.trick.classList.remove('bail');
+        this.el.bottom.classList.remove('fading', 'lost');
+        this.setLine('', 0, 0);
+      }
+    }
   }
 }

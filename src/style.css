@@ -15,7 +15,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #pad-status { color: #9ad4ff; font-weight: bold; }
 #pad-status.connected { color: #7dff8a; }
 .hint { color: #bbb; font-size: 12px; margin-top: 4px; }
-#bottom { bottom: 60px; left: 0; right: 0; text-align: center; z-index: 1; }
+#bottom { bottom: 60px; left: 0; right: 0; text-align: center; z-index: 1; transition: opacity 0.35s; }
 #combo-line { font-size: 34px; font-family: Impact, "Arial Black", sans-serif; text-shadow: 3px 3px 0 #000; min-height: 40px; }
 #combo-points { color: #fff; }
 #combo-mult { color: #ffcf3a; margin-left: 14px; }
@@ -23,6 +23,9 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #trick-text.bail { color: #ff5a3a; }
 #landed-text { font-size: 30px; font-family: Impact, "Arial Black", sans-serif; color: #7dff8a; text-shadow: 3px 3px 0 #000; min-height: 36px; opacity: 0; transition: opacity 0.25s; }
 #landed-text.show { opacity: 1; }
+#landed-text.bail { color: #ff5a3a; }
+#bottom.fading { opacity: 0; }
+#bottom.lost #combo-points, #bottom.lost #combo-mult { color: #ff8f7a; }
 #balance { bottom: 188px; left: 50%; transform: translateX(-50%); width: 260px; text-align: center; }
 #balance-track { position: relative; height: 14px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.35);
   background: linear-gradient(90deg, #ff3a2a 0%, #ffcf3a 22%, #2c8f45 46%, #2c8f45 54%, #ffcf3a 78%, #ff3a2a 100%);
