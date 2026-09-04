@@ -92,7 +92,8 @@ export class Skater {
     this.state = 'ride';
     this.crouching = false; this.crouchTime = 0; this.crouch = 0;
     this.pushing = 0; this.braking = 0; this.steer = 0; this.lean = 0;
-    this.airTime = 0; this.spinDeg = 0; this.spinDir = 1; this.vertAir = false; this.autoTurn = 0; this.autoTurnDir = 1;
+    this.airTime = 0; this.spinDeg = 0; this.spinVelocity = 0; this.spinTickCount = 0;
+    this.spinDir = 1; this.vertAir = false; this.autoTurn = 0; this.autoTurnDir = 1;
     this.trick = null; this.airTrickIndex = -1;
     this.grind = null; this.bailT = 0; this.bailReason = '';
     this.balance.reset();
@@ -125,6 +126,7 @@ export class Skater {
   // ---------- main update (fixed dt) ----------
   update(dt, inp) {
     this.steer = shapeStick(inp.steer);
+    this.spinVelocity = 0;
     this._inp = inp;
     // input buffers (THPS forgiveness): a flip/grab pressed just before or exactly on the pop fires on takeoff,
     // and a tap of grind arms a window during which nearby rails pull you in.
@@ -346,7 +348,7 @@ export class Skater {
 
   startAir(launchNormal, popped) {
     this.state = 'air';
-    this.airTime = 0; this.spinDeg = 0;
+    this.airTime = 0; this.spinDeg = 0; this.spinVelocity = 0; this.spinTickCount = 0;
     this.trick = null;
     this.airTrickIndex = this.combo.tricks.length;
     this.vertAir = launchNormal.y < 0.45;
@@ -401,9 +403,15 @@ export class Skater {
       const step = Math.min(this.autoTurn, T.vertAutoTurn * dt);
       this.autoTurn -= step; yawDeg += step * this.autoTurnDir;
     }
+    this.spinVelocity = yawDeg / dt;
     if (yawDeg !== 0) {
       this.facing.applyAxisAngle(UP, -THREE.MathUtils.degToRad(yawDeg)).normalize();
       this.spinDeg += spinS * T.spinRate * dt;
+      const ticks = Math.floor(Math.abs(this.spinDeg) / 180);
+      while (this.spinTickCount < ticks) {
+        this.spinTickCount++;
+        this.emit('spinTick', this.spinTickCount * 180, Math.sign(this.spinDeg));
+      }
     }
     // subtle lateral air steer (trajectory), relative to travel direction
     if (spinS !== 0 && !this.vertAir) {

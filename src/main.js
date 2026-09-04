@@ -70,6 +70,7 @@ skater.events.land = (points, text, mult) => {
   audio.land(skater.landSquash);
   fx.burst(skater.pos, 10 + Math.round(skater.landSquash * 16), [0.75, 0.72, 0.68], 1.6 + skater.landSquash * 1.5, 0.5);
   input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
+  followCam.land(skater.landSquash);
   hud.landed(points, text, mult); // the trick names stay up next to the payout for a beat
   if (points > 0) audio.score();
 };
@@ -77,6 +78,7 @@ skater.events.bail = (reason) => {
   audio.bail();
   fx.burst(skater.pos, 24, [0.8, 0.76, 0.7], 2.5, 0.6);
   input.rumbleSustainStop(); input.rumble(1, 1, 320);
+  followCam.bail();
   const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST', balance: 'LOST BALANCE' }[reason] || 'BAILED';
   hud.bailed(why, skater.lostCombo || '', skater.lostPoints || 0, skater.lostMult || 0);
 };
@@ -85,6 +87,7 @@ skater.events.grindStart = () => { audio.burst(3000, 0.08, 0.3, 'highpass'); inp
 skater.events.grindEnd = () => { input.rumbleSustainStop(); input.rumble(0.25, 0.4, 70); refreshCombo(); };
 skater.events.manualStart = () => { audio.burst(520, 0.06, 0.18, 'lowpass'); input.rumble(0.3, 0.15, 70); input.rumbleSustainStop(); refreshCombo(); };
 skater.events.manualEnd = () => { input.rumbleSustainStop(); refreshCombo(); };
+skater.events.spinTick = () => { input.rumble(0.08, 0.58, 34); };
 
 function refreshCombo() {
   const c = skater.combo;
@@ -125,6 +128,7 @@ function frame(now) {
   requestAnimationFrame(frame);
   let dt = Math.min(0.1, (now - last) / 1000); last = now;
   const inp = input.poll(dt);
+  input.hapticsBegin();
   if (inp.anyPressed && !audio.enabled) audio.init();
   if (inp.selectPressed) hud.toggleControls();
   if (inp.startPressed) {
@@ -155,6 +159,12 @@ function frame(now) {
   followCam.update(dt, skater, inp.camX);
   audio.update(skater);
   fx.update(dt, skater);
+  // Crouching loads the low motor progressively so ollie charge can be felt before the pop.
+  // It mixes with grind texture when charging an ollie off a rail.
+  if (mode === 'playing' && skater.crouching && (skater.state === 'ride' || skater.state === 'grind')) {
+    const charge = Math.min(1, skater.crouchTime / skater.T.crouchFull);
+    input.rumbleSustain(0.008 + Math.pow(charge, 1.6) * 0.07, 0.003 + charge * 0.015);
+  }
   // grinding buzzes continuously: metal (rail / coping) rides the high-frequency motor, concrete ledges
   // are a coarser low rumble. Both scale with how fast you are travelling along the rail.
   if (mode === 'playing' && skater.state === 'grind' && skater.grind) {
@@ -179,6 +189,7 @@ function frame(now) {
   else hud.balance(onRail, skater.balance.x, false, 'BALANCE');
   hud.update(dt, skater.score, timeLeft, skater.speed / 14);
   if (skater.combo.tricks.length && (skater.state === 'grind' || skater.manual)) refreshCombo();
+  input.hapticsCommit(dt);
   renderer.render(scene, camera);
 }
 requestAnimationFrame(frame);

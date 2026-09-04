@@ -50,7 +50,8 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - `src/character.js` – procedural low-poly skater and board with pose blending (ride, push cycle,
   crouch, air, per-trick flip/grab poses, grind, bail tumble), board flip animation per trick, carve lean.
 - `src/camera.js` – third-person camera that follows travel direction (not body spin), pulls back with
-  speed, avoids walls, never rolls.
+  speed, anticipates spins, tightens on grinds, avoids walls, never rolls, and layers spring-driven
+  landing/bail impacts over the stable follow path.
 - `src/level.js` – warehouse park: half pipe, two quarter pipes, long bank, raised platform with bank
   approach, 5-stair with handrail and hubba, pyramid fun box with ledge, kicker→rail line, kicker gap,
   two ledges, flat rails, a down bar. Also builds the raycast colliders and grind segments.
@@ -61,6 +62,7 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - `sim/playtest.js` – headless Node harness that drives the controller through scripted lines
   (push/coast, brake, carving, ollie heights, flips, quarter pipe, half pipe pumping, kicker→rail,
   boardslide, stairs, gap, wall). `npm run sim` prints state timelines; use it when re-tuning.
+- `sim/feeltest.js` – deterministic camera, haptic-mixing and 180° spin-tick checks (`npm run sim:feel`).
 
 ## Tuning notes (the numbers that matter)
 
@@ -102,9 +104,13 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   rule is what stops the ordinary push-then-brake sweep, which crosses both thresholds, being read as a
   manual. On two wheels you can't push, pump or brake, which is both correct and what frees the whole
   vertical stick axis for balancing. Ollie out and the combo carries on; roll to a stop and it banks.
-- Haptics: landings scale rumble with impact, and grinds buzz continuously for as long as you are on the
-  rail. Metal (rails, coping) drives the high-frequency motor; concrete ledges use a coarser low rumble.
-  Both scale with grind speed.
+- Camera: grinds ease 0.55 m closer and 0.27 m lower with a 2.5° tighter FOV. Air spins lead by up to 8°
+  while the base camera continues following travel, so rotation remains readable. Landings drive a short
+  down/back spring punch; only hard landings shake, while bails use the full filtered shake envelope.
+- Haptics: a per-frame mixer lets feedback overlap without motors fighting. Ollie charge rises under the
+  low-frequency motor, every scored 180° gives a short high-frequency tick, landings scale with impact,
+  and grinds buzz continuously. Metal drives the high motor; concrete ledges use a coarser low rumble.
+  Grind/manual balance error is layered over the surface texture and grows sharply near failure.
 
 ## Graphics
 
