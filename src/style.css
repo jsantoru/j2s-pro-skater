@@ -26,12 +26,26 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #landed-text.bail { color: #ff5a3a; }
 #bottom.fading { opacity: 0; }
 #bottom.lost #combo-points, #bottom.lost #combo-mult { color: #ff8f7a; }
+#balance { bottom: 188px; left: 50%; transform: translateX(-50%); width: 260px; text-align: center; }
+#balance-track { position: relative; height: 14px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.35);
+  background: linear-gradient(90deg, #ff3a2a 0%, #ffcf3a 22%, #2c8f45 46%, #2c8f45 54%, #ffcf3a 78%, #ff3a2a 100%);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.55); }
+#balance-centre { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(255,255,255,0.5); }
+#balance-needle { position: absolute; top: -5px; left: 50%; width: 8px; height: 24px; margin-left: -4px; border-radius: 3px;
+  background: #fff; border: 1px solid rgba(0,0,0,0.65); box-shadow: 0 0 6px rgba(0,0,0,0.9); }
+#balance-label { font-size: 11px; letter-spacing: 4px; color: #cfd8e6; text-shadow: 1px 1px 0 #000; margin-top: 7px; }
+/* stays white in danger: a red needle would vanish into the red end of the track, exactly when it matters */
+#balance.danger #balance-needle { box-shadow: 0 0 14px 4px #ff3a2a, 0 0 6px rgba(0,0,0,0.9); animation: nudge 0.16s infinite alternate; }
+#balance.danger #balance-label { color: #ff5a3a; }
+@keyframes nudge { from { transform: translateY(0); } to { transform: translateY(-2px); } }
 #speed-bar { bottom: 24px; left: 50%; transform: translateX(-50%); width: 160px; height: 6px; background: rgba(0,0,0,0.5); border: 1px solid #555; }
 #speed-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #7dff8a, #ffcf3a, #ff5a3a); }
 #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); border: 2px solid #ffcf3a; padding: 8px 18px; font-size: 16px; letter-spacing: 1px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
 #toast.show { opacity: 1; }
 #controls-panel { position: fixed; inset: 40px; background: rgba(12,14,20,0.94); border: 3px solid #ffcf3a; padding: 20px 30px; overflow: auto; z-index: 10; }
-#controls-panel.hidden, #overlay.hidden { display: none; }
+/* !important because these elements set display at ID specificity (#overlay is display:flex), which a
+   bare .hidden loses to — that is how the balance meter ended up permanently on screen. */
+.hidden { display: none !important; }
 #controls-panel h2 { margin: 0 0 12px; font-family: Impact, sans-serif; letter-spacing: 4px; color: #ffcf3a; }
 #controls-panel h3 { margin: 8px 0; color: #9ad4ff; }
 #controls-panel .cols { display: flex; gap: 40px; flex-wrap: wrap; }

@@ -11,9 +11,10 @@ export class HUD {
       score: $('score'), timer: $('timer'), pad: $('pad-status'), comboPts: $('combo-points'), comboMult: $('combo-mult'),
       trick: $('trick-text'), landed: $('landed-text'), toast: $('toast'), controls: $('controls-panel'),
       overlay: $('overlay'), overlayMsg: $('overlay-msg'), finalScore: $('final-score'), speed: $('speed-fill'),
-      bottom: $('bottom'),
+      bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'),
     };
     this.shownScore = 0; this.holdTimer = 0; this.toastTimer = 0;
+    this.balanceShown = false;
   }
   setPad(connected, id) {
     this.el.pad.textContent = connected ? '🎮 ' + (id || 'GAMEPAD').replace(/\(.*\)/, '').trim().slice(0, 28).toUpperCase() : '⌨ KEYBOARD (no gamepad)';
@@ -56,6 +57,13 @@ export class HUD {
     this.el.trick.textContent = text || '';
     if (mult > 0) { this.el.comboPts.textContent = fmt(points); this.el.comboMult.textContent = 'x' + mult; }
     else { this.el.comboPts.textContent = ''; this.el.comboMult.textContent = ''; }
+  }
+  // Grind balance meter: only on screen while it matters, so it never becomes wallpaper.
+  balance(show, x) {
+    if (show !== this.balanceShown) { this.el.balance.classList.toggle('hidden', !show); this.balanceShown = show; }
+    if (!show) return;
+    this.el.balanceNeedle.style.left = (50 + Math.max(-1, Math.min(1, x)) * 50) + '%';
+    this.el.balance.classList.toggle('danger', Math.abs(x) > 0.62);
   }
   update(dt, score, timeLeft, speedFrac) {
     this.shownScore += (score - this.shownScore) * Math.min(1, dt * 6);

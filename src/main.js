@@ -77,7 +77,7 @@ skater.events.bail = (reason) => {
   audio.bail();
   fx.burst(skater.pos, 24, [0.8, 0.76, 0.7], 2.5, 0.6);
   input.rumbleSustainStop(); input.rumble(1, 1, 320);
-  const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST' }[reason] || 'BAILED';
+  const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST', balance: 'LOST BALANCE' }[reason] || 'BAILED';
   hud.bailed(why, skater.lostCombo || '', skater.lostPoints || 0, skater.lostMult || 0);
 };
 skater.events.trick = () => { audio.trick(); refreshCombo(); };
@@ -158,8 +158,15 @@ function frame(now) {
   if (mode === 'playing' && skater.state === 'grind' && skater.grind) {
     const g = Math.min(1, skater.speed / 10);
     const metal = skater.grind.rail.kind !== 'ledge';
-    input.rumbleSustain(metal ? 0.1 + g * 0.14 : 0.24 + g * 0.26, metal ? 0.42 + g * 0.38 : 0.2 + g * 0.2, dt);
+    // Balance error rides on top of the surface buzz, squared so it stays quiet until you are genuinely
+    // in trouble and then climbs fast. This is the real balance display: you feel yourself going over
+    // a beat before the meter tells you, without having to look away from the skater.
+    const wobble = skater.balance.error * skater.balance.error;
+    input.rumbleSustain(
+      (metal ? 0.1 + g * 0.14 : 0.24 + g * 0.26) + wobble * 0.55,
+      (metal ? 0.42 + g * 0.38 : 0.2 + g * 0.2) * (1 - wobble * 0.35), dt);
   }
+  hud.balance(mode === 'playing' && skater.state === 'grind' && skater.balance.active, skater.balance.x);
   hud.update(dt, skater.score, timeLeft, skater.speed / 14);
   if (skater.combo.tricks.length && skater.state === 'grind') refreshCombo();
   renderer.render(scene, camera);
