@@ -4,20 +4,20 @@
 // momentum and overcorrecting is a real mistake — mashing loses, feathering wins.
 
 export const BALANCE = {
-  tip: 2.6,          // instability: outward acceleration per unit of lean (1/s²)
-  control: 5.6,      // player authority at full stick (1/s²)
+  tip: 6.2,          // instability: outward acceleration per unit of lean (1/s²)
+  control: 8.4,      // player authority at full stick (1/s²)
   saveMargin: 0.75,  // everything tipping you over is capped at this fraction of `control`, so full stick
                      //   always out-muscles the meter however far difficulty has ramped. That makes the
                      //   clutch save an invariant rather than a tuning coincidence. It does NOT make every
                      //   state survivable: weight takes `shift` seconds to move, so if you are already at
                      //   the edge carrying speed outward you are gone. That point of no return is the
                      //   difference between a meter that is tense and one that is merely fiddly.
-  damp: 1.8,         // velocity damping: enough weight to feel deliberate, not enough to feel sticky
-  shift: 8.5,        // how fast your weight actually follows the stick (1/s). Shifting your weight is not
+  damp: 2.4,         // velocity damping: enough weight to feel deliberate, not enough to feel sticky
+  shift: 10.0,       // how fast your weight actually follows the stick (1/s). Shifting your weight is not
                      //   instant, and that lag is what makes slamming the stick back and forth overshoot
                      //   into a wobble you cannot outrun. Anticipating beats reacting.
-  bias: 0.55,        // magnitude of the slow wander that makes you work even when centred
-  ramp: 0.13,        // difficulty growth per second on the rail, so every grind builds tension
+  bias: 1.3,         // magnitude of the slow wander that makes you work even when centred
+  ramp: 0.26,        // difficulty growth per second on the rail, so every grind builds tension
   rampMax: 0.6,
   comboStep: 0.05,   // and a little more for each trick already banked in this combo
   comboMax: 0.4,

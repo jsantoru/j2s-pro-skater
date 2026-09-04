@@ -86,12 +86,14 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   flicking foot. `node sim/rigcheck.js` prints the per-pose numbers.
 - Grind balance is an inverted pendulum: the further you are tipped the harder it pulls you over, and the
   stick applies *acceleration* rather than moving the needle, so the meter carries momentum. Your weight
-  also takes ~0.12 s to follow the stick, which is what makes slamming it back and forth overshoot into a
-  wobble you cannot outrun — a light touch holds a rail indefinitely, a heavy hand lasts about 6 s.
+  also takes ~0.1 s to follow the stick, which is what makes slamming it back and forth overshoot into a
+  wobble you cannot outrun. Against a simulated player with 0.14 s reaction lag: no input falls in 2.3 s,
+  a light touch lasts ~7.4 s, a heavy hand 4.2 s, frantic 3.9 s. Nothing holds a long rail for free.
   Everything pushing you over is capped at 75% of your full-stick authority, so a lean is always
   recoverable given room; being at the edge *already moving outward* is not, and that point of no return
   is what keeps it tense. Difficulty ramps along the rail, with the combo banked, and as you slow down.
-  0.32 s of grace on landing keeps the grind magnet from dropping you straight into a fight.
+  0.32 s of grace on landing keeps the grind magnet from dropping you straight into a fight, and a short
+  rail (the 7 m flat rail is ~1.2 s) is still free — it is the 24 m coping that asks you to work.
 - Haptics: landings scale rumble with impact, and grinds buzz continuously for as long as you are on the
   rail. Metal (rails, coping) drives the high-frequency motor; concrete ledges use a coarser low rumble.
   Both scale with grind speed.
