@@ -6,6 +6,7 @@
 import * as THREE from 'three';
 
 const L1 = 0.42, L2 = 0.42, BOARD_TOP = 0.13;
+const BOARD_TRACK = 0.05;   // how far the board may chase the feet sideways in the air
 const D2R = Math.PI / 180;
 
 // pose keys (degrees unless noted)
@@ -158,9 +159,13 @@ export class Character {
     // crouch. On the ground, slide the pelvis back by the same amount so the front foot stays planted and
     // the hips travel back-and-down like a real squat. Airborne poses keep the old free-swinging look.
     T.hipsFwd = (st === 'air' || st === 'bail') ? 0 : -legReach(T.lHip, T.lKnee);
-    T._boardLift = st === 'air' ? Math.max(0, STAND_DROP - 0.06 - drop) : 0;
-    // airborne the pelvis stays put and the feet swing, so the board tracks them sideways too
-    T._boardFwd = st === 'air' ? legReach(T.lHip, T.lKnee) : 0;
+    // The board rides with BOTH feet, not the front one: a flick trick throws the front leg right out
+    // (a heelflip reaches 0.59 m, nearly three deck widths) and tracking that alone glues the board to
+    // the flicking foot instead of letting it spin free. Average the legs, and cap the sideways chase.
+    const dropAvg = legDrop((T.lHip + T.rHip) / 2, (T.lKnee + T.rKnee) / 2);
+    const reachAvg = (legReach(T.lHip, T.lKnee) + legReach(T.rHip, T.rKnee)) / 2;
+    T._boardLift = st === 'air' ? Math.max(0, STAND_DROP - 0.06 - dropAvg) : 0;
+    T._boardFwd = st === 'air' ? THREE.MathUtils.clamp(reachAvg, -BOARD_TRACK, BOARD_TRACK) : 0;
     return T;
   }
 

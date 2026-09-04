@@ -79,7 +79,9 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - Feet stay on the deck: flexing a hip swings the ankle toward the toe side, so on the ground the pelvis
   slides back by that same amount (`legReach`). The feet stay planted with ~1.5 cm over each rail and the
   hips travel back-and-down through a crouch instead of the shoes walking off the toe edge. Airborne the
-  pelvis stays put and the board tracks the feet instead. `node sim/rigcheck.js` prints the per-pose numbers.
+  pelvis stays put and the board tracks the feet instead — averaged over both legs and capped at 5 cm, so a
+  flick trick (a heelflip throws the front leg 0.59 m out) spins the board free rather than gluing it to the
+  flicking foot. `node sim/rigcheck.js` prints the per-pose numbers.
 - Haptics: landings scale rumble with impact, and grinds buzz continuously for as long as you are on the
   rail. Metal (rails, coping) drives the high-frequency motor; concrete ledges use a coarser low rumble.
   Both scale with grind speed.
