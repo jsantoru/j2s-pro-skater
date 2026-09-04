@@ -10,7 +10,7 @@ const D2R = Math.PI / 180;
 
 // pose keys (degrees unless noted)
 const KEYS = ['torsoX', 'torsoY', 'torsoZ', 'headX', 'headY', 'lArmX', 'lArmZ', 'lElbow', 'rArmX', 'rArmZ', 'rElbow',
-  'lHip', 'lKnee', 'lLegZ', 'rHip', 'rKnee', 'rLegZ', 'hipsX', 'hipsZ', 'hipsY'];
+  'lHip', 'lKnee', 'lLegZ', 'rHip', 'rKnee', 'rLegZ', 'hipsX', 'hipsZ', 'hipsY', 'hipsFwd'];
 const P = (o) => { const p = {}; for (const k of KEYS) p[k] = 0; return Object.assign(p, o); };
 
 export const POSES = {
@@ -39,7 +39,10 @@ const FLIP_POSE = { Kickflip: 'kickflip', Heelflip: 'heelflip', 'Pop Shove-it': 
 // [rollTurns (around z), yawTurns (around y), pitchTurns (around x)]
 const FLIP_SPIN = { Kickflip: [1, 0, 0], Heelflip: [-1, 0, 0], 'Pop Shove-it': [0, 0.5, 0], Impossible: [0, 0, 1], '360 Flip': [1, 1, 0], 'Varial Heelflip': [-1, -0.5, 0], Hardflip: [1, -0.5, 0], 'Inward Heelflip': [-1, 0.5, 0] };
 
+// Where the ankle ends up relative to the hip, for the current hip/knee angles.
+// legDrop = how far below; legReach = how far toward the chest (body +z, the toe side of the board).
 function legDrop(hip, knee) { return L1 * Math.cos(hip * D2R) + L2 * Math.cos((hip - knee) * D2R); }
+function legReach(hip, knee) { return L1 * Math.sin(hip * D2R) + L2 * Math.sin((hip - knee) * D2R); }
 const STAND_DROP = legDrop(POSES.ride.lHip, POSES.ride.lKnee);
 
 function box(w, h, d, mat, x = 0, y = 0, z = 0) {
@@ -79,7 +82,7 @@ export class Character {
     const M = (c, r = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: r });
     const skin = M(0xe0b08a), shirt = M(0x2f6fb5), pants = M(0x3b3a45), shoe = M(0xf0efe8, 0.6), cap = M(0xc0392b), hair = M(0x3a2718), eye = M(0x1a1a1a, 0.3), white = M(0xf4f4f4);
     this.hips = new THREE.Group(); this.body.add(this.hips);
-    this.hips.add(box(0.3, 0.14, 0.2, pants, 0, 0.03, 0));
+    this.hips.add(box(0.34, 0.14, 0.2, pants, 0, 0.03, 0)); // wide enough to cover the widened stance
     this.torso = new THREE.Group(); this.torso.position.y = 0.1; this.hips.add(this.torso);
     this.torso.add(box(0.36, 0.44, 0.2, shirt, 0, 0.24, 0));
     this.torso.add(box(0.38, 0.06, 0.22, shirt, 0, 0.44, 0));
@@ -100,13 +103,15 @@ export class Character {
     };
     this.lArm = arm(1); this.rArm = arm(-1); // body +x = nose side = the skater's left (regular stance)
     const leg = (side) => {
-      const hp = new THREE.Group(); hp.position.set(side * 0.11, 0, 0); this.hips.add(hp);
+      const hp = new THREE.Group(); hp.position.set(side * 0.15, 0, 0); this.hips.add(hp); // stance just inside the trucks
       hp.add(box(0.14, L1, 0.15, pants, 0, -L1 / 2, 0));
       const kn = new THREE.Group(); kn.position.y = -L1; hp.add(kn);
       kn.add(box(0.12, L2, 0.13, pants, 0, -L2 / 2, 0));
       kn.add(box(0.13, 0.1, 0.13, pants, 0, 0, 0)); // knee cap hides the joint seam
       const an = new THREE.Group(); an.position.y = -L2 + 0.02; kn.add(an); // ankle: keeps the shoe flat on the deck
-      an.add(box(0.11, 0.08, 0.27, shoe, 0, 0, 0.05));
+      // shoe runs across the board (body z). Centred on the ankle so it sits on the deck rather than
+      // hanging off the toe edge; 0.25 leaves ~1.5 cm over each rail, the way a skate shoe actually sits.
+      an.add(box(0.11, 0.08, 0.25, shoe, 0, 0, 0));
       return { hp, kn, an };
     };
     this.lLeg = leg(1); this.rLeg = leg(-1); // front foot = left (nose side), back / pushing foot = right
@@ -149,7 +154,13 @@ export class Character {
     // leg drop / hips height from the front (standing) leg, so an extended pushing leg reaches the ground
     const drop = legDrop(T.lHip, T.lKnee);
     T.hipsY = st === 'air' ? STAND_DROP - 0.06 : drop;
+    // Flexing the hip swings the foot toward the toe side, which would walk the feet off the deck as you
+    // crouch. On the ground, slide the pelvis back by the same amount so the front foot stays planted and
+    // the hips travel back-and-down like a real squat. Airborne poses keep the old free-swinging look.
+    T.hipsFwd = (st === 'air' || st === 'bail') ? 0 : -legReach(T.lHip, T.lKnee);
     T._boardLift = st === 'air' ? Math.max(0, STAND_DROP - 0.06 - drop) : 0;
+    // airborne the pelvis stays put and the feet swing, so the board tracks them sideways too
+    T._boardFwd = st === 'air' ? legReach(T.lHip, T.lKnee) : 0;
     return T;
   }
 
@@ -159,11 +170,12 @@ export class Character {
     const a = Math.min(1, dt * rate);
     for (const k of KEYS) this.cur[k] += (T[k] - this.cur[k]) * a;
     this.cur._boardLift = (this.cur._boardLift || 0) + ((T._boardLift || 0) - (this.cur._boardLift || 0)) * a;
+    this.cur._boardFwd = (this.cur._boardFwd || 0) + ((T._boardFwd || 0) - (this.cur._boardFwd || 0)) * a;
     const c = this.cur;
     // subtle riding bob
     this.bobT += dt * (2 + sk.speed * 0.4);
     const bob = sk.state === 'ride' ? Math.sin(this.bobT) * 0.006 * Math.min(1, sk.speed / 4) : 0;
-    this.hips.position.set(0, BOARD_TOP + c.hipsY + bob, 0);
+    this.hips.position.set(0, BOARD_TOP + c.hipsY + bob, c.hipsFwd);
     // Y / Z keys are authored as "toward the nose = negative torsoY / positive limb Z"; body +x is the nose,
     // so rotations about y/z that should move things nose-ward get the signs below.
     this.hips.rotation.set(c.hipsX * D2R, 0, -c.hipsZ * D2R);
@@ -182,6 +194,7 @@ export class Character {
     b.position.set(0, 0, 0); b.rotation.set(0, 0, 0);
     if (sk.state === 'air') {
       b.position.y = c._boardLift;
+      b.position.x = -c._boardFwd;                 // body +z (toe side) is root -x
       const tr = sk.trick;
       if (tr && tr.kind === 'flip') {
         const [r, y, p] = FLIP_SPIN[tr.name] || [1, 0, 0];

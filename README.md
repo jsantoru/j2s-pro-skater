@@ -76,6 +76,10 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - The skater rides regular: left foot forward, chest toward the right of travel. The push cycle plants the
   back foot on the ground beside the deck and strokes nose→tail along the travel axis, with the front leg
   bent so the pushing foot actually reaches the floor.
+- Feet stay on the deck: flexing a hip swings the ankle toward the toe side, so on the ground the pelvis
+  slides back by that same amount (`legReach`). The feet stay planted with ~1.5 cm over each rail and the
+  hips travel back-and-down through a crouch instead of the shoes walking off the toe edge. Airborne the
+  pelvis stays put and the board tracks the feet instead. `node sim/rigcheck.js` prints the per-pose numbers.
 - Haptics: landings scale rumble with impact, and grinds buzz continuously for as long as you are on the
   rail. Metal (rails, coping) drives the high-frequency motor; concrete ledges use a coarser low rumble.
   Both scale with grind speed.
