@@ -46,6 +46,9 @@ export class Input {
     this.onGamepadChange = null;
     this.kbSteer = 0; this.kbY = 0;
     this._prevKeys = {};
+    this._hapticStrong = 0; this._hapticWeak = 0;
+    this._pulseStrong = 0; this._pulseWeak = 0; this._pulseT = 0;
+    this._hapticEmitT = 0; this._hapticPulseFresh = false;
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', (e) => {
         if (e.repeat) return;
@@ -81,8 +84,10 @@ export class Input {
 
   get hasGamepad() { return this.gamepadIndex >= 0; }
 
-  // Haptics (Chrome/Edge dual-rumble). Silently no-ops where unsupported.
-  rumble(strong, weak, ms) {
+  // Haptics (Chrome/Edge dual-rumble). `strong` is the low-frequency motor and `weak` is
+  // the high-frequency motor. Everything is mixed once per frame so simultaneous feedback
+  // (for example grind texture + ollie charge) reinforces instead of replacing itself.
+  _playRumble(strong, weak, ms) {
     if (this.gamepadIndex < 0 || typeof navigator === 'undefined') return;
     const gp = navigator.getGamepads()[this.gamepadIndex];
     const act = gp && gp.vibrationActuator;
@@ -90,15 +95,43 @@ export class Input {
     try { act.playEffect('dual-rumble', { startDelay: 0, duration: ms, strongMagnitude: strong, weakMagnitude: weak }).catch(() => {}); } catch { /* ignore */ }
   }
 
-  // Continuous rumble for states that last (grinding). playEffect takes a fixed duration, so this
-  // re-issues a slightly longer pulse than the re-trigger interval: the overlap keeps it seamless.
-  rumbleSustain(strong, weak, dt) {
-    this._sustainT = (this._sustainT || 0) - dt;
-    if (this._sustainT > 0) return;
-    this._sustainT = 0.1;
-    this.rumble(strong, weak, 150);
+  hapticsBegin() { this._hapticStrong = 0; this._hapticWeak = 0; }
+
+  // Queue an impact/tick envelope. The mixer re-issues it until its requested duration has elapsed.
+  rumble(strong, weak, ms) {
+    this._pulseStrong = Math.max(this._pulseStrong, Math.max(0, Math.min(1, strong)));
+    this._pulseWeak = Math.max(this._pulseWeak, Math.max(0, Math.min(1, weak)));
+    this._pulseT = Math.max(this._pulseT, ms / 1000);
+    this._hapticPulseFresh = true;
   }
-  rumbleSustainStop() { this._sustainT = 0; }
+
+  rumbleSustain(strong, weak) {
+    strong = Math.max(0, Math.min(1, strong)); weak = Math.max(0, Math.min(1, weak));
+    // Saturating addition keeps distinct signals perceptible without exceeding the API's 0..1 range.
+    this._hapticStrong = 1 - (1 - this._hapticStrong) * (1 - strong);
+    this._hapticWeak = 1 - (1 - this._hapticWeak) * (1 - weak);
+  }
+
+  rumbleSustainStop() { this._hapticStrong = 0; this._hapticWeak = 0; this._hapticEmitT = 0; }
+
+  hapticsCommit(dt) {
+    const pulsing = this._pulseT > 0;
+    const ps = pulsing ? this._pulseStrong : 0, pw = pulsing ? this._pulseWeak : 0;
+    const strong = 1 - (1 - this._hapticStrong) * (1 - ps);
+    const weak = 1 - (1 - this._hapticWeak) * (1 - pw);
+    this._hapticEmitT -= dt;
+    if ((strong > 0.005 || weak > 0.005) && (this._hapticEmitT <= 0 || this._hapticPulseFresh)) {
+      this._playRumble(strong, weak, 120);
+      this._hapticEmitT = 0.08;
+      this._hapticPulseFresh = false;
+    } else if (strong <= 0.005 && weak <= 0.005) {
+      this._hapticEmitT = 0;
+    }
+    if (pulsing) {
+      this._pulseT -= dt;
+      if (this._pulseT <= 0) { this._pulseT = 0; this._pulseStrong = 0; this._pulseWeak = 0; }
+    }
+  }
 
   poll(dt) {
     const s = this.state;
