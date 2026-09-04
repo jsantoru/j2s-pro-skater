@@ -41,9 +41,10 @@ export const TUNING = {
   grindMagnetSpeed: 4.5,  // max lateral closing speed
   trickBuffer: 0.25,      // flip/grab pressed this long before the pop still fires on takeoff
   // ---- manuals ----
-  manualFlick: 0.3,       // seconds to complete the down-up (or up-down) flick that starts a manual
-  manualEdge: 0.6,        // stick deflection that counts as one half of that flick
-  manualCentre: 0.25,     // and it only arms from centre, so holding push then braking is not a flick
+  manualFlick: 0.42,      // seconds to complete the down-up (or up-down) flick that starts a manual
+  manualAirFlick: 0.75,   // wider in air so a flip direction can double as the first half of the command
+  manualEdge: 0.5,        // stick deflection that counts as one half of that flick
+  manualCentre: 0.3,      // and it only arms from centre, so holding push then braking is not a flick
   manualMinSpeed: 1.6,    // below this you have run out of roll and the manual just ends
   manualDrag: 0.55,       // extra m/s² lost to riding on two wheels
   manualPitch: 22,        // degrees the board sits nose-up (or nose-down) while manualling
@@ -96,6 +97,7 @@ export class Skater {
     this.grind = null; this.bailT = 0; this.bailReason = '';
     this.balance.reset();
     this.manual = null; this.manualBalance.reset();
+    this.manualIntent = null; // manual flick entered in the air; consumed on the next valid landing
     this.flickDir = 0; this.flickT = 0; this.flickArmed = false; this.manualLean = 0;
     this.lastRail = null; this.railCooldown = 0;
     this.landSquash = 0; this.groundTime = 1;
@@ -255,7 +257,7 @@ export class Skater {
   // A manual starts on a down-up (or up-down) flick of the stick. It only arms from centre, so the
   // common push-then-brake sweep — which crosses both thresholds — is not mistaken for a flick.
   // Returns the direction it STARTED in: -1 down-first (tail manual), +1 up-first (nose manual).
-  detectManualFlick(dt, inp) {
+  detectManualFlick(dt, inp, window = this.T.manualFlick) {
     const T = this.T, y = inp.stickY || 0;
     if (this.flickDir === 0) {
       if (Math.abs(y) < T.manualCentre) this.flickArmed = true;
@@ -263,7 +265,7 @@ export class Skater {
       return 0;
     }
     this.flickT += dt;
-    if (this.flickT > T.manualFlick) { this.flickDir = 0; this.flickArmed = false; return 0; }
+    if (this.flickT > window) { this.flickDir = 0; this.flickArmed = false; return 0; }
     if (Math.sign(y) === -this.flickDir && Math.abs(y) > T.manualEdge) {
       const started = this.flickDir;
       this.flickDir = 0; this.flickArmed = false;
@@ -353,6 +355,10 @@ export class Skater {
     this.launchNormal = launchNormal.clone();
     this.popped = popped;
     this.normal.set(0, 1, 0);
+    // Let a direction used to choose the flip also begin the landing-manual command. If that first
+    // direction was entered during the crouch, its airborne timing window starts fresh at takeoff.
+    if (this.flickDir !== 0) this.flickT = 0;
+    else this.flickArmed = true;
     // fire a buffered trick on takeoff (pressed during the crouch or on the same frame as the release)
     const q = this.queued; this.queued = null;
     if (q) {
@@ -379,6 +385,12 @@ export class Skater {
     const T = this.T;
     this.airTime += dt;
     this.vel.y -= T.gravity * dt;
+
+    // THPS-style manual buffering: a down-up / up-down flick entered during a trick means
+    // "land in a manual". Keep it until touchdown instead of requiring the player to repeat
+    // the command after the board is already on the ground.
+    const manualFlick = this.detectManualFlick(dt, inp, T.manualAirFlick);
+    if (manualFlick !== 0) this.manualIntent = manualFlick < 0 ? 'tail' : 'nose';
 
     // spin (analog) + bumper spin
     let spin = inp.steer + (inp.spinRight ? 1 : 0) - (inp.spinLeft ? 1 : 0);
@@ -530,8 +542,14 @@ export class Skater {
     this.grindIntent = 0; this.queued = null;
     this.landSquash = Math.min(1, 0.4 + Math.max(0, -this.vel.dot(n)) / 12);
     this.vel.copy(this.heading).multiplyScalar(sp);
-    if (tiny) return;
+    const manualIntent = this.manualIntent;
+    this.manualIntent = null;
+    if (tiny && !manualIntent) return;
     this.bankSpin(false);
+    if (manualIntent && n.y > 0.85 && sp > 2.2) {
+      this.startManual(manualIntent);
+      return;
+    }
     this.bankCombo(true);
   }
 
@@ -571,7 +589,7 @@ export class Skater {
     const speed = Math.max(this.T.grindMinSpeed, hv.length());
     const gdir = inp.dir8 !== 'C' ? inp.dir8 : this.grindIntentDir; // a tapped grind remembers the direction it was tapped with
     const [gname, base] = GRINDS[gdir] || GRINDS.C;
-    this.grindIntent = 0; this.grindIntentDir = 'C'; this.queued = null;
+    this.grindIntent = 0; this.grindIntentDir = 'C'; this.queued = null; this.manualIntent = null;
     const slide = gname.includes('slide');
     const prefix = this.bankSpin(true);
     this.grind = { rail: r, t: found.t, dir, speed, name: gname, slide, time: 0 };
@@ -638,7 +656,7 @@ export class Skater {
     this.manual = null; this.manualBalance.stop();
     this.balance.stop();
     this.state = 'bail'; this.bailT = 0; this.bailReason = reason;
-    this.trick = null; this.crouching = false; this.queued = null; this.grindIntent = 0;
+    this.trick = null; this.crouching = false; this.queued = null; this.grindIntent = 0; this.manualIntent = null;
     if (reason === 'wall') this.vel.multiplyScalar(-0.15).y += 2.5;
     else { this.vel.multiplyScalar(0.6); this.vel.y = Math.max(this.vel.y, 1.5); }
     this.lostCombo = this.combo.text; this.lostPoints = this.combo.points; this.lostMult = this.combo.multiplier;
