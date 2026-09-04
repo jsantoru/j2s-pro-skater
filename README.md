@@ -20,7 +20,7 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 
 | Input | Action |
 |---|---|
-| Left stick | Analog steering on the ground, spin in the air, trick direction |
+| Left stick | Analog steering on the ground, spin in the air, trick direction, **balance while grinding** |
 | A (hold) | Crouch **= speed up** (THPS style); release to ollie – longer hold = bigger pop (0.55 s to full) |
 | X + direction | Flip trick (Kickflip, Heelflip, Pop Shove-it, Impossible, 360 Flip, Varial Heel, Hardflip, Inward Heel). Can be pressed during the crouch or on the release frame – it fires on takeoff |
 | B + direction | Grab trick (hold; Indy, Melon, Nosegrab, Tailgrab, Method, Stalefish, Judo, Airwalk) |
@@ -54,6 +54,8 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   approach, 5-stair with handrail and hubba, pyramid fun box with ledge, kicker→rail line, kicker gap,
   two ledges, flat rails, a down bar. Also builds the raycast colliders and grind segments.
 - `src/tricks.js` – trick tables, spin naming, THPS-style combo scoring (sum × trick count, repeat decay).
+- `src/balance.js` – the grind balance meter, as an inverted pendulum. Standalone and injectable-rng so it
+  can be tested on its own (`npm run sim:balance`) and reused if manuals ever land.
 - `sim/playtest.js` – headless Node harness that drives the controller through scripted lines
   (push/coast, brake, carving, ollie heights, flips, quarter pipe, half pipe pumping, kicker→rail,
   boardslide, stairs, gap, wall). `npm run sim` prints state timelines; use it when re-tuning.
@@ -82,6 +84,14 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   pelvis stays put and the board tracks the feet instead — averaged over both legs and capped at 5 cm, so a
   flick trick (a heelflip throws the front leg 0.59 m out) spins the board free rather than gluing it to the
   flicking foot. `node sim/rigcheck.js` prints the per-pose numbers.
+- Grind balance is an inverted pendulum: the further you are tipped the harder it pulls you over, and the
+  stick applies *acceleration* rather than moving the needle, so the meter carries momentum. Your weight
+  also takes ~0.12 s to follow the stick, which is what makes slamming it back and forth overshoot into a
+  wobble you cannot outrun — a light touch holds a rail indefinitely, a heavy hand lasts about 6 s.
+  Everything pushing you over is capped at 75% of your full-stick authority, so a lean is always
+  recoverable given room; being at the edge *already moving outward* is not, and that point of no return
+  is what keeps it tense. Difficulty ramps along the rail, with the combo banked, and as you slow down.
+  0.32 s of grace on landing keeps the grind magnet from dropping you straight into a fight.
 - Haptics: landings scale rumble with impact, and grinds buzz continuously for as long as you are on the
   rail. Metal (rails, coping) drives the high-frequency motor; concrete ledges use a coarser low rumble.
   Both scale with grind speed.

@@ -2,6 +2,7 @@
 // States: ride (on a surface), air, grind, bail. All units metres / seconds / radians unless noted.
 import * as THREE from 'three';
 import { FLIPS, GRABS, GRINDS, Combo, spinName } from './tricks.js';
+import { Balance, BALANCE } from './balance.js';
 
 export const TUNING = {
   gravity: 22,
@@ -60,10 +61,11 @@ function angleBetweenXZ(a, b) {
 }
 
 export class Skater {
-  constructor(level) {
+  constructor(level, rng) {
     this.level = level;
     this.T = TUNING;
     this.combo = new Combo();
+    this.balance = new Balance(rng);
     this.events = {};
     this.score = 0;
     this.reset();
@@ -84,6 +86,7 @@ export class Skater {
     this.airTime = 0; this.spinDeg = 0; this.spinDir = 1; this.vertAir = false; this.autoTurn = 0; this.autoTurnDir = 1;
     this.trick = null; this.airTrickIndex = -1;
     this.grind = null; this.bailT = 0; this.bailReason = '';
+    this.balance.reset();
     this.lastRail = null; this.railCooldown = 0;
     this.landSquash = 0; this.groundTime = 1;
     this.lastAirWasTiny = false;
@@ -132,9 +135,11 @@ export class Skater {
     const target = this.state === 'bail' ? 0 : (this.crouching ? 0.35 + 0.65 * Math.min(1, this.crouchTime / this.T.crouchFull) : 0);
     this.crouch += (target - this.crouch) * Math.min(1, dt * (target > this.crouch ? 14 : 18));
     this.landSquash = Math.max(0, this.landSquash - dt * 3.2);
-    // visual lean into carves
-    const leanTarget = this.state === 'ride' ? this.steer * Math.min(1, this.speed / 7) * 0.5 : 0;
-    this.lean += (leanTarget - this.lean) * Math.min(1, dt * 8);
+    // visual lean: into carves on the ground, and with the balance meter on a rail so you can read
+    // how close you are to going over from the skater alone, without looking at the HUD
+    const leanTarget = this.state === 'ride' ? this.steer * Math.min(1, this.speed / 7) * 0.5
+      : (this.state === 'grind' ? this.balance.x * 0.75 : 0);
+    this.lean += (leanTarget - this.lean) * Math.min(1, dt * (this.state === 'grind' ? 12 : 8));
     this.updateModelQuat(dt);
   }
 
@@ -488,6 +493,7 @@ export class Skater {
     const slide = gname.includes('slide');
     const prefix = this.bankSpin(true);
     this.grind = { rail: r, t: found.t, dir, speed, name: gname, slide, time: 0 };
+    this.balance.start(Math.min(BALANCE.comboMax, this.combo.tricks.length * BALANCE.comboStep));
     this.pos.copy(found.point); this.pos.y += 0.02;
     // facing: sideways for slides, along the rail otherwise (nearest stance)
     const rd = _v2.set(r.dir.x, 0, r.dir.z).normalize().multiplyScalar(dir);
@@ -510,6 +516,9 @@ export class Skater {
     g.time += dt;
     this.handleCrouch(dt, inp);
     if (this.state !== 'grind') return;
+    // hold the line: the stick leans the board, so counter a tip by pressing away from it
+    // this.steer is the shaped stick, so small corrections near centre are gentle and full lock is full
+    if (!this.balance.update(dt, this.steer, g.speed)) { this.bail('balance'); return; }
     g.speed += -T.gravity * r.dir.y * g.dir * dt - T.grindFriction * dt;
     if (g.speed < 1.0) g.speed = 1.0; // never stall on a rail
     g.t += g.dir * g.speed * dt / r.len;
@@ -530,6 +539,7 @@ export class Skater {
   }
 
   endGrind() {
+    this.balance.stop();
     this.emit('grindEnd', this.grind.name, this.grind.time);
     this.lastRail = this.grind.rail; this.railCooldown = 0.45;
     if (this.grind.slide) { // slides exit facing forward again
@@ -543,6 +553,7 @@ export class Skater {
   // ---------- BAIL ----------
   bail(reason) {
     if (this.state === 'grind') this.grind = null;
+    this.balance.stop();
     this.state = 'bail'; this.bailT = 0; this.bailReason = reason;
     this.trick = null; this.crouching = false; this.queued = null; this.grindIntent = 0;
     if (reason === 'wall') this.vel.multiplyScalar(-0.15).y += 2.5;

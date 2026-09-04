@@ -106,6 +106,22 @@ S.magnet = () => {
     (inp, t, sk) => { const c = sk.pos.x > -10.9 && sk.pos.x < -10.2 && sk.state === 'ride'; inp.ollie = c; inp.grind = c && sk.crouchTime > 0.05 && sk.crouchTime < 0.07; inp.dir8 = 'C'; }, 4);
 };
 
+S.balance = () => {
+  // long coping grind on the west quarter pipe (24 m of it) so the meter has time to matter
+  // drop onto the west quarter pipe's coping (24 m of it) so the meter has time to matter
+  const onCoping = (sk) => { sk.pos.set(-34.2, 3.35, 14); sk.heading.set(0, 0, -1); sk.speed = 7; };
+  run('long coping grind, no input: the meter runs away', onCoping,
+    (inp, t, sk) => { inp.grind = true; }, 8);
+  run('long coping grind, stick held over: falls fast', onCoping,
+    (inp, t, sk) => { inp.grind = true; if (sk.state === 'grind') inp.steer = 0.8; }, 8);
+  run('long coping grind, feathered back to centre: holds', onCoping,
+    (inp, t, sk) => {
+      inp.grind = true;
+      // gentle counter-steer; hands off the stick once the rail runs out so it does not skew the landing
+      inp.steer = sk.state === 'grind' ? Math.max(-1, Math.min(1, -sk.balance.x * 1.6)) : 0;
+    }, 8);
+};
+
 const which = process.argv.slice(2);
 const names = which.length ? which : Object.keys(S);
 for (const n of names) { if (S[n]) S[n](); else console.log('unknown scenario', n); }
