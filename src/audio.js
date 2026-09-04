@@ -1,3 +1,5 @@
+import { AmbientMusic } from './music.js';
+
 // Layered procedural skateboard audio. Shaped noise provides the wood, urethane, concrete and
 // steel character; short oscillators only reinforce physical resonances and quiet UI feedback.
 export class Audio {
@@ -17,6 +19,7 @@ export class Audio {
     this.master.connect(this.compressor).connect(c.destination);
     this.sfxBus = c.createGain(); this.sfxBus.gain.value = 0.78; this.sfxBus.connect(this.master);
     this.worldBus = c.createGain(); this.worldBus.gain.value = 0.72; this.worldBus.connect(this.master);
+    this.music = new AmbientMusic(c, this.master);
 
     const impulse = c.createBuffer(2, Math.floor(c.sampleRate * 0.3), c.sampleRate);
     for (let ch = 0; ch < 2; ch++) {
@@ -32,7 +35,7 @@ export class Audio {
 
     this.noise = {
       white: this.makeNoise(3, 0), pink: this.makeNoise(3, 0.72), brown: this.makeNoise(3, 0.965),
-      road: this.makeRoadNoise(3),
+      road: this.makeRoadNoise(3), scrape: this.makeScrapeNoise(3),
     };
     // Road noise is deliberately mid-focused. Low-passed brown noise sounds like wind or surf;
     // sparse micro-impacts read as hard urethane vibrating over concrete instead.
@@ -41,11 +44,9 @@ export class Audio {
     [this.rollGritFilter, this.rollGritGain] = this.loopNoise('road', 'bandpass', 2100, 0.9);
     // A separate, light bearing/wheel voice remains after ground contact drops away during an ollie.
     [this.wheelWhirFilter, this.wheelWhirGain] = this.loopNoise('pink', 'bandpass', 2500, 1.4);
-    [this.grindFilter, this.grindGain] = this.loopNoise('pink', 'bandpass', 2700, 2.4);
-    [this.grindBodyFilter, this.grindBodyGain] = this.loopNoise('brown', 'bandpass', 430, 0.8);
-    this.grindRing = c.createOscillator(); this.grindRing.type = 'triangle'; this.grindRing.frequency.value = 720;
-    this.grindRingGain = c.createGain(); this.grindRingGain.gain.value = 0;
-    this.grindRing.connect(this.grindRingGain).connect(this.worldBus); this.grindRing.start();
+    [this.grindFilter, this.grindGain] = this.loopNoise('scrape', 'bandpass', 1900, 1.05);
+    [this.grindChatterFilter, this.grindChatterGain] = this.loopNoise('scrape', 'bandpass', 3900, 0.8);
+    [this.grindBodyFilter, this.grindBodyGain] = this.loopNoise('road', 'bandpass', 460, 0.9);
     this.lastUpdate = c.currentTime; this.enabled = true; c.resume();
   }
 
@@ -68,6 +69,24 @@ export class Audio {
       if (Math.random() < 0.0007) pebble += (Math.random() * 2 - 1) * 0.75;
       pebble *= 0.91;
       data[i] = (white - smooth) * 0.28 + pebble;
+    }
+    return buffer;
+  }
+
+  makeScrapeNoise(seconds) {
+    const c = this.ctx, buffer = c.createBuffer(1, c.sampleRate * seconds, c.sampleRate), data = buffer.getChannelData(0);
+    let smooth = 0, pressure = 0.4, target = 0.4, catchHit = 0, nextShift = 0;
+    for (let i = 0; i < data.length; i++) {
+      if (i >= nextShift) {
+        target = 0.12 + Math.pow(Math.random(), 1.7) * 0.88;
+        nextShift = i + 120 + Math.floor(Math.random() * 1100);
+      }
+      pressure += (target - pressure) * 0.004;
+      const white = Math.random() * 2 - 1;
+      smooth += (white - smooth) * 0.11;
+      if (Math.random() < 0.00035) catchHit += (Math.random() * 2 - 1) * 0.9;
+      catchHit *= 0.89;
+      data[i] = (white - smooth) * (0.1 + pressure * 0.42) + catchHit;
     }
     return buffer;
   }
@@ -147,15 +166,39 @@ export class Audio {
     this.burst(4400, 0.022, 0.09, 'highpass', 0.7, 0.009, 'white', 0.015);
   }
 
-  grindStart(material = 'metal', speed = 7) {
+  grindStart(material = 'metal', speed = 7, slide = false) {
     const metal = material !== 'ledge';
-    this.burst(metal ? 3200 : 1150, 0.07, metal ? 0.38 : 0.33, 'bandpass', metal ? 2.2 : 0.8, 0, metal ? 'white' : 'brown', 0.07);
-    this.tone(metal ? 610 + speed * 11 : 190, metal ? 0.12 : 0.075, metal ? 0.12 : 0.08, 'triangle', metal ? 0.82 : 0.55, 0.002, 0.08);
+    if (!metal) {
+      this.burst(900, 0.085, 0.36, 'bandpass', 0.75, 0, 'road', 0.055);
+      this.tone(185, 0.065, 0.075, 'triangle', 0.58, 0.002, 0.045); return;
+    }
+    this.burst(slide ? 1250 : 2450, 0.055, slide ? 0.31 : 0.38, 'bandpass', 1.15, 0, 'scrape', 0.065);
+    this.tone(slide ? 290 : 520 + speed * 7, 0.075, slide ? 0.085 : 0.105, 'triangle', 0.7, 0.002, 0.075);
+    if (!slide) this.metalPing(speed, 0.042, 0.006);
   }
 
-  grindEnd(material = 'metal') {
+  grindEnd(material = 'metal', slide = false) {
     const metal = material !== 'ledge';
-    this.burst(metal ? 2800 : 900, 0.05, 0.16, 'bandpass', metal ? 1.8 : 0.7, 0, metal ? 'white' : 'brown', 0.045);
+    this.burst(metal ? (slide ? 1400 : 2650) : 820, 0.045, 0.15, 'bandpass', metal ? 1.1 : 0.7,
+      0, metal ? 'scrape' : 'road', 0.04);
+    if (metal && !slide) this.metalPing(5, 0.014, 0.004);
+  }
+
+  metalPing(speed, volume = 0.025, delay = 0) {
+    // Tubular steel rings at several imperfectly related modes, rather than one musical pitch.
+    const base = 610 + speed * 18 + Math.random() * 130;
+    this.tone(base, 0.105, volume, 'sine', 0.985, delay, 0.13);
+    this.tone(base * 2.27, 0.072, volume * 0.48, 'sine', 0.965, delay + 0.0015, 0.15);
+    this.tone(base * 3.63, 0.045, volume * 0.22, 'sine', 0.94, delay + 0.003, 0.12);
+  }
+
+  grindCatch(metal, slide, speed) {
+    if (!metal) {
+      this.burst(650 + Math.random() * 450, 0.016, 0.024, 'bandpass', 0.8, 0, 'road', 0.008); return;
+    }
+    this.burst((slide ? 1700 : 3300) + Math.random() * 900, 0.012 + Math.random() * 0.014,
+      slide ? 0.027 : 0.04, 'bandpass', 1.25, 0, 'scrape', 0.012);
+    if (!slide && Math.random() < 0.42) this.metalPing(speed, 0.018);
   }
 
   manualStart() {
@@ -186,6 +229,7 @@ export class Audio {
     if (!this.enabled) return;
     const c = this.ctx, t = c.currentTime;
     if (c.state === 'suspended') return;
+    this.music.update(t);
     const dt = Math.max(0, Math.min(0.05, t - this.lastUpdate)); this.lastUpdate = t;
     const speed = Math.max(0, sk.speed || 0), onGround = sk.state === 'ride', inAir = sk.state === 'air';
     const rolling = onGround ? Math.min(1, speed / 11) : 0, steer = Math.min(1, Math.abs(sk.steer || 0));
@@ -208,17 +252,16 @@ export class Audio {
     } else if (!onGround) this.rollDistance = 0;
 
     const grinding = sk.state === 'grind' && sk.grind, g = grinding ? Math.min(1, speed / 10) : 0;
-    const metal = grinding && sk.grind.rail.kind !== 'ledge';
-    this.grindGain.gain.setTargetAtTime(g * (metal ? 0.18 : 0.075), t, 0.025);
-    this.grindBodyGain.gain.setTargetAtTime(g * (metal ? 0.045 : 0.15), t, 0.03);
-    this.grindRingGain.gain.setTargetAtTime(g * (metal ? 0.018 : 0), t, 0.025);
+    const metal = grinding && sk.grind.rail.kind !== 'ledge', slide = grinding && sk.grind.slide;
+    this.grindGain.gain.setTargetAtTime(g * (metal ? (slide ? 0.105 : 0.13) : 0.085), t, 0.025);
+    this.grindChatterGain.gain.setTargetAtTime(g * (metal ? (slide ? 0.018 : 0.045) : 0.008), t, 0.02);
+    this.grindBodyGain.gain.setTargetAtTime(g * (metal ? (slide ? 0.075 : 0.04) : 0.13), t, 0.03);
     if (grinding) {
-      this.grindFilter.frequency.setTargetAtTime((metal ? 2050 : 820) + speed * (metal ? 115 : 36), t, 0.04);
-      this.grindFilter.Q.setTargetAtTime(metal ? 2.7 : 0.75, t, 0.04);
-      this.grindBodyFilter.frequency.setTargetAtTime((metal ? 390 : 280) + speed * 15, t, 0.05);
-      this.grindRing.frequency.setTargetAtTime(610 + speed * 17, t, 0.04);
-      if (Math.random() < dt * speed * 0.48) this.burst(metal ? 4300 : 1450, 0.018, metal ? 0.045 : 0.035,
-        'bandpass', 1.1, 0, metal ? 'white' : 'brown', 0.012);
+      this.grindFilter.frequency.setTargetAtTime((metal ? (slide ? 1150 : 1750) : 620) + speed * (metal ? 62 : 24), t, 0.045);
+      this.grindFilter.Q.setTargetAtTime(metal ? 1.05 : 0.68, t, 0.04);
+      this.grindChatterFilter.frequency.setTargetAtTime((slide ? 2800 : 3650) + speed * 54, t, 0.035);
+      this.grindBodyFilter.frequency.setTargetAtTime((metal ? (slide ? 330 : 440) : 260) + speed * 11, t, 0.055);
+      if (Math.random() < dt * speed * (metal ? 0.72 : 0.46)) this.grindCatch(metal, slide, speed);
     }
   }
 }

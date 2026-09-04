@@ -83,8 +83,8 @@ skater.events.bail = (reason) => {
   hud.bailed(why, skater.lostCombo || '', skater.lostPoints || 0, skater.lostMult || 0);
 };
 skater.events.trick = (name) => { audio.trick(name); refreshCombo(); };
-skater.events.grindStart = () => { audio.grindStart(skater.grind?.rail.kind || 'metal', skater.speed); input.rumble(0.35, 0.75, 110); input.rumbleSustainStop(); refreshCombo(); };
-skater.events.grindEnd = () => { audio.grindEnd(skater.grind?.rail.kind || 'metal'); input.rumbleSustainStop(); input.rumble(0.25, 0.4, 70); refreshCombo(); };
+skater.events.grindStart = () => { audio.grindStart(skater.grind?.rail.kind || 'metal', skater.speed, skater.grind?.slide); input.rumble(0.35, 0.75, 110); input.rumbleSustainStop(); refreshCombo(); };
+skater.events.grindEnd = () => { audio.grindEnd(skater.grind?.rail.kind || 'metal', skater.grind?.slide); input.rumbleSustainStop(); input.rumble(0.25, 0.4, 70); refreshCombo(); };
 skater.events.manualStart = () => { audio.manualStart(); input.rumble(0.3, 0.15, 70); input.rumbleSustainStop(); refreshCombo(); };
 skater.events.manualEnd = () => { input.rumbleSustainStop(); refreshCombo(); };
 skater.events.spinTick = () => { input.rumble(0.08, 0.58, 34); };
