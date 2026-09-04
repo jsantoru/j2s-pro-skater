@@ -76,6 +76,7 @@ export function makeMaterials() {
     coping: M(0xe8e6df, null, 0.3, 0.9),
     rail: M(0xdfe3ea, null, 0.28, 0.95),
     railDark: M(0x3a3f4a, null, 0.5, 0.7),
+    rainbow: M(0xffffff, null, 0.45, 0.05, { vertexColors: true }),
     yellow: M(0xffcf3a, null, 0.6), red: M(0xc0392b, null, 0.6), blue: M(0x2f6fb5, null, 0.6), green: M(0x3c9d5a, null, 0.6),
     dark: M(0x23262d, null, 0.6, 0.4),
     sky: new THREE.MeshBasicMaterial({ color: 0xdff1ff }),
@@ -153,6 +154,28 @@ export class Level {
     cop.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.clone().sub(A).normalize());
     this.group.add(cop);
     return m;
+  }
+
+  // Paint a mesh in rainbow bands by height. One colour per triangle so the stripes stay crisp, and
+  // driven by position rather than UVs so they follow the curve of a transition however it is mapped.
+  paintRainbow(mesh, bands = 7) {
+    let g = mesh.geometry;
+    if (g.index) { g = g.toNonIndexed(); mesh.geometry = g; }
+    const pos = g.attributes.position;
+    g.computeBoundingBox();
+    const y0 = g.boundingBox.min.y, span = (g.boundingBox.max.y - y0) || 1;
+    const col = new Float32Array(pos.count * 3);
+    const c = new THREE.Color();
+    for (let i = 0; i < pos.count; i += 3) {
+      const yAvg = (pos.getY(i) + pos.getY(i + 1) + pos.getY(i + 2)) / 3;
+      const t = Math.min(0.999, Math.max(0, (yAvg - y0) / span));
+      // red at the base up to violet at the lip. Saturated and fairly dark on purpose: the filmic tone
+      // mapping washes bright colours out, so mid-lightness reads as vivid once it reaches the screen.
+      c.setHSL(Math.floor(t * bands) / bands * 0.78, 1.0, 0.42);
+      for (let k = 0; k < 3; k++) { col[(i + k) * 3] = c.r; col[(i + k) * 3 + 1] = c.g; col[(i + k) * 3 + 2] = c.b; }
+    }
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    return mesh;
   }
 
   bank(len, h, width, x, y, z, rotY, mat) {
@@ -237,7 +260,7 @@ export class Level {
     
     // deck safety back of the south deck: a low ledge for grinding on the deck
     // ---- WEST long quarter pipe (rides toward -x) ----
-    this.quarterPipe(2.7, 24, -31.5, 0, 6, Math.PI, { vert: 0.25, deck: 1.4 });
+    this.paintRainbow(this.quarterPipe(2.7, 24, -31.5, 0, 6, Math.PI, { vert: 0.25, deck: 1.4, mat: M.rainbow }));
     // ---- EAST quarter pipe (rides toward +x) ----
     this.quarterPipe(2.7, 14, 31.5, 0, -6, 0, { vert: 0.25, deck: 1.4 });
     // ---- SOUTH bank wall (rides toward +z), long shallow bank to carve on ----
