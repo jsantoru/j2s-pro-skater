@@ -7,6 +7,8 @@ import * as THREE from 'three';
 
 const L1 = 0.42, L2 = 0.42, BOARD_TOP = 0.13;
 const BOARD_TRACK = 0.05;   // how far the board may chase the feet sideways in the air
+const MANUAL_PITCH = 22;    // degrees the deck sits nose-up (or nose-down) in a manual
+const AXLE_Z = 0.24;        // distance from deck centre to a truck: the pivot a manual rocks on
 const D2R = Math.PI / 180;
 
 // pose keys (degrees unless noted)
@@ -27,6 +29,10 @@ export const POSES = {
   tailgrab: P({ torsoX: 40, torsoY: 30, headY: -40, lArmX: -20, lArmZ: 70, lElbow: 30, rArmX: 95, rArmZ: -5, rElbow: 25, lHip: 75, lKnee: 125, rHip: 65, rKnee: 110 }),
   method: P({ torsoX: -18, headY: -50, headX: -25, lArmX: 70, lArmZ: 10, lElbow: 45, rArmX: -30, rArmZ: -80, rElbow: 20, lHip: 15, lKnee: 135, rHip: 12, rKnee: 130 }),
   grind: P({ torsoX: 18, headY: -55, lArmX: 0, lArmZ: 75, lElbow: 25, rArmX: 0, rArmZ: -75, rElbow: 25, lHip: 48, lKnee: 68, rHip: 46, rKnee: 64 }),
+  // manuals: weight over the back foot with the front leg reaching out, arms wide. hipsZ leans the whole
+  // upper body back over the tail (negative) or forward over the nose (positive).
+  manual: P({ torsoX: 4, headY: -55, lArmX: 20, lArmZ: 62, lElbow: 22, rArmX: -20, rArmZ: -62, rElbow: 22, lHip: 40, lKnee: 30, rHip: 24, rKnee: 56, hipsZ: -14 }),
+  noseManual: P({ torsoX: 24, headY: -55, lArmX: 20, lArmZ: 62, lElbow: 22, rArmX: -20, rArmZ: -62, rElbow: 22, lHip: 26, lKnee: 58, rHip: 44, rKnee: 30, hipsZ: 16 }),
   bail: P({ torsoX: -35, headX: -25, headY: 0, lArmX: -40, lArmZ: 150, lElbow: 60, rArmX: -40, rArmZ: -150, rElbow: 60, lHip: -15, lKnee: 35, rHip: 20, rKnee: 60, lLegZ: 20, rLegZ: -20 }),
   // push cycle: the back (right) foot leaves the deck, lands beside it on the toe side (rHip) and strokes
   // nose -> tail along the travel axis (rLegZ + -> -) with a straight knee; the front leg bends so the
@@ -134,7 +140,13 @@ export class Character {
       } else mix(POSES.air, 1);
     } else {
       const c = Math.min(1, sk.crouch + sk.landSquash * 0.7);
-      if (sk.pushing > 0 && c < 0.3) {
+      const ml = sk.manualLean || 0;
+      if (Math.abs(ml) > 0.01) {
+        // blend from the neutral ride into the manual as the board rocks over
+        const w = Math.min(1, Math.abs(ml));
+        mix(ml > 0 ? POSES.manual : POSES.noseManual, w * (1 - c));
+        mix(POSES.ride, (1 - w) * (1 - c));
+      } else if (sk.pushing > 0 && c < 0.3) {
         // one cycle = 2π: first half the foot is on the ground stroking plant -> back, second half it
         // lifts (return pose) and swings forward to plant again
         this.pushPhase += dt * 7.5;
@@ -197,6 +209,15 @@ export class Character {
     // board: follows feet in the air, flips during flip tricks, tumbles on bail
     const b = this.board;
     b.position.set(0, 0, 0); b.rotation.set(0, 0, 0);
+    // manual: pitch about the axle that stays down, and lift by as much as that pivot raises the deck,
+    // so the grounded wheels sit on the floor instead of sinking through it
+    const ml = sk.manualLean || 0;
+    if (Math.abs(ml) > 0.001 && sk.state === 'ride') {
+      const pitch = ml * MANUAL_PITCH * D2R;
+      b.rotation.x = -pitch;                       // root +z is the nose, so -x rotation lifts it
+      b.position.y = Math.abs(Math.sin(pitch)) * AXLE_Z;
+      this.hips.position.y += b.position.y;        // the skater rides up with it
+    }
     if (sk.state === 'air') {
       b.position.y = c._boardLift;
       b.position.x = -c._boardFwd;                 // body +z (toe side) is root -x

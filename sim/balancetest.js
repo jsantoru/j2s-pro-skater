@@ -1,7 +1,7 @@
 // Balance meter checks. These assert the feel properties, not just that it runs: your correction must
 // always out-muscle the meter, doing nothing must cost you but not instantly, a short rail must not be a
 // coin flip, and heavy-handed input must be its own mistake. Usage: node sim/balancetest.js
-import { Balance, BALANCE } from '../src/balance.js';
+import { Balance, BALANCE, MANUAL_BALANCE } from '../src/balance.js';
 
 const DT = 1 / 120;
 // deterministic rng so runs are comparable
@@ -106,6 +106,33 @@ check('a long grind is harder than a fresh one', h6 > h0 * 1.15, `${f(h0)} -> ${
 const b3 = new Balance(mulberry(7)); b3.start(BALANCE.comboMax); b3.t = BALANCE.grace;
 check('a big combo is harder', b3.hardness(8) > h0, `${f(h0)} -> ${f(b3.hardness(8))}`);
 check('creeping is harder than cruising', b2.hardness(1.5) > b2.hardness(8), `${f(b2.hardness(8))} -> ${f(b2.hardness(1.5))}`);
+
+console.log('\n=== manuals run the same pendulum, tuned tighter ===');
+{
+  // same invariant has to hold for the manual tuning, since it is the same code path
+  const b = new Balance(mulberry(1), MANUAL_BALANCE); b.start(MANUAL_BALANCE.comboMax); b.t = 1e4;
+  const hMax = b.hardness(0);
+  const capped = Math.min(MANUAL_BALANCE.tip * hMax + MANUAL_BALANCE.bias * hMax,
+    MANUAL_BALANCE.control * MANUAL_BALANCE.saveMargin);
+  check('full stick still beats the worst case', MANUAL_BALANCE.control > capped * 1.05,
+    `control ${f(MANUAL_BALANCE.control)} vs disturbance ${f(capped)}`);
+
+  const mRuns = (gain) => [0, 1, 2, 3, 4].map((seed) => {
+    const bb = new Balance(mulberry(seed), MANUAL_BALANCE); bb.start(0);
+    const hist = [], n = Math.round(LAG / DT);
+    for (let t = 0; t < 12; t += DT) {
+      hist.push(bb.x);
+      const seen = hist.length > n ? hist[hist.length - 1 - n] : 0;
+      if (!bb.update(DT, Math.max(-1, Math.min(1, -seen * gain)), 6)) return t;
+    }
+    return 12;
+  });
+  const mNone = avg(mRuns(0)), mLight = avg(mRuns(1.2));
+  console.log(`  none ${f(mNone)}s   light ${f(mLight)}s`);
+  check('a manual runs away faster than a grind', mNone < avg(runs(0)), `${f(mNone)}s vs grind ${f(avg(runs(0)))}s`);
+  check('but is still holdable with a light touch', mLight > mNone * 1.5, `${f(mLight)}s`);
+  check('and long enough to be a connector, not a coin flip', mNone > 1.0, `worst-case hold ${f(mNone)}s`);
+}
 
 console.log(failures ? `\n${failures} FAILED\n` : '\nall balance checks passed\n');
 process.exit(failures ? 1 : 0);

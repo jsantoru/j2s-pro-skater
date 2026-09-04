@@ -20,6 +20,8 @@ function run(name, setup, script, seconds, opts = {}) {
   sk.events.land = (pts, text, mult) => { landings++; if (pts) events.push(`${f(t)} LAND +${pts} [${text}] x${mult}`); };
   sk.events.grindStart = (n) => events.push(`${f(t)} GRIND ${n}`);
   sk.events.trick = (n) => events.push(`${f(t)} TRICK ${n}`);
+  sk.events.manualStart = (n) => events.push(`${f(t)} MANUAL ${n}`);
+  sk.events.manualEnd = (n, d) => events.push(`${f(t)} MANUAL-END ${n} ${f(d)}s`);
   let t = 0;
   const inp = makeState();
   for (let i = 0; t < seconds; i++, t += DT) {
@@ -120,6 +122,36 @@ S.balance = () => {
       // gentle counter-steer; hands off the stick once the rail runs out so it does not skew the landing
       inp.steer = sk.state === 'grind' ? Math.max(-1, Math.min(1, -sk.balance.x * 1.6)) : 0;
     }, 8);
+};
+
+S.manual = () => {
+  const flat = (sk) => { sk.pos.set(-20, 0, 14); sk.heading.set(1, 0, 0); sk.speed = 8; };
+  // down-then-up flick, then hold the pitch axis steady
+  run('flick into a manual, feather it, ollie out', flat, (inp, t, sk) => {
+    inp.stickY = (t > 0.3 && t < 0.42) ? -1 : (t >= 0.42 && t < 0.54) ? 1 : 0;
+    if (sk.manual && t > 0.6) inp.stickY = Math.max(-1, Math.min(1, -sk.manualBalance.x * 1.5));
+    inp.ollie = t > 3.0 && t < 3.15;
+  }, 5);
+  run('manual with the stick pinned back: falls', flat, (inp, t, sk) => {
+    inp.stickY = (t > 0.3 && t < 0.42) ? -1 : (t >= 0.42 && t < 0.54) ? 1 : 0;
+    if (sk.manual && t > 0.6) inp.stickY = 0.9;
+  }, 5);
+  run('manual with no input at all: runs away', flat, (inp, t, sk) => {
+    inp.stickY = (t > 0.3 && t < 0.42) ? -1 : (t >= 0.42 && t < 0.54) ? 1 : 0;
+    if (sk.manual && t > 0.6) inp.stickY = 0;
+  }, 6);
+  // up-then-down flick is the nose manual
+  run('flick up-then-down into a nose manual', flat, (inp, t, sk) => {
+    inp.stickY = (t > 0.3 && t < 0.42) ? 1 : (t >= 0.42 && t < 0.54) ? -1 : 0;
+    if (sk.manual && t > 0.6) inp.stickY = Math.max(-1, Math.min(1, -sk.manualBalance.x * 1.5));
+  }, 4);
+  // FALSE POSITIVE GUARD: sweeping push -> brake crosses both thresholds and must NOT be read as a flick
+  run('push then brake (must not enter a manual)', flat, (inp, t) => {
+    inp.stickY = t < 1.2 ? 1 : -1; inp.push = t < 1.2 ? 1 : 0; inp.brake = t < 1.2 ? 0 : 1;
+  }, 3);
+  run('brake then push (must not enter a manual)', flat, (inp, t) => {
+    inp.stickY = t < 1.2 ? -1 : 1; inp.brake = t < 1.2 ? 1 : 0; inp.push = t < 1.2 ? 0 : 1;
+  }, 3);
 };
 
 const which = process.argv.slice(2);

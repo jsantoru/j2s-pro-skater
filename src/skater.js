@@ -1,8 +1,8 @@
 // Skater controller: a hand-tuned kinematic character, not a rigid body.
 // States: ride (on a surface), air, grind, bail. All units metres / seconds / radians unless noted.
 import * as THREE from 'three';
-import { FLIPS, GRABS, GRINDS, Combo, spinName } from './tricks.js';
-import { Balance, BALANCE } from './balance.js';
+import { FLIPS, GRABS, GRINDS, MANUALS, Combo, spinName } from './tricks.js';
+import { Balance, BALANCE, MANUAL_BALANCE } from './balance.js';
 
 export const TUNING = {
   gravity: 22,
@@ -40,6 +40,13 @@ export const TUNING = {
   grindMagnetAcc: 18,     // m/s² lateral pull
   grindMagnetSpeed: 4.5,  // max lateral closing speed
   trickBuffer: 0.25,      // flip/grab pressed this long before the pop still fires on takeoff
+  // ---- manuals ----
+  manualFlick: 0.3,       // seconds to complete the down-up (or up-down) flick that starts a manual
+  manualEdge: 0.6,        // stick deflection that counts as one half of that flick
+  manualCentre: 0.25,     // and it only arms from centre, so holding push then braking is not a flick
+  manualMinSpeed: 1.6,    // below this you have run out of roll and the manual just ends
+  manualDrag: 0.55,       // extra m/s² lost to riding on two wheels
+  manualPitch: 22,        // degrees the board sits nose-up (or nose-down) while manualling
   grabMin: 0.3,
   pump: 4.0,           // m/s² while crouching down a transition
   vertKick: 1.3,       // outward push when leaving a vert lip without popping
@@ -65,7 +72,8 @@ export class Skater {
     this.level = level;
     this.T = TUNING;
     this.combo = new Combo();
-    this.balance = new Balance(rng);
+    this.balance = new Balance(rng, BALANCE);              // grinds: side-to-side, stick X
+    this.manualBalance = new Balance(rng, MANUAL_BALANCE); // manuals: fore-aft, stick Y
     this.events = {};
     this.score = 0;
     this.reset();
@@ -87,6 +95,8 @@ export class Skater {
     this.trick = null; this.airTrickIndex = -1;
     this.grind = null; this.bailT = 0; this.bailReason = '';
     this.balance.reset();
+    this.manual = null; this.manualBalance.reset();
+    this.flickDir = 0; this.flickT = 0; this.flickArmed = false; this.manualLean = 0;
     this.lastRail = null; this.railCooldown = 0;
     this.landSquash = 0; this.groundTime = 1;
     this.lastAirWasTiny = false;
@@ -131,6 +141,9 @@ export class Skater {
       case 'grind': this.updateGrind(dt, inp); break;
       case 'bail': this.updateBail(dt); break;
     }
+    // visual manual pitch: +1 nose-up (tail manual), -1 nose-down (nose manual), eased so it rocks over
+    const mTarget = this.manual ? (this.manual.kind === 'Nose Manual' ? -1 : 1) : 0;
+    this.manualLean += (mTarget - this.manualLean) * Math.min(1, dt * 9);
     // visual crouch
     const target = this.state === 'bail' ? 0 : (this.crouching ? 0.35 + 0.65 * Math.min(1, this.crouchTime / this.T.crouchFull) : 0);
     this.crouch += (target - this.crouch) * Math.min(1, dt * (target > this.crouch ? 14 : 18));
@@ -154,24 +167,47 @@ export class Skater {
     let sp = this.speed;
     sp += -T.gravity * this.heading.y * (this.heading.y > 0 ? T.uphillGrav : 1) * dt; // slopes (ramp assist uphill)
     this.pushing = 0; this.braking = inp.brake;
-    if (inp.push > 0 && sp < T.maxPush) {
-      const acc = T.pushAcc * inp.push * (sp < 2 ? 1.5 : 1);
-      sp = Math.min(T.maxPush, sp + acc * dt); this.pushing = inp.push;
+    // On two wheels you cannot push, pump or brake — the whole vertical stick axis belongs to balance,
+    // which is also what keeps the manual input from fighting push/brake for the same stick.
+    if (this.manual) {
+      sp = Math.max(0, sp - T.manualDrag * dt);
+    } else {
+      if (inp.push > 0 && sp < T.maxPush) {
+        const acc = T.pushAcc * inp.push * (sp < 2 ? 1.5 : 1);
+        sp = Math.min(T.maxPush, sp + acc * dt); this.pushing = inp.push;
+      }
+      // THPS speed model: the skater pushes by himself when slow on flat ground, and holding crouch is the gas pedal
+      if (this.crouching && sp < T.crouchMax && inp.brake === 0) sp = Math.min(T.crouchMax, sp + T.crouchAcc * (sp < 2 ? 1.4 : 1) * dt);
+      else if (!this.pushing && !this.crouching && inp.brake === 0 && inp.autoPush !== false && sp < T.autoPushSpeed
+        && this.normal.y > 0.92 && this.groundTime > 0.35) {
+        sp = Math.min(T.autoPushSpeed, sp + T.autoPushAcc * (sp < 2 ? 1.5 : 1) * dt); this.pushing = 0.8;
+      }
+      if (inp.brake > 0) sp = Math.max(0, sp - T.brakeAcc * inp.brake * dt);
+      if (this.crouching && this.normal.y < 0.85 && this.heading.y < -0.2) sp += T.pump * dt; // pumping transitions
     }
-    // THPS speed model: the skater pushes by himself when slow on flat ground, and holding crouch is the gas pedal
-    if (this.crouching && sp < T.crouchMax && inp.brake === 0) sp = Math.min(T.crouchMax, sp + T.crouchAcc * (sp < 2 ? 1.4 : 1) * dt);
-    else if (!this.pushing && !this.crouching && inp.brake === 0 && inp.autoPush !== false && sp < T.autoPushSpeed
-      && this.normal.y > 0.92 && this.groundTime > 0.35) {
-      sp = Math.min(T.autoPushSpeed, sp + T.autoPushAcc * (sp < 2 ? 1.5 : 1) * dt); this.pushing = 0.8;
-    }
-    if (inp.brake > 0) sp = Math.max(0, sp - T.brakeAcc * inp.brake * dt);
-    if (this.crouching && this.normal.y < 0.85 && this.heading.y < -0.2) sp += T.pump * dt; // pumping transitions
     const fr = (T.rollFriction + sp * sp * T.drag + Math.abs(this.steer) * sp * T.carveDrag) * dt;
     if (sp > 0) sp = Math.max(0, sp - fr);
     if (sp < 0) { // rollback on a slope: turn around, ride fakie
       sp = -sp; this.heading.negate(); this.stance = -this.stance;
     }
     this.speed = sp;
+
+    // manuals: enter on a stick flick, then hold the pitch axis
+    const flick = this.detectManualFlick(dt, inp);
+    if (flick !== 0 && this.normal.y > 0.85 && sp > 2.2) {
+      const want = flick < 0 ? 'tail' : 'nose';   // flicked down first = tail manual, up first = nose manual
+      if (!this.manual) this.startManual(want);
+      else if (this.manual.kind !== MANUALS[want][0]) { this.endManual(false); this.startManual(want); }
+    }
+    if (this.manual) {
+      const m = this.manual;
+      m.time += dt;
+      if (!this.manualBalance.update(dt, inp.stickY || 0, sp)) { this.bail('balance'); return; }
+      const tick = Math.floor(m.time * 10) - Math.floor((m.time - dt) * 10);
+      if (tick > 0) this.combo.addToLast(10 * tick);
+      // out of roll, or the ground stopped being flat enough to hold a wheelie on
+      if (sp < T.manualMinSpeed || this.normal.y < 0.72) this.endManual(true);
+    }
 
     // steering
     const turnRate = THREE.MathUtils.lerp(T.turnLow, T.turnHigh, Math.min(1, sp / 12)) * (this.crouching ? T.crouchTurnMul : 1);
@@ -216,6 +252,58 @@ export class Skater {
     if (hx.lengthSq() > 0.04) this.facing.copy(hx.normalize().multiplyScalar(this.stance));
   }
 
+  // A manual starts on a down-up (or up-down) flick of the stick. It only arms from centre, so the
+  // common push-then-brake sweep — which crosses both thresholds — is not mistaken for a flick.
+  // Returns the direction it STARTED in: -1 down-first (tail manual), +1 up-first (nose manual).
+  detectManualFlick(dt, inp) {
+    const T = this.T, y = inp.stickY || 0;
+    if (this.flickDir === 0) {
+      if (Math.abs(y) < T.manualCentre) this.flickArmed = true;
+      if (this.flickArmed && Math.abs(y) > T.manualEdge) { this.flickDir = Math.sign(y); this.flickT = 0; }
+      return 0;
+    }
+    this.flickT += dt;
+    if (this.flickT > T.manualFlick) { this.flickDir = 0; this.flickArmed = false; return 0; }
+    if (Math.sign(y) === -this.flickDir && Math.abs(y) > T.manualEdge) {
+      const started = this.flickDir;
+      this.flickDir = 0; this.flickArmed = false;
+      return started;
+    }
+    return 0;
+  }
+
+  startManual(which) {
+    const [name, base] = MANUALS[which];
+    this.manual = { kind: name, time: 0 };
+    this.manualBalance.start(Math.min(MANUAL_BALANCE.comboMax, this.combo.tricks.length * MANUAL_BALANCE.comboStep));
+    this.combo.add(name, base);
+    this.emit('manualStart', name);
+  }
+
+  // banked=true settles the combo here on the ground; popping or bailing out of a manual does not,
+  // because the combo carries on into the air.
+  endManual(banked) {
+    if (!this.manual) return;
+    const m = this.manual;
+    this.manual = null;
+    this.manualBalance.stop();
+    this.emit('manualEnd', m.kind, m.time);
+    if (banked) this.bankCombo(false);
+  }
+
+  bankCombo(boost) {
+    if (this.combo.tricks.length) {
+      const banked = this.combo.total;
+      this.score += banked;
+      if (boost) this.speed = Math.min(this.speed + this.T.landBoost, 16);
+      this.emit('land', banked, this.combo.text, this.combo.multiplier);
+      this.combo.reset();
+      return banked;
+    }
+    this.emit('land', 0, '', 0);
+    return 0;
+  }
+
   handleCrouch(dt, inp) {
     if (!inp.ollie) this.bufferedOllie = false;
     if (inp.olliePressed || (inp.ollie && this.bufferedOllie)) { this.crouching = true; this.crouchTime = 0; this.bufferedOllie = false; }
@@ -230,6 +318,7 @@ export class Skater {
     const charge = Math.min(1, this.crouchTime / T.crouchFull);
     const power = THREE.MathUtils.lerp(T.popMin, T.popMax, charge);
     this.crouching = false;
+    this.endManual(false);   // ollie out of a manual: the combo carries on into the air
     if (this.state === 'grind') {
       const g = this.grind;
       this.vel.copy(g.rail.dir).multiplyScalar(g.dir * g.speed);
@@ -247,6 +336,7 @@ export class Skater {
 
   leaveGround(popped) {
     if (this.crouching) { this.pop(); return; } // still charging at the lip: pop now (late-release forgiveness)
+    this.endManual(false);   // rolled off an edge while manualling: the combo stays open in the air
     this.vel.copy(this.heading).multiplyScalar(this.speed);
     if (this.normal.y < 0.45) this.vel.addScaledVector(this.normal, this.T.vertKick);
     this.startAir(this.normal, popped);
@@ -442,15 +532,7 @@ export class Skater {
     this.vel.copy(this.heading).multiplyScalar(sp);
     if (tiny) return;
     this.bankSpin(false);
-    if (this.combo.tricks.length) {
-      const banked = this.combo.total;
-      this.score += banked;
-      this.speed = Math.min(this.speed + T.landBoost, 16);
-      this.emit('land', banked, this.combo.text, this.combo.multiplier);
-      this.combo.reset();
-    } else {
-      this.emit('land', 0, '', 0);
-    }
+    this.bankCombo(true);
   }
 
   // ---------- GRIND ----------
@@ -553,6 +635,7 @@ export class Skater {
   // ---------- BAIL ----------
   bail(reason) {
     if (this.state === 'grind') this.grind = null;
+    this.manual = null; this.manualBalance.stop();
     this.balance.stop();
     this.state = 'bail'; this.bailT = 0; this.bailReason = reason;
     this.trick = null; this.crouching = false; this.queued = null; this.grindIntent = 0;

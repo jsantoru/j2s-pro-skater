@@ -30,9 +30,24 @@ export const BALANCE = {
 
 const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
 
+// Manuals run the same pendulum on the pitch axis. Rolling on two wheels is twitchier than a rail but
+// you have more leverage over it, and there is no wandering rail surface under you — so: quicker to run
+// away, quicker to correct, less random wander, and it ramps faster so manuals stay a connector between
+// tricks rather than somewhere you park.
+export const MANUAL_BALANCE = Object.assign({}, BALANCE, {
+  tip: 7.4,
+  control: 9.6,
+  bias: 0.95,
+  ramp: 0.34,
+  rampMax: 0.7,
+  grace: 0.22,
+  slowSpeed: 3.0,   // a manual dies when you run out of roll, and that is handled by the speed floor
+  slowFactor: 0.7,
+});
+
 export class Balance {
-  // rng is injectable so the sim can run this deterministically
-  constructor(rng = Math.random) { this.rng = rng; this.reset(); }
+  // rng is injectable so the sim can run this deterministically; tuning picks grind vs manual feel
+  constructor(rng = Math.random, tuning = BALANCE) { this.rng = rng; this.B = tuning; this.reset(); }
 
   reset() {
     this.x = 0; this.v = 0; this.t = 0; this.applied = 0;
@@ -44,11 +59,11 @@ export class Balance {
   stop() { this.active = false; }
 
   get error() { return Math.min(1, Math.abs(this.x)); }        // 0 centred → 1 about to fall
-  get settling() { return this.t < BALANCE.grace; }
+  get settling() { return this.t < this.B.grace; }
 
   // How hard the meter is fighting right now: grows along the rail and with the combo already banked.
   hardness(speed) {
-    const B = BALANCE;
+    const B = this.B;
     let h = 1 + Math.min(B.rampMax, Math.max(0, this.t - B.grace) * B.ramp) + this.difficulty;
     if (speed < B.slowSpeed) h *= 1 + (1 - Math.max(0, speed) / B.slowSpeed) * B.slowFactor;
     return h;
@@ -58,12 +73,12 @@ export class Balance {
   // so you counter a tip by pressing away from it.
   update(dt, input, speed) {
     if (!this.active) return true;
-    const B = BALANCE;
+    const B = this.B;
     this.t += dt;
     if (!this.armed && (Math.abs(input) < B.armDeadzone || this.t >= B.armTimeout)) this.armed = true;
     if (this.t < B.grace) return true;
 
-    // slow wander, re-aimed every half second or so, so no two grinds play out the same
+    // slow wander, re-aimed every half second or so, so no two of them play out the same
     this.biasT -= dt;
     if (this.biasT <= 0) { this.biasTarget = this.rng() * 2 - 1; this.biasT = 0.4 + this.rng() * 0.5; }
     this.bias += (this.biasTarget - this.bias) * Math.min(1, dt * 3);

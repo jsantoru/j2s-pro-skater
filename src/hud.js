@@ -11,10 +11,10 @@ export class HUD {
       score: $('score'), timer: $('timer'), pad: $('pad-status'), comboPts: $('combo-points'), comboMult: $('combo-mult'),
       trick: $('trick-text'), landed: $('landed-text'), toast: $('toast'), controls: $('controls-panel'),
       overlay: $('overlay'), overlayMsg: $('overlay-msg'), finalScore: $('final-score'), speed: $('speed-fill'),
-      bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'),
+      bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'), balanceLabel: $('balance-label'),
     };
     this.shownScore = 0; this.holdTimer = 0; this.toastTimer = 0;
-    this.balanceShown = false;
+    this.balanceShown = false; this.balanceVertical = undefined;
   }
   setPad(connected, id) {
     this.el.pad.textContent = connected ? '🎮 ' + (id || 'GAMEPAD').replace(/\(.*\)/, '').trim().slice(0, 28).toUpperCase() : '⌨ KEYBOARD (no gamepad)';
@@ -58,12 +58,23 @@ export class HUD {
     if (mult > 0) { this.el.comboPts.textContent = fmt(points); this.el.comboMult.textContent = 'x' + mult; }
     else { this.el.comboPts.textContent = ''; this.el.comboMult.textContent = ''; }
   }
-  // Grind balance meter: only on screen while it matters, so it never becomes wallpaper.
-  balance(show, x) {
-    if (show !== this.balanceShown) { this.el.balance.classList.toggle('hidden', !show); this.balanceShown = show; }
+  // Balance meter: only on screen while it matters, so it never becomes wallpaper. Grinds tip
+  // side-to-side and get a horizontal bar; manuals tip fore-aft and get a vertical one, so the meter
+  // always moves the same way the stick does.
+  balance(show, x, vertical, label) {
+    const el = this.el.balance, n = this.el.balanceNeedle;
+    if (show !== this.balanceShown) { el.classList.toggle('hidden', !show); this.balanceShown = show; }
     if (!show) return;
-    this.el.balanceNeedle.style.left = (50 + Math.max(-1, Math.min(1, x)) * 50) + '%';
-    this.el.balance.classList.toggle('danger', Math.abs(x) > 0.62);
+    const v = Math.max(-1, Math.min(1, x));
+    if (vertical !== this.balanceVertical) {
+      el.classList.toggle('vertical', !!vertical);
+      n.style.left = ''; n.style.top = '';               // clear whichever axis we are no longer driving
+      this.el.balanceLabel.textContent = label;
+      this.balanceVertical = vertical;
+    }
+    if (vertical) n.style.top = (50 - v * 50) + '%';      // +x is nose-high, which reads as up
+    else n.style.left = (50 + v * 50) + '%';
+    el.classList.toggle('danger', Math.abs(v) > 0.62);
   }
   update(dt, score, timeLeft, speedFrac) {
     this.shownScore += (score - this.shownScore) * Math.min(1, dt * 6);
