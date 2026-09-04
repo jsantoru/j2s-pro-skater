@@ -152,6 +152,17 @@ S.manual = () => {
   run('brake then push (must not enter a manual)', flat, (inp, t) => {
     inp.stickY = t < 1.2 ? -1 : 1; inp.brake = t < 1.2 ? 1 : 0; inp.push = t < 1.2 ? 0 : 1;
   }, 3);
+  run('flip direction overlaps the first half of a generously buffered landing manual', flat, (inp, t, sk) => {
+    inp.ollie = t > 0.2 && t < 0.75;
+    inp.flipPressed = Math.abs(t - 0.38) < DT / 2; // select the flip well before takeoff
+    inp.dir8 = 'SW'; // 360 Flip takes 0.55s
+    // Down overlaps the flip selection/crouch and remains held briefly in air; up comes well after it.
+    if ((sk.state === 'ride' && !sk.manual && t > 0.35 && t < 0.76)
+      || (sk.state === 'air' && sk.airTime < 0.18)) inp.stickY = -1;
+    else if (sk.state === 'air' && sk.airTime >= 0.38 && sk.airTime < 0.5) inp.stickY = 1;
+    else if (sk.manual) inp.stickY = Math.max(-1, Math.min(1, -sk.manualBalance.x * 1.5));
+    else inp.stickY = 0;
+  }, 3);
 };
 
 const which = process.argv.slice(2);

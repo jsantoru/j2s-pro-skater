@@ -21,7 +21,7 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 | Input | Action |
 |---|---|
 | Left stick | Analog steering on the ground, spin in the air, trick direction, **balance while grinding** |
-| Left stick ↓↑ flick | Manual (↑↓ for Nose Manual). While manualling the vertical axis balances the pitch — you can't push on two wheels, so it's free |
+| Left stick ↓↑ flick | Manual (↑↓ for Nose Manual). Flick in the air to land in one. While manualling the vertical axis balances the pitch — you can't push on two wheels, so it's free |
 | A (hold) | Crouch **= speed up** (THPS style); release to ollie – longer hold = bigger pop (0.55 s to full) |
 | X + direction | Flip trick (Kickflip, Heelflip, Pop Shove-it, Impossible, 360 Flip, Varial Heel, Hardflip, Inward Heel). Can be pressed during the crouch or on the release frame – it fires on takeoff |
 | B + direction | Grab trick (hold; Indy, Melon, Nosegrab, Tailgrab, Method, Stalefish, Judo, Airwalk) |
