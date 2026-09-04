@@ -82,6 +82,8 @@ skater.events.bail = (reason) => {
 skater.events.trick = () => { audio.trick(); refreshCombo(); };
 skater.events.grindStart = () => { audio.burst(3000, 0.08, 0.3, 'highpass'); input.rumble(0.35, 0.75, 110); input.rumbleSustainStop(); refreshCombo(); };
 skater.events.grindEnd = () => { input.rumbleSustainStop(); input.rumble(0.25, 0.4, 70); refreshCombo(); };
+skater.events.manualStart = () => { audio.burst(520, 0.06, 0.18, 'lowpass'); input.rumble(0.3, 0.15, 70); input.rumbleSustainStop(); refreshCombo(); };
+skater.events.manualEnd = () => { input.rumbleSustainStop(); refreshCombo(); };
 
 function refreshCombo() {
   const c = skater.combo;
@@ -165,9 +167,17 @@ function frame(now) {
       (metal ? 0.1 + g * 0.14 : 0.24 + g * 0.26) + wobble * 0.55,
       (metal ? 0.42 + g * 0.38 : 0.2 + g * 0.2) * (1 - wobble * 0.35), dt);
   }
-  hud.balance(mode === 'playing' && skater.state === 'grind' && skater.balance.active, skater.balance.x);
+  // manuals buzz too, but lighter — it is wheels on tarmac, not trucks on steel
+  if (mode === 'playing' && skater.manual) {
+    const w = skater.manualBalance.error * skater.manualBalance.error;
+    input.rumbleSustain(0.06 + w * 0.5, 0.12 + w * 0.2, dt);
+  }
+  const onRail = mode === 'playing' && skater.state === 'grind' && skater.balance.active;
+  const onManual = mode === 'playing' && !!skater.manual && skater.manualBalance.active;
+  if (onManual) hud.balance(true, skater.manualBalance.x, true, 'MANUAL');
+  else hud.balance(onRail, skater.balance.x, false, 'BALANCE');
   hud.update(dt, skater.score, timeLeft, skater.speed / 14);
-  if (skater.combo.tricks.length && skater.state === 'grind') refreshCombo();
+  if (skater.combo.tricks.length && (skater.state === 'grind' || skater.manual)) refreshCombo();
   renderer.render(scene, camera);
 }
 requestAnimationFrame(frame);

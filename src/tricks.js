@@ -15,6 +15,10 @@ export const GRINDS = {
   NW: ['Crooked Grind', 350], NE: ['Overcrook', 350], SW: ['Smith Grind', 450], SE: ['Feeble Grind', 400],
 };
 
+// Manuals score modestly on entry and accrue while held — they are connective tissue between tricks,
+// not a way to farm points by rolling in a straight line.
+export const MANUALS = { tail: ['Manual', 100], nose: ['Nose Manual', 150] };
+
 export function spinName(deg, dir) {
   const n = Math.round(Math.abs(deg) / 180) * 180;
   if (n < 180) return '';

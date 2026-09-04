@@ -21,6 +21,7 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 | Input | Action |
 |---|---|
 | Left stick | Analog steering on the ground, spin in the air, trick direction, **balance while grinding** |
+| Left stick ↓↑ flick | Manual (↑↓ for Nose Manual). While manualling the vertical axis balances the pitch — you can't push on two wheels, so it's free |
 | A (hold) | Crouch **= speed up** (THPS style); release to ollie – longer hold = bigger pop (0.55 s to full) |
 | X + direction | Flip trick (Kickflip, Heelflip, Pop Shove-it, Impossible, 360 Flip, Varial Heel, Hardflip, Inward Heel). Can be pressed during the crouch or on the release frame – it fires on takeoff |
 | B + direction | Grab trick (hold; Indy, Melon, Nosegrab, Tailgrab, Method, Stalefish, Judo, Airwalk) |
@@ -54,8 +55,9 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   approach, 5-stair with handrail and hubba, pyramid fun box with ledge, kicker→rail line, kicker gap,
   two ledges, flat rails, a down bar. Also builds the raycast colliders and grind segments.
 - `src/tricks.js` – trick tables, spin naming, THPS-style combo scoring (sum × trick count, repeat decay).
-- `src/balance.js` – the grind balance meter, as an inverted pendulum. Standalone and injectable-rng so it
-  can be tested on its own (`npm run sim:balance`) and reused if manuals ever land.
+- `src/balance.js` – the balance meter, as an inverted pendulum. One class, two tunings: `BALANCE` for
+  grinds (roll axis, stick X) and `MANUAL_BALANCE` for manuals (pitch axis, stick Y). Standalone with an
+  injectable rng so it can be tested on its own (`npm run sim:balance`).
 - `sim/playtest.js` – headless Node harness that drives the controller through scripted lines
   (push/coast, brake, carving, ollie heights, flips, quarter pipe, half pipe pumping, kicker→rail,
   boardslide, stairs, gap, wall). `npm run sim` prints state timelines; use it when re-tuning.
@@ -94,6 +96,12 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   is what keeps it tense. Difficulty ramps along the rail, with the combo banked, and as you slow down.
   0.32 s of grace on landing keeps the grind magnet from dropping you straight into a fight, and a short
   rail (the 7 m flat rail is ~1.2 s) is still free — it is the 24 m coping that asks you to work.
+- Manuals run the same pendulum on the pitch axis, tuned tighter: quicker to run away (2.2 s with no input
+  vs 2.3 s on a rail) but quicker to correct, and it ramps faster, so a manual is a connector between
+  tricks rather than somewhere to park. Entry is a down-up flick that **only arms from centre** — that one
+  rule is what stops the ordinary push-then-brake sweep, which crosses both thresholds, being read as a
+  manual. On two wheels you can't push, pump or brake, which is both correct and what frees the whole
+  vertical stick axis for balancing. Ollie out and the combo carries on; roll to a stop and it banks.
 - Haptics: landings scale rumble with impact, and grinds buzz continuously for as long as you are on the
   rail. Metal (rails, coping) drives the high-frequency motor; concrete ledges use a coarser low rumble.
   Both scale with grind speed.
