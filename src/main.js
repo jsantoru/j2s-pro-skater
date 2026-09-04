@@ -65,19 +65,20 @@ const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'g
 const pending = {};
 
 skater.events.ollie = (charge) => { audio.pop(charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
-skater.events.trickStart = (name) => { const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier, false); };
+skater.events.trickStart = (name) => { const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
 skater.events.land = (points, text, mult) => {
   audio.land(skater.landSquash);
   fx.burst(skater.pos, 10 + Math.round(skater.landSquash * 16), [0.75, 0.72, 0.68], 1.6 + skater.landSquash * 1.5, 0.5);
   input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
-  if (points > 0) { hud.landed(points); audio.score(); }
+  hud.landed(points, text, mult); // the trick names stay up next to the payout for a beat
+  if (points > 0) audio.score();
 };
 skater.events.bail = (reason) => {
   audio.bail();
   fx.burst(skater.pos, 24, [0.8, 0.76, 0.7], 2.5, 0.6);
   input.rumbleSustainStop(); input.rumble(1, 1, 320);
   const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST' }[reason] || 'BAILED';
-  hud.combo(why + (skater.lostCombo ? '  (' + skater.lostCombo + ')' : ''), 0, 0, true);
+  hud.bailed(why, skater.lostCombo || '', skater.lostPoints || 0, skater.lostMult || 0);
 };
 skater.events.trick = () => { audio.trick(); refreshCombo(); };
 skater.events.grindStart = () => { audio.burst(3000, 0.08, 0.3, 'highpass'); input.rumble(0.35, 0.75, 110); input.rumbleSustainStop(); refreshCombo(); };
@@ -85,7 +86,7 @@ skater.events.grindEnd = () => { input.rumbleSustainStop(); input.rumble(0.25, 0
 
 function refreshCombo() {
   const c = skater.combo;
-  if (c.tricks.length) hud.combo(c.text, c.points, c.multiplier, false);
+  if (c.tricks.length) hud.combo(c.text, c.points, c.multiplier);
 }
 
 input.onGamepadChange = (connected, id) => {
@@ -98,7 +99,7 @@ function startRun() {
   skater.reset();
   timeLeft = RUN_TIME; mode = 'playing';
   hud.overlay(false);
-  hud.combo('', 0, 0, false);
+  hud.combo('', 0, 0);
   followCam.snap(skater);
 }
 function endRun() {

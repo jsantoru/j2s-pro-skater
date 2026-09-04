@@ -547,7 +547,8 @@ export class Skater {
     this.trick = null; this.crouching = false; this.queued = null; this.grindIntent = 0;
     if (reason === 'wall') this.vel.multiplyScalar(-0.15).y += 2.5;
     else { this.vel.multiplyScalar(0.6); this.vel.y = Math.max(this.vel.y, 1.5); }
-    this.lostCombo = this.combo.text; this.combo.reset();
+    this.lostCombo = this.combo.text; this.lostPoints = this.combo.points; this.lostMult = this.combo.multiplier;
+    this.combo.reset();
     this.emit('bail', reason);
   }
 
