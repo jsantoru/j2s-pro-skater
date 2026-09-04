@@ -65,7 +65,7 @@ const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'g
 const pending = {};
 
 skater.events.ollie = (charge) => { audio.pop(charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
-skater.events.trickStart = (name) => { const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
+skater.events.trickStart = (name) => { audio.trickStart(name); const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
 skater.events.land = (points, text, mult) => {
   audio.land(skater.landSquash);
   fx.burst(skater.pos, 10 + Math.round(skater.landSquash * 16), [0.75, 0.72, 0.68], 1.6 + skater.landSquash * 1.5, 0.5);
@@ -82,10 +82,10 @@ skater.events.bail = (reason) => {
   const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST', balance: 'LOST BALANCE' }[reason] || 'BAILED';
   hud.bailed(why, skater.lostCombo || '', skater.lostPoints || 0, skater.lostMult || 0);
 };
-skater.events.trick = () => { audio.trick(); refreshCombo(); };
-skater.events.grindStart = () => { audio.burst(3000, 0.08, 0.3, 'highpass'); input.rumble(0.35, 0.75, 110); input.rumbleSustainStop(); refreshCombo(); };
-skater.events.grindEnd = () => { input.rumbleSustainStop(); input.rumble(0.25, 0.4, 70); refreshCombo(); };
-skater.events.manualStart = () => { audio.burst(520, 0.06, 0.18, 'lowpass'); input.rumble(0.3, 0.15, 70); input.rumbleSustainStop(); refreshCombo(); };
+skater.events.trick = (name) => { audio.trick(name); refreshCombo(); };
+skater.events.grindStart = () => { audio.grindStart(skater.grind?.rail.kind || 'metal', skater.speed); input.rumble(0.35, 0.75, 110); input.rumbleSustainStop(); refreshCombo(); };
+skater.events.grindEnd = () => { audio.grindEnd(skater.grind?.rail.kind || 'metal'); input.rumbleSustainStop(); input.rumble(0.25, 0.4, 70); refreshCombo(); };
+skater.events.manualStart = () => { audio.manualStart(); input.rumble(0.3, 0.15, 70); input.rumbleSustainStop(); refreshCombo(); };
 skater.events.manualEnd = () => { input.rumbleSustainStop(); refreshCombo(); };
 skater.events.spinTick = () => { input.rumble(0.08, 0.58, 34); };
 
