@@ -1,6 +1,6 @@
-// An original, sparse ambient score. It is intentionally small and generative: no samples, no
-// borrowed melodies, and enough silence for skating sounds to remain the focus.
-export class AmbientMusic {
+// An original, driving loop for the run. It is intentionally small and generative: no samples, no
+// borrowed melodies, just a four-bar minor climb (Am - C - Dm - E) under a steady eighth-note pulse.
+export class SkateMusic {
   constructor(ctx, destination) {
     this.ctx = ctx;
     this.bus = ctx.createGain(); this.bus.gain.value = 0.16; this.bus.connect(destination);
@@ -11,27 +11,36 @@ export class AmbientMusic {
     this.beat = 60 / 90;
     this.barDuration = this.beat * 4;
 
-    // A half-beat echo stays on the 90 BPM grid while giving the piano some space.
+    // A half-beat echo stays on the 90 BPM grid, doubling the pulse rather than smearing it.
     this.delay = ctx.createDelay(1); this.delay.delayTime.value = this.beat * 0.5;
     this.feedback = ctx.createGain(); this.feedback.gain.value = 0.2;
-    this.delayWet = ctx.createGain(); this.delayWet.gain.value = 0.16;
+    this.delayWet = ctx.createGain(); this.delayWet.gain.value = 0.14;
     this.delay.connect(this.feedback).connect(this.delay);
     this.delay.connect(this.delayWet).connect(destination);
 
     this.nextBar = ctx.currentTime + 1.8;
     this.bar = 0;
 
-    // Eight continuously looping bars. Notes are MIDI numbers and beat positions within each bar.
+    // Four continuously looping bars, one chord each: A minor, C, D minor, E. `arp` is the eighth-note
+    // pulse for the bar; `lead` is [beat, MIDI note, length in beats] and climbs with the harmony.
     this.phrase = [
-      { chord: [48, 55, 59, 64], notes: [[0.5, 67, 1.25], [2.5, 64, 0.75]], counter: [[1.5, 76, 0.65]] },
-      { chord: [45, 52, 55, 60], notes: [[1, 60, 1], [3, 64, 0.75]], counter: [[0.5, 72, 0.75], [2.5, 76, 0.5]] },
-      { chord: [41, 48, 52, 57], notes: [[0.5, 69, 1.25], [2.5, 67, 0.75]], counter: [[1.5, 72, 0.75]] },
-      { chord: [43, 50, 55, 60], notes: [[1, 62, 0.75], [3, 60, 1]], counter: [[0.5, 74, 0.75], [2.25, 71, 0.5]] },
-      { chord: [50, 57, 60, 65], notes: [[0.5, 65, 1], [2, 69, 1.25]], counter: [[1.5, 77, 0.65]] },
-      { chord: [43, 50, 55, 59], notes: [[1, 67, 0.75], [3, 62, 0.75]], counter: [[0.5, 74, 0.75], [2.5, 79, 0.5]] },
-      { chord: [48, 55, 59, 64], notes: [[0.5, 64, 1.5]], counter: [[2.5, 76, 0.75]] },
-      // A restrained dominant bar creates motion back into the opening C-major color.
-      { chord: [43, 50, 55, 59], notes: [[0.5, 62, 1], [2.5, 59, 0.75]], counter: [[1.5, 74, 0.65], [3.5, 71, 0.4]] },
+      {
+        chord: [45, 52, 57, 60], arp: [57, 64, 69, 64, 57, 64, 69, 72],
+        lead: [[0, 69, 1.4], [1.5, 72, 0.9], [2.5, 76, 1.4]],
+      },
+      {
+        chord: [48, 55, 60, 64], arp: [60, 67, 72, 67, 60, 67, 72, 76],
+        lead: [[0, 72, 1.4], [1.5, 76, 0.9], [2.5, 79, 1.4]],
+      },
+      {
+        chord: [50, 57, 62, 65], arp: [62, 69, 74, 69, 62, 69, 74, 77],
+        lead: [[0, 74, 1.4], [1.5, 77, 0.9], [2.5, 81, 1.4]],
+      },
+      // The major dominant and a short turnaround pull the climb back down to the opening A.
+      {
+        chord: [52, 59, 64, 68], arp: [64, 71, 76, 71, 64, 71, 76, 80],
+        lead: [[0, 76, 1.4], [1.5, 80, 0.9], [2.5, 83, 0.9], [3.5, 80, 0.5]],
+      },
     ];
   }
 
@@ -42,40 +51,44 @@ export class AmbientMusic {
     if (echo > 0) { const send = this.ctx.createGain(); send.gain.value = echo; node.connect(send).connect(this.delay); }
   }
 
-  piano(midi, when, duration, volume = 0.12) {
+  pulse(midi, when, duration, volume = 0.038) {
+    // A short, filtered double saw. It carries the motor of the track, so it decays well inside its
+    // eighth note and takes very little echo: the point is the grid, not the wash.
     const c = this.ctx, end = when + duration;
-    const fundamental = c.createOscillator(); fundamental.type = 'triangle'; fundamental.frequency.value = this.hz(midi);
-    const overtone = c.createOscillator(); overtone.type = 'sine'; overtone.frequency.value = this.hz(midi) * 2.01;
-    const overtoneGain = c.createGain(); overtoneGain.gain.value = 0.16;
-    const filter = c.createBiquadFilter(); filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(2200, when); filter.frequency.exponentialRampToValueAtTime(620, end);
+    const filter = c.createBiquadFilter(); filter.type = 'lowpass'; filter.Q.value = 5;
+    filter.frequency.setValueAtTime(2800, when); filter.frequency.exponentialRampToValueAtTime(760, end);
     const gain = c.createGain(); gain.gain.setValueAtTime(0.0001, when);
-    gain.gain.exponentialRampToValueAtTime(volume, when + 0.018);
-    gain.gain.exponentialRampToValueAtTime(volume * 0.28, Math.min(end - 0.08, when + 0.42));
+    gain.gain.exponentialRampToValueAtTime(volume, when + 0.007);
+    gain.gain.exponentialRampToValueAtTime(volume * 0.3, when + duration * 0.4);
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
-    fundamental.connect(filter); overtone.connect(overtoneGain).connect(filter);
-    filter.connect(gain); this.route(gain, 0.28);
-    fundamental.start(when); overtone.start(when);
-    fundamental.stop(end + 0.03); overtone.stop(end + 0.03);
+    filter.connect(gain); this.route(gain, 0.06);
+    for (const detune of [-6, 6]) {
+      const osc = c.createOscillator(); osc.type = 'sawtooth';
+      osc.frequency.value = this.hz(midi); osc.detune.value = detune;
+      const voice = c.createGain(); voice.gain.value = 0.5;
+      osc.connect(voice).connect(filter); osc.start(when); osc.stop(end + 0.03);
+    }
   }
 
-  upperPiano(midi, when, duration, pan = 0.22) {
+  lead(midi, when, duration, pan = 0.22) {
+    // The upper voice: a warm sustained tone that holds the ascending line over the pulse.
     const c = this.ctx, end = when + duration;
-    const fundamental = c.createOscillator(); fundamental.type = 'sine'; fundamental.frequency.value = this.hz(midi);
-    const overtone = c.createOscillator(); overtone.type = 'triangle'; overtone.frequency.value = this.hz(midi) * 2.98;
-    const overtoneGain = c.createGain(); overtoneGain.gain.value = 0.09;
-    const filter = c.createBiquadFilter(); filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(3600, when); filter.frequency.exponentialRampToValueAtTime(1100, end);
+    const fundamental = c.createOscillator(); fundamental.type = 'sawtooth'; fundamental.frequency.value = this.hz(midi);
+    const body = c.createOscillator(); body.type = 'triangle'; body.frequency.value = this.hz(midi - 12);
+    const bodyGain = c.createGain(); bodyGain.gain.value = 0.4;
+    const filter = c.createBiquadFilter(); filter.type = 'lowpass'; filter.Q.value = 1.2;
+    filter.frequency.setValueAtTime(1500, when); filter.frequency.linearRampToValueAtTime(2600, when + 0.12);
+    filter.frequency.exponentialRampToValueAtTime(1200, end);
     const gain = c.createGain(); gain.gain.setValueAtTime(0.0001, when);
-    gain.gain.exponentialRampToValueAtTime(0.058, when + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.012, Math.min(end - 0.06, when + 0.3));
+    gain.gain.exponentialRampToValueAtTime(0.05, when + 0.02);
+    gain.gain.setValueAtTime(0.05, Math.max(when + 0.03, end - 0.12));
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
-    fundamental.connect(filter); overtone.connect(overtoneGain).connect(filter); filter.connect(gain);
+    fundamental.connect(filter); body.connect(bodyGain).connect(filter); filter.connect(gain);
     if (c.createStereoPanner) {
-      const panner = c.createStereoPanner(); panner.pan.value = pan; gain.connect(panner); this.route(panner, 0.34);
-    } else this.route(gain, 0.34);
-    fundamental.start(when); overtone.start(when);
-    fundamental.stop(end + 0.03); overtone.stop(end + 0.03);
+      const panner = c.createStereoPanner(); panner.pan.value = pan; gain.connect(panner); this.route(panner, 0.22);
+    } else this.route(gain, 0.22);
+    fundamental.start(when); body.start(when);
+    fundamental.stop(end + 0.03); body.stop(end + 0.03);
   }
 
   pad(notes, when, duration) {
@@ -136,19 +149,18 @@ export class AmbientMusic {
 
   scheduleBar(index, when) {
     const part = this.phrase[index % this.phrase.length];
-    if (part.chord) {
-      this.pad(part.chord, when, this.barDuration * 0.94);
-      this.scheduleBeat(when, index);
-    }
-    for (const [beat, midi, length] of part.notes) {
-      // Tiny timing and velocity differences keep repetitions from feeling sequenced to a grid.
-      const human = (Math.random() - 0.5) * 0.024;
-      this.piano(midi, when + beat * this.beat + human, length * this.beat, 0.1 + Math.random() * 0.025);
-    }
-    part.counter.forEach(([beat, midi, length], i) => {
-      const human = (Math.random() - 0.5) * 0.03;
-      const pan = (index + i) % 2 ? 0.24 : -0.24;
-      this.upperPiano(midi, when + beat * this.beat + human, length * this.beat, pan);
+    this.pad(part.chord, when, this.barDuration * 0.94);
+    this.scheduleBeat(when, index);
+    // Straight eighths, deliberately locked to the grid: the pulse is what makes the loop drive.
+    part.arp.forEach((midi, i) => {
+      const accent = i % 4 === 0 ? 0.052 : 0.036;
+      this.pulse(midi, when + i * this.beat * 0.5, this.beat * 0.44, accent);
+    });
+    part.lead.forEach(([beat, midi, length], i) => {
+      // A touch of timing and placement drift keeps the repeating climb from sounding sequenced.
+      const human = (Math.random() - 0.5) * 0.018;
+      const pan = (index + i) % 2 ? 0.2 : -0.2;
+      this.lead(midi, when + beat * this.beat + human, length * this.beat, pan);
     });
   }
 
