@@ -4,6 +4,12 @@ A single-level, gamepad-first 3D skateboarding prototype in the spirit of Tony H
 The point of this build is **game feel**: the skater controller, camera and animation are one
 hand-tuned kinematic system (no rigid-body physics), and every number in it was play-tested.
 
+## Demo
+
+[![Watch the J2S Pro Skater demo](https://img.youtube.com/vi/jho32KbQ5aQ/maxresdefault.jpg)](https://youtu.be/jho32KbQ5aQ)
+
+_[Watch the gameplay demo on YouTube](https://youtu.be/jho32KbQ5aQ)._
+
 ## Run it
 
 ```bash
