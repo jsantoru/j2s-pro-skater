@@ -8,6 +8,7 @@ import { HUD } from './hud.js';
 import { Audio } from './audio.js';
 import { Effects } from './fx.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { ConcreteFloor } from './concrete-floor.js';
 
 const RUN_TIME = 120;
 const FIXED_DT = 1 / 120;
@@ -48,6 +49,7 @@ const fill = new THREE.DirectionalLight(0x8fb7ff, 0.35); fill.position.set(-20, 
 
 const level = new Level();
 scene.add(level.group);
+const floorSurface = new ConcreteFloor(level.floor, { lowfx: LOWFX, level });
 const skater = new Skater(level);
 const character = new Character();
 scene.add(character.root);
@@ -194,4 +196,4 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun, renderer, scene, camera };
+window.__game = { skater, level, input, character, followCam, startRun, renderer, scene, camera, floorSurface };

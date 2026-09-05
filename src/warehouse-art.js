@@ -23,7 +23,6 @@ export function dressWarehouse(level) {
   const lit = new THREE.MeshBasicMaterial({ color: 0xffedcb, toneMapped: false });
   const glass = new THREE.MeshBasicMaterial({ color: 0xa2bcc2 });
   const paint = new THREE.MeshStandardMaterial({ color: 0x3c5659, roughness: 0.86 });
-  const seam = new THREE.MeshStandardMaterial({ color: 0x555650, roughness: 1 });
 
   // Open-web roof trusses and skylight mullions; leave the existing shadow-casting beams in charge.
   for (let x = -30; x <= 30; x += 10) {
@@ -61,9 +60,6 @@ export function dressWarehouse(level) {
   for (const [x, z, ry, width] of [[0, -22.97, 0, 72], [0, 22.97, Math.PI, 72], [-35.97, 0, Math.PI / 2, 46], [35.97, 0, -Math.PI / 2, 46]]) {
     flat(width, 1.8, x, 0.9, z, lower, ry);
   }
-  // Expansion joints are geometry at a constant real-world width, independent of texture resolution.
-  for (let x = -30; x <= 30; x += 6) flat(0.016, 46, x, 0.002, 0, seam, 0, -Math.PI / 2);
-  for (let z = -18; z <= 18; z += 6) flat(72, 0.016, 0, 0.002, z, seam, 0, -Math.PI / 2);
 
   const signMaterial = (title, sub, bg = '#dbd1b5', fg = '#253e42') => new THREE.MeshStandardMaterial({
     roughness: 0.87, map: canvasMap((c, s, rng) => {
@@ -129,7 +125,7 @@ export function dressWarehouse(level) {
     c.globalCompositeOperation = 'destination-out';
     for (let i = 0; i < 13000; i++) c.clearRect(rng() * 72 - 36, rng() * 46 - 23, 0.03 + rng() * 0.09, 0.01 + rng() * 0.025);
   }, 2048);
-  flat(72, 46, 0, 0.006, 0, new THREE.MeshStandardMaterial({ map: groundMap, transparent: true, depthWrite: false, roughness: 0.94 }), 0, -Math.PI / 2);
+  level.floor.userData.paintMap = groundMap;
 
   // Rail shoes and sleeves, worn ledge edges, barrel hoops and crate framing.
   for (const rail of level.rails) if (rail.kind === 'rail') {

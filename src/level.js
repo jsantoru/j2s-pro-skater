@@ -195,6 +195,7 @@ export class Level {
     const W = 72, D = 46, H = 9;
     // floor
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), M.floor);
+    this.floor = floor;
     surfaceUV(floor.geometry, 6);
     floor.rotation.x = -Math.PI / 2; this.add(floor, true, false);
     // walls (single-sided, facing inward) + roof

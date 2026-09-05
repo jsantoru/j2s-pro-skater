@@ -108,8 +108,8 @@ export function makeMaterials() {
   const M = (color, map, roughness = 0.85, metalness = 0, extra = {}) => new THREE.MeshStandardMaterial({ color, map, roughness, metalness, ...extra });
   const stone = { bumpMap: micro, bumpScale: 0.018, roughnessMap: rough };
   return {
-    floor: M(0xffffff, floor, 0.83, 0, stone),
-    concrete: M(0xd5d3cb, floor, 0.92, 0, stone),
+    floor: M(0xffffff, floor, 0.92, 0, stone),
+    concrete: M(0xffffff, floor, 0.92, 0, stone),
     wood: M(0xffffff, wood, 0.78, 0, { bumpMap: woodBump, bumpScale: 0.014, roughnessMap: rough }),
     wall: M(0xcbd0d1, wall, 0.96, 0, { bumpMap: wallBump, bumpScale: 0.045 }),
     metal: M(0xadb5b7, null, 0.38, 0.8, { bumpMap: micro, bumpScale: 0.002 }),

@@ -135,11 +135,31 @@ controller, collision geometry, camera, and pose timing.
 - Warehouse trusses, fixtures, windows, loading doors, utility pipes, signage, and wall art. Static
   dressing is merged by material and excluded from physics and the extra shadow-caster workload.
 
-All artwork is generated locally once at startup: no texture/model CDN or extra package dependency.
-The existing `?lowfx` URL option disables shadows and caps pixel ratio at 1 for lighter rendering.
+Most artwork is generated locally once at startup. The floor uses three bundled 2K concrete maps
+from [Poly Haven](https://polyhaven.com/a/smooth_concrete_floor) (CC0, Dimitrios Savva), totaling
+2.66 MB after JPEG optimization. There are no third-party asset requests at runtime or new package dependencies.
+See [texture provenance](public/textures/concrete/SOURCE.md) for source filenames and original checksums.
+
+The concrete floor combines matching color/normal/roughness maps with unique, location-based dirt,
+wheel polish, repair fills, and chipped six-metre slab joints. Paint is integrated into that material.
+A 512 x 512 reflection pass captures the actual warehouse; mip filtering blurs it according to surface
+roughness, and Fresnel weighting makes the sheen stronger at grazing angles. It reuses existing shadows.
+The original lights, exposure and collision geometry are unchanged.
+
+Concrete banks, platforms, stairs, hubbas and unpainted ledges are the same pour as the floor: the
+same three texture objects, mineral tint, six-metre slab tone variation, and gloss range, so a box top
+and the slab beside it match. Their world-scaled mapping keeps detail consistent across differently
+sized pieces, and ridden surfaces are burnished while dirt gathers at ground level. Surfaces facing up
+enough to catch it re-use the floor's single reflection pass, re-projected from world space; there are
+no extra texture downloads, materials, or render passes. The implementation is in
+`src/concrete-obstacles.js`.
+
+The existing `?lowfx` URL option disables both shadows and floor reflections and caps pixel ratio at 1.
+It retains the floor textures and wear. If texture loading fails, skating continues with the procedural
+floor and its paint. The isolated browser check covers this failure case as well as normal and lowfx rendering.
 These are detailed stylized assets; they are not scanned or externally authored AAA character assets.
 
-Art code: `src/materials.js`, `src/skater-art.js`, and `src/warehouse-art.js`.
+Art code: `src/materials.js`, `src/skater-art.js`, `src/warehouse-art.js`, and `src/concrete-floor.js`.
 For repeatable browser visual checks on Windows, run `node sim/graphicscheck.js http://127.0.0.1:5173/`
 with the dev server running. It launches a disposable headless Edge profile, verifies rendering and
 keyboard/lowfx operation, and saves screenshots under `screenshots/visual-upgrade/`.
@@ -150,6 +170,8 @@ performance guarantee for other devices. Existing gameplay checks remain availab
 ![Updated warehouse and skater](screenshots/visual-upgrade/skater.png)
 
 ![Detailed skateboard](screenshots/visual-upgrade/board.png)
+
+![Concrete detail and blurred warehouse reflections](screenshots/concrete-after/floor-detail.png)
 
 ### Title Screen
 
