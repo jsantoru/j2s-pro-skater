@@ -33,7 +33,6 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #balance-centre { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(255,255,255,0.5); }
 #balance-needle { position: absolute; top: -5px; left: 50%; width: 8px; height: 24px; margin-left: -4px; border-radius: 3px;
   background: #fff; border: 1px solid rgba(0,0,0,0.65); box-shadow: 0 0 6px rgba(0,0,0,0.9); }
-#balance-label { font-size: 11px; letter-spacing: 4px; color: #cfd8e6; text-shadow: 1px 1px 0 #000; margin-top: 7px; }
 /* stays white in danger: a red needle would vanish into the red end of the track, exactly when it matters */
 #balance.danger #balance-needle { box-shadow: 0 0 14px 4px #ff3a2a, 0 0 6px rgba(0,0,0,0.9); animation: nudge 0.16s infinite alternate; }
 /* Manuals tip fore-aft, so the meter stands up and the needle rides the pitch axis. Same markup, same
@@ -43,11 +42,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
   background: linear-gradient(0deg, #ff3a2a 0%, #ffcf3a 22%, #2c8f45 46%, #2c8f45 54%, #ffcf3a 78%, #ff3a2a 100%); }
 #balance.vertical #balance-centre { left: 0; right: 0; top: 50%; width: auto; height: 2px; margin: -1px 0 0 0; }
 #balance.vertical #balance-needle { left: -6px; top: 50%; width: 30px; height: 8px; margin: -4px 0 0 0; }
-#balance.vertical #balance-label { margin-top: 8px; font-size: 10px; letter-spacing: 1px; margin-left: -22px; width: 62px; }
-#balance.danger #balance-label { color: #ff5a3a; }
 @keyframes nudge { from { transform: translateY(0); } to { transform: translateY(-2px); } }
-#speed-bar { bottom: 24px; left: 50%; transform: translateX(-50%); width: 160px; height: 6px; background: rgba(0,0,0,0.5); border: 1px solid #555; }
-#speed-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #7dff8a, #ffcf3a, #ff5a3a); }
 #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); border: 2px solid #ffcf3a; padding: 8px 18px; font-size: 16px; letter-spacing: 1px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
 #toast.show { opacity: 1; }
 #controls-panel { position: fixed; inset: 40px; background: rgba(12,14,20,0.94); border: 3px solid #ffcf3a; padding: 20px 30px; overflow: auto; z-index: 10; }

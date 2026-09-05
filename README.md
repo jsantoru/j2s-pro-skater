@@ -53,7 +53,7 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - `src/input.js` – Gamepad API (standard mapping) with radial deadzone, analog triggers, d-pad mirror,
   hot-plug detection, and a keyboard fallback smoothed to behave like a stick. Key taps are latched so
   they can never fall between frames.
-- `src/character.js` – procedural low-poly skater and board with pose blending (ride, push cycle,
+- `src/character.js` – procedural skater and board with pose blending (ride, push cycle,
   crouch, air, per-trick flip/grab poses, grind, bail tumble), board flip animation per trick, carve lean.
 - `src/camera.js` – third-person camera that follows travel direction (not body spin), pulls back with
   speed, anticipates spins, tightens on grinds, avoids walls, never rolls, and layers spring-driven
@@ -120,9 +120,36 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 
 ## Graphics
 
-The game uses modern Three.js rendering with physically-based materials, image-based lighting, soft shadows,
-and ACES filmic tone mapping for a polished look. The procedural low-poly art style (0.84 m tall character,
-simple geometric level) keeps the focus on movement and feel while supporting clear visual readout at distance.
+The game uses Three.js physically based materials, image-based lighting, soft shadows,
+and ACES filmic tone mapping. The visual upgrade preserves that lighting setup and the original
+controller, collision geometry, camera, and pose timing.
+
+- Detailed procedural skater: shaped clothing, fabric bump maps, rounded anatomy, cap, shirt graphics,
+  and skate shoes with separate soles and laces, on the original animation rig.
+- Continuous concave skateboard deck with curved nose/tail, grip tape, maple laminations, an original
+  underside graphic, mounting bolts, trucks, bushings, bearings, and rounded urethane wheels.
+- Deterministic local concrete, plywood, masonry, bump and roughness maps. Surface UVs use physical
+  scale, with separate expansion joints, worn paint, and wheel marks on the floor.
+- Smoother visual quarter-pipe curves, lightly rounded concrete edges, coping, steel toe plates,
+  ledge caps and rail anchors. The original colliders remain in use, including in browser builds.
+- Warehouse trusses, fixtures, windows, loading doors, utility pipes, signage, and wall art. Static
+  dressing is merged by material and excluded from physics and the extra shadow-caster workload.
+
+All artwork is generated locally once at startup: no texture/model CDN or extra package dependency.
+The existing `?lowfx` URL option disables shadows and caps pixel ratio at 1 for lighter rendering.
+These are detailed stylized assets; they are not scanned or externally authored AAA character assets.
+
+Art code: `src/materials.js`, `src/skater-art.js`, and `src/warehouse-art.js`.
+For repeatable browser visual checks on Windows, run `node sim/graphicscheck.js http://127.0.0.1:5173/`
+with the dev server running. It launches a disposable headless Edge profile, verifies rendering and
+keyboard/lowfx operation, and saves screenshots under `screenshots/visual-upgrade/`.
+Set `EDGE_PATH` if Edge is installed elsewhere. Headless frame timings are diagnostic, not a
+performance guarantee for other devices. Existing gameplay checks remain available through `npm run sim`,
+`npm run sim:feel`, `npm run sim:balance`, and `node sim/animtest.js`.
+
+![Updated warehouse and skater](screenshots/visual-upgrade/skater.png)
+
+![Detailed skateboard](screenshots/visual-upgrade/board.png)
 
 ### Title Screen
 

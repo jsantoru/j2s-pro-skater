@@ -194,4 +194,4 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun };
+window.__game = { skater, level, input, character, followCam, startRun, renderer, scene, camera };
