@@ -146,7 +146,7 @@ export class Skater {
       case 'bail': this.updateBail(dt); break;
     }
     // visual manual pitch: +1 nose-up (tail manual), -1 nose-down (nose manual), eased so it rocks over
-    const mTarget = this.manual ? (this.manual.kind === 'Nose Manual' ? -1 : 1) : 0;
+    const mTarget = this.manual ? (this.manual.kind === 'Nose Manual' ? 1 : -1) : 0;
     this.manualLean += (mTarget - this.manualLean) * Math.min(1, dt * 9);
     // visual crouch
     const target = this.state === 'bail' ? 0 : (this.crouching ? 0.35 + 0.65 * Math.min(1, this.crouchTime / this.T.crouchFull) : 0);
@@ -199,7 +199,8 @@ export class Skater {
     // manuals: enter on a stick flick, then hold the pitch axis
     const flick = this.detectManualFlick(dt, inp);
     if (flick !== 0 && this.normal.y > 0.85 && sp > 2.2) {
-      const want = flick < 0 ? 'tail' : 'nose';   // flicked down first = tail manual, up first = nose manual
+      // account for stance: when riding fakie, down is towards nose and up is towards tail
+      const want = (flick * this.stance) < 0 ? 'tail' : 'nose';
       if (!this.manual) this.startManual(want);
       else if (this.manual.kind !== MANUALS[want][0]) { this.endManual(false); this.startManual(want); }
     }
@@ -392,7 +393,7 @@ export class Skater {
     // "land in a manual". Keep it until touchdown instead of requiring the player to repeat
     // the command after the board is already on the ground.
     const manualFlick = this.detectManualFlick(dt, inp, T.manualAirFlick);
-    if (manualFlick !== 0) this.manualIntent = manualFlick < 0 ? 'tail' : 'nose';
+    if (manualFlick !== 0) this.manualIntent = (manualFlick * this.stance) < 0 ? 'tail' : 'nose';
 
     // spin (analog) + bumper spin
     let spin = inp.steer + (inp.spinRight ? 1 : 0) - (inp.spinLeft ? 1 : 0);
