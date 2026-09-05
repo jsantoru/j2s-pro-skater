@@ -54,8 +54,8 @@ export function upgradeConcreteObstacles(level, { map, normalMap, roughnessMap }
       diffuseColor.rgb *= stone;
     `).replace('#include <roughnessmap_fragment>', `
       // Same base gloss as the floor, so a box top and the slab beside it read as one pour.
-      float roughnessFactor = clamp(0.34 + texture2D(roughnessMap,vRoughnessMapUv).g * 0.34
-        - concretePolish * 0.09 + concreteGrime * 0.10, 0.28, 0.88);
+      float roughnessFactor = clamp(0.46 + texture2D(roughnessMap,vRoughnessMapUv).g * 0.34
+        - concretePolish * 0.07 + concreteGrime * 0.10, 0.42, 0.92);
     `);
     if (reflection) shader.fragmentShader = shader.fragmentShader.replace('#include <opaque_fragment>', `
       // The floor's single reflection pass, reused on the surfaces that face up enough to catch it.
@@ -63,13 +63,13 @@ export function upgradeConcreteObstacles(level, { map, normalMap, roughnessMap }
       vec3 concreteReflectColor = textureLod(concreteReflection,clamp(concreteReflectUV,vec2(0.001),vec2(0.999)),2.2 + roughnessFactor * 4.4).rgb;
       float concreteFacing = clamp(dot(normal,normalize(vViewPosition)),0.0,1.0);
       float concreteFresnel = 0.05 + 0.80 * pow(1.0-concreteFacing,3.0);
-      float concreteReflectWeight = concreteReflectionOn * concreteFresnel
+      float concreteReflectWeight = 0.48 * concreteReflectionOn * concreteFresnel
         * (1.0-roughnessFactor*0.62) * smoothstep(0.30,0.86,vConcreteUp);
       outgoingLight = mix(outgoingLight,concreteReflectColor,concreteReflectWeight);
       #include <opaque_fragment>
     `);
   };
-  material.customProgramCacheKey = () => `cast-concrete-v3-${Boolean(reflection)}`;
+  material.customProgramCacheKey = () => `cast-concrete-v4-${Boolean(reflection)}`;
   const changed = [], position = new THREE.Vector3(), normal = new THREE.Vector3();
   const normalMatrix = new THREE.Matrix3();
   level.group.updateMatrixWorld(true);

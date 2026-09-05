@@ -119,7 +119,7 @@ export class ConcreteFloor {
             float paintCoverage = paint.a * smoothstep(0.12,0.34,scanLuma + 0.19);
             diffuseColor.rgb *= mix(stone,paint.rgb,paintCoverage);
           `).replace('#include <roughnessmap_fragment>', `
-            float roughnessFactor = clamp(0.30 + scanRough * 0.34 - wear.g * 0.21 + wear.r * 0.16 + wear.b * 0.12, 0.26, 0.88);
+            float roughnessFactor = clamp(0.42 + scanRough * 0.34 - wear.g * 0.13 + wear.r * 0.16 + wear.b * 0.12, 0.40, 0.92);
             roughnessFactor = mix(roughnessFactor,0.75,paintCoverage * 0.8);
             roughnessFactor = mix(roughnessFactor,0.95,joint);
           `).replace('#include <normal_fragment_maps>', `
@@ -132,16 +132,17 @@ export class ConcreteFloor {
             // Mip-filtered reflection: rough patches spread the skylights, polished lines retain them.
             vec2 reflectionUV = vFloorReflection.xy / vFloorReflection.w;
             reflectionUV += mapN.xy * 0.018;
-            float reflectionLod = 0.8 + roughnessFactor * 4.8;
+            float reflectionLod = 1.4 + roughnessFactor * 4.8;
             vec3 reflectionColor = textureLod(floorReflection,clamp(reflectionUV,vec2(0.001),vec2(0.999)),reflectionLod).rgb;
             float viewFacing = clamp(dot(normal,normalize(vViewPosition)),0.0,1.0);
             float fresnel = 0.055 + 0.85 * pow(1.0-viewFacing,3.0);
-            float reflectionWeight = fresnel * (1.0-roughnessFactor*0.62) * (1.0-joint*0.92);
+            // Retain a satin grazing sheen without turning ceiling panels into bright floor stripes.
+            float reflectionWeight = 0.48 * fresnel * (1.0-roughnessFactor*0.62) * (1.0-joint*0.92);
             outgoingLight = mix(outgoingLight,reflectionColor,reflectionWeight);
             #include <opaque_fragment>
           `);
         };
-        this.material.customProgramCacheKey = () => `concrete-floor-v1-${lowfx}`;
+        this.material.customProgramCacheKey = () => `concrete-floor-v2-${lowfx}`;
         floor.material = this.material;
         if (level) this.restoreObstacles = upgradeConcreteObstacles(level, { map, normalMap, roughnessMap }, this.obstacleReflection);
         this.status = 'ready';

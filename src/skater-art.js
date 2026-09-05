@@ -14,14 +14,14 @@ function oval(parent, rx, ry, rz, material, x, y, z) {
   const m = mesh(parent, new THREE.SphereGeometry(1, 20, 14), material, x, y, z); m.scale.set(rx, ry, rz); return m;
 }
 // Elliptical rings give fabric a shaped silhouette and small folds without changing any rig pivots.
-function garment(parent, rings, material, zScale = 1) {
+function garment(parent, rings, material, zScale = 1, foldAmount = 0.023) {
   const p = [], uv = [], indices = [], segments = 24;
   for (let r = 0; r < rings.length; r++) {
-    const [y, rx, rz] = rings[r];
+    const [y, rx, rz, centerZ = 0, centerX = 0] = rings[r];
     for (let i = 0; i <= segments; i++) {
       const a = i / segments * Math.PI * 2;
-      const fold = 1 + Math.sin(a * 6 + r * 0.8) * 0.023;
-      p.push(Math.cos(a) * rx * fold, y, Math.sin(a) * rz * zScale * fold);
+      const fold = 1 + Math.sin(a * 6 + r * 0.8) * foldAmount;
+      p.push(centerX + Math.cos(a) * rx * fold, y, centerZ + Math.sin(a) * rz * zScale * fold);
       uv.push(i / segments, r / (rings.length - 1));
       if (r && i) {
         const b = r * (segments + 1) + i, a0 = b - segments - 1;
@@ -108,7 +108,7 @@ export function buildDetailedBoard(parent) {
 }
 
 export function buildDetailedBody(rig) {
-  const skin = mat(0xc99570, 0.78), shirt = mat(0x315f74), pants = mat(0x30383c), shoe = mat(0x242d30, 0.78);
+  const skin = mat(0xc99570, 0.88), shirt = mat(0x426574, 0.96), pants = mat(0x39454b, 0.98), shoe = mat(0x242d30, 0.88);
   const sole = mat(0xd4cdb7, 0.82), cap = mat(0x9e4132), hair = mat(0x392c24), eye = mat(0x302a27, 0.5);
   const cloth = canvasMap((c, s, rng) => {
     c.fillStyle = '#b7b7b7'; c.fillRect(0, 0, s, s);
@@ -116,37 +116,61 @@ export function buildDetailedBody(rig) {
     for (let i = 0; i < 6000; i++) { c.fillStyle = `rgba(30,30,30,${rng() * 0.13})`; c.fillRect(rng() * s, rng() * s, 1, 1); }
   }, 256, false);
   for (const m of [shirt, pants, cap]) { m.bumpMap = cloth; m.bumpScale = 0.0018; }
+  // Small shared garment maps: faded cotton/denim, stitched seams and uneven wash.
+  // Generated once at load, with no downloads or per-frame cloth simulation.
+  const fabricColor = (denim) => canvasMap((c, s, rng) => {
+    c.fillStyle = denim ? '#b7bcc0' : '#c4c8c6'; c.fillRect(0, 0, s, s);
+    for (let i = 0; i < 48; i++) {
+      const x = rng() * s, y = rng() * s, radius = 20 + rng() * 100;
+      const g = c.createRadialGradient(x, y, 0, x, y, radius);
+      g.addColorStop(0, `rgba(245,241,222,${denim ? 0.10 : 0.05})`);
+      g.addColorStop(1, 'rgba(245,241,222,0)'); c.fillStyle = g; c.fillRect(0, 0, s, s);
+    }
+    for (let i = 0; i < 22000; i++) {
+      c.fillStyle = `rgba(40,47,48,${rng() * 0.10})`;
+      const x = rng() * s, y = rng() * s;
+      c.fillRect(x, y, 1, denim ? 2 : 1);
+    }
+    for (const x of [2, s / 2]) {
+      c.fillStyle = 'rgba(25,32,36,0.18)'; c.fillRect(x, 0, 3, s);
+      c.strokeStyle = 'rgba(218,207,174,0.26)'; c.lineWidth = 1;
+      c.setLineDash([2, 3]); c.beginPath(); c.moveTo(x + 5, 0); c.lineTo(x + 5, s); c.stroke();
+    }
+    c.setLineDash([]); c.fillStyle = 'rgba(25,32,36,0.16)'; c.fillRect(0, 3, s, 2);
+  }, 512);
+  shirt.map = fabricColor(false); pants.map = fabricColor(true);
   rig.hips = new THREE.Group(); rig.body.add(rig.hips);
   rounded(rig.hips, 0.34, 0.16, 0.21, pants, 0, 0.02, 0, 0.06);
   rig.torso = new THREE.Group(); rig.torso.position.y = 0.1; rig.hips.add(rig.torso);
-  garment(rig.torso, [[-0.035, 0.17, 0.115], [-0.022, 0.173, 0.117], [0.02, 0.163, 0.108], [0.09, 0.165, 0.105], [0.25, 0.172, 0.112], [0.37, 0.19, 0.107], [0.43, 0.17, 0.094], [0.47, 0.065, 0.06]], shirt);
+  // Relaxed, untucked tee covers the pelvis seam; broader sloping shoulders meet the sleeves.
+  garment(rig.torso, [[-0.075, 0.218, 0.143], [-0.06, 0.22, 0.145], [-0.02, 0.205, 0.132], [0.09, 0.18, 0.113], [0.25, 0.19, 0.118], [0.36, 0.213, 0.114], [0.415, 0.216, 0.102], [0.445, 0.198, 0.083], [0.47, 0.065, 0.06]], shirt, 1, 0.038);
   const collar = mesh(rig.torso, new THREE.TorusGeometry(0.061, 0.01, 8, 24), shirt, 0, 0.466, 0); collar.rotation.x = Math.PI / 2;
   mesh(rig.torso, new THREE.CylinderGeometry(0.048, 0.055, 0.085, 16), skin, 0, 0.482, 0);
   const print = new THREE.MeshStandardMaterial({ roughness: 0.93, transparent: true, depthWrite: false,
     map: canvasMap((c, s) => { c.fillStyle = '#ddd6bd'; c.textAlign = 'center'; c.font = 'italic 900 170px sans-serif'; c.fillText('J2S', s / 2, s * 0.49); c.fillStyle = '#d98254'; c.fillRect(s * 0.19, s * 0.55, s * 0.62, 10); c.font = 'bold 34px sans-serif'; c.fillStyle = '#ddd6bd'; c.fillText('SKATE DIVISION', s / 2, s * 0.66); }, 512) });
-  mesh(rig.torso, new THREE.PlaneGeometry(0.25, 0.23), print, 0, 0.29, 0.114);
-  const backPrint = mesh(rig.torso, new THREE.PlaneGeometry(0.25, 0.23), print, 0, 0.29, -0.114); backPrint.rotation.y = Math.PI;
+  mesh(rig.torso, new THREE.PlaneGeometry(0.25, 0.23), print, 0, 0.29, 0.122);
+  const backPrint = mesh(rig.torso, new THREE.PlaneGeometry(0.25, 0.23), print, 0, 0.29, -0.122); backPrint.rotation.y = Math.PI;
   rig.head = new THREE.Group(); rig.head.position.y = 0.5; rig.torso.add(rig.head);
-  oval(rig.head, 0.096, 0.119, 0.105, skin, 0, 0.13, 0);
-  oval(rig.head, 0.073, 0.062, 0.084, skin, 0, 0.074, 0.013);
-  oval(rig.head, 0.014, 0.026, 0.019, skin, 0, 0.125, 0.102);
+  // One continuous adult jaw/cheek/cranium profile instead of a sphere sitting on a sphere.
+  garment(rig.head, [[0.024, 0, 0, 0.022], [0.033, 0.039, 0.042, 0.026], [0.058, 0.065, 0.062, 0.015], [0.10, 0.08, 0.077, 0.003], [0.143, 0.085, 0.085], [0.18, 0.084, 0.089, -0.003], [0.22, 0.075, 0.085, -0.009], [0.253, 0.047, 0.057, -0.009], [0.263, 0, 0, -0.009]], skin, 1, 0);
+  oval(rig.head, 0.012, 0.027, 0.018, skin, 0, 0.122, 0.083);
   for (const side of [-1, 1]) {
-    oval(rig.head, 0.018, 0.028, 0.016, skin, side * 0.096, 0.123, 0);
-    oval(rig.head, 0.009, 0.006, 0.005, eye, side * 0.04, 0.148, 0.096);
-    rounded(rig.head, 0.028, 0.007, 0.006, hair, side * 0.041, 0.166, 0.096, 0.003);
+    oval(rig.head, 0.012, 0.024, 0.014, skin, side * 0.084, 0.123, -0.002);
+    oval(rig.head, 0.009, 0.003, 0.003, eye, side * 0.033, 0.146, 0.079);
+    rounded(rig.head, 0.025, 0.004, 0.005, hair, side * 0.033, 0.16, 0.079, 0.002);
   }
-  rounded(rig.head, 0.032, 0.004, 0.004, hair, 0, 0.078, 0.093, 0.002);
-  oval(rig.head, 0.101, 0.079, 0.105, hair, 0, 0.211, -0.013);
-  const crown = mesh(rig.head, new THREE.SphereGeometry(1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), cap, 0, 0.215, 0); crown.scale.set(0.111, 0.081, 0.119);
-  rounded(rig.head, 0.21, 0.014, 0.17, cap, 0, 0.219, 0.105, 0.006);
-  oval(rig.head, 0.009, 0.006, 0.009, cap, 0, 0.296, 0);
+  rounded(rig.head, 0.03, 0.002, 0.003, mat(0x95694f, 0.95), 0, 0.081, 0.084, 0.001);
+  oval(rig.head, 0.087, 0.063, 0.093, hair, 0, 0.212, -0.016);
+  const crown = mesh(rig.head, new THREE.SphereGeometry(1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), cap, 0, 0.215, -0.006); crown.scale.set(0.098, 0.068, 0.108);
+  const brim = oval(rig.head, 0.099, 0.006, 0.079, cap, 0, 0.214, 0.091); brim.rotation.x = 0.08;
+  oval(rig.head, 0.007, 0.005, 0.007, cap, 0, 0.283, -0.006);
   const arm = (side) => {
     const sh = new THREE.Group(); sh.position.set(side * 0.22, 0.42, 0); rig.torso.add(sh);
-    garment(sh, [[0.043, 0.002, 0.002], [0.027, 0.047, 0.049], [-0.01, 0.061, 0.061], [-0.07, 0.061, 0.057], [-0.13, 0.056, 0.052], [-0.145, 0.056, 0.052]], shirt);
+    garment(sh, [[0.039, 0, 0], [0.026, 0.041, 0.043], [0.009, 0.065, 0.062], [-0.04, 0.076, 0.073], [-0.12, 0.074, 0.068], [-0.177, 0.068, 0.065], [-0.185, 0.070, 0.066]], shirt, 1, 0.038);
     oval(sh, 0.043, 0.115, 0.042, skin, 0, -0.204, 0);
     const el = new THREE.Group(); el.position.y = -0.29; sh.add(el);
     oval(el, 0.042, 0.045, 0.042, skin, 0, 0, 0);
-    garment(el, [[0, 0.041, 0.041], [-0.08, 0.042, 0.038], [-0.2, 0.03, 0.029], [-0.26, 0.028, 0.027]], skin);
+    garment(el, [[0, 0.041, 0.041], [-0.08, 0.042, 0.038], [-0.2, 0.03, 0.029], [-0.26, 0.028, 0.027]], skin, 1, 0);
     rounded(el, 0.07, 0.095, 0.04, skin, 0, -0.3, 0, 0.019);
     oval(el, 0.018, 0.035, 0.018, skin, -side * 0.037, -0.287, 0.008);
     if (side < 0) mesh(el, new THREE.CylinderGeometry(0.032, 0.032, 0.029, 16), shoe, 0, -0.24, 0);
@@ -155,10 +179,10 @@ export function buildDetailedBody(rig) {
   rig.lArm = arm(1); rig.rArm = arm(-1);
   const leg = (side) => {
     const hp = new THREE.Group(); hp.position.set(side * 0.15, 0, 0); rig.hips.add(hp);
-    garment(hp, [[0.03, 0.083, 0.085], [-0.08, 0.084, 0.088], [-0.23, 0.072, 0.079], [-0.37, 0.065, 0.068], [-0.43, 0.069, 0.071]], pants);
+    garment(hp, [[0.015, 0.08, 0.085, 0, -side * 0.04], [-0.08, 0.106, 0.105], [-0.23, 0.096, 0.098], [-0.34, 0.086, 0.085], [-0.40, 0.089, 0.09], [-0.455, 0.083, 0.084]], pants, 1, 0.035);
     const kn = new THREE.Group(); kn.position.y = -0.42; hp.add(kn);
-    oval(kn, 0.066, 0.06, 0.071, pants, 0, 0, 0);
-    garment(kn, [[0, 0.067, 0.069], [-0.06, 0.072, 0.071], [-0.23, 0.061, 0.063], [-0.32, 0.056, 0.06], [-0.36, 0.062, 0.064], [-0.39, 0.055, 0.056]], pants);
+    oval(kn, 0.082, 0.068, 0.084, pants, 0, 0, 0);
+    garment(kn, [[0.025, 0.083, 0.084], [-0.06, 0.09, 0.088], [-0.20, 0.082, 0.083], [-0.29, 0.074, 0.075], [-0.33, 0.08, 0.078], [-0.36, 0.072, 0.073], [-0.39, 0.074, 0.075]], pants, 1, 0.045);
     const an = new THREE.Group(); an.position.y = -0.4; kn.add(an);
     rounded(an, 0.11, 0.063, 0.25, shoe, 0, 0.008, 0, 0.023);
     rounded(an, 0.112, 0.019, 0.25, sole, 0, -0.031, 0, 0.008);
