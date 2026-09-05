@@ -1,4 +1,4 @@
-import { AmbientMusic } from './music.js';
+import { SkateMusic } from './music.js';
 
 // Layered procedural skateboard audio. Shaped noise provides the wood, urethane, concrete and
 // steel character; short oscillators only reinforce physical resonances and quiet UI feedback.
@@ -19,7 +19,7 @@ export class Audio {
     this.master.connect(this.compressor).connect(c.destination);
     this.sfxBus = c.createGain(); this.sfxBus.gain.value = 0.78; this.sfxBus.connect(this.master);
     this.worldBus = c.createGain(); this.worldBus.gain.value = 0.72; this.worldBus.connect(this.master);
-    this.music = new AmbientMusic(c, this.master);
+    this.music = new SkateMusic(c, this.master);
 
     const impulse = c.createBuffer(2, Math.floor(c.sampleRate * 0.3), c.sampleRate);
     for (let ch = 0; ch < 2; ch++) {
