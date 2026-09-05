@@ -70,6 +70,11 @@ try {
   await evaluate(`__game.startRun(); document.querySelectorAll('#hud, #overlay, #controls').forEach(e => e.style.display = 'none');`);
   await evaluate(`window.qaPose = (state, extra = {}) => { const g = __game; g.character.root.position.set(-4,0,14); g.character.root.quaternion.identity(); const sk = Object.assign({state, crouch:0, landSquash:0, pushing:0, stance:1, lean:0, speed:0, bailT:0, trick:null, grind:null}, extra); for(let i=0;i<180;i++) g.character.update(sk,1/60,0); g.scene.updateMatrixWorld(true); }; window.qaView = (pos, target) => { const g = __game; g.camera.position.set(...pos); g.camera.fov=45; g.camera.lookAt(...target); g.camera.updateProjectionMatrix(); g.renderer.render(g.scene,g.camera); }; qaPose('ride'); qaView([-7.2,1.7,17.4],[-4,0.88,14]);`);
   await shot('skater');
+  // Head-local cameras inspect the neck join, temple hair and cap from all sides.
+  for (const [name, offset] of [['head-front',[0.28,0.17,0.72]], ['head-side',[0.72,0.15,0.10]], ['head-back',[-0.28,0.17,-0.72]]]) {
+    await evaluate(`{const h=__game.character.head; const pos=h.localToWorld(h.position.clone().set(...${JSON.stringify(offset)})); const target=h.localToWorld(h.position.clone().set(0,0.105,0)); qaView(pos.toArray(),target.toArray());}`);
+    await shot(name);
+  }
   await evaluate(`qaView([-10,1.15,16],[-1,0.1,10]);`); await shot('floor-gameplay');
   await evaluate(`qaView([-7,0.38,13.5],[-4,0.05,11]);`); await shot('floor-detail');
   if (await evaluate('Boolean(__game.floorSurface)')) {
