@@ -10,8 +10,8 @@ export class HUD {
     this.el = {
       score: $('score'), timer: $('timer'), pad: $('pad-status'), comboPts: $('combo-points'), comboMult: $('combo-mult'),
       trick: $('trick-text'), landed: $('landed-text'), toast: $('toast'), controls: $('controls-panel'),
-      overlay: $('overlay'), overlayMsg: $('overlay-msg'), finalScore: $('final-score'), speed: $('speed-fill'),
-      bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'), balanceLabel: $('balance-label'),
+      overlay: $('overlay'), overlayMsg: $('overlay-msg'), finalScore: $('final-score'),
+      bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'),
     };
     this.shownScore = 0; this.holdTimer = 0; this.toastTimer = 0;
     this.balanceShown = false; this.balanceVertical = undefined;
@@ -61,7 +61,7 @@ export class HUD {
   // Balance meter: only on screen while it matters, so it never becomes wallpaper. Grinds tip
   // side-to-side and get a horizontal bar; manuals tip fore-aft and get a vertical one, so the meter
   // always moves the same way the stick does.
-  balance(show, x, vertical, label) {
+  balance(show, x, vertical) {
     const el = this.el.balance, n = this.el.balanceNeedle;
     if (show !== this.balanceShown) { el.classList.toggle('hidden', !show); this.balanceShown = show; }
     if (!show) return;
@@ -69,21 +69,19 @@ export class HUD {
     if (vertical !== this.balanceVertical) {
       el.classList.toggle('vertical', !!vertical);
       n.style.left = ''; n.style.top = '';               // clear whichever axis we are no longer driving
-      this.el.balanceLabel.textContent = label;
       this.balanceVertical = vertical;
     }
     if (vertical) n.style.top = (50 - v * 50) + '%';      // +x is nose-high, which reads as up
     else n.style.left = (50 + v * 50) + '%';
     el.classList.toggle('danger', Math.abs(v) > 0.62);
   }
-  update(dt, score, timeLeft, speedFrac) {
+  update(dt, score, timeLeft) {
     this.shownScore += (score - this.shownScore) * Math.min(1, dt * 6);
     if (Math.abs(score - this.shownScore) < 1) this.shownScore = score;
     this.el.score.textContent = fmt(Math.round(this.shownScore));
     const t = Math.max(0, timeLeft), m = Math.floor(t / 60), s = Math.floor(t % 60);
     this.el.timer.textContent = m + ':' + (s < 10 ? '0' : '') + s;
     this.el.timer.classList.toggle('low', t < 15);
-    this.el.speed.style.width = Math.round(Math.min(1, speedFrac) * 100) + '%';
     if (this.toastTimer > 0) { this.toastTimer -= dt; if (this.toastTimer <= 0) this.el.toast.classList.remove('show'); }
     if (this.holdTimer > 0) {
       this.holdTimer -= dt;

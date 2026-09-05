@@ -1,9 +1,10 @@
-// Low-poly procedural skater + board with pose-blend animation.
+// Detailed procedural skater + board with the original pose-blend animation.
 // Root frame: +z = nose / travel forward, +y up, so the RIGHT of travel is -x (right-handed frame).
 // The body group is rotated so the chest (+z body) faces root -x: regular stance, left foot forward.
 // Body frame: +x = toward the nose, +z = toward the chest. Pose keys ending in Z swing limbs toward the
 // nose (+) / tail (-); keys ending in X fold limbs toward the chest (+).
 import * as THREE from 'three';
+import { buildDetailedBoard, buildDetailedBody } from './skater-art.js';
 
 const L1 = 0.42, L2 = 0.42, BOARD_TOP = 0.13;
 const BOARD_TRACK = 0.05;   // how far the board may chase the feet sideways in the air
@@ -52,11 +53,6 @@ function legDrop(hip, knee) { return L1 * Math.cos(hip * D2R) + L2 * Math.cos((h
 function legReach(hip, knee) { return L1 * Math.sin(hip * D2R) + L2 * Math.sin((hip - knee) * D2R); }
 const STAND_DROP = legDrop(POSES.ride.lHip, POSES.ride.lKnee);
 
-function box(w, h, d, mat, x = 0, y = 0, z = 0) {
-  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-  m.position.set(x, y, z); m.castShadow = true; return m;
-}
-
 export class Character {
   constructor() {
     this.root = new THREE.Group();          // placed at skater.pos with skater.modelQuat
@@ -68,61 +64,9 @@ export class Character {
     this.buildBoard(); this.buildBody();
   }
 
-  buildBoard() {
-    const M = (c, r = 0.7, m = 0) => new THREE.MeshStandardMaterial({ color: c, roughness: r, metalness: m });
-    const grip = M(0x1b1b1f, 1), graphic = M(0xd9483b, 0.5), edge = M(0xc8a878, 0.6), truck = M(0xc4c8d0, 0.35, 0.9), wheel = M(0xf3efe0, 0.5);
-    this.board = new THREE.Group(); this.root.add(this.board);
-    const deck = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.022, 0.62), [edge, edge, grip, graphic, edge, edge]);
-    deck.position.y = BOARD_TOP - 0.011; deck.castShadow = true; this.board.add(deck);
-    for (const s of [-1, 1]) {
-      const kick = new THREE.Mesh(new THREE.BoxGeometry(0.21, 0.022, 0.14), [edge, edge, grip, graphic, edge, edge]);
-      kick.position.set(0, BOARD_TOP - 0.011 + 0.02, s * 0.37); kick.rotation.x = -s * 0.32; kick.castShadow = true; this.board.add(kick);
-      this.board.add(box(0.12, 0.035, 0.05, truck, 0, BOARD_TOP - 0.045, s * 0.24));
-      for (const w of [-1, 1]) {
-        const wh = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.03, 8), wheel);
-        wh.rotation.z = Math.PI / 2; wh.position.set(w * 0.09, BOARD_TOP - 0.098, s * 0.24); this.board.add(wh);
-      }
-    }
-  }
+  buildBoard() { this.board = buildDetailedBoard(this.root); }
 
-  buildBody() {
-    const M = (c, r = 0.85) => new THREE.MeshStandardMaterial({ color: c, roughness: r });
-    const skin = M(0xe0b08a), shirt = M(0x2f6fb5), pants = M(0x3b3a45), shoe = M(0xf0efe8, 0.6), cap = M(0xc0392b), hair = M(0x3a2718), eye = M(0x1a1a1a, 0.3), white = M(0xf4f4f4);
-    this.hips = new THREE.Group(); this.body.add(this.hips);
-    this.hips.add(box(0.34, 0.14, 0.2, pants, 0, 0.03, 0)); // wide enough to cover the widened stance
-    this.torso = new THREE.Group(); this.torso.position.y = 0.1; this.hips.add(this.torso);
-    this.torso.add(box(0.36, 0.44, 0.2, shirt, 0, 0.24, 0));
-    this.torso.add(box(0.38, 0.06, 0.22, shirt, 0, 0.44, 0));
-    this.torso.add(box(0.16, 0.12, 0.012, white, 0, 0.27, 0.105)); // shirt graphic
-    this.torso.add(box(0.06, 0.04, 0.014, cap, 0, 0.27, 0.106));
-    this.head = new THREE.Group(); this.head.position.y = 0.5; this.torso.add(this.head);
-    this.head.add(box(0.2, 0.22, 0.22, skin, 0, 0.13, 0));
-    this.head.add(box(0.21, 0.06, 0.23, hair, 0, 0.25, 0));
-    this.head.add(box(0.22, 0.05, 0.24, cap, 0, 0.27, 0.0));
-    this.head.add(box(0.2, 0.02, 0.14, cap, 0, 0.26, 0.17));
-    this.head.add(box(0.03, 0.03, 0.012, eye, -0.05, 0.14, 0.112)); this.head.add(box(0.03, 0.03, 0.012, eye, 0.05, 0.14, 0.112));
-    const arm = (side) => {
-      const sh = new THREE.Group(); sh.position.set(side * 0.22, 0.42, 0); this.torso.add(sh);
-      sh.add(box(0.09, 0.3, 0.09, white, 0, -0.14, 0)); sh.add(box(0.1, 0.06, 0.1, shirt, 0, 0, 0));
-      const el = new THREE.Group(); el.position.y = -0.29; sh.add(el);
-      el.add(box(0.08, 0.28, 0.08, skin, 0, -0.14, 0)); el.add(box(0.09, 0.08, 0.09, skin, 0, -0.3, 0));
-      return { sh, el };
-    };
-    this.lArm = arm(1); this.rArm = arm(-1); // body +x = nose side = the skater's left (regular stance)
-    const leg = (side) => {
-      const hp = new THREE.Group(); hp.position.set(side * 0.15, 0, 0); this.hips.add(hp); // stance just inside the trucks
-      hp.add(box(0.14, L1, 0.15, pants, 0, -L1 / 2, 0));
-      const kn = new THREE.Group(); kn.position.y = -L1; hp.add(kn);
-      kn.add(box(0.12, L2, 0.13, pants, 0, -L2 / 2, 0));
-      kn.add(box(0.13, 0.1, 0.13, pants, 0, 0, 0)); // knee cap hides the joint seam
-      const an = new THREE.Group(); an.position.y = -L2 + 0.02; kn.add(an); // ankle: keeps the shoe flat on the deck
-      // shoe runs across the board (body z). Centred on the ankle so it sits on the deck rather than
-      // hanging off the toe edge; 0.25 leaves ~1.5 cm over each rail, the way a skate shoe actually sits.
-      an.add(box(0.11, 0.08, 0.25, shoe, 0, 0, 0));
-      return { hp, kn, an };
-    };
-    this.lLeg = leg(1); this.rLeg = leg(-1); // front foot = left (nose side), back / pushing foot = right
-  }
+  buildBody() { buildDetailedBody(this); }
 
   // ---- animation ----
   computeTarget(sk, dt) {

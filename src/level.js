@@ -1,87 +1,11 @@
 // Compact warehouse skatepark. Builds visual meshes, a collider list for raycasts,
 // and grindable rail segments. Runs in Node (no canvas) for the sim harness.
 import * as THREE from 'three';
-
-const HAS_DOM = typeof document !== 'undefined';
-
-function canvasTexture(draw, size = 256, repeat = 1) {
-  if (!HAS_DOM) return null;
-  const c = document.createElement('canvas');
-  c.width = c.height = size;
-  const ctx = c.getContext('2d');
-  draw(ctx, size);
-  const t = new THREE.CanvasTexture(c);
-  t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  t.repeat.set(repeat, repeat);
-  t.minFilter = THREE.LinearMipmapLinearFilter; t.magFilter = THREE.LinearFilter; t.anisotropy = 8;
-  t.colorSpace = THREE.SRGBColorSpace;
-  return t;
-}
-
-function noise(ctx, size, base, amount, count) {
-  ctx.fillStyle = base; ctx.fillRect(0, 0, size, size);
-  for (let i = 0; i < count; i++) {
-    const v = Math.floor(Math.random() * amount);
-    ctx.fillStyle = `rgba(${v},${v},${v},${Math.random() * 0.25})`;
-    ctx.fillRect(Math.random() * size, Math.random() * size, 1 + Math.random() * 3, 1 + Math.random() * 3);
-  }
-}
-
-export function makeMaterials() {
-  const concrete = canvasTexture((ctx, s) => {
-    noise(ctx, s, '#8d8f92', 90, 900);
-    ctx.strokeStyle = 'rgba(40,40,45,0.35)'; ctx.lineWidth = 3;
-    ctx.strokeRect(1, 1, s - 2, s - 2);
-  }, 256, 1);
-  const floor = canvasTexture((ctx, s) => {
-    noise(ctx, s, '#6f7278', 70, 4000);
-    // large soft stains + fine speckle, then slab seams
-    for (let i = 0; i < 14; i++) {
-      const cx = Math.random() * s, cy = Math.random() * s;
-      const g = ctx.createRadialGradient(cx, cy, 2, cx, cy, 40 + Math.random() * 90);
-      g.addColorStop(0, `rgba(40,40,48,${0.08 + Math.random() * 0.14})`); g.addColorStop(1, 'rgba(40,40,48,0)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, s, s);
-    }
-    ctx.strokeStyle = 'rgba(25,25,30,0.55)'; ctx.lineWidth = 3; ctx.strokeRect(1, 1, s - 2, s - 2);
-    ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1; ctx.strokeRect(5, 5, s - 10, s - 10);
-  }, 512, 1);
-  const wood = canvasTexture((ctx, s) => {
-    ctx.fillStyle = '#b8905c'; ctx.fillRect(0, 0, s, s);
-    for (let i = 0; i < 90; i++) {
-      ctx.fillStyle = `rgba(95,60,28,${0.08 + Math.random() * 0.18})`;
-      ctx.fillRect(0, Math.random() * s, s, 1 + Math.random() * 2);
-    }
-    for (let i = 0; i < 400; i++) { ctx.fillStyle = `rgba(60,35,15,${Math.random() * 0.12})`; ctx.fillRect(Math.random() * s, Math.random() * s, 1 + Math.random() * 12, 1); }
-    ctx.fillStyle = 'rgba(50,30,12,0.7)';
-    for (let i = 0; i < 4; i++) ctx.fillRect(0, i * (s / 4), s, 2);
-    ctx.fillStyle = 'rgba(30,30,30,0.5)'; for (let i = 0; i < 24; i++) { ctx.beginPath(); ctx.arc((i % 6) * (s / 6) + 20, Math.floor(i / 6) * (s / 4) + 8, 2, 0, 7); ctx.fill(); } // screws
-  }, 256, 1);
-  const wall = canvasTexture((ctx, s) => {
-    noise(ctx, s, '#6b7480', 60, 900);
-    ctx.fillStyle = 'rgba(35,40,48,0.9)';
-    for (let r = 0; r < 8; r++) { ctx.fillRect(0, r * 32, s, 3); const off = (r % 2) * 32; for (let x = off; x < s; x += 64) ctx.fillRect(x, r * 32, 3, 32); }
-    ctx.fillStyle = 'rgba(255,255,255,0.06)'; for (let r = 0; r < 8; r++) ctx.fillRect(0, r * 32 + 3, s, 2);
-    ctx.fillStyle = 'rgba(230,60,45,0.95)'; ctx.fillRect(0, s * 0.72, s, s * 0.06);
-    ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fillRect(0, s * 0.72, s, 2);
-  }, 256, 1);
-  const metal = canvasTexture((ctx, s) => { noise(ctx, s, '#c9ccd2', 60, 300); }, 128, 1);
-  const roof = canvasTexture((ctx, s) => {
-    ctx.fillStyle = '#2a2e36'; ctx.fillRect(0, 0, s, s);
-    ctx.fillStyle = '#3a3f4a'; for (let x = 0; x < s; x += 16) ctx.fillRect(x, 0, 6, s);
-  }, 128, 1);
-  const M = (color, map, roughness = 0.9, metalness = 0, extra = {}) => new THREE.MeshStandardMaterial({ color, map: map || null, roughness, metalness, ...extra });
-  return {
-    floor: M(0xffffff, floor, 0.85), concrete: M(0xffffff, concrete, 0.92), wood: M(0xffffff, wood, 0.7),
-    wall: M(0xffffff, wall, 0.95), metal: M(0xffffff, metal, 0.45, 0.8), roof: M(0xffffff, roof, 0.9),
-    coping: M(0xe8e6df, null, 0.3, 0.9),
-    rail: M(0xdfe3ea, null, 0.28, 0.95),
-    railDark: M(0x3a3f4a, null, 0.5, 0.7),
-    rainbow: M(0xffffff, null, 0.45, 0.05, { vertexColors: true }),
-    yellow: M(0xffcf3a, null, 0.6), red: M(0xc0392b, null, 0.6), blue: M(0x2f6fb5, null, 0.6), green: M(0x3c9d5a, null, 0.6),
-    dark: M(0x23262d, null, 0.6, 0.4),
-    sky: new THREE.MeshBasicMaterial({ color: 0xdff1ff }),
-  };
-}
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
+import { makeMaterials, surfaceUV, HAS_DOM } from './materials.js';
+import { dressWarehouse } from './warehouse-art.js';
+export { makeMaterials } from './materials.js';
 
 export class Level {
   constructor() {
@@ -105,17 +29,42 @@ export class Level {
     const m = new THREE.Mesh(g, mat);
     m.position.set(x, y, z);
     if (opts.rotY) m.rotation.y = opts.rotY;
-    return this.add(m, opts.collide !== false, opts.shadow !== false);
+    this.add(m, opts.collide !== false, opts.shadow !== false);
+    if (HAS_DOM && [this.mats.concrete, this.mats.wood, this.mats.red, this.mats.yellow].includes(mat)) {
+      const visual = new THREE.Mesh(surfaceUV(new RoundedBoxGeometry(w, h, d, 1, Math.min(0.025, h * 0.08)), 3), mat);
+      visual.position.copy(m.position); visual.quaternion.copy(m.quaternion);
+      this.add(visual, false, opts.shadow !== false); m.visible = false;
+    } else surfaceUV(g, 3);
+    return m;
   }
 
   // Profile shapes are in XY (x: distance along approach, y: height), extruded along Z (width).
-  extrude(points, width, mat, x, y, z, rotY) {
+  extrude(points, width, mat, x, y, z, rotY, detail = {}) {
     const shape = new THREE.Shape(points.map((p) => new THREE.Vector2(p[0], p[1])));
     const g = new THREE.ExtrudeGeometry(shape, { depth: width, bevelEnabled: false });
     g.translate(0, 0, -width / 2);
     const m = new THREE.Mesh(g, mat);
     m.position.set(x, y, z); m.rotation.y = rotY;
-    return this.add(m);
+    this.add(m);
+    if (HAS_DOM) {
+      const visualShape = new THREE.Shape((detail.points || points).map(p => new THREE.Vector2(...p)));
+      const vg = new THREE.ExtrudeGeometry(visualShape, { depth: width, bevelEnabled: false });
+      vg.translate(0, 0, -width / 2); surfaceUV(vg, 2.44);
+      if (detail.radius) {
+        const p = vg.attributes.position, n = vg.attributes.normal, uv = vg.attributes.uv, R = detail.radius;
+        for (let i = 0; i < p.count; i++) if (Math.abs(n.getZ(i)) < 0.5) {
+          if (p.getX(i) > R + 0.001 && n.getX(i) > 0.5) {
+            uv.setXY(i, p.getZ(i) / 2.44, p.getY(i) / 2.44); continue;
+          }
+          const travel = Math.atan2(Math.min(R, p.getX(i)), Math.max(0, R - p.getY(i))) * R + Math.max(0, p.getY(i) - R) + Math.max(0, p.getX(i) - R);
+          uv.setXY(i, p.getZ(i) / 2.44, travel / 2.44);
+        }
+      }
+      const visual = new THREE.Mesh(toCreasedNormals(vg, Math.PI / 6), mat);
+      visual.position.copy(m.position); visual.quaternion.copy(m.quaternion);
+      this.add(visual, false); m.visible = false; m.userData.visual = visual;
+    }
+    return m;
   }
 
   addRail(a, b, kind = 'rail', visual = true) {
@@ -123,7 +72,7 @@ export class Level {
     const dir = B.clone().sub(A); const len = dir.length(); dir.normalize();
     this.rails.push({ a: A, b: B, dir, len, kind });
     if (visual && kind === 'rail') {
-      const g = new THREE.CylinderGeometry(0.035, 0.035, len, 8);
+      const g = new THREE.CylinderGeometry(0.035, 0.035, len, 20);
       const m = new THREE.Mesh(g, this.mats.rail);
       m.position.copy(A).add(B).multiplyScalar(0.5);
       m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
@@ -144,21 +93,36 @@ export class Level {
     const pts = [[0, 0]];
     for (let i = 1; i <= N; i++) { const a = (i / N) * Math.PI / 2; pts.push([R * Math.sin(a), R * (1 - Math.cos(a))]); }
     pts.push([R, R + vert], [R + deck, R + vert], [R + deck, 0]);
-    const m = this.extrude(pts, width, opts.mat || this.mats.wood, x, y, z, rotY);
+    const detail = [[0, 0]];
+    for (let i = 1; i <= 56; i++) { const a = i / 56 * Math.PI / 2; detail.push([R * Math.sin(a), R * (1 - Math.cos(a))]); }
+    detail.push([R, R + vert], [R + deck, R + vert], [R + deck, 0]);
+    const m = this.extrude(pts, width, opts.mat || this.mats.wood, x, y, z, rotY, { points: detail, radius: R });
     // coping along the lip
     const A = new THREE.Vector3(R, R + vert, -width / 2).applyMatrix4(m.matrixWorld);
     const B = new THREE.Vector3(R, R + vert, width / 2).applyMatrix4(m.matrixWorld);
     this.addRail(A, B, 'coping', false);
-    const cop = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, width, 8), this.mats.coping);
+    const cop = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, width, 20), this.mats.coping);
     cop.position.copy(A).add(B).multiplyScalar(0.5);
     cop.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.clone().sub(A).normalize());
     this.group.add(cop);
+    if (HAS_DOM) {
+      // Thin steel toe plates and dark plywood side fascia visually finish the transition.
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.008, width), this.mats.metal);
+      plate.position.set(0.09, 0.006, 0); m.userData.visual.add(plate);
+      for (const side of [-1, 1]) {
+        const fascia = new THREE.Mesh(new THREE.ShapeGeometry(new THREE.Shape(detail.map(p => new THREE.Vector2(...p)))), this.mats.railDark);
+        fascia.position.z = side * (width / 2 + 0.002);
+        if (side < 0) { fascia.material = this.mats.railDark.clone(); fascia.material.side = THREE.DoubleSide; }
+        m.userData.visual.add(fascia);
+      }
+    }
     return m;
   }
 
   // Paint a mesh in rainbow bands by height. One colour per triangle so the stripes stay crisp, and
   // driven by position rather than UVs so they follow the curve of a transition however it is mapped.
   paintRainbow(mesh, bands = 7) {
+    if (mesh.userData.visual) this.paintRainbow(mesh.userData.visual, bands);
     let g = mesh.geometry;
     if (g.index) { g = g.toNonIndexed(); mesh.geometry = g; }
     const pos = g.attributes.position;
@@ -202,8 +166,7 @@ export class Level {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(v, 3));
     g.computeVertexNormals();
-    const uv = []; for (let i = 0; i < v.length / 3; i++) uv.push((v[i * 3] + v[i * 3 + 2]) * 0.25, v[i * 3 + 1] * 0.5);
-    g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    surfaceUV(g, 3);
     const m = new THREE.Mesh(g, mat); m.position.set(x, 0, z);
     this.add(m);
     this.box(top, h, top, x, h / 2, z, mat);
@@ -218,6 +181,11 @@ export class Level {
       const a = new THREE.Vector3(-hw, h, s * hd).applyMatrix4(m.matrixWorld);
       const b = new THREE.Vector3(hw, h, s * hd).applyMatrix4(m.matrixWorld);
       this.addRail(a, b, 'ledge', false);
+      if (HAS_DOM) {
+        const edge = new THREE.Mesh(new THREE.BoxGeometry(w, 0.028, 0.04), this.mats.metal);
+        edge.position.set(0, h / 2 - 0.01, s * (hd - 0.012)); m.updateMatrix();
+        edge.applyMatrix4(m.matrix); this.add(edge, false, false);
+      }
     }
     return m;
   }
@@ -226,12 +194,11 @@ export class Level {
     const M = this.mats;
     const W = 72, D = 46, H = 9;
     // floor
-    if (M.floor.map) M.floor.map.repeat.set(W / 6, D / 6);
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), M.floor);
+    surfaceUV(floor.geometry, 6);
     floor.rotation.x = -Math.PI / 2; this.add(floor, true, false);
     // walls (single-sided, facing inward) + roof
-    if (M.wall.map) M.wall.map.repeat.set(9, 1.2);
-    const wallGeo = (len) => new THREE.PlaneGeometry(len, H);
+    const wallGeo = (len) => surfaceUV(new THREE.PlaneGeometry(len, H), 2.4);
     const wallDefs = [
       [0, -D / 2, 0, W], [0, D / 2, Math.PI, W], [-W / 2, 0, Math.PI / 2, D], [W / 2, 0, -Math.PI / 2, D],
     ];
@@ -282,7 +249,7 @@ export class Level {
     // hubba ledge on the east side of the stairs (sloped box)
     {
       const len = Math.hypot(tread * steps + 0.5, PH); const ang = Math.atan2(PH, tread * steps + 0.5);
-      const hub = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.45, len + 0.3), M.concrete);
+      const hub = new THREE.Mesh(surfaceUV(new THREE.BoxGeometry(0.6, 0.45, len + 0.3), 3), M.concrete);
       hub.position.set(29.8, PH * 0.5 + 0.2, 10 - (tread * steps + 0.5) / 2 + 0.1);
       hub.rotation.x = ang; this.add(hub);
       const a = new THREE.Vector3(29.8, PH + 0.45 - 0.02, 10.4), b = new THREE.Vector3(29.8, 0.43, 10 - tread * steps - 0.5);
@@ -313,15 +280,12 @@ export class Level {
     barrel(-33, -19, M.blue); barrel(-32, -20.2, M.red); barrel(33, 20, M.green); barrel(32, 21.2, M.yellow);
     this.box(1.6, 0.16, 1.6, -30, 0.08, -8, M.wood, { collide: false }); this.box(1.6, 0.16, 1.6, -30, 0.24, -7.9, M.wood, { collide: false });
     this.box(2, 2, 2, 30, 1, -20, M.wood); this.box(1.4, 1.4, 1.4, 30.2, 2.7, -20, M.wood);
-    this.box(4, 1.8, 0.2, 0, 4.5, -22.85, M.red, { collide: false }); // banner
-    this.box(3, 1.2, 0.2, -20, 5, -22.85, M.blue, { collide: false });
-    this.box(3, 1.2, 0.2, 20, 5, -22.85, M.yellow, { collide: false });
-    for (let z = -18; z <= 18; z += 9) { this.box(0.2, 1.2, 3, 35.85, 6, z, M.green, { collide: false }); this.box(0.2, 1.2, 3, -35.85, 6, z, M.red, { collide: false }); }
     // lane markings (visual only)
     for (const [x, z, ry] of [[-16, 4, 0], [10, 12, 0], [20, -2, Math.PI / 2]]) {
       const s = new THREE.Mesh(new THREE.PlaneGeometry(10, 0.12), M.yellow);
       s.rotation.x = -Math.PI / 2; s.rotation.z = ry; s.position.set(x, 0.01, z + 1.6); this.group.add(s);
     }
+    if (HAS_DOM) dressWarehouse(this);
     this.group.updateMatrixWorld(true);
   }
 }
