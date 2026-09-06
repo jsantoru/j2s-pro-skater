@@ -5,6 +5,7 @@ import { Character } from './character.js';
 import { FollowCamera } from './camera.js';
 import { Input } from './input.js';
 import { HUD } from './hud.js';
+import { HighScores } from './highscores.js';
 import { Audio } from './audio.js';
 import { Effects } from './fx.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -56,6 +57,7 @@ scene.add(character.root);
 const followCam = new FollowCamera(camera, level);
 const input = new Input();
 const hud = new HUD();
+const highScores = new HighScores();
 const audio = new Audio();
 const fx = new Effects(scene);
 
@@ -99,6 +101,7 @@ input.onGamepadChange = (connected, id) => {
   hud.toast(connected ? 'CONTROLLER CONNECTED: ' + id.slice(0, 40) : 'CONTROLLER DISCONNECTED — keyboard active');
 };
 hud.setPad(false);
+hud.highScores(highScores.list, 0); // the title screen opens on the table
 
 function startRun() {
   skater.reset();
@@ -109,7 +112,11 @@ function startRun() {
 }
 function endRun() {
   mode = 'over';
+  // Bank the run before the overlay draws, so the table shows where it landed. The score to beat
+  // only moves now — during a run it stays the target you started with.
+  const rank = highScores.submit(skater.score);
   hud.overlay(true, 'Press START / ENTER to skate again', skater.score);
+  hud.highScores(highScores.list, rank);
 }
 
 function resize() {
@@ -187,11 +194,11 @@ function frame(now) {
   const onManual = mode === 'playing' && !!skater.manual && skater.manualBalance.active;
   if (onManual) hud.balance(true, skater.manualBalance.x, true, character, camera);
   else hud.balance(onRail, skater.balance.x, false, character, camera);
-  hud.update(dt, skater.score, timeLeft, skater.speed / 14);
+  hud.update(dt, skater.score, timeLeft, highScores.best);
   if (skater.combo.tricks.length && (skater.state === 'grind' || skater.manual)) refreshCombo();
   input.hapticsCommit(dt);
   renderer.render(scene, camera);
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun, renderer, scene, camera, floorSurface };
+window.__game = { skater, level, input, character, followCam, startRun, endRun, highScores, renderer, scene, camera, floorSurface };

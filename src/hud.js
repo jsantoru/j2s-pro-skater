@@ -10,11 +10,13 @@ export class HUD {
   constructor() {
     this.el = {
       score: $('score'), timer: $('timer'), pad: $('pad-status'), comboPts: $('combo-points'), comboMult: $('combo-mult'),
+      scoreToBeat: $('score-to-beat'), highScores: $('high-scores'),
       trick: $('trick-text'), landed: $('landed-text'), toast: $('toast'), controls: $('controls-panel'),
       overlay: $('overlay'), overlayMsg: $('overlay-msg'), finalScore: $('final-score'),
       bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'),
     };
     this.shownScore = 0; this.holdTimer = 0; this.toastTimer = 0;
+    this.shownBest = -1; this.shownRecord = null;
     this.balanceShown = false; this.balanceVertical = undefined;
     this.balanceHead = new THREE.Vector3(); this.balanceFeet = new THREE.Vector3();
   }
@@ -29,6 +31,39 @@ export class HUD {
     this.el.overlay.classList.toggle('hidden', !show);
     if (msg) this.el.overlayMsg.textContent = msg;
     this.el.finalScore.textContent = score !== undefined ? 'FINAL SCORE  ' + fmt(score) : '';
+  }
+  // The target for this run, tucked under the score in small type. Once it is passed the line
+  // flips to a record banner so you know the rest of the run is pure gravy.
+  scoreToBeat(best, score) {
+    const record = best > 0 && score > best;
+    if (best === this.shownBest && record === this.shownRecord) return;
+    this.shownBest = best; this.shownRecord = record;
+    const el = this.el.scoreToBeat;
+    if (!best) el.textContent = 'NO HIGH SCORE YET';
+    else if (record) el.textContent = '\u2605 NEW RECORD \u00b7 BEAT ' + fmt(best);
+    else el.textContent = 'SCORE TO BEAT  ' + fmt(best);
+    el.classList.toggle('record', record);
+  }
+  // Best runs from localStorage, shown on the title and end-of-run overlay. `rank` is the 1-based
+  // place the run that just finished took, or 0 when it did not make the table.
+  highScores(list, rank) {
+    const el = this.el.highScores;
+    if (!list || !list.length) { el.textContent = ''; return; }
+    el.textContent = '';
+    const title = document.createElement('div');
+    title.className = 'hs-title';
+    title.textContent = rank === 1 ? 'NEW HIGH SCORE!' : 'BEST RUNS';
+    el.appendChild(title);
+    list.forEach((entry, i) => {
+      const row = document.createElement('div');
+      row.className = 'hs-row' + (i + 1 === rank ? ' you' : '');
+      for (const [cls, text] of [['hs-rank', String(i + 1)], ['hs-score', fmt(entry.score)], ['hs-date', entry.date || '']]) {
+        const span = document.createElement('span');
+        span.className = cls; span.textContent = text;
+        row.appendChild(span);
+      }
+      el.appendChild(row);
+    });
   }
   // live readout while the combo is still running
   combo(text, points, mult) {
@@ -97,7 +132,8 @@ export class HUD {
     el.style.left = `${Math.max(12, Math.min(w - width - 12, left))}px`;
     el.style.top = `${Math.max(76, Math.min(h - height - 100, top))}px`;
   }
-  update(dt, score, timeLeft) {
+  update(dt, score, timeLeft, best) {
+    this.scoreToBeat(best || 0, score);
     this.shownScore += (score - this.shownScore) * Math.min(1, dt * 6);
     if (Math.abs(score - this.shownScore) < 1) this.shownScore = score;
     this.el.score.textContent = fmt(Math.round(this.shownScore));

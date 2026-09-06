@@ -61,7 +61,11 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - `src/level.js` – warehouse park: half pipe, two quarter pipes, long bank, raised platform with bank
   approach, 5-stair with handrail and hubba, pyramid fun box with ledge, kicker→rail line, kicker gap,
   two ledges, flat rails, a down bar. Also builds the raycast colliders and grind segments.
-- `src/tricks.js` – trick tables, spin naming, THPS-style combo scoring (sum × trick count, repeat decay).
+- `src/tricks.js` – trick tables, spin naming and the combo maths, priced from
+  [`THPS-SCORING-SYSTEM.md`](THPS-SCORING-SYSTEM.md). See [Scoring](#scoring).
+- `src/highscores.js` – the best-runs table, persisted to `localStorage` and rendered on the title and
+  end-of-run overlays. Stored data is re-validated on load, and every access is guarded so a browser
+  with storage blocked simply keeps the table in memory for the session.
 - `src/balance.js` – the balance meter, as an inverted pendulum. One class, two tunings: `BALANCE` for
   grinds (roll axis, stick X) and `MANUAL_BALANCE` for manuals (pitch axis, stick Y). Standalone with an
   injectable rng so it can be tested on its own (`npm run sim:balance`).
@@ -69,6 +73,44 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   (push/coast, brake, carving, ollie heights, flips, quarter pipe, half pipe pumping, kicker→rail,
   boardslide, stairs, gap, wall). `npm run sim` prints state timelines; use it when re-tuning.
 - `sim/feeltest.js` – deterministic camera, haptic-mixing and 180° spin-tick checks (`npm run sim:feel`).
+- `sim/scoretest.js` – pins every point value and combo rule to the scoring document, and exercises the
+  high-score table against corrupt and unavailable storage (`npm run sim:score`).
+
+## Scoring
+
+Point values and the combo maths come from [`THPS-SCORING-SYSTEM.md`](THPS-SCORING-SYSTEM.md), so a run
+here lands in the same range it would in Tony Hawk's Pro Skater 1+2:
+
+```
+Final Score = Σ(base × stance × degradation) × combo multiplier
+```
+
+- **Base values** by tier. Flips are all 100 — in THPS the direction you pick buys variety, not points.
+  Grabs are 300 standard (Indy, Melon, Nosegrab, Tailgrab, Method, Stalefish), 350 advanced (Judo) and
+  50 weak (Airwalk). Grinds are 100 basic (50-50, Nosegrind, 5-0), 125 advanced (Crooked, Overcrook,
+  Smith, Feeble) and 200 for slides (Boardslide, Lipslide). Manuals are 100.
+- **Multiplier** is the length of the chain: every trick adds 1x, and every completed 360 of rotation
+  adds another. There is no cap — a 20-trick line really is x20.
+- **Degradation** punishes repetition inside a combo: 100%, then 75%, 50%, 25%, and 10% from the fifth
+  use on. It resets when the combo banks.
+- **Switch** (riding fakie) pays 1.2× and counts as a different trick, so it gives a worn-out trick a
+  fresh start. Switch tricks read as `Switch Kickflip` in the combo line.
+- **Rotation** pays into the base of the trick it was thrown with, escalating hard: 180 is 100, 360 is
+  250, 540 is 450, 720 is 700, and every further half-turn adds 400.
+- **Holding** pays flat and undegraded: 100/s on a rail, 50/s in a manual, 100/s on a grab held past its
+  minimum tuck. Length is worth something; it is not worth as much as another trick.
+- Gaps are the one multiplier source from the document that is not implemented — the warehouse has no
+  named gaps to clear yet.
+
+`npm run sim:score` asserts all of the above and prints a sample line.
+
+### High scores
+
+Finished runs go into a ten-deep table in `localStorage`, newest ranking applied at the moment the clock
+hits zero. The best of them shows under the live score as `SCORE TO BEAT`, in small type so it never
+competes with the number you are watching; pass it and the line turns green and reads `NEW RECORD`. The
+full table appears on the title screen and after a run, with the run you just finished highlighted.
+Restarting mid-run abandons it without recording anything.
 
 ## Tuning notes (the numbers that matter)
 
