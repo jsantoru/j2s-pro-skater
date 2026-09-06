@@ -70,12 +70,30 @@ try {
   await evaluate(`__game.startRun(); document.querySelectorAll('#hud, #overlay, #controls').forEach(e => e.style.display = 'none');`);
   await evaluate(`window.qaPose = (state, extra = {}) => { const g = __game; g.character.root.position.set(-4,0,14); g.character.root.quaternion.identity(); const sk = Object.assign({state, crouch:0, landSquash:0, pushing:0, stance:1, lean:0, speed:0, bailT:0, trick:null, grind:null}, extra); for(let i=0;i<180;i++) g.character.update(sk,1/60,0); g.scene.updateMatrixWorld(true); }; window.qaView = (pos, target) => { const g = __game; g.camera.position.set(...pos); g.camera.fov=45; g.camera.lookAt(...target); g.camera.updateProjectionMatrix(); g.renderer.render(g.scene,g.camera); }; qaPose('ride'); qaView([-7.2,1.7,17.4],[-4,0.88,14]);`);
   await shot('skater');
+  await evaluate(`qaView([-5.9,1.25,16.0],[-4,0.93,14]);`); await shot('skater-close');
+  await evaluate(`qaView([-4.7,0.55,15.0],[-4,0.16,14]);`); await shot('feet-ride');
+  for (const [name, state, extra] of [
+    ['manual','ride',{manualLean:1}], ['nose-manual','ride',{manualLean:-1}],
+    ['carve','ride',{lean:0.5}], ['push','ride',{pushing:1}],
+    ['air','air',{}], ['indy','air',{trick:{name:'Indy',kind:'grab'}}],
+    ['nosegrab','air',{trick:{name:'Nosegrab',kind:'grab'}}],
+  ]) {
+    await evaluate(`qaPose(${JSON.stringify(state)},${JSON.stringify(extra)}); qaView([-6.2,1.35,16.2],[-4,0.86,14]);`);
+    await shot(name);
+  }
+  await evaluate(`qaPose('ride');`);
+  for (const [name, state, extra] of [['rear-grind','grind',{}], ['rear-crouch','ride',{crouch:1}], ['rear-ride','ride',{}]]) {
+    await evaluate(`qaPose(${JSON.stringify(state)},${JSON.stringify(extra)}); qaView([-1.7,1.5,13.1],[-4,0.90,14]);`);
+    await shot(name);
+  }
+  await evaluate(`qaPose('ride');`);
   // Head-local cameras inspect the neck join, temple hair and cap from all sides.
   for (const [name, offset] of [['head-front',[0.28,0.17,0.72]], ['head-side',[0.72,0.15,0.10]], ['head-back',[-0.28,0.17,-0.72]]]) {
     await evaluate(`{const h=__game.character.head; const pos=h.localToWorld(h.position.clone().set(...${JSON.stringify(offset)})); const target=h.localToWorld(h.position.clone().set(0,0.105,0)); qaView(pos.toArray(),target.toArray());}`);
     await shot(name);
   }
-  await evaluate(`qaView([-10,1.15,16],[-1,0.1,10]);`); await shot('floor-gameplay');
+  await evaluate(`qaPose('ride',{crouch:1}); qaView([-6.2,1.15,16.2],[-4,0.65,14]);`); await shot('crouch');
+  await evaluate(`qaPose('ride'); qaView([-10,1.15,16],[-1,0.1,10]);`); await shot('floor-gameplay');
   await evaluate(`qaView([-7,0.38,13.5],[-4,0.05,11]);`); await shot('floor-detail');
   if (await evaluate('Boolean(__game.floorSurface)')) {
     const surface = await evaluate(`({status:__game.floorSurface.status,passes:__game.floorSurface.reflectionPasses,width:__game.level.floor.material.map.image.width,normalWidth:__game.level.floor.material.normalMap.image.width})`);

@@ -15,12 +15,26 @@ function oval(parent, rx, ry, rz, material, x, y, z) {
 }
 // Elliptical rings give fabric a shaped silhouette and small folds without changing any rig pivots.
 function garment(parent, rings, material, zScale = 1, foldAmount = 0.023) {
+  // Interpolate the tailoring profiles so folds and shoulders shade as cloth,
+  // rather than a stack of straight-sided cones.
+  const profile = new THREE.CatmullRomCurve3(rings.map(r => new THREE.Vector3(r[0], r[1], r[2])), false, 'catmullrom', 0.25);
+  const centers = new THREE.CatmullRomCurve3(rings.map(r => new THREE.Vector3(r[3] || 0, r[4] || 0, 0)), false, 'catmullrom', 0.25);
+  const steps = (rings.length - 1) * 4;
+  rings = Array.from({ length: steps + 1 }, (_, i) => {
+    const p = profile.getPoint(i / steps), c = centers.getPoint(i / steps);
+    return [p.x, Math.max(0, p.y), Math.max(0, p.z), c.x, c.y];
+  });
   const p = [], uv = [], indices = [], segments = 24;
   for (let r = 0; r < rings.length; r++) {
     const [y, rx, rz, centerZ = 0, centerX = 0] = rings[r];
     for (let i = 0; i <= segments; i++) {
       const a = i / segments * Math.PI * 2;
-      const fold = 1 + Math.sin(a * 6 + r * 0.8) * foldAmount;
+      const denim = material.name === 'Worn indigo denim';
+      const fleece = material.name === 'Washed black hoodie';
+      const gather = denim ? Math.exp(-(((y + 0.75) / 0.085) ** 2)) + 0.55 * Math.exp(-(((y + 0.42) / 0.07) ** 2))
+        : fleece ? Math.exp(-(((y + 0.47) / 0.075) ** 2)) + 0.45 * Math.exp(-(((y + 0.04) / 0.07) ** 2)) : 0;
+      const wrinkle = gather * Math.sin(y * 115 + Math.sin(a * 3) * 1.8) * 0.055;
+      const fold = 1 + Math.sin(a * 5 + r * 0.16) * foldAmount + Math.sin(a * 9 - r * 0.32) * foldAmount * 0.35 + wrinkle;
       p.push(centerX + Math.cos(a) * rx * fold, y, centerZ + Math.sin(a) * rz * zScale * fold);
       uv.push(i / segments, r / (rings.length - 1));
       if (r && i) {
@@ -33,7 +47,31 @@ function garment(parent, rings, material, zScale = 1, foldAmount = 0.023) {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(indices); g.computeVertexNormals();
+  const normal = g.attributes.normal, n = new THREE.Vector3(), end = new THREE.Vector3();
+  for (let r = 0; r < rings.length; r++) {
+    const a = r * (segments + 1), b = a + segments;
+    n.fromBufferAttribute(normal, a).add(end.fromBufferAttribute(normal, b)).normalize();
+    normal.setXYZ(a, n.x, n.y, n.z); normal.setXYZ(b, n.x, n.y, n.z);
+  }
   return mesh(parent, g, material);
+}
+
+// Continuous cloth across the elbow/knee, with a soft transition between bones.
+function jointCloth(rig, upper, lower, rings, material, joint, folds, anchor = null) {
+  const shell = garment(upper, rings, material, 1, folds);
+  upper.remove(shell);
+  const g = shell.geometry, p = g.attributes.position, indices = [], weights = [];
+  for (let i = 0; i < p.count; i++) {
+    const w = THREE.MathUtils.smoothstep(-p.getY(i), joint - 0.065, joint + 0.065);
+    const fixed = anchor ? 1 - THREE.MathUtils.smoothstep(-p.getY(i), 0.015, 0.15) : 0;
+    indices.push(0, 1, 2, 0); weights.push((1 - w) * (1 - fixed), w * (1 - fixed), fixed, 0);
+  }
+  g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(indices, 4));
+  g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weights, 4));
+  const cloth = new THREE.SkinnedMesh(g, material); upper.add(cloth);
+  cloth.castShadow = cloth.receiveShadow = true; cloth.frustumCulled = false;
+  rig.root.updateMatrixWorld(true); cloth.bind(new THREE.Skeleton(anchor ? [upper, lower, anchor] : [upper, lower, upper]));
+  return cloth;
 }
 
 export function buildDetailedBoard(parent) {
@@ -115,15 +153,50 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   const rings = [
     [-0.066, 0.061, 0.054, -0.008], [-0.04, 0.054, 0.048, -0.009],
     [-0.015, 0.048, 0.043, -0.009], [0.01, 0.047, 0.044, -0.008],
-    [0.028, 0.051, 0.049, -0.001], [0.043, 0.059, 0.060, 0.009],
-    [0.058, 0.067, 0.068, 0.011], [0.08, 0.075, 0.074, 0.006],
-    [0.105, 0.082, 0.081, 0.001], [0.143, 0.085, 0.085],
+    [0.028, 0.054, 0.049, -0.001], [0.043, 0.067, 0.064, 0.010],
+    [0.058, 0.075, 0.070, 0.012], [0.08, 0.078, 0.075, 0.006],
+    [0.105, 0.083, 0.080, 0.001], [0.143, 0.081, 0.081],
     [0.18, 0.084, 0.089, -0.003], [0.22, 0.075, 0.085, -0.009],
     [0.253, 0.047, 0.057, -0.009], [0.263, 0, 0, -0.009],
   ];
   const shell = garment(rig.torso, rings, skin, 1, 0);
   rig.torso.remove(shell);
   const geometry = shell.geometry, positions = geometry.attributes.position;
+  // Sculpt the face into the continuous head surface: cheekbones, eye sockets,
+  // brow, nose bridge and chin. This avoids separate floating facial primitives.
+  for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
+    if (z <= 0 || y < 0.035 || y > 0.185) continue;
+    const gaussian = (cx, cy, sx, sy) => Math.exp(-(((x - cx) / sx) ** 2) - ((y - cy) / sy) ** 2);
+    const front = Math.pow(Math.max(0, z / 0.086), 2);
+    const contour = 0.018 * gaussian(0, 0.125, 0.014, 0.034)
+      + 0.008 * gaussian(0, 0.053, 0.033, 0.017)
+      + 0.007 * (gaussian(-0.043, 0.112, 0.020, 0.017) + gaussian(0.043, 0.112, 0.020, 0.017))
+      - 0.007 * (gaussian(-0.033, 0.144, 0.016, 0.009) + gaussian(0.033, 0.144, 0.016, 0.009));
+    positions.setZ(i, z + contour * front);
+  }
+  geometry.computeVertexNormals();
+  const faceSkin = skin.clone();
+  faceSkin.map = canvasMap((c, s, rng) => {
+    const pixels = c.createImageData(s, s);
+    for (let y = 0; y < s; y++) for (let x = 0; x < s; x++) {
+      const t = (1 - y / (s - 1)) * (rings.length - 1), r = Math.min(rings.length - 2, Math.floor(t));
+      const height = THREE.MathUtils.lerp(rings[r][0], rings[r + 1][0], t - r);
+      const a = x / s * Math.PI * 2, front = Math.max(0, Math.sin(a)), side = Math.abs(Math.cos(a));
+      const beardTop = 0.081 + side * 0.044;
+      let beard = THREE.MathUtils.smoothstep(height, 0.020, 0.046) * (1 - THREE.MathUtils.smoothstep(height, beardTop - 0.015, beardTop + 0.005));
+      beard *= THREE.MathUtils.smoothstep(Math.sin(a), -0.50, 0.15);
+      const moustache = Math.exp(-(((height - 0.095) / 0.006) ** 2)) * Math.pow(front, 28) * 0.72;
+      beard = Math.max(beard * 0.72, moustache);
+      const grain = (rng() - 0.5) * (6 + beard * 28), o = (y * s + x) * 4;
+      const flush = Math.exp(-(((height - 0.115) / 0.018) ** 2)) * front * side;
+      pixels.data[o] = 238 - beard * 134 + grain;
+      pixels.data[o + 1] = 227 - beard * 135 - flush * 12 + grain;
+      pixels.data[o + 2] = 217 - beard * 133 - flush * 16 + grain;
+      pixels.data[o + 3] = 255;
+    }
+    c.putImageData(pixels, 0, 0);
+  }, 1024);
   const indices = [], weights = [];
   for (let i = 0; i < positions.count; i++) {
     const headWeight = THREE.MathUtils.smoothstep(positions.getY(i), -0.035, 0.06);
@@ -131,7 +204,7 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   }
   // Average duplicated UV-seam normals so the back/side of the neck shades continuously.
   const normals = geometry.attributes.normal, n = new THREE.Vector3(), other = new THREE.Vector3();
-  for (let r = 0; r < rings.length; r++) {
+  for (let r = 0; r < positions.count / 25; r++) {
     const a = r * 25, b = a + 24;
     n.fromBufferAttribute(normals, a).add(other.fromBufferAttribute(normals, b)).normalize();
     normals.setXYZ(a, n.x, n.y, n.z); normals.setXYZ(b, n.x, n.y, n.z);
@@ -139,22 +212,30 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   geometry.translate(0, 0.5, 0);
   geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(indices, 4));
   geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weights, 4));
-  const headSurface = new THREE.SkinnedMesh(geometry, skin);
+  const headSurface = new THREE.SkinnedMesh(geometry, faceSkin);
   headSurface.name = 'Continuous head and neck'; headSurface.castShadow = headSurface.receiveShadow = true;
   // Keep the small animated surface visible even at extreme head turns.
   headSurface.frustumCulled = false; rig.torso.add(headSurface);
   rig.root.updateMatrixWorld(true);
   headSurface.bind(new THREE.Skeleton([anchor, rig.head]));
 
-  oval(rig.head, 0.012, 0.027, 0.018, skin, 0, 0.122, 0.083);
+  // Brow, cheek planes and a shaped nose give the face adult proportions.
+  garment(rig.head, [[0.103, 0.011, 0.004, 0.089], [0.108, 0.015, 0.010, 0.094], [0.117, 0.010, 0.013, 0.095], [0.136, 0.008, 0.007, 0.089], [0.153, 0.004, 0.002, 0.084]], skin, 1, 0);
+  const crease = mat(0x704c3b, 1), lip = mat(0x9d6954, 0.96);
+  oval(rig.head, 0.019, 0.003, 0.003, lip, 0, 0.079, 0.084);
+  oval(rig.head, 0.016, 0.003, 0.003, lip, 0, 0.085, 0.084);
   for (const side of [-1, 1]) {
     oval(rig.head, 0.012, 0.024, 0.014, skin, side * 0.084, 0.123, -0.002);
-    oval(rig.head, 0.009, 0.003, 0.003, eye, side * 0.033, 0.146, 0.079);
-    rounded(rig.head, 0.025, 0.004, 0.005, hair, side * 0.033, 0.16, 0.079, 0.002);
+    oval(rig.head, 0.005, 0.013, 0.008, lip, side * 0.093, 0.125, 0.004);
+    oval(rig.head, 0.004, 0.002, 0.003, crease, side * 0.009, 0.105, 0.099);
+    oval(rig.head, 0.014, 0.006, 0.003, lip, side * 0.033, 0.143, 0.074);
+    oval(rig.head, 0.012, 0.003, 0.003, mat(0xb0a89b), side * 0.033, 0.144, 0.075);
+    oval(rig.head, 0.003, 0.003, 0.002, eye, side * 0.033, 0.144, 0.078);
+    const brow = rounded(rig.head, 0.027, 0.003, 0.003, hair, side * 0.033, 0.155, 0.075, 0.001); brow.rotation.z = side * 0.09;
   }
   rounded(rig.head, 0.03, 0.002, 0.003, mat(0x95694f, 0.95), 0, 0.081, 0.084, 0.001);
 
-  hair.roughness = 0.96; hair.color.setHex(0x514337);
+  hair.roughness = 0.96; hair.color.setHex(0x2c2623);
   hair.map = canvasMap((c, s, rng) => {
     c.fillStyle = '#cdbbaa'; c.fillRect(0, 0, s, s);
     for (let i = 0; i < 1500; i++) {
@@ -200,15 +281,17 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
       for (const offset of [-3, 4]) { c.beginPath(); c.moveTo(x + offset, 0); c.lineTo(x + offset, s); c.stroke(); }
     }
   }, 512);
-  const crown = mesh(rig.head, new THREE.SphereGeometry(1, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2), cap, 0, 0.208, -0.006);
-  crown.scale.set(0.099, 0.078, 0.11);
-  const band = mesh(rig.head, new THREE.TorusGeometry(1, 0.022, 6, 48), cap, 0, 0.209, -0.006);
-  band.rotation.x = Math.PI / 2; band.scale.set(0.098, 0.109, 0.098);
+  // Lower the whole cap toward the ears, deepening the crown to still enclose the cranium.
+  const hat = new THREE.Group(); hat.name = 'Fitted cap'; hat.position.y = -0.034; rig.head.add(hat);
+  const crown = mesh(hat, new THREE.SphereGeometry(1, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2), cap, 0, 0.208, -0.006);
+  crown.scale.set(0.094, 0.096, 0.105);
+  const band = mesh(hat, new THREE.TorusGeometry(1, 0.022, 6, 48), cap, 0, 0.209, -0.006);
+  band.rotation.x = Math.PI / 2; band.scale.set(0.093, 0.104, 0.093);
   // Solid curved visor: rounded outline, downturned sides, dark underside and visible thickness.
   const bp = [], buv = [], bi = [], across = 24, along = 8, count = (across + 1) * (along + 1);
   for (let layer = 0; layer < 2; layer++) for (let j = 0; j <= along; j++) for (let i = 0; i <= across; i++) {
     const u = i / across * 2 - 1, t = j / along;
-    bp.push(u * (0.075 + t * 0.025), 0.211 - t * 0.009 - u * u * 0.012 - layer * 0.003,
+    bp.push(u * (0.071 + t * 0.025), 0.211 - t * 0.009 - u * u * 0.004 - layer * 0.003,
       0.04 + t * (0.065 + 0.07 * Math.sqrt(Math.max(0, 1 - u * u))));
     buv.push(i / across, t);
   }
@@ -230,40 +313,52 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   brimGeo.setAttribute('position', new THREE.Float32BufferAttribute(bp, 3)); brimGeo.setAttribute('uv', new THREE.Float32BufferAttribute(buv, 2));
   brimGeo.setIndex(bi); brimGeo.addGroup(0, surfaceCount, 0); brimGeo.addGroup(surfaceCount, surfaceCount, 1);
   brimGeo.addGroup(surfaceCount * 2, bi.length - surfaceCount * 2, 0); brimGeo.computeVertexNormals();
-  mesh(rig.head, brimGeo, [cap, mat(0x513e35, 0.98)]);
-  oval(rig.head, 0.007, 0.004, 0.007, cap, 0, 0.286, -0.006);
+  mesh(hat, brimGeo, [cap, mat(0x191b1e, 0.98)]);
+  oval(hat, 0.007, 0.004, 0.007, cap, 0, 0.304, -0.006);
   const badge = mat(0xffffff, 0.98);
   badge.map = canvasMap((c, s) => {
-    c.fillStyle = '#54332e'; c.fillRect(0, 0, s, s); c.strokeStyle = '#b89879'; c.lineWidth = 10; c.strokeRect(12, 12, s - 24, s - 24);
+    c.fillStyle = '#25282b'; c.fillRect(0, 0, s, s); c.strokeStyle = '#666b70'; c.lineWidth = 5; c.strokeRect(12, 12, s - 24, s - 24);
     c.fillStyle = '#dfccb0'; c.font = '900 140px sans-serif'; c.textAlign = 'center'; c.fillText('J2S', s / 2, s * 0.69);
   }, 256);
-  const patch = mesh(rig.head, new THREE.PlaneGeometry(0.035, 0.018), badge, 0, 0.237, 0.101);
+  const patch = mesh(hat, new THREE.PlaneGeometry(0.035, 0.018), badge, 0, 0.237, 0.103);
   patch.rotation.x = -0.32;
 }
 
 export function buildDetailedBody(rig) {
-  const skin = mat(0xc99570, 0.88), shirt = mat(0x426574, 0.96), pants = mat(0x39454b, 0.98), shoe = mat(0x242d30, 0.88);
-  const sole = mat(0xd4cdb7, 0.82), cap = mat(0x9e4132), hair = mat(0x392c24), eye = mat(0x302a27, 0.5);
+  const skin = mat(0xb88364, 0.83), shirt = mat(0x383a3d, 0.96), pants = mat(0x425d7b, 0.97), shoe = mat(0x202329, 0.9);
+  shirt.name = 'Washed black hoodie'; pants.name = 'Worn indigo denim';
+  const sole = mat(0xd6d4cb, 0.86), cap = mat(0x292b30), hair = mat(0x392c24), eye = mat(0x302a27, 0.5);
   const cloth = canvasMap((c, s, rng) => {
     c.fillStyle = '#b7b7b7'; c.fillRect(0, 0, s, s);
     for (let i = 0; i < s; i += 2) { c.fillStyle = i % 4 ? '#b0b0b0' : '#c3c3c3'; c.fillRect(i, 0, 1, s); c.fillRect(0, i, s, 0.5); }
     for (let i = 0; i < 6000; i++) { c.fillStyle = `rgba(30,30,30,${rng() * 0.13})`; c.fillRect(rng() * s, rng() * s, 1, 1); }
   }, 256, false);
   for (const m of [shirt, pants, cap]) { m.bumpMap = cloth; m.bumpScale = 0.0018; }
-  // Small shared garment maps: faded cotton/denim, stitched seams and uneven wash.
+  // Small shared garment maps: cotton fleece/twill, stitched seams and uneven wash.
   // Generated once at load, with no downloads or per-frame cloth simulation.
-  const fabricColor = (denim) => canvasMap((c, s, rng) => {
-    c.fillStyle = denim ? '#b7bcc0' : '#c4c8c6'; c.fillRect(0, 0, s, s);
+  const fabricColor = (twill) => canvasMap((c, s, rng) => {
+    c.fillStyle = twill ? '#d2cec4' : '#c4c8c6'; c.fillRect(0, 0, s, s);
     for (let i = 0; i < 48; i++) {
       const x = rng() * s, y = rng() * s, radius = 20 + rng() * 100;
       const g = c.createRadialGradient(x, y, 0, x, y, radius);
-      g.addColorStop(0, `rgba(245,241,222,${denim ? 0.10 : 0.05})`);
+      g.addColorStop(0, `rgba(245,241,222,${twill ? 0.07 : 0.05})`);
       g.addColorStop(1, 'rgba(245,241,222,0)'); c.fillStyle = g; c.fillRect(0, 0, s, s);
     }
     for (let i = 0; i < 22000; i++) {
       c.fillStyle = `rgba(40,47,48,${rng() * 0.10})`;
       const x = rng() * s, y = rng() * s;
-      c.fillRect(x, y, 1, denim ? 2 : 1);
+      c.fillRect(x, y, 1, twill ? 2 : 1);
+    }
+    // Broad wear and short crease highlights remain visible at gameplay distance.
+    for (const v of [0.13, 0.22, 0.47, 0.53, 0.82, 0.90]) {
+      for (let side = 0; side < 2; side++) {
+        const x = s * (0.12 + side * 0.5), y = v * s, width = s * (0.10 + rng() * 0.10);
+        c.lineCap = 'round'; c.lineWidth = twill ? 4 : 3;
+        c.strokeStyle = twill ? 'rgba(40,52,67,0.15)' : 'rgba(35,37,40,0.15)';
+        c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + width * 0.5, y - 9, x + width, y + 4); c.stroke();
+        c.lineWidth = 2; c.strokeStyle = 'rgba(238,237,230,0.16)';
+        c.beginPath(); c.moveTo(x + 2, y + 4); c.quadraticCurveTo(x + width * 0.5, y - 5, x + width, y + 8); c.stroke();
+      }
     }
     for (const x of [2, s / 2]) {
       c.fillStyle = 'rgba(25,32,36,0.18)'; c.fillRect(x, 0, 3, s);
@@ -273,37 +368,67 @@ export function buildDetailedBody(rig) {
     c.setLineDash([]); c.fillStyle = 'rgba(25,32,36,0.16)'; c.fillRect(0, 3, s, 2);
   }, 512);
   shirt.map = fabricColor(false); pants.map = fabricColor(true);
-  rig.hips = new THREE.Group(); rig.body.add(rig.hips);
-  rounded(rig.hips, 0.34, 0.16, 0.21, pants, 0, 0.02, 0, 0.06);
+  pants.bumpMap = canvasMap((c, s) => {
+    c.fillStyle = '#777'; c.fillRect(0, 0, s, s);
+    for (let y = -s; y < s * 2; y += 4) {
+      c.strokeStyle = '#aaa'; c.lineWidth = 1; c.beginPath(); c.moveTo(0, y); c.lineTo(s, y + s); c.stroke();
+    }
+  }, 256, false); pants.bumpScale = 0.0009;
+  const rib = shirt.clone(); rib.name = 'Hoodie rib knit';
+  rib.bumpMap = canvasMap((c, s) => {
+    c.fillStyle = '#888'; c.fillRect(0, 0, s, s);
+    for (let x = 0; x < s; x += 4) { c.fillStyle = '#aaa'; c.fillRect(x, 0, 2, s); }
+  }, 128, false); rib.bumpScale = 0.0013;
+  rig.hips = new THREE.Bone(); rig.body.add(rig.hips);
+  rounded(rig.hips, 0.40, 0.19, 0.23, pants, 0, 0.015, 0, 0.075);
   rig.torso = new THREE.Group(); rig.torso.position.y = 0.1; rig.hips.add(rig.torso);
-  // Relaxed, untucked tee covers the pelvis seam; broader sloping shoulders meet the sleeves.
-  garment(rig.torso, [[-0.075, 0.218, 0.143], [-0.06, 0.22, 0.145], [-0.02, 0.205, 0.132], [0.09, 0.18, 0.113], [0.25, 0.19, 0.118], [0.36, 0.213, 0.114], [0.415, 0.216, 0.102], [0.445, 0.198, 0.083], [0.47, 0.065, 0.06]], shirt, 1, 0.038);
+  // Heavier fleece hangs away from the body, gathering above a ribbed waistband.
+  garment(rig.torso, [[-0.075, 0.218, 0.143], [-0.04, 0.226, 0.149], [-0.02, 0.214, 0.145], [0.09, 0.204, 0.139], [0.25, 0.203, 0.131], [0.36, 0.22, 0.122], [0.415, 0.224, 0.11], [0.445, 0.198, 0.091], [0.47, 0.065, 0.06]], shirt, 1, 0.038);
+  garment(rig.torso, [[-0.095, 0.213, 0.14], [-0.085, 0.216, 0.143], [-0.05, 0.224, 0.148]], rib);
   const collar = mesh(rig.torso, new THREE.TorusGeometry(0.061, 0.01, 8, 24), shirt, 0, 0.466, 0); collar.rotation.x = Math.PI / 2;
-  const print = new THREE.MeshStandardMaterial({ roughness: 0.93, transparent: true, depthWrite: false,
-    map: canvasMap((c, s) => { c.fillStyle = '#ddd6bd'; c.textAlign = 'center'; c.font = 'italic 900 170px sans-serif'; c.fillText('J2S', s / 2, s * 0.49); c.fillStyle = '#d98254'; c.fillRect(s * 0.19, s * 0.55, s * 0.62, 10); c.font = 'bold 34px sans-serif'; c.fillStyle = '#ddd6bd'; c.fillText('SKATE DIVISION', s / 2, s * 0.66); }, 512) });
-  mesh(rig.torso, new THREE.PlaneGeometry(0.25, 0.23), print, 0, 0.29, 0.122);
-  const backPrint = mesh(rig.torso, new THREE.PlaneGeometry(0.25, 0.23), print, 0, 0.29, -0.122); backPrint.rotation.y = Math.PI;
+  // Folded-down hood: a tapered fabric pouch and a recessed opening behind the collar.
+  garment(rig.torso, [[0.275, 0, 0, -0.13], [0.30, 0.068, 0.035, -0.145], [0.35, 0.108, 0.065, -0.149], [0.42, 0.12, 0.073, -0.132], [0.475, 0.092, 0.054, -0.115], [0.49, 0.074, 0.043, -0.108]], shirt, 1, 0.04);
+  oval(rig.torso, 0.071, 0.009, 0.041, mat(0x121314, 1), 0, 0.476, -0.108);
+  garment(rig.torso, [[0.467, 0.088, 0.053, -0.111], [0.485, 0.079, 0.046, -0.108], [0.49, 0.071, 0.040, -0.108], [0.475, 0.066, 0.035, -0.108]], rib, 1, 0.018);
+  const cord = mat(0x8a8880, 0.98);
+  for (const side of [-1, 1]) {
+    const curve = new THREE.CatmullRomCurve3([[side * 0.045, 0.465, 0.064], [side * 0.056, 0.415, 0.115], [side * 0.048, 0.34, 0.135], [side * 0.061, 0.285, 0.13]].map(p => new THREE.Vector3(...p)));
+    mesh(rig.torso, new THREE.TubeGeometry(curve, 12, 0.0025, 6, false), cord);
+    rounded(rig.torso, 0.004, 0.014, 0.004, cord, side * 0.061, 0.278, 0.13, 0.001);
+  }
+  // Curved kangaroo pocket follows the fleece surface instead of floating as a flat box.
+  const pocketP = [], pocketUV = [], pocketI = [], cols = 16, rows = 4;
+  for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) {
+    const u = i / cols * 2 - 1, x = u * 0.136;
+    pocketP.push(x, -0.015 + j / rows * (0.15 - 0.035 * u ** 4), 0.143 * Math.sqrt(1 - (x / 0.21) ** 2) + 0.005);
+    pocketUV.push(i / cols, j / rows);
+    if (i && j) { const b = j * (cols + 1) + i, a = b - cols - 1; pocketI.push(a - 1, a, b, a - 1, b, b - 1); }
+  }
+  const pocketGeo = new THREE.BufferGeometry(); pocketGeo.setAttribute('position', new THREE.Float32BufferAttribute(pocketP, 3));
+  pocketGeo.setAttribute('uv', new THREE.Float32BufferAttribute(pocketUV, 2)); pocketGeo.setIndex(pocketI); pocketGeo.computeVertexNormals();
+  mesh(rig.torso, pocketGeo, rib);
   buildConnectedHead(rig, { skin, cap, hair, eye, cloth });
   const arm = (side) => {
-    const sh = new THREE.Group(); sh.position.set(side * 0.22, 0.42, 0); rig.torso.add(sh);
-    garment(sh, [[0.039, 0, 0], [0.026, 0.041, 0.043], [0.009, 0.065, 0.062], [-0.04, 0.076, 0.073], [-0.12, 0.074, 0.068], [-0.177, 0.068, 0.065], [-0.185, 0.070, 0.066]], shirt, 1, 0.038);
-    oval(sh, 0.043, 0.115, 0.042, skin, 0, -0.204, 0);
-    const el = new THREE.Group(); el.position.y = -0.29; sh.add(el);
-    oval(el, 0.042, 0.045, 0.042, skin, 0, 0, 0);
-    garment(el, [[0, 0.041, 0.041], [-0.08, 0.042, 0.038], [-0.2, 0.03, 0.029], [-0.26, 0.028, 0.027]], skin, 1, 0);
-    rounded(el, 0.07, 0.095, 0.04, skin, 0, -0.3, 0, 0.019);
-    oval(el, 0.018, 0.035, 0.018, skin, -side * 0.037, -0.287, 0.008);
-    if (side < 0) mesh(el, new THREE.CylinderGeometry(0.032, 0.032, 0.029, 16), shoe, 0, -0.24, 0);
+    const sh = new THREE.Bone(); sh.position.set(side * 0.22, 0.42, 0); rig.torso.add(sh);
+    const el = new THREE.Bone(); el.position.y = -0.29; sh.add(el);
+    jointCloth(rig, sh, el, [[0.055, 0, 0], [0.025, 0.06, 0.06], [-0.035, 0.093, 0.087], [-0.13, 0.086, 0.079], [-0.23, 0.079, 0.074], [-0.29, 0.076, 0.073], [-0.34, 0.081, 0.076], [-0.43, 0.070, 0.063], [-0.47, 0.074, 0.065], [-0.52, 0.043, 0.040]], shirt, 0.29, 0.037);
+    garment(el, [[-0.225, 0.044, 0.04], [-0.25, 0.038, 0.035], [-0.27, 0.036, 0.033]], rib);
+    oval(el, 0.033, 0.044, 0.020, skin, 0, -0.294, 0);
+    for (let finger = 0; finger < 4; finger++) {
+      const length = [0.047, 0.058, 0.055, 0.043][finger], x = (finger - 1.5) * 0.016;
+      const digit = mesh(el, new THREE.CapsuleGeometry(0.008, length - 0.016, 4, 8), skin, x, -0.322 - length / 2, 0.008);
+      digit.rotation.x = -0.20 - finger * 0.055;
+    }
+    const thumb = oval(el, 0.012, 0.028, 0.012, skin, -side * 0.035, -0.300, 0.018); thumb.rotation.z = -side * 0.4;
     return { sh, el };
   };
   rig.lArm = arm(1); rig.rArm = arm(-1);
   const leg = (side) => {
-    const hp = new THREE.Group(); hp.position.set(side * 0.15, 0, 0); rig.hips.add(hp);
-    garment(hp, [[0.015, 0.08, 0.085, 0, -side * 0.04], [-0.08, 0.106, 0.105], [-0.23, 0.096, 0.098], [-0.34, 0.086, 0.085], [-0.40, 0.089, 0.09], [-0.455, 0.083, 0.084]], pants, 1, 0.035);
-    const kn = new THREE.Group(); kn.position.y = -0.42; hp.add(kn);
-    oval(kn, 0.082, 0.068, 0.084, pants, 0, 0, 0);
-    garment(kn, [[0.025, 0.083, 0.084], [-0.06, 0.09, 0.088], [-0.20, 0.082, 0.083], [-0.29, 0.074, 0.075], [-0.33, 0.08, 0.078], [-0.36, 0.072, 0.073], [-0.39, 0.074, 0.075]], pants, 1, 0.045);
-    const an = new THREE.Group(); an.position.y = -0.4; kn.add(an);
+    const hp = new THREE.Bone(); hp.position.set(side * 0.15, 0, 0); rig.hips.add(hp);
+    const kn = new THREE.Bone(); kn.position.y = -0.42; hp.add(kn);
+    const jeans = jointCloth(rig, hp, kn, [[0.075, 0, 0, 0, -side * 0.024], [0.035, 0.092, 0.099, 0, -side * 0.024], [-0.07, 0.113, 0.113], [-0.19, 0.107, 0.105], [-0.31, 0.091, 0.092], [-0.38, 0.097, 0.098], [-0.43, 0.089, 0.089], [-0.48, 0.098, 0.094], [-0.58, 0.088, 0.083], [-0.68, 0.074, 0.076], [-0.72, 0.086, 0.083], [-0.75, 0.078, 0.074], [-0.78, 0.086, 0.078], [-0.81, 0.072, 0.068]], pants, 0.42, 0.036, rig.hips);
+    jeans.name = side === 1 ? 'Front jeans continuous hip' : 'Back jeans continuous hip';
+    const an = new THREE.Group(); an.position.y = -0.42; kn.add(an);
     rounded(an, 0.11, 0.063, 0.25, shoe, 0, 0.008, 0, 0.023);
     rounded(an, 0.112, 0.019, 0.25, sole, 0, -0.031, 0, 0.008);
     rounded(an, 0.065, 0.018, 0.12, shoe, 0, 0.038, -0.014, 0.008);
