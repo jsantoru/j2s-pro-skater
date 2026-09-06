@@ -70,7 +70,6 @@ skater.events.ollie = (charge) => { audio.pop(charge); input.rumble(0.15 + charg
 skater.events.trickStart = (name) => { audio.trickStart(name); const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
 skater.events.land = (points, text, mult) => {
   audio.land(skater.landSquash);
-  fx.burst(skater.pos, 10 + Math.round(skater.landSquash * 16), [0.75, 0.72, 0.68], 1.6 + skater.landSquash * 1.5, 0.5);
   input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
   followCam.land(skater.landSquash);
   hud.landed(points, text, mult); // the trick names stay up next to the payout for a beat
@@ -78,7 +77,6 @@ skater.events.land = (points, text, mult) => {
 };
 skater.events.bail = (reason) => {
   audio.bail();
-  fx.burst(skater.pos, 24, [0.8, 0.76, 0.7], 2.5, 0.6);
   input.rumbleSustainStop(); input.rumble(1, 1, 320);
   followCam.bail();
   const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST', balance: 'LOST BALANCE' }[reason] || 'BAILED';

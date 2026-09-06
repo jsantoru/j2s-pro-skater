@@ -1,4 +1,4 @@
-// Small effects: grind sparks + landing dust, as a single pooled Points cloud.
+// Small effects: bail debris, as a single pooled Points cloud.
 import * as THREE from 'three';
 
 const N = 240;
@@ -22,11 +22,6 @@ export class Effects {
   }
   burst(p, n, color, speed, life) { for (let k = 0; k < n; k++) this.spawn(p, { x: 0, y: 0.6, z: 0 }, 2.2, speed, color, life); }
   update(dt, sk) {
-    if (sk.state === 'grind') {
-      this.acc += dt * 140;
-      const back = { x: -sk.heading.x, y: 0.5, z: -sk.heading.z };
-      while (this.acc > 1) { this.acc--; this.spawn(sk.pos, back, 1.2, 1.5 + sk.speed * 0.25, [1, 0.75, 0.3], 0.35); }
-    }
     for (let i = 0; i < N; i++) {
       if (this.life[i] <= 0) { this.pos[i * 3 + 1] = -100; continue; }
       this.life[i] -= dt;
