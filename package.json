@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "sim": "node sim/playtest.js",
     "sim:balance": "node sim/balancetest.js",
-    "sim:feel": "node sim/feeltest.js"
+    "sim:feel": "node sim/feeltest.js",
+    "sim:score": "node sim/scoretest.js"
   },
   "dependencies": {
     "three": "^0.170.0"

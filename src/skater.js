@@ -1,7 +1,7 @@
 // Skater controller: a hand-tuned kinematic character, not a rigid body.
 // States: ride (on a surface), air, grind, bail. All units metres / seconds / radians unless noted.
 import * as THREE from 'three';
-import { FLIPS, GRABS, GRINDS, MANUALS, Combo, spinName } from './tricks.js';
+import { FLIPS, GRABS, GRINDS, MANUALS, HOLD, Combo, spinName, spinPoints, spinMult } from './tricks.js';
 import { Balance, BALANCE, MANUAL_BALANCE } from './balance.js';
 
 export const TUNING = {
@@ -115,6 +115,10 @@ export class Skater {
 
   emit(name, ...args) { const f = this.events[name]; if (f) f(...args); }
 
+  // Riding fakie is this game's switch stance: THPS pays 1.2x for it and treats the trick as a
+  // fresh one for degradation purposes.
+  get switchStance() { return this.stance === -1; }
+
   raycast(origin, dir, far) {
     _ray.set(origin, dir); _ray.far = far; _ray.near = 0;
     const hits = _ray.intersectObjects(this.level.colliders, false);
@@ -210,7 +214,7 @@ export class Skater {
       m.time += dt;
       if (!this.manualBalance.update(dt, inp.stickY || 0, sp)) { this.bail('balance'); return; }
       const tick = Math.floor(m.time * 10) - Math.floor((m.time - dt) * 10);
-      if (tick > 0) this.combo.addToLast(10 * tick);
+      if (tick > 0) this.combo.addToLast(HOLD.manual * tick);
       // out of roll, or the ground stopped being flat enough to hold a wheelie on
       if (sp < T.manualMinSpeed || this.normal.y < 0.72) this.endManual(true);
     }
@@ -282,7 +286,7 @@ export class Skater {
     const [name, base] = MANUALS[which];
     this.manual = { kind: name, time: 0 };
     this.startBalance(this.manualBalance);
-    this.combo.add(name, base);
+    this.combo.add(name, base, { switch: this.switchStance });
     this.emit('manualStart', name);
   }
 
@@ -502,26 +506,30 @@ export class Skater {
   completeTrick() {
     const tr = this.trick; this.trick = null;
     let pts = tr.base;
-    if (tr.kind === 'grab') pts += Math.floor(Math.max(0, tr.t - tr.dur) * 10) * 10; // +10/0.1s held
-    this.combo.add(tr.name, pts);
+    if (tr.kind === 'grab') pts += Math.floor(Math.max(0, tr.t - tr.dur) * 10) * HOLD.grab; // held past the tuck
+    this.combo.add(tr.name, pts, { switch: this.switchStance });
     this.emit('trick', tr.name);
   }
 
-  // Award spin at the moment the air ends (landing or grind): prefixes the first trick of this air.
-  bankSpin(prefixTarget) {
+  // Award spin at the moment the air ends (landing or grind). Rotation pays into the base of the
+  // first trick of this air and adds one x per completed 360, as THPS does. When that trick has not
+  // been created yet (a grind is starting on this very frame) the descriptor goes back to the caller,
+  // which attaches it once the grind is on the board.
+  bankSpin(deferToCaller) {
     const deg = Math.abs(this.spinDeg);
-    if (deg < 150) return '';
+    if (deg < 150) return null;
+    const halfTurns = Math.round(deg / 180);
     const name = spinName(this.spinDeg, -Math.sign(this.spinDeg) * this.stance);
-    const bonus = 100 * Math.round(deg / 180);
+    const bonus = spinPoints(halfTurns);
+    this.combo.addMult(spinMult(halfTurns));
     if (this.combo.tricks.length > this.airTrickIndex) {
-      const t = this.combo.tricks[this.airTrickIndex];
-      t.name = name + ' ' + t.name; t.points += bonus; this.combo.points += bonus;
-    } else if (prefixTarget) {
-      return name + ' ';
+      this.combo.attachSpin(this.airTrickIndex, name, bonus);
+    } else if (deferToCaller) {
+      return { name, bonus };
     } else {
-      this.combo.add(name, bonus);
+      this.combo.add(name, bonus); // nothing but rotation: the spin is the trick
     }
-    return '';
+    return null;
   }
 
   land(point, n) {
@@ -613,7 +621,7 @@ export class Skater {
     const [gname, base] = GRINDS[gdir] || GRINDS.C;
     this.grindIntent = 0; this.grindIntentDir = 'C'; this.queued = null; this.manualIntent = null;
     const slide = gname.includes('slide');
-    const prefix = this.bankSpin(true);
+    const spin = this.bankSpin(true);
     this.grind = { rail: r, t: found.t, dir, speed, name: gname, slide, time: 0 };
     this.startBalance(this.balance);
     this.pos.copy(found.point); this.pos.y += 0.02;
@@ -629,7 +637,8 @@ export class Skater {
     this.heading.copy(r.dir).multiplyScalar(dir);
     this.normal.set(0, 1, 0);
     this.state = 'grind';
-    this.combo.add(prefix + gname, base);
+    const entry = this.combo.add(gname, base, { switch: this.switchStance });
+    if (spin) this.combo.attachSpin(this.combo.tricks.indexOf(entry), spin.name, spin.bonus);
     this.emit('grindStart', gname);
   }
 
@@ -646,7 +655,7 @@ export class Skater {
     g.t += g.dir * g.speed * dt / r.len;
     // accrue grind points
     const tick = Math.floor(g.time * 10) - Math.floor((g.time - dt) * 10);
-    if (tick > 0) this.combo.addToLast(10 * tick);
+    if (tick > 0) this.combo.addToLast(HOLD.grind * tick);
     if (g.t < 0 || g.t > 1) {
       this.pos.copy(r.a).addScaledVector(r.dir, Math.max(0, Math.min(1, g.t)) * r.len); this.pos.y += 0.02;
       this.vel.copy(r.dir).multiplyScalar(g.dir * g.speed);

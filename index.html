@@ -13,6 +13,7 @@
     <div id="top-left">
       <div class="label">SCORE</div>
       <div id="score">0</div>
+      <div id="score-to-beat"></div>
     </div>
     <div id="top-center">
       <div id="timer">2:00</div>
@@ -91,9 +92,18 @@
       </div>
     </div>
     <div class="tricks">
-      <b>Flips:</b> Kickflip (←) · Heelflip (→) · Pop Shove-it (↓) · Impossible (↑) · 360 Flip (↙) · Varial Heelflip (↘) · Hardflip (↖) · Inward Heel (↗)<br/>
-      <b>Grabs:</b> Indy (→) · Melon (←) · Nosegrab (↑) · Tailgrab (↓) · Method (↖) · Stalefish (↗) · Judo (↙) · Airwalk (↘)<br/>
-      <b>Grinds:</b> 50-50 (neutral) · Nosegrind (↑) · 5-0 (↓) · Boardslide (←) · Lipslide (→) · Crooked (↖) · Overcrook (↗) · Smith (↙) · Feeble (↘)
+      <b>Flips <i>(100 each)</i>:</b> Kickflip (←) · Heelflip (→) · Pop Shove-it (↓) · Impossible (↑) · 360 Flip (↙) · Varial Heelflip (↘) · Hardflip (↖) · Inward Heel (↗)<br/>
+      <b>Grabs:</b> Indy (→) <i>300</i> · Melon (←) <i>300</i> · Nosegrab (↑) <i>300</i> · Tailgrab (↓) <i>300</i> · Method (↖) <i>300</i> · Stalefish (↗) <i>300</i> · Judo (↙) <i>350</i> · Airwalk (↘) <i>50</i><br/>
+      <b>Grinds:</b> 50-50 (neutral) <i>100</i> · Nosegrind (↑) <i>100</i> · 5-0 (↓) <i>100</i> · Boardslide (←) <i>200</i> · Lipslide (→) <i>200</i> · Crooked (↖) <i>125</i> · Overcrook (↗) <i>125</i> · Smith (↙) <i>125</i> · Feeble (↘) <i>125</i><br/>
+      <b>Manuals <i>(100)</i>:</b> Manual · Nose Manual
+    </div>
+    <div class="tricks scoring">
+      <b>Scoring</b> — <i>(sum of trick points) × multiplier</i>. Every trick in the chain adds <b>1x</b>, and
+      every full 360 of spin adds another. Rotation pays into the trick you threw it with: 180 <i>+100</i>,
+      360 <i>+250</i>, 540 <i>+450</i>, 720 <i>+700</i>. Holding pays too — <i>100/s</i> on a rail,
+      <i>50/s</i> in a manual, <i>100/s</i> on a held grab.<br/>
+      Repeat a trick in one combo and it decays to <i>75% → 50% → 25% → 10%</i>. Landing switch is worth
+      <i>1.2×</i> <i>and</i> counts as a different trick, so it wipes that decay. Variety pays; spamming does not.
     </div>
   </div>
   <div id="overlay">
@@ -101,6 +111,7 @@
     <div class="sub">WAREHOUSE · FREE SKATE · 2:00</div>
     <div id="overlay-msg">Press START / ENTER to skate</div>
     <div id="final-score"></div>
+    <div id="high-scores"></div>
     <div class="small">Plug in an Xbox-style USB controller and press any button</div>
   </div>
   <script type="module" src="/src/main.js"></script>

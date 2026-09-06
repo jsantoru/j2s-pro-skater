@@ -8,6 +8,10 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #top-left, #top-center, #top-right { background: rgba(8,10,16,0.35); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 8px 16px; }
 #top-left { top: 18px; left: 22px; }
 #score { font-size: 44px; font-weight: 900; font-style: italic; letter-spacing: 1px; text-shadow: 3px 3px 0 #000, -1px -1px 0 #000; font-family: Impact, "Arial Black", sans-serif; }
+/* Sits directly under the score in the same panel: the number to chase, deliberately small so it
+   never competes with the live score. */
+#score-to-beat { font-size: 13px; letter-spacing: 2px; color: #9ad4ff; text-shadow: 2px 2px 0 #000; margin-top: -2px; min-height: 15px; }
+#score-to-beat.record { color: #7dff8a; }
 #top-center { top: 14px; left: 50%; transform: translateX(-50%); text-align: center; }
 #timer { font-size: 40px; font-family: Impact, "Arial Black", sans-serif; text-shadow: 3px 3px 0 #000; color: #fff; }
 #timer.low { color: #ff5a3a; }
@@ -51,6 +55,9 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #controls-panel td { padding: 4px 14px 4px 0; vertical-align: top; }
 #controls-panel td:first-child { color: #ffcf3a; font-weight: bold; white-space: nowrap; }
 #controls-panel .tricks { margin-top: 18px; font-size: 14px; line-height: 1.7; color: #ddd; border-top: 1px solid #444; padding-top: 12px; }
+#controls-panel .tricks i { color: #ffcf3a; font-style: normal; }
+#controls-panel .tricks.scoring { color: #bbb; }
+#controls-panel .tricks.scoring b { color: #9ad4ff; }
 #overlay { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(6,8,14,0.72); z-index: 5; text-align: center; }
 #overlay .title { font-family: Impact, "Arial Black", sans-serif; font-size: 84px; font-style: italic; letter-spacing: 2px; color: #fff; text-shadow: 5px 5px 0 #000, 8px 8px 0 #ffcf3a; }
 #overlay .title span { color: #ffcf3a; text-shadow: 5px 5px 0 #000, 8px 8px 0 #c0392b; }
@@ -59,3 +66,11 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #final-score { font-family: Impact, sans-serif; font-size: 56px; color: #ffcf3a; text-shadow: 4px 4px 0 #000; margin: 10px 0; }
 #overlay .small { margin-top: 28px; color: #bbb; font-size: 14px; }
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+#high-scores { margin: 4px 0 6px; font-size: 16px; letter-spacing: 1px; min-width: 260px; }
+#high-scores .hs-title { font-family: Impact, sans-serif; letter-spacing: 4px; color: #ffcf3a; font-size: 18px; margin-bottom: 8px; }
+#high-scores .hs-row { display: flex; justify-content: space-between; gap: 18px; padding: 2px 6px; color: #ddd; }
+#high-scores .hs-row.you { background: rgba(255,207,58,0.18); color: #fff; font-weight: bold; }
+#high-scores .hs-rank { width: 2em; text-align: right; color: #9ad4ff; }
+#high-scores .hs-score { flex: 1; text-align: right; font-family: Impact, sans-serif; font-size: 18px; }
+#high-scores .hs-date { width: 6.5em; text-align: right; color: #888; font-size: 13px; }
