@@ -13,6 +13,15 @@ function rounded(parent, w, h, d, material, x = 0, y = 0, z = 0, radius = 0.025)
 function oval(parent, rx, ry, rz, material, x, y, z) {
   const m = mesh(parent, new THREE.SphereGeometry(1, 20, 14), material, x, y, z); m.scale.set(rx, ry, rz); return m;
 }
+// UVs need duplicate seam vertices; lighting must still treat them as one surface.
+function smoothRingSeams(g, segments, rows, columnMajor = false) {
+  const normal = g.attributes.normal, n = new THREE.Vector3(), end = new THREE.Vector3();
+  for (let r = 0; r < rows; r++) {
+    const a = columnMajor ? r : r * (segments + 1), b = columnMajor ? segments * rows + r : a + segments;
+    n.fromBufferAttribute(normal, a).add(end.fromBufferAttribute(normal, b)).normalize();
+    normal.setXYZ(a, n.x, n.y, n.z); normal.setXYZ(b, n.x, n.y, n.z);
+  }
+}
 // Elliptical rings give fabric a shaped silhouette and small folds without changing any rig pivots.
 function garment(parent, rings, material, zScale = 1, foldAmount = 0.023) {
   // Interpolate the tailoring profiles so folds and shoulders shade as cloth,
@@ -47,13 +56,22 @@ function garment(parent, rings, material, zScale = 1, foldAmount = 0.023) {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(indices); g.computeVertexNormals();
-  const normal = g.attributes.normal, n = new THREE.Vector3(), end = new THREE.Vector3();
-  for (let r = 0; r < rings.length; r++) {
-    const a = r * (segments + 1), b = a + segments;
-    n.fromBufferAttribute(normal, a).add(end.fromBufferAttribute(normal, b)).normalize();
-    normal.setXYZ(a, n.x, n.y, n.z); normal.setXYZ(b, n.x, n.y, n.z);
-  }
+  smoothRingSeams(g, segments, rings.length);
   return mesh(parent, g, material);
+}
+
+// A turned-back knit edge, including its inner wall. The shared top ring closes
+// inside the sleeve; the rounded lower edge hugs the wrist instead of ending in paper-thin points.
+function sleeveCuff(parent, material) {
+  const cuff = garment(parent, [
+    [-0.220, 0.045, 0.041], [-0.238, 0.041, 0.037],
+    [-0.262, 0.033, 0.029], [-0.273, 0.030, 0.025],
+    [-0.276, 0.026, 0.021], [-0.272, 0.023, 0.018],
+    [-0.255, 0.025, 0.021], [-0.232, 0.034, 0.030],
+    [-0.220, 0.045, 0.041],
+  ], material, 1, 0);
+  cuff.name = 'Closed ribbed cuff';
+  return cuff;
 }
 
 // Continuous cloth across the elbow/knee, with a soft transition between bones.
@@ -98,6 +116,8 @@ function lastedShell(parent, stations, material, exponent, length) {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(indices); g.computeVertexNormals();
+  smoothRingSeams(g, around, rows);
+  g.name = 'Seamless shoe last';
   return mesh(parent, g, material);
 }
 
@@ -287,8 +307,9 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   for (let i = 0; i < hp.count; i++) {
     const x = hp.getX(i), y = hp.getY(i), z = hp.getZ(i), a = Math.atan2(z, x);
     const front = Math.max(0, Math.sin(a)), back = Math.max(0, -Math.sin(a));
-    const temple = Math.sin(a) > 0 ? Math.exp(-Math.pow((front - 0.28) / 0.18, 2)) * 0.024 : 0;
-    const edge = 0.158 + front * 0.048 - back * 0.065 - temple + Math.sin(a * 19) * 0.0012;
+    // A broad, shallow sideburn transition, not the narrow triangular tooth below the band.
+    const temple = Math.exp(-Math.pow((Math.sin(a) - 0.18) / 0.34, 2)) * 0.009;
+    const edge = 0.158 + front * 0.048 - back * 0.065 - temple + Math.sin(a * 19) * 0.0005;
     const radius = 1 + Math.sin(a * 17 + y * 6) * 0.018 * (1 - y);
     const height = edge + (0.266 - edge) * y;
     const [srx, srz, centerZ] = skullAt(height);
@@ -297,7 +318,8 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
     hp.setXYZ(i, horizontal > 1e-6 ? x / horizontal * rx * radius : 0, height,
       centerZ + (horizontal > 1e-6 ? z / horizontal * rz * radius : 0));
   }
-  hairGeo.computeVertexNormals(); mesh(rig.head, hairGeo, hair);
+  hairGeo.computeVertexNormals(); smoothRingSeams(hairGeo, 48, 17);
+  mesh(rig.head, hairGeo, hair).name = 'Tailored hairline';
 
   cap.roughness = 0.94; cap.bumpMap = cloth; cap.bumpScale = 0.0008;
   cap.map = canvasMap((c, s, rng) => {
@@ -316,7 +338,7 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   // ears and on the brow, then rises in six panels over the actual shape of the skull.
   // A scaled hemisphere sat on top of the head instead, which read as a moulded bowl.
   const hat = new THREE.Group(); hat.name = 'Fitted cap'; rig.head.add(hat);
-  const cp = [], cuv = [], ci = [], around = 44, up = 15, apex = 0.271;
+  const cp = [], cuv = [], ci = [], around = 44, up = 15, apex = 0.269;
   for (let j = 0; j <= up; j++) for (let i = 0; i <= around; i++) {
     const a = i / around * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a);
     const front = Math.max(0, sn), back = Math.max(0, -sn), side = Math.abs(c);
@@ -327,11 +349,11 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
     // The band grips the head; the panels above it stand off a little, deepest at the back.
     // Fabric has to clear the hair shell, and a touch more where it passes over the ears.
     const grip = Math.max(0, 1 - Math.pow(t, 12));
-    const pad = grip * (0.0068 + 0.0042 * side + 0.0030 * t + 0.0030 * back * t);
+    const pad = grip * (0.0040 + 0.0015 * side + 0.0010 * t + 0.0010 * back * t);
     // Near the crown the cranium profile pinches to a point; hold the panels out on a dome.
     const dome = Math.pow(Math.max(0, 1 - t * t), 0.42);
     const seam = 1 - Math.abs(Math.cos(a * 3)) * 0.006 * t;
-    const rx = Math.max(srx + pad, 0.084 * dome) * seam, rz = Math.max(srz + pad, 0.090 * dome) * seam;
+    const rx = Math.max(srx + pad, 0.078 * dome) * seam, rz = Math.max(srz + pad, 0.086 * dome) * seam;
     cp.push(c * rx, height, centerZ + sn * rz);
     cuv.push(i / around, j / up);
     if (i && j) { const b = j * (around + 1) + i, a0 = b - around - 1; ci.push(a0 - 1, b - 1, b, a0 - 1, b, a0); }
@@ -339,13 +361,14 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   const crownGeo = new THREE.BufferGeometry();
   crownGeo.setAttribute('position', new THREE.Float32BufferAttribute(cp, 3));
   crownGeo.setAttribute('uv', new THREE.Float32BufferAttribute(cuv, 2));
-  crownGeo.setIndex(ci); crownGeo.computeVertexNormals(); mesh(hat, crownGeo, cap);
+  crownGeo.setIndex(ci); crownGeo.computeVertexNormals(); smoothRingSeams(crownGeo, around, up + 1);
+  mesh(hat, crownGeo, cap).name = 'Seamless cap crown';
   // Solid curved visor: rounded outline, downturned sides, dark underside and visible thickness.
   const bp = [], buv = [], bi = [], across = 24, along = 8, count = (across + 1) * (along + 1);
   for (let layer = 0; layer < 2; layer++) for (let j = 0; j <= along; j++) for (let i = 0; i <= across; i++) {
     const u = i / across * 2 - 1, t = j / along;
-    bp.push(u * (0.068 + t * 0.025), 0.173 - t * 0.011 - u * u * (0.005 + t * 0.010) - layer * 0.004,
-      0.038 + t * (0.062 + 0.070 * Math.sqrt(Math.max(0, 1 - u * u))));
+    bp.push(u * (0.068 + t * 0.025), 0.173 - t * 0.011 - u * u * (0.005 + t * 0.010) - layer * 0.0022,
+      0.038 + t * (0.052 + 0.058 * Math.sqrt(Math.max(0, 1 - u * u))));
     buv.push(i / across, t);
   }
   for (let layer = 0; layer < 2; layer++) for (let j = 0; j < along; j++) for (let i = 0; i < across; i++) {
@@ -367,13 +390,13 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   brimGeo.setIndex(bi); brimGeo.addGroup(0, surfaceCount, 0); brimGeo.addGroup(surfaceCount, surfaceCount, 1);
   brimGeo.addGroup(surfaceCount * 2, bi.length - surfaceCount * 2, 0); brimGeo.computeVertexNormals();
   mesh(hat, brimGeo, [cap, mat(0x191b1e, 0.98)]);
-  oval(hat, 0.0055, 0.003, 0.0055, cap, 0, 0.2715, -0.008);
+  oval(hat, 0.0055, 0.002, 0.0055, cap, 0, 0.2695, -0.008);
   const badge = mat(0xffffff, 0.98);
   badge.map = canvasMap((c, s) => {
     c.fillStyle = '#25282b'; c.fillRect(0, 0, s, s); c.strokeStyle = '#666b70'; c.lineWidth = 5; c.strokeRect(12, 12, s - 24, s - 24);
     c.fillStyle = '#dfccb0'; c.font = '900 140px sans-serif'; c.textAlign = 'center'; c.fillText('J2S', s / 2, s * 0.69);
   }, 256);
-  const patch = mesh(hat, new THREE.PlaneGeometry(0.035, 0.018), badge, 0, 0.209, 0.088);
+  const patch = mesh(hat, new THREE.PlaneGeometry(0.035, 0.018), badge, 0, 0.209, 0.085);
   patch.rotation.x = -0.30;
 }
 
@@ -444,10 +467,16 @@ export function buildDetailedBody(rig) {
   const collar = mesh(rig.torso, new THREE.TorusGeometry(0.061, 0.01, 8, 24), shirt, 0, 0.466, 0); collar.rotation.x = Math.PI / 2;
   // A hood that is down, not stuffed: wide and flat against the back rather than a pouch.
   // Its inner face is buried inside the torso so only the draped panel reads.
-  garment(rig.torso, [[0.240, 0.038, 0.014, -0.114], [0.286, 0.096, 0.026, -0.129], [0.334, 0.128, 0.032, -0.139], [0.386, 0.144, 0.036, -0.145], [0.436, 0.146, 0.037, -0.147], [0.470, 0.128, 0.034, -0.146], [0.489, 0.101, 0.028, -0.144]], shirt, 1, 0.026);
-  // The opening rolls over at the top: a dark inner face ringed by the hood's rib edge.
-  oval(rig.torso, 0.100, 0.008, 0.025, mat(0x121314, 1), 0, 0.490, -0.145);
-  garment(rig.torso, [[0.474, 0.110, 0.033, -0.146], [0.488, 0.116, 0.037, -0.145], [0.495, 0.107, 0.030, -0.144]], rib, 1, 0.010);
+  // The upper hood bends forward into the neckline, not vertically up behind it.
+  garment(rig.torso, [[0.240, 0.038, 0.014, -0.114], [0.286, 0.096, 0.026, -0.129], [0.334, 0.128, 0.040, -0.125], [0.386, 0.144, 0.045, -0.125], [0.436, 0.146, 0.051, -0.113], [0.455, 0.128, 0.048, -0.103], [0.472, 0.101, 0.043, -0.090]], shirt, 1, 0.026).name = 'Hood attached to neckline';
+  // Roll continuously into a recessed lining. An open ring around a raised oval
+  // left daylight slits on either side of the old hood opening.
+  const hoodLip = garment(rig.torso, [
+    [0.457, 0.110, 0.050, -0.102], [0.471, 0.116, 0.052, -0.094],
+    [0.480, 0.107, 0.046, -0.087], [0.476, 0.095, 0.036, -0.086],
+    [0.461, 0.091, 0.033, -0.087], [0.448, 0, 0, -0.090],
+  ], rib, 1, 0.006);
+  hoodLip.name = 'Lined hood opening';
   const cord = mat(0x8a8880, 0.98);
   for (const side of [-1, 1]) {
     const curve = new THREE.CatmullRomCurve3([[side * 0.045, 0.465, 0.064], [side * 0.056, 0.415, 0.115], [side * 0.048, 0.34, 0.135], [side * 0.061, 0.285, 0.13]].map(p => new THREE.Vector3(...p)));
@@ -469,36 +498,49 @@ export function buildDetailedBody(rig) {
   const arm = (side) => {
     const sh = new THREE.Bone(); sh.position.set(side * 0.22, 0.42, 0); rig.torso.add(sh);
     const el = new THREE.Bone(); el.position.y = -0.29; sh.add(el);
-    jointCloth(rig, sh, el, [[0.055, 0, 0], [0.025, 0.06, 0.06], [-0.035, 0.093, 0.087], [-0.13, 0.086, 0.079], [-0.23, 0.079, 0.074], [-0.29, 0.076, 0.073], [-0.34, 0.081, 0.076], [-0.43, 0.070, 0.063], [-0.47, 0.074, 0.065], [-0.52, 0.043, 0.040]], shirt, 0.29, 0.037);
-    garment(el, [[-0.225, 0.044, 0.04], [-0.25, 0.038, 0.035], [-0.27, 0.036, 0.033]], rib);
+    // Bury the sleeve's final ring inside the knit so gathered folds cannot poke
+    // through its upper seam as little triangular tabs.
+    const sleeve = jointCloth(rig, sh, el, [[0.055, 0, 0], [0.025, 0.06, 0.06], [-0.035, 0.093, 0.087], [-0.13, 0.086, 0.079], [-0.23, 0.079, 0.074], [-0.29, 0.076, 0.073], [-0.34, 0.081, 0.076], [-0.43, 0.070, 0.063], [-0.47, 0.074, 0.065], [-0.530, 0.035, 0.031]], shirt, 0.29, 0.037);
+    sleeve.name = 'Sleeve tucked into cuff';
+    sleeveCuff(el, rib);
     // A relaxed hand rather than a paddle: a shaped palm with the thumb and little-finger
     // pads either side of it, fingers that curl over two joints, and a thumb folded alongside.
     const hand = new THREE.Group(); hand.position.set(0, -0.262, 0.002);
-    hand.rotation.set(-0.12, side * 0.16, 0); el.add(hand);
-    oval(hand, 0.026, 0.021, 0.019, skin, 0, -0.010, 0);
-    oval(hand, 0.029, 0.036, 0.0145, skin, 0, -0.042, 0.001);
-    oval(hand, 0.013, 0.023, 0.0125, skin, -side * 0.019, -0.034, 0.001);
-    oval(hand, 0.010, 0.025, 0.011, skin, side * 0.020, -0.040, -0.001);
-    oval(hand, 0.029, 0.013, 0.0142, skin, 0, -0.072, 0.001);
+    // Body +x is the left arm. Thumbs point forward and palms face the thighs.
+    hand.name = side === 1 ? 'Left hand' : 'Right hand';
+    hand.rotation.set(-0.06, -side * (Math.PI / 2 - 0.12), 0); el.add(hand);
+    const palm = garment(hand, [
+      [0.012, 0, 0], [0.002, 0.021, 0.016], [-0.015, 0.023, 0.017],
+      [-0.033, 0.030, 0.017, 0.001, side * 0.002],
+      [-0.052, 0.031, 0.016, 0.002], [-0.069, 0.030, 0.014, 0.002],
+      [-0.080, 0.025, 0.011, 0.003], [-0.084, 0, 0, 0.003],
+    ], skin, 1, 0);
+    palm.name = 'Continuous palm and wrist';
     const digit = (x, y, z, spread, length, radius, curl) => {
       const knuckle = new THREE.Group(); knuckle.position.set(x, y, z);
-      knuckle.rotation.set(-curl, 0, spread); hand.add(knuckle);
-      mesh(knuckle, new THREE.CapsuleGeometry(radius, length * 0.55, 4, 10), skin, 0, -length * 0.275 - radius, 0);
-      const tip = new THREE.Group(); tip.position.y = -length * 0.55 - radius * 0.9;
-      tip.rotation.x = -curl * 1.35; knuckle.add(tip);
-      mesh(tip, new THREE.CapsuleGeometry(radius * 0.86, length * 0.45 - radius, 4, 10), skin, 0, -length * 0.225, 0);
+      knuckle.rotation.z = spread; hand.add(knuckle);
+      // One tapering curved surface per digit: no detached capsule tips or bead-like joints.
+      const g = new THREE.CapsuleGeometry(radius, length - radius * 2, 5, 12);
+      const p = g.attributes.position, turn = curl * 1.8;
+      for (let i = 0; i < p.count; i++) {
+        const t = THREE.MathUtils.clamp((length / 2 - p.getY(i)) / length, 0, 1), theta = t * turn;
+        const crossZ = p.getZ(i) * (1 - 0.15 * t);
+        p.setXYZ(i, p.getX(i) * (1 - 0.15 * t),
+          -length * Math.sin(theta) / turn + crossZ * Math.sin(theta),
+          length * (1 - Math.cos(theta)) / turn + crossZ * Math.cos(theta));
+      }
+      // Capsule/Lathe stores columns first, unlike the row-major clothing grids.
+      g.computeVertexNormals(); smoothRingSeams(g, 12, p.count / 13, true);
+      mesh(knuckle, g, skin).name = 'Continuous curled digit';
+      return knuckle;
     };
     for (let f = 0; f < 4; f++) {
-      digit(-side * (0.026 - f * 0.0173), [-0.074, -0.077, -0.075, -0.068][f], [0.005, 0.004, 0.001, -0.003][f],
-        -side * (0.055 - f * 0.038), [0.050, 0.056, 0.052, 0.041][f], [0.0082, 0.0085, 0.0080, 0.0071][f],
-        [0.40, 0.43, 0.48, 0.54][f]);
+      digit(side * (0.024 - f * 0.016), [-0.069, -0.074, -0.072, -0.065][f], [0.002, 0.002, 0.001, 0][f],
+        side * (0.045 - f * 0.03), [0.052, 0.058, 0.054, 0.043][f], [0.0082, 0.0085, 0.0080, 0.0071][f],
+        [0.28, 0.34, 0.40, 0.46][f]);
     }
-    const thumb = new THREE.Group(); thumb.position.set(-side * 0.019, -0.030, 0.008);
-    thumb.rotation.set(-0.34, 0, -side * 0.44); hand.add(thumb);
-    mesh(thumb, new THREE.CapsuleGeometry(0.0104, 0.017, 4, 10), skin, 0, -0.0165, 0);
-    const thumbTip = new THREE.Group(); thumbTip.position.y = -0.032; thumbTip.rotation.x = -0.40; thumb.add(thumbTip);
-    mesh(thumbTip, new THREE.CapsuleGeometry(0.0090, 0.013, 4, 10), skin, 0, -0.0145, 0);
-    return { sh, el };
+    digit(side * 0.023, -0.029, 0.006, side * 0.52, 0.047, 0.0105, 0.38).name = 'Thumb root';
+    return { sh, el, hand };
   };
   rig.lArm = arm(1); rig.rArm = arm(-1);
   const leg = (side) => {
@@ -506,7 +548,10 @@ export function buildDetailedBody(rig) {
     const kn = new THREE.Bone(); kn.position.y = -0.42; hp.add(kn);
     const jeans = jointCloth(rig, hp, kn, [[0.080, 0, 0, 0, -side * 0.045], [0.045, 0.074, 0.092, 0, -side * 0.046], [0.000, 0.096, 0.104, 0, -side * 0.028], [-0.07, 0.113, 0.113], [-0.19, 0.107, 0.105], [-0.31, 0.091, 0.092], [-0.38, 0.097, 0.098], [-0.43, 0.089, 0.089], [-0.48, 0.098, 0.094], [-0.58, 0.088, 0.083], [-0.68, 0.074, 0.076], [-0.72, 0.086, 0.083], [-0.75, 0.078, 0.074], [-0.78, 0.086, 0.078], [-0.81, 0.072, 0.068]], pants, 0.42, 0.036, rig.hips);
     jeans.name = side === 1 ? 'Front jeans continuous hip' : 'Back jeans continuous hip';
-    const an = new THREE.Group(); an.position.y = -0.42; kn.add(an);
+    const ankle = new THREE.Group(); ankle.position.y = -0.42; kn.add(ankle);
+    // Anatomical ankle is behind the shoe centre. Keep the shoe-centre frame for
+    // deck contacts; IK compensates this offset instead of sliding the soles forward.
+    const an = new THREE.Group(); an.position.z = 0.055; ankle.add(an);
     // A lasted skate shoe: the upper narrows at the heel and arch, swells over the ball of
     // the foot and rounds off at the toe, and a vulcanised cupsole wraps up around it.
     // The old stack of rounded boxes read as a brick whichever way the foot turned.
@@ -531,7 +576,7 @@ export function buildDetailedBody(rig) {
       [0.34, 0.0412, 0.006, 0.013], [0.52, 0.0442, 0.002, 0.009], [0.70, 0.0482, -0.002, 0.005],
       [0.85, 0.0452, -0.005, 0.002], [0.94, 0.031, -0.009, -0.002], [1.00, 0.012, -0.013, -0.006],
     ], sole, 6, 0.232);
-    return { hp, kn, an };
+    return { hp, kn, ankle, an };
   };
   rig.lLeg = leg(1); rig.rLeg = leg(-1);
 }

@@ -129,6 +129,17 @@ try {
     await evaluate(`{const h=__game.character.head; const pos=h.localToWorld(h.position.clone().set(...${JSON.stringify(offset)})); const target=h.localToWorld(h.position.clone().set(0,0.105,0)); qaView(pos.toArray(),target.toArray());}`);
     await shot(name);
   }
+  // Tight, rig-local views make cuff openings and shoe shading reproducible.
+  for (const [name, part, offset, aim] of [
+    ['cuff-palm','lArm.el',[0.24,-0.43,0.36],[0,-0.27,0]],
+    ['cuff-back','lArm.el',[-0.24,-0.36,-0.36],[0,-0.27,0]],
+    ['cuff-right','rArm.el',[-0.24,-0.43,0.36],[0,-0.27,0]],
+    ['shoe-side','lLeg.an',[0.38,0.12,0.20],[0,0,0]],
+    ['temple','head',[0.40,0.16,0.32],[0,0.16,0]],
+  ]) {
+    await evaluate(`{const h=__game.character.${part}; const pos=h.localToWorld(h.position.clone().set(...${JSON.stringify(offset)})); const target=h.localToWorld(h.position.clone().set(...${JSON.stringify(aim)})); qaView(pos.toArray(),target.toArray());}`);
+    await shot(name);
+  }
   await evaluate(`qaPose('ride',{crouch:1}); qaView([-6.2,1.15,16.2],[-4,0.65,14]);`); await shot('crouch');
   await evaluate(`qaPose('ride'); qaView([-10,1.15,16],[-1,0.1,10]);`); await shot('floor-gameplay');
   await evaluate(`qaView([-7,0.38,13.5],[-4,0.05,11]);`); await shot('floor-detail');

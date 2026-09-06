@@ -69,7 +69,7 @@ export class Character {
     this.buildBoard(); this.buildBody();
     this.ik = { target: new THREE.Vector3(), direction: new THREE.Vector3(), bend: new THREE.Vector3(),
       knee: new THREE.Vector3(), lower: new THREE.Vector3(), worldQ: new THREE.Quaternion(),
-      footQ: new THREE.Quaternion(), parentQ: new THREE.Quaternion(), inv: new THREE.Quaternion(),
+      footQ: new THREE.Quaternion(), parentQ: new THREE.Quaternion(), inv: new THREE.Quaternion(), offset: new THREE.Vector3(),
       authoredHip: new THREE.Quaternion(), authoredKnee: new THREE.Quaternion(), authoredAnkle: new THREE.Quaternion() };
   }
 
@@ -81,8 +81,9 @@ export class Character {
   plantFoot(leg, target, orientation, weight) {
     if (weight <= 0) return;
     const v = this.ik;
-    v.authoredHip.copy(leg.hp.quaternion); v.authoredKnee.copy(leg.kn.quaternion); v.authoredAnkle.copy(leg.an.quaternion);
-    v.target.copy(target); this.hips.worldToLocal(v.target); v.target.sub(leg.hp.position);
+    v.authoredHip.copy(leg.hp.quaternion); v.authoredKnee.copy(leg.kn.quaternion); v.authoredAnkle.copy(leg.ankle.quaternion);
+    v.target.copy(target).sub(v.offset.copy(leg.an.position).applyQuaternion(orientation));
+    this.hips.worldToLocal(v.target); v.target.sub(leg.hp.position);
     const distance = THREE.MathUtils.clamp(v.target.length(), 0.02, L1 + L2 - 0.0001);
     v.direction.copy(v.target).normalize();
     v.bend.set(0, 0, 1).addScaledVector(v.direction, -v.direction.z).normalize();
@@ -94,10 +95,10 @@ export class Character {
     leg.kn.quaternion.setFromUnitVectors(DOWN, v.lower);
     leg.kn.updateWorldMatrix(true, false);
     leg.kn.getWorldQuaternion(v.parentQ).invert();
-    leg.an.quaternion.copy(v.parentQ).multiply(orientation);
+    leg.ankle.quaternion.copy(v.parentQ).multiply(orientation);
     leg.hp.quaternion.slerp(v.authoredHip, 1 - weight);
     leg.kn.quaternion.slerp(v.authoredKnee, 1 - weight);
-    leg.an.quaternion.slerp(v.authoredAnkle, 1 - weight);
+    leg.ankle.quaternion.slerp(v.authoredAnkle, 1 - weight);
   }
 
   anchorFeet(sk, dt) {
@@ -140,8 +141,10 @@ export class Character {
     for (let iteration = 0; iteration < 8 && this.contactWeight > 0.99; iteration++) {
       let excess = 0;
       for (let i = 0; i < 2; i++) {
-        this.ik.target.copy(targets[i]); this.hips.worldToLocal(this.ik.target);
-        excess = Math.max(excess, this.ik.target.sub((i ? this.rLeg : this.lLeg).hp.position).length() - (L1 + L2 - 0.008));
+        const leg = i ? this.rLeg : this.lLeg;
+        this.ik.target.copy(targets[i]).sub(this.ik.offset.copy(leg.an.position).applyQuaternion(orientations[i]));
+        this.hips.worldToLocal(this.ik.target);
+        excess = Math.max(excess, this.ik.target.sub(leg.hp.position).length() - (L1 + L2 - 0.008));
       }
       if (excess <= 0.0001) break;
       this.hips.position.y -= excess * 1.12; this.root.updateMatrixWorld(true);
@@ -229,8 +232,8 @@ export class Character {
     this.lArm.el.rotation.x = -c.lElbow * D2R; this.rArm.el.rotation.x = -c.rElbow * D2R;
     // hips flex forward (knee travels toward the chest, +z), knees fold the shin back behind the thigh;
     // the ankle counter-rotates on both axes so the foot stays flat whatever the squat depth or leg swing
-    this.lLeg.hp.rotation.set(-c.lHip * D2R, 0, c.lLegZ * D2R); this.lLeg.kn.rotation.x = c.lKnee * D2R; this.lLeg.an.rotation.set((c.lHip - c.lKnee) * D2R, 0, -c.lLegZ * D2R);
-    this.rLeg.hp.rotation.set(-c.rHip * D2R, 0, c.rLegZ * D2R); this.rLeg.kn.rotation.x = c.rKnee * D2R; this.rLeg.an.rotation.set((c.rHip - c.rKnee) * D2R, 0, -c.rLegZ * D2R);
+    this.lLeg.hp.rotation.set(-c.lHip * D2R, 0, c.lLegZ * D2R); this.lLeg.kn.rotation.x = c.lKnee * D2R; this.lLeg.ankle.rotation.set((c.lHip - c.lKnee) * D2R, 0, -c.lLegZ * D2R);
+    this.rLeg.hp.rotation.set(-c.rHip * D2R, 0, c.rLegZ * D2R); this.rLeg.kn.rotation.x = c.rKnee * D2R; this.rLeg.ankle.rotation.set((c.rHip - c.rKnee) * D2R, 0, -c.rLegZ * D2R);
 
     // board: follows feet in the air, flips during flip tricks, tumbles on bail
     const b = this.board;

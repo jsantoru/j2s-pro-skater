@@ -211,6 +211,8 @@ Art code: `src/materials.js`, `src/skater-art.js`, `src/warehouse-art.js`, and `
 For repeatable browser visual checks on Windows, run `node sim/graphicscheck.js http://127.0.0.1:5173/`
 with the dev server running. It launches a disposable headless Edge profile, verifies rendering and
 keyboard/lowfx operation, and saves screenshots under `screenshots/visual-upgrade/`.
+The captures include both wrists, the temple/hood opening and the shoe side for close-up polish review.
+Run `node sim/arttest.js` to check closed cuffs, tucked sleeve edges, hood lining and smooth UV seams.
 Set `EDGE_PATH` if Edge is installed elsewhere. Headless frame timings are diagnostic, not a
 performance guarantee for other devices. Existing gameplay checks remain available through `npm run sim`,
 `npm run sim:feel`, `npm run sim:balance`, and `node sim/animtest.js`.
