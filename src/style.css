@@ -26,23 +26,18 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #landed-text.bail { color: #ff5a3a; }
 #bottom.fading { opacity: 0; }
 #bottom.lost #combo-points, #bottom.lost #combo-mult { color: #ff8f7a; }
-#balance { bottom: 188px; left: 50%; transform: translateX(-50%); width: 260px; text-align: center; }
-#balance-track { position: relative; height: 14px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.35);
-  background: linear-gradient(90deg, #ff3a2a 0%, #ffcf3a 22%, #2c8f45 46%, #2c8f45 54%, #ffcf3a 78%, #ff3a2a 100%);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.55); }
-#balance-centre { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(255,255,255,0.5); }
-#balance-needle { position: absolute; top: -5px; left: 50%; width: 8px; height: 24px; margin-left: -4px; border-radius: 3px;
-  background: #fff; border: 1px solid rgba(0,0,0,0.65); box-shadow: 0 0 6px rgba(0,0,0,0.9); }
-/* stays white in danger: a red needle would vanish into the red end of the track, exactly when it matters */
-#balance.danger #balance-needle { box-shadow: 0 0 14px 4px #ff3a2a, 0 0 6px rgba(0,0,0,0.9); animation: nudge 0.16s infinite alternate; }
-/* Manuals tip fore-aft, so the meter stands up and the needle rides the pitch axis. Same markup, same
-   needle logic — only the axis changes, which keeps the stick direction and the meter direction agreeing. */
-#balance.vertical { bottom: 150px; left: 50%; margin-left: 168px; width: 18px; }
-#balance.vertical #balance-track { width: 18px; height: 168px; border-radius: 9px;
-  background: linear-gradient(0deg, #ff3a2a 0%, #ffcf3a 22%, #2c8f45 46%, #2c8f45 54%, #ffcf3a 78%, #ff3a2a 100%); }
-#balance.vertical #balance-centre { left: 0; right: 0; top: 50%; width: auto; height: 2px; margin: -1px 0 0 0; }
-#balance.vertical #balance-needle { left: -6px; top: 50%; width: 30px; height: 8px; margin: -4px 0 0 0; }
-@keyframes nudge { from { transform: translateY(0); } to { transform: translateY(-2px); } }
+#balance { --balance-span: 280px; left: 50%; top: 24%; width: 280px; height: 91px; z-index: 2; }
+#balance-track { position: absolute; left: 50%; top: 50%; width: var(--balance-span); height: auto;
+  overflow: visible; transform: translate(-50%, -50%); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
+.balance-rim { fill: url(#balance-color); stroke: #291d17; stroke-width: 3; stroke-linejoin: round; }
+.balance-glint { fill: none; stroke: #ffe79a; stroke-opacity: 0.5; stroke-width: 1; }
+#balance-centre { fill: none; stroke: #fff2a0; stroke-opacity: 0.65; stroke-width: 1.5; }
+#balance-needle path { fill: #6de9f5; stroke: #e7ffff; stroke-width: 1.5; stroke-linejoin: round;
+  filter: drop-shadow(0 1px 1px #102d33); }
+/* Rotation maps positive balance upward for manuals, matching the pitch input axis. */
+#balance.vertical #balance-track { transform: translate(-50%, -50%) rotate(-90deg); }
+#balance.danger #balance-needle path { fill: #a2f7ff; stroke-width: 2;
+  filter: drop-shadow(0 0 3px #e7ffff); }
 #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); border: 2px solid #ffcf3a; padding: 8px 18px; font-size: 16px; letter-spacing: 1px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
 #toast.show { opacity: 1; }
 #controls-panel { position: fixed; inset: 40px; background: rgba(12,14,20,0.94); border: 3px solid #ffcf3a; padding: 20px 30px; overflow: auto; z-index: 10; }

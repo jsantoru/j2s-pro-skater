@@ -98,6 +98,7 @@ export class Skater {
     this.grind = null; this.bailT = 0; this.bailReason = '';
     this.balance.reset();
     this.manual = null; this.manualBalance.reset();
+    this.chainBalance = null;
     this.manualIntent = null; // manual flick entered in the air; consumed on the next valid landing
     this.flickDir = 0; this.flickT = 0; this.flickArmed = false; this.manualLean = 0;
     this.lastRail = null; this.railCooldown = 0;
@@ -280,7 +281,7 @@ export class Skater {
   startManual(which) {
     const [name, base] = MANUALS[which];
     this.manual = { kind: name, time: 0 };
-    this.manualBalance.start(Math.min(MANUAL_BALANCE.comboMax, this.combo.tricks.length * MANUAL_BALANCE.comboStep));
+    this.startBalance(this.manualBalance);
     this.combo.add(name, base);
     this.emit('manualStart', name);
   }
@@ -297,6 +298,7 @@ export class Skater {
   }
 
   bankCombo(boost) {
+    this.resetBalanceChain();
     if (this.combo.tricks.length) {
       const banked = this.combo.total;
       this.score += banked;
@@ -307,6 +309,17 @@ export class Skater {
     }
     this.emit('land', 0, '', 0);
     return 0;
+  }
+
+  startBalance(meter) {
+    const previous = this.combo.active ? this.chainBalance : null;
+    if (previous && previous !== meter) previous.stop();
+    meter.start(Math.min(meter.B.comboMax, this.combo.tricks.length * meter.B.comboStep), previous);
+    this.chainBalance = meter;
+  }
+
+  resetBalanceChain() {
+    this.balance.reset(); this.manualBalance.reset(); this.chainBalance = null;
   }
 
   handleCrouch(dt, inp) {
@@ -602,7 +615,7 @@ export class Skater {
     const slide = gname.includes('slide');
     const prefix = this.bankSpin(true);
     this.grind = { rail: r, t: found.t, dir, speed, name: gname, slide, time: 0 };
-    this.balance.start(Math.min(BALANCE.comboMax, this.combo.tricks.length * BALANCE.comboStep));
+    this.startBalance(this.balance);
     this.pos.copy(found.point); this.pos.y += 0.02;
     // facing: sideways for slides, along the rail otherwise (nearest stance)
     const rd = _v2.set(r.dir.x, 0, r.dir.z).normalize().multiplyScalar(dir);
@@ -670,6 +683,7 @@ export class Skater {
     else { this.vel.multiplyScalar(0.6); this.vel.y = Math.max(this.vel.y, 1.5); }
     this.lostCombo = this.combo.text; this.lostPoints = this.combo.points; this.lostMult = this.combo.multiplier;
     this.combo.reset();
+    this.resetBalanceChain();
     this.emit('bail', reason);
   }
 

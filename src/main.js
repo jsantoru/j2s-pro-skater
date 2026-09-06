@@ -187,8 +187,8 @@ function frame(now) {
   }
   const onRail = mode === 'playing' && skater.state === 'grind' && skater.balance.active;
   const onManual = mode === 'playing' && !!skater.manual && skater.manualBalance.active;
-  if (onManual) hud.balance(true, skater.manualBalance.x, true, 'MANUAL');
-  else hud.balance(onRail, skater.balance.x, false, 'BALANCE');
+  if (onManual) hud.balance(true, skater.manualBalance.x, true, character, camera);
+  else hud.balance(onRail, skater.balance.x, false, character, camera);
   hud.update(dt, skater.score, timeLeft, skater.speed / 14);
   if (skater.combo.tricks.length && (skater.state === 'grind' || skater.manual)) refreshCombo();
   input.hapticsCommit(dt);

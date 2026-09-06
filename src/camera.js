@@ -8,9 +8,16 @@ const _right = new THREE.Vector3();
 const _renderPos = new THREE.Vector3();
 
 export const CAMERA_TUNING = {
-  grindDistance: 0.55,   // move closer so the rail reads as a narrow line
-  grindHeight: 0.27,
-  grindFov: 2.5,
+  rideDistance: 2.9,
+  speedDistance: 0.035,
+  rideHeight: 1.15,
+  speedHeight: 0.012,
+  lookAhead: 0.55,
+  rideFov: 52,
+  speedFov: 0.25,
+  grindDistance: 4.0,    // leave room above the skater for the arc and ahead for the rail
+  grindHeight: 1.35,
+  grindFov: 56,
   spinLeadMax: 8,        // degrees: enough anticipation without hiding the skater's rotation
   spinLeadScale: 0.014,  // degrees of camera lead per degree/second of body rotation
   punchSpring: 105,
@@ -82,8 +89,8 @@ export class FollowCamera {
     const sp = Math.min(16, this.smoothSpeed);
     const grindTarget = sk.state === 'grind' ? 1 : 0;
     this.grindBlend += (grindTarget - this.grindBlend) * Math.min(1, dt * (grindTarget ? 7 : 9));
-    const dist = 4.6 + sp * 0.11 - this.grindBlend * CAMERA_TUNING.grindDistance;
-    const height = 1.9 + sp * 0.03 - this.grindBlend * CAMERA_TUNING.grindHeight;
+    const dist = THREE.MathUtils.lerp(CAMERA_TUNING.rideDistance + sp * CAMERA_TUNING.speedDistance, CAMERA_TUNING.grindDistance, this.grindBlend);
+    const height = THREE.MathUtils.lerp(CAMERA_TUNING.rideHeight + sp * CAMERA_TUNING.speedHeight, CAMERA_TUNING.grindHeight, this.grindBlend);
     const target = new THREE.Vector3().copy(sk.pos).addScaledVector(UP, 0.9);
     const desired = target.clone().addScaledVector(fwd, -dist).addScaledVector(UP, height);
 
@@ -119,7 +126,7 @@ export class FollowCamera {
       this.shake = Math.max(0, this.shake - dt * CAMERA_TUNING.shakeDecay);
     }
 
-    const lookAt = target.clone().addScaledVector(fwd, 1.4);
+    const lookAt = target.clone().addScaledVector(fwd, CAMERA_TUNING.lookAhead);
     if (this.first) { this.pos.copy(desired); this.look.copy(lookAt); this.first = false; }
     else {
       const k = sk.state === 'air' ? 7 : 9;
@@ -129,7 +136,7 @@ export class FollowCamera {
     _renderPos.copy(this.pos).addScaledVector(_right, shakeX).addScaledVector(UP, shakeY);
     this.cam.position.copy(_renderPos);
     this.cam.lookAt(this.look);
-    const fov = 58 + sp * 0.9 - this.grindBlend * CAMERA_TUNING.grindFov + this.fovKick;
+    const fov = THREE.MathUtils.lerp(CAMERA_TUNING.rideFov + sp * CAMERA_TUNING.speedFov, CAMERA_TUNING.grindFov, this.grindBlend) + this.fovKick;
     this.cam.fov += (fov - this.cam.fov) * Math.min(1, dt * 7);
     this.cam.updateProjectionMatrix();
   }

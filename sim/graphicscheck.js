@@ -69,6 +69,43 @@ try {
   await evaluate(`window.requestAnimationFrame = () => 0;`); await sleep(100);
   await evaluate(`__game.startRun(); document.querySelectorAll('#hud, #overlay, #controls').forEach(e => e.style.display = 'none');`);
   await evaluate(`window.qaPose = (state, extra = {}) => { const g = __game; g.character.root.position.set(-4,0,14); g.character.root.quaternion.identity(); const sk = Object.assign({state, crouch:0, landSquash:0, pushing:0, stance:1, lean:0, speed:0, bailT:0, trick:null, grind:null}, extra); for(let i=0;i<180;i++) g.character.update(sk,1/60,0); g.scene.updateMatrixWorld(true); }; window.qaView = (pos, target) => { const g = __game; g.camera.position.set(...pos); g.camera.fov=45; g.camera.lookAt(...target); g.camera.updateProjectionMatrix(); g.renderer.render(g.scene,g.camera); }; qaPose('ride'); qaView([-7.2,1.7,17.4],[-4,0.88,14]);`);
+  // Actual follow camera and projected HUD, including a phone-sized viewport.
+  await evaluate(`(async()=>{window.qaHud = new (await import('/src/hud.js')).HUD();
+    window.qaFollow = (state, manual=false, value=0) => {
+      const g=__game; qaPose(state, {manualLean:manual?-1:0});
+      const s={state,pos:g.character.root.position,heading:{x:0,z:1},facing:{x:0,z:1},vel:{x:0,z:8},speed:8,steer:0,spinVelocity:0};
+      g.followCam.snap(s); for(let i=0;i<240;i++)g.followCam.update(1/60,s,0);
+      qaHud.balance(state==='grind'||manual,value,manual,g.character,g.camera);
+      g.renderer.render(g.scene,g.camera);
+    }; document.getElementById('hud').style.display='block';})()`);
+  await evaluate(`qaFollow('ride');`); await shot('camera-ride');
+  await evaluate(`qaFollow('grind',false,0.34);`); await shot('hud-grind');
+  await evaluate(`qaFollow('ride',true,-0.30);`); await shot('hud-manual');
+  for (const [width,height,label] of [[1440,900,'desktop'],[390,844,'phone'],[844,390,'landscape']]) {
+    await send('Emulation.setDeviceMetricsOverride', {width,height,deviceScaleFactor:1,mobile:false});
+    await evaluate(`__game.renderer.setSize(${width},${height}); __game.camera.aspect=${width}/${height}; __game.camera.updateProjectionMatrix();`);
+    for (const vertical of [false,true]) {
+      const results = await evaluate(`(()=>{
+        qaFollow(${vertical ? "'ride',true" : "'grind',false"},0);
+        const el=document.getElementById('balance'),needle=document.getElementById('balance-needle');
+        const track=document.getElementById('balance-track'); const points=[];
+        for(const x of [-1,0,1]){
+          qaHud.balance(true,x,${vertical},__game.character,__game.camera);
+          const pt=track.createSVGPoint();pt.x=0;pt.y=0; const screen=pt.matrixTransform(needle.getScreenCTM());points.push([screen.x,screen.y]);
+        }
+        const box=el.getBoundingClientRect();
+        return {left:box.left,right:box.right,top:box.top,bottom:box.bottom,points,label:el.getAttribute('aria-label')};
+      })()`);
+      if (results.left < 0 || results.right > width || results.top < 0 || results.bottom > height) throw new Error(`Meter leaves ${label} viewport: ${JSON.stringify(results)}`);
+      const [negative,center,positive]=results.points;
+      if (vertical ? !(negative[1]>center[1] && center[1]>positive[1]) : !(negative[0]<center[0] && center[0]<positive[0])) throw new Error('Balance pointer moves on the wrong axis');
+      await evaluate(`qaHud.balance(true,0.72,${vertical},__game.character,__game.camera);`);
+      if (label !== 'desktop') await shot(`hud-${vertical?'manual':'grind'}-${label}`);
+    }
+  }
+  await send('Emulation.setDeviceMetricsOverride', {width:1440,height:900,deviceScaleFactor:1,mobile:false});
+  await evaluate(`__game.renderer.setSize(1440,900); __game.camera.aspect=1440/900; __game.camera.updateProjectionMatrix(); qaHud.balance(false,0,false); document.getElementById('hud').style.display='none'; qaPose('ride'); qaView([-7.2,1.7,17.4],[-4,0.88,14]);`);
+  console.log('PASS: curved grind/manual HUD remains in desktop, portrait and landscape viewports; pointer axes agree with controls.');
   await shot('skater');
   await evaluate(`qaView([-5.9,1.25,16.0],[-4,0.93,14]);`); await shot('skater-close');
   await evaluate(`qaView([-4.7,0.55,15.0],[-4,0.16,14]);`); await shot('feet-ride');

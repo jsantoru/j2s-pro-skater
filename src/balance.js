@@ -55,7 +55,15 @@ export class Balance {
     this.armed = false; this.active = false; this.difficulty = 0;
   }
 
-  start(difficulty = 0) { this.reset(); this.active = true; this.difficulty = difficulty; }
+  start(difficulty = 0, previous = null) {
+    if (previous) {
+      // A combo owns one continuous balance challenge, even when the input axis changes.
+      // Time is paused in the air, but hopping never erases drift, momentum or difficulty.
+      for (const key of ['x', 'v', 't', 'applied', 'bias', 'biasTarget', 'biasT', 'armed']) this[key] = previous[key];
+      this.difficulty = Math.max(difficulty, previous.difficulty);
+    } else { this.reset(); this.difficulty = difficulty; }
+    this.active = true;
+  }
   stop() { this.active = false; }
 
   get error() { return Math.min(1, Math.abs(this.x)); }        // 0 centred → 1 about to fall

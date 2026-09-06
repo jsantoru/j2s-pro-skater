@@ -56,7 +56,7 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - `src/character.js` – procedural skater and board with pose blending (ride, push cycle,
   crouch, air, per-trick flip/grab poses, grind, bail tumble), board flip animation per trick, carve lean.
 - `src/camera.js` – third-person camera that follows travel direction (not body spin), pulls back with
-  speed, anticipates spins, tightens on grinds, avoids walls, never rolls, and layers spring-driven
+  speed, anticipates spins, opens the view for grinds, avoids walls, never rolls, and layers spring-driven
   landing/bail impacts over the stable follow path.
 - `src/level.js` – warehouse park: half pipe, two quarter pipes, long bank, raised platform with bank
   approach, 5-stair with handrail and hubba, pyramid fun box with ledge, kicker→rail line, kicker gap,
@@ -102,15 +102,21 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   Everything pushing you over is capped at 75% of your full-stick authority, so a lean is always
   recoverable given room; being at the edge *already moving outward* is not, and that point of no return
   is what keeps it tense. Difficulty ramps along the rail, with the combo banked, and as you slow down.
-  0.32 s of grace on landing keeps the grind magnet from dropping you straight into a fight, and a short
-  rail (the 7 m flat rail is ~1.2 s) is still free — it is the 24 m coping that asks you to work.
+  A fresh balance challenge gets 0.32 s of grace, so the first short rail is forgiving. Within one combo,
+  grinds and manuals share the last needle position, velocity, wander and accumulated balance time.
+  Air time pauses that state; another rail, a manual or a nose-manual resumes it without new grace.
+  Banking, bailing or restarting clears it. `node sim/balancechaintest.js` checks these boundaries and
+  verifies that repeated short hops cannot keep an uncorrected rider balanced forever.
 - Manuals run the same pendulum on the pitch axis, tuned tighter: quicker to run away (2.2 s with no input
   vs 2.3 s on a rail) but quicker to correct, and it ramps faster, so a manual is a connector between
   tricks rather than somewhere to park. Entry is a down-up flick that **only arms from centre** — that one
   rule is what stops the ordinary push-then-brake sweep, which crosses both thresholds, being read as a
   manual. On two wheels you can't push, pump or brake, which is both correct and what frees the whole
   vertical stick axis for balancing. Ollie out and the combo carries on; roll to a stop and it banks.
-- Camera: grinds ease 0.55 m closer and 0.27 m lower with a 2.5° tighter FOV. Air spins lead by up to 8°
+- The balance HUD follows the skater on screen: a tapered yellow/red arc above the head for grinds,
+  or a vertical arc on the left for manuals, with a cyan pointer moving along the curve.
+- Camera: ordinary riding follows 2.9–3.46 m behind with a 52–56° FOV, framing the skater at roughly
+  half the viewport height. Grinds ease out to 4 m and 56° for rail visibility. Air spins lead by up to 8°
   while the base camera continues following travel, so rotation remains readable. Landings drive a short
   down/back spring punch; only hard landings shake, while bails use the full filtered shake envelope.
 - Haptics: a per-frame mixer lets feedback overlap without motors fighting. Ollie charge rises under the
