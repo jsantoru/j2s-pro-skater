@@ -11,6 +11,8 @@ const BOARD_TRACK = 0.05;   // how far the board may chase the feet sideways in 
 const MANUAL_PITCH = 22;    // degrees the deck sits nose-up (or nose-down) in a manual
 const AXLE_Z = 0.24;        // distance from deck centre to a truck: the pivot a manual rocks on
 const D2R = Math.PI / 180;
+const SOLE_OFFSET = 0.0405;
+const DOWN = new THREE.Vector3(0, -1, 0);
 
 // pose keys (degrees unless noted)
 const KEYS = ['torsoX', 'torsoY', 'torsoZ', 'headX', 'headY', 'lArmX', 'lArmZ', 'lElbow', 'rArmX', 'rArmZ', 'rElbow',
@@ -18,8 +20,9 @@ const KEYS = ['torsoX', 'torsoY', 'torsoZ', 'headX', 'headY', 'lArmX', 'lArmZ', 
 const P = (o) => { const p = {}; for (const k of KEYS) p[k] = 0; return Object.assign(p, o); };
 
 export const POSES = {
-  ride: P({ torsoX: 6, headY: -55, lArmX: 8, lArmZ: 14, lElbow: 18, rArmX: -6, rArmZ: -14, rElbow: 18, lHip: 12, lKnee: 20, rHip: 10, rKnee: 16 }),
-  crouch: P({ torsoX: 34, headY: -55, headX: -20, lArmX: -30, lArmZ: 22, lElbow: 45, rArmX: -40, rArmZ: -22, rElbow: 45, lHip: 68, lKnee: 112, rHip: 66, rKnee: 110 }),
+  ride: P({ torsoX: 10, headY: -55, lArmX: 8, lArmZ: 24, lElbow: 22, rArmX: -6, rArmZ: -26, rElbow: 24, lHip: 23, lKnee: 38, rHip: 20, rKnee: 34 }),
+  // Counter the forward torso lean so the arms hang beside the knees, ready to pop.
+  crouch: P({ torsoX: 34, headY: -55, headX: -20, lArmX: 40, lArmZ: 8, lElbow: 16, rArmX: 38, rArmZ: -8, rElbow: 18, lHip: 68, lKnee: 112, rHip: 66, rKnee: 110 }),
   air: P({ torsoX: 14, headY: -50, lArmX: 5, lArmZ: 60, lElbow: 35, rArmX: -5, rArmZ: -60, rElbow: 35, lHip: 42, lKnee: 78, rHip: 44, rKnee: 82 }),
   kickflip: P({ torsoX: 12, headY: -55, headX: 15, lArmX: 10, lArmZ: 70, lElbow: 30, rArmX: -10, rArmZ: -70, rElbow: 30, lHip: 25, lKnee: 12, lLegZ: 42, rHip: 60, rKnee: 105 }),
   heelflip: P({ torsoX: 10, headY: -55, headX: 15, lArmX: 10, lArmZ: 70, lElbow: 30, rArmX: -10, rArmZ: -70, rElbow: 30, lHip: 55, lKnee: 20, lLegZ: -30, rHip: 60, rKnee: 105 }),
@@ -61,12 +64,91 @@ export class Character {
     this.root.add(this.body);
     this.cur = P({}); this.cur.hipsY = STAND_DROP;
     this.pushPhase = 0; this.bobT = 0;
+    this.contactWeight = 1;
+    this.pushContact = 0;
     this.buildBoard(); this.buildBody();
+    this.ik = { target: new THREE.Vector3(), direction: new THREE.Vector3(), bend: new THREE.Vector3(),
+      knee: new THREE.Vector3(), lower: new THREE.Vector3(), worldQ: new THREE.Quaternion(),
+      footQ: new THREE.Quaternion(), parentQ: new THREE.Quaternion(), inv: new THREE.Quaternion(),
+      authoredHip: new THREE.Quaternion(), authoredKnee: new THREE.Quaternion(), authoredAnkle: new THREE.Quaternion() };
   }
 
   buildBoard() { this.board = buildDetailedBoard(this.root); }
 
   buildBody() { buildDetailedBody(this); }
+
+  // Render-only two-bone IK. Targets are on the deck; no simulation state is written.
+  plantFoot(leg, target, orientation, weight) {
+    if (weight <= 0) return;
+    const v = this.ik;
+    v.authoredHip.copy(leg.hp.quaternion); v.authoredKnee.copy(leg.kn.quaternion); v.authoredAnkle.copy(leg.an.quaternion);
+    v.target.copy(target); this.hips.worldToLocal(v.target); v.target.sub(leg.hp.position);
+    const distance = THREE.MathUtils.clamp(v.target.length(), 0.02, L1 + L2 - 0.0001);
+    v.direction.copy(v.target).normalize();
+    v.bend.set(0, 0, 1).addScaledVector(v.direction, -v.direction.z).normalize();
+    const along = (L1 * L1 - L2 * L2 + distance * distance) / (2 * distance);
+    v.knee.copy(v.direction).multiplyScalar(along).addScaledVector(v.bend, Math.sqrt(Math.max(0, L1 * L1 - along * along)));
+    leg.hp.quaternion.setFromUnitVectors(DOWN, v.lower.copy(v.knee).normalize());
+    v.inv.copy(leg.hp.quaternion).invert();
+    v.lower.copy(v.target).sub(v.knee).normalize().applyQuaternion(v.inv);
+    leg.kn.quaternion.setFromUnitVectors(DOWN, v.lower);
+    leg.kn.updateWorldMatrix(true, false);
+    leg.kn.getWorldQuaternion(v.parentQ).invert();
+    leg.an.quaternion.copy(v.parentQ).multiply(orientation);
+    leg.hp.quaternion.slerp(v.authoredHip, 1 - weight);
+    leg.kn.quaternion.slerp(v.authoredKnee, 1 - weight);
+    leg.an.quaternion.slerp(v.authoredAnkle, 1 - weight);
+  }
+
+  anchorFeet(sk, dt) {
+    if (sk.state === 'bail') return;
+    const flip = sk.state === 'air' && sk.trick?.kind === 'flip';
+    const phase = flip ? THREE.MathUtils.clamp(sk.trick.t / sk.trick.dur, 0, 1) : 0;
+    const release = flip ? THREE.MathUtils.smoothstep(Math.sin(phase * Math.PI), 0, 0.45) : 0;
+    this.contactWeight = 1 - release;
+    this.root.updateMatrixWorld(true);
+    const targets = this.footTargets || (this.footTargets = [new THREE.Vector3(), new THREE.Vector3()]);
+    const orientations = this.footOrientations || (this.footOrientations = [new THREE.Quaternion(), new THREE.Quaternion()]);
+    const pushing = sk.state === 'ride' && sk.pushing > 0 && sk.crouch < 0.3 && Math.abs(sk.manualLean || 0) < 0.01;
+    this.pushContact += ((pushing ? 1 : 0) - this.pushContact) * Math.min(1, dt * 14);
+    if (sk.state !== 'ride') this.pushContact = 0;
+    if (this.pushContact < 0.0001) this.pushContact = 0;
+    const push = this.pushPhase % (Math.PI * 2);
+    for (let i = 0; i < 2; i++) {
+      const z = i === 0 ? 0.235 : -0.255;
+      targets[i].set(0, BOARD_TOP + 0.002 + SOLE_OFFSET, z);
+      // The deck is symmetric after a shove-it; the feet catch in their original stance.
+      if (flip) targets[i].add(this.board.position).applyMatrix4(this.root.matrixWorld);
+      else this.board.localToWorld(targets[i]);
+      const footYaw = -Math.PI / 2 + (i === 0 ? 0.22 : -0.08);
+      orientations[i].setFromEuler(new THREE.Euler(0, footYaw, 0));
+      (flip ? this.root : this.board).getWorldQuaternion(this.ik.worldQ);
+      orientations[i].premultiply(this.ik.worldQ);
+      if (this.pushContact > 0 && i === 1) {
+        // Plant beside the toe edge, stroke nose to tail, then lift and recover.
+        const stroke = push < Math.PI ? push / Math.PI : (push - Math.PI) / Math.PI;
+        const zPush = push < Math.PI ? 0.30 - stroke * 0.65 : -0.35 + stroke * 0.65;
+        const lift = push < Math.PI ? 0 : Math.sin(stroke * Math.PI) * 0.19;
+        this.ik.target.set(-0.29, SOLE_OFFSET + 0.003 + lift, zPush * sk.stance).applyMatrix4(this.root.matrixWorld);
+        targets[i].lerp(this.ik.target, this.pushContact);
+        this.ik.footQ.setFromEuler(new THREE.Euler(0, sk.stance < 0 ? Math.PI : 0, 0)).premultiply(this.root.getWorldQuaternion(this.ik.worldQ));
+        orientations[i].slerp(this.ik.footQ, this.pushContact);
+      }
+    }
+    // Lower the pelvis just enough to keep both ankles within physical leg reach.
+    // This also absorbs the animation bob and balances manuals over the planted wheels.
+    for (let iteration = 0; iteration < 8 && this.contactWeight > 0.99; iteration++) {
+      let excess = 0;
+      for (let i = 0; i < 2; i++) {
+        this.ik.target.copy(targets[i]); this.hips.worldToLocal(this.ik.target);
+        excess = Math.max(excess, this.ik.target.sub((i ? this.rLeg : this.lLeg).hp.position).length() - (L1 + L2 - 0.008));
+      }
+      if (excess <= 0.0001) break;
+      this.hips.position.y -= excess * 1.12; this.root.updateMatrixWorld(true);
+    }
+    this.plantFoot(this.lLeg, targets[0], orientations[0], this.contactWeight);
+    this.plantFoot(this.rLeg, targets[1], orientations[1], this.contactWeight);
+  }
 
   // ---- animation ----
   computeTarget(sk, dt) {
@@ -190,5 +272,6 @@ export class Character {
     } else {
       this.body.rotation.set(0, -Math.PI / 2, 0); this.body.position.set(0, 0, 0);
     }
+    this.anchorFeet(sk, dt);
   }
 }

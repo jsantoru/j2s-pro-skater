@@ -98,6 +98,7 @@ export class Skater {
     this.grind = null; this.bailT = 0; this.bailReason = '';
     this.balance.reset();
     this.manual = null; this.manualBalance.reset();
+    this.chainBalance = null;
     this.manualIntent = null; // manual flick entered in the air; consumed on the next valid landing
     this.flickDir = 0; this.flickT = 0; this.flickArmed = false; this.manualLean = 0;
     this.lastRail = null; this.railCooldown = 0;
@@ -146,7 +147,7 @@ export class Skater {
       case 'bail': this.updateBail(dt); break;
     }
     // visual manual pitch: +1 nose-up (tail manual), -1 nose-down (nose manual), eased so it rocks over
-    const mTarget = this.manual ? (this.manual.kind === 'Nose Manual' ? -1 : 1) : 0;
+    const mTarget = this.manual ? (this.manual.kind === 'Nose Manual' ? 1 : -1) : 0;
     this.manualLean += (mTarget - this.manualLean) * Math.min(1, dt * 9);
     // visual crouch
     const target = this.state === 'bail' ? 0 : (this.crouching ? 0.35 + 0.65 * Math.min(1, this.crouchTime / this.T.crouchFull) : 0);
@@ -199,7 +200,8 @@ export class Skater {
     // manuals: enter on a stick flick, then hold the pitch axis
     const flick = this.detectManualFlick(dt, inp);
     if (flick !== 0 && this.normal.y > 0.85 && sp > 2.2) {
-      const want = flick < 0 ? 'tail' : 'nose';   // flicked down first = tail manual, up first = nose manual
+      // account for stance: when riding fakie, down is towards nose and up is towards tail
+      const want = (flick * this.stance) < 0 ? 'tail' : 'nose';
       if (!this.manual) this.startManual(want);
       else if (this.manual.kind !== MANUALS[want][0]) { this.endManual(false); this.startManual(want); }
     }
@@ -279,7 +281,7 @@ export class Skater {
   startManual(which) {
     const [name, base] = MANUALS[which];
     this.manual = { kind: name, time: 0 };
-    this.manualBalance.start(Math.min(MANUAL_BALANCE.comboMax, this.combo.tricks.length * MANUAL_BALANCE.comboStep));
+    this.startBalance(this.manualBalance);
     this.combo.add(name, base);
     this.emit('manualStart', name);
   }
@@ -296,6 +298,7 @@ export class Skater {
   }
 
   bankCombo(boost) {
+    this.resetBalanceChain();
     if (this.combo.tricks.length) {
       const banked = this.combo.total;
       this.score += banked;
@@ -306,6 +309,17 @@ export class Skater {
     }
     this.emit('land', 0, '', 0);
     return 0;
+  }
+
+  startBalance(meter) {
+    const previous = this.combo.active ? this.chainBalance : null;
+    if (previous && previous !== meter) previous.stop();
+    meter.start(Math.min(meter.B.comboMax, this.combo.tricks.length * meter.B.comboStep), previous);
+    this.chainBalance = meter;
+  }
+
+  resetBalanceChain() {
+    this.balance.reset(); this.manualBalance.reset(); this.chainBalance = null;
   }
 
   handleCrouch(dt, inp) {
@@ -392,7 +406,7 @@ export class Skater {
     // "land in a manual". Keep it until touchdown instead of requiring the player to repeat
     // the command after the board is already on the ground.
     const manualFlick = this.detectManualFlick(dt, inp, T.manualAirFlick);
-    if (manualFlick !== 0) this.manualIntent = manualFlick < 0 ? 'tail' : 'nose';
+    if (manualFlick !== 0) this.manualIntent = (manualFlick * this.stance) < 0 ? 'tail' : 'nose';
 
     // spin (analog) + bumper spin
     let spin = inp.steer + (inp.spinRight ? 1 : 0) - (inp.spinLeft ? 1 : 0);
@@ -601,7 +615,7 @@ export class Skater {
     const slide = gname.includes('slide');
     const prefix = this.bankSpin(true);
     this.grind = { rail: r, t: found.t, dir, speed, name: gname, slide, time: 0 };
-    this.balance.start(Math.min(BALANCE.comboMax, this.combo.tricks.length * BALANCE.comboStep));
+    this.startBalance(this.balance);
     this.pos.copy(found.point); this.pos.y += 0.02;
     // facing: sideways for slides, along the rail otherwise (nearest stance)
     const rd = _v2.set(r.dir.x, 0, r.dir.z).normalize().multiplyScalar(dir);
@@ -669,6 +683,7 @@ export class Skater {
     else { this.vel.multiplyScalar(0.6); this.vel.y = Math.max(this.vel.y, 1.5); }
     this.lostCombo = this.combo.text; this.lostPoints = this.combo.points; this.lostMult = this.combo.multiplier;
     this.combo.reset();
+    this.resetBalanceChain();
     this.emit('bail', reason);
   }
 

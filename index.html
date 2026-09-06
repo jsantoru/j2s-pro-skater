@@ -28,8 +28,25 @@
       <div id="trick-text"></div>
       <div id="landed-text"></div>
     </div>
-    <div id="balance" class="hidden">
-      <div id="balance-track"><div id="balance-centre"></div><div id="balance-needle"></div></div>
+    <div id="balance" class="hidden" role="meter" aria-label="Grind balance" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0">
+      <svg id="balance-track" viewBox="0 0 320 104" aria-hidden="true">
+        <defs>
+          <linearGradient id="balance-color" x1="0" x2="1">
+            <stop offset="0" stop-color="#ee301b"/>
+            <stop offset=".24" stop-color="#ff8117"/>
+            <stop offset=".43" stop-color="#ffd52f"/>
+            <stop offset=".57" stop-color="#ffd52f"/>
+            <stop offset=".76" stop-color="#ff8117"/>
+            <stop offset="1" stop-color="#ee301b"/>
+          </linearGradient>
+        </defs>
+        <path class="balance-rim" d="M18 84 Q160 -26 302 84 Q160 -7 18 84Z"/>
+        <path class="balance-glint" d="M28 77 Q160 -23 292 77"/>
+        <path id="balance-centre" d="M160 30V37"/>
+        <g id="balance-needle" transform="translate(160 33.75)">
+          <path d="M0 1 L-8 -19 L8 -19Z"/>
+        </g>
+      </svg>
     </div>
   </div>
   <div id="toast"></div>

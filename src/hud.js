@@ -1,4 +1,5 @@
 // DOM HUD: score, timer, combo readout, controller status, toasts, overlays.
+import * as THREE from 'three';
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => n.toLocaleString('en-US');
 
@@ -15,6 +16,7 @@ export class HUD {
     };
     this.shownScore = 0; this.holdTimer = 0; this.toastTimer = 0;
     this.balanceShown = false; this.balanceVertical = undefined;
+    this.balanceHead = new THREE.Vector3(); this.balanceFeet = new THREE.Vector3();
   }
   setPad(connected, id) {
     this.el.pad.textContent = connected ? '🎮 ' + (id || 'GAMEPAD').replace(/\(.*\)/, '').trim().slice(0, 28).toUpperCase() : '⌨ KEYBOARD (no gamepad)';
@@ -58,22 +60,42 @@ export class HUD {
     if (mult > 0) { this.el.comboPts.textContent = fmt(points); this.el.comboMult.textContent = 'x' + mult; }
     else { this.el.comboPts.textContent = ''; this.el.comboMult.textContent = ''; }
   }
-  // Balance meter: only on screen while it matters, so it never becomes wallpaper. Grinds tip
-  // side-to-side and get a horizontal bar; manuals tip fore-aft and get a vertical one, so the meter
-  // always moves the same way the stick does.
-  balance(show, x, vertical) {
+  // A tapered arc follows the skater: overhead for rails, on the left for manuals.
+  // The cyan pointer follows the actual curve, with no smoothing that could hide a dangerous lean.
+  balance(show, x, vertical, character, camera) {
     const el = this.el.balance, n = this.el.balanceNeedle;
     if (show !== this.balanceShown) { el.classList.toggle('hidden', !show); this.balanceShown = show; }
     if (!show) return;
     const v = Math.max(-1, Math.min(1, x));
     if (vertical !== this.balanceVertical) {
       el.classList.toggle('vertical', !!vertical);
-      n.style.left = ''; n.style.top = '';               // clear whichever axis we are no longer driving
+      el.setAttribute('aria-label', vertical ? 'Manual balance' : 'Grind balance');
       this.balanceVertical = vertical;
     }
-    if (vertical) n.style.top = (50 - v * 50) + '%';      // +x is nose-high, which reads as up
-    else n.style.left = (50 + v * 50) + '%';
+    const t = (v + 1) / 2, px = 18 + 284 * t, py = 84 - 201 * t * (1 - t);
+    const angle = Math.atan2(201 * (2 * t - 1), 284) * 180 / Math.PI;
+    n.setAttribute('transform', `translate(${px} ${py}) rotate(${angle})`);
+    el.setAttribute('aria-valuenow', Math.round(v * 100));
     el.classList.toggle('danger', Math.abs(v) > 0.62);
+    if (!character || !camera) return;
+    character.root.updateWorldMatrix(true, true); camera.updateMatrixWorld();
+    this.balanceHead.set(0, 0.28, 0); character.head.localToWorld(this.balanceHead).project(camera);
+    this.balanceFeet.set(0, 0.04, 0); character.root.localToWorld(this.balanceFeet).project(camera);
+    const w = window.innerWidth, h = window.innerHeight;
+    const headY = (1 - this.balanceHead.y) * h / 2, feetY = (1 - this.balanceFeet.y) * h / 2;
+    const bodyHeight = Math.max(90, feetY - headY);
+    const centerX = (this.balanceFeet.x + 1) * w / 2;
+    const span = vertical ? Math.min(h * 0.36, Math.max(140, bodyHeight * 0.82))
+      : Math.min(w * 0.42, 300, Math.max(150, bodyHeight * 1.05));
+    const width = vertical ? span * 104 / 320 : span;
+    const height = vertical ? span : span * 104 / 320;
+    const left = vertical ? centerX - bodyHeight * 0.43 - width : centerX - width / 2;
+    const top = vertical ? headY + bodyHeight * 0.035 : headY - height + 4;
+    el.style.setProperty('--balance-span', `${span}px`);
+    el.style.width = `${width}px`; el.style.height = `${height}px`;
+    // Clamp to the safe viewport so a ramp, wall avoidance or a narrow screen cannot hide it.
+    el.style.left = `${Math.max(12, Math.min(w - width - 12, left))}px`;
+    el.style.top = `${Math.max(76, Math.min(h - height - 100, top))}px`;
   }
   update(dt, score, timeLeft) {
     this.shownScore += (score - this.shownScore) * Math.min(1, dt * 6);

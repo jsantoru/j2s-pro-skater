@@ -29,10 +29,22 @@ console.log('\n=== camera layers ===');
   sk.state = 'grind';
   for (let i = 0; i < 240; i++) follow.update(DT, sk, 0);
   const grindDistance = follow.pos.distanceTo(target), grindFov = camera.fov;
-  check('grinds settle into a closer camera', grindDistance < rideDistance - 0.25,
+  check('riding uses a close camera with rail context during grinds', rideDistance < 3.6 && grindDistance > rideDistance + 0.5,
     `${rideDistance.toFixed(2)}m -> ${grindDistance.toFixed(2)}m`);
-  check('grinds narrow the field of view', grindFov < rideFov - 1.5,
+  check('riding retains tighter framing than grinds', rideFov < 55 && grindFov > rideFov + 1,
     `${rideFov.toFixed(2)}° -> ${grindFov.toFixed(2)}°`);
+  sk.state = 'ride';
+  for (const speed of [0, 8, 16]) {
+    sk.speed = speed;
+    for (let i = 0; i < 480; i++) follow.update(DT, sk, 0);
+    camera.updateMatrixWorld();
+    const head = sk.pos.clone().add(new THREE.Vector3(0, 1.75, 0)).project(camera);
+    const feet = sk.pos.clone().project(camera);
+    const fraction = (head.y - feet.y) / 2;
+    check(`skater fills roughly half the riding view at ${speed} m/s`, fraction > 0.40 && fraction < 0.58,
+      `${(fraction * 100).toFixed(1)}% of screen height`);
+    check('board and head remain in frame', feet.y > -0.93 && head.y < 0.85);
+  }
 
   sk.state = 'air'; sk.spinVelocity = 560; sk.vel.set(8, 4, 0);
   for (let i = 0; i < 24; i++) follow.update(DT, sk, 0);

@@ -82,21 +82,27 @@ function plywood(ctx, s, rng) {
   }
 }
 
-function masonry(ctx, s, rng) {
-  grain(ctx, s, [105, 110, 109], 17, rng);
+function masonry(ctx, s, rng, heightOnly = false) {
+  // Separate mineral colour from relief: dark stains aren't deep holes in the wall.
+  grain(ctx, s, heightOnly ? [104, 104, 104] : [119, 120, 115], 12, rng);
   const row = s / 12, brick = s / 4;
   for (let y = 0, r = 0; y < s; y += row, r++) {
     for (let x = -(r % 2) * brick / 2; x < s; x += brick) {
-      const v = Math.floor(112 + rng() * 27);
-      ctx.fillStyle = `rgb(${v + 4},${v + 2},${v - 5})`; ctx.fillRect(x + 2, y + 2, brick - 4, row - 4);
-      ctx.fillStyle = 'rgba(228,222,206,0.23)'; ctx.fillRect(x + 2, y + 2, brick - 4, 1);
-      for (let i = 0; i < 160; i++) {
-        ctx.fillStyle = `rgba(42,37,30,${rng() * 0.1})`;
-        ctx.fillRect(x + rng() * brick, y + rng() * row, 0.5 + rng() * 2, 0.7);
+      const variation = rng();
+      const v = heightOnly ? 165 : Math.floor(133 + variation * 9);
+      ctx.fillStyle = heightOnly ? `rgb(${v},${v},${v})` : `rgb(${v + 2},${v + 2},${v - 2})`;
+      ctx.fillRect(x + 1.5, y + 1.5, brick - 3, row - 3);
+      ctx.strokeStyle = heightOnly ? '#8e8e8e' : 'rgba(196,194,181,0.24)';
+      ctx.lineWidth = 1; ctx.strokeRect(x + 2.5, y + 2.5, brick - 5, row - 5);
+      for (let i = 0; i < 700; i++) {
+        const px = x + 3 + rng() * (brick - 6), py = y + 3 + rng() * (row - 6);
+        const pore = rng(), width = 0.5 + rng() * 1.4;
+        ctx.fillStyle = heightOnly ? `rgba(60,60,60,${pore * 0.35})` : `rgba(64,65,59,${pore * 0.18})`;
+        ctx.fillRect(px, py, width, width * 0.65);
       }
     }
   }
-  stains(ctx, s, rng, 95);
+  if (!heightOnly) stains(ctx, s, rng, 32, '72,75,67');
 }
 
 export function makeMaterials() {
@@ -104,14 +110,14 @@ export function makeMaterials() {
   const micro = canvasMap((c, s, r) => grain(c, s, [145, 145, 145], 75, r), 256, false);
   const rough = canvasMap((c, s, r) => { grain(c, s, [220, 220, 220], 22, r); stains(c, s, r, 45, '0,0,0'); }, 512, false);
   const woodBump = canvasMap(plywood, 1024, false);
-  const wallBump = canvasMap(masonry, 1024, false);
+  const wallBump = canvasMap((c, s, r) => masonry(c, s, r, true), 1024, false);
   const M = (color, map, roughness = 0.85, metalness = 0, extra = {}) => new THREE.MeshStandardMaterial({ color, map, roughness, metalness, ...extra });
   const stone = { bumpMap: micro, bumpScale: 0.018, roughnessMap: rough };
   return {
-    floor: M(0xffffff, floor, 0.83, 0, stone),
-    concrete: M(0xd5d3cb, floor, 0.92, 0, stone),
+    floor: M(0xffffff, floor, 0.92, 0, stone),
+    concrete: M(0xffffff, floor, 0.92, 0, stone),
     wood: M(0xffffff, wood, 0.78, 0, { bumpMap: woodBump, bumpScale: 0.014, roughnessMap: rough }),
-    wall: M(0xcbd0d1, wall, 0.96, 0, { bumpMap: wallBump, bumpScale: 0.045 }),
+    wall: M(0xcbd0d1, wall, 0.96, 0, { bumpMap: wallBump, bumpScale: 0.018 }),
     metal: M(0xadb5b7, null, 0.38, 0.8, { bumpMap: micro, bumpScale: 0.002 }),
     roof: M(0x30383b, null, 0.91),
     coping: M(0xbfc5c6, null, 0.26, 0.92), rail: M(0xc4ced1, null, 0.24, 0.95),

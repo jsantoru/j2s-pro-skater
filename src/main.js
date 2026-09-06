@@ -8,6 +8,7 @@ import { HUD } from './hud.js';
 import { Audio } from './audio.js';
 import { Effects } from './fx.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { ConcreteFloor } from './concrete-floor.js';
 
 const RUN_TIME = 120;
 const FIXED_DT = 1 / 120;
@@ -48,6 +49,7 @@ const fill = new THREE.DirectionalLight(0x8fb7ff, 0.35); fill.position.set(-20, 
 
 const level = new Level();
 scene.add(level.group);
+const floorSurface = new ConcreteFloor(level.floor, { lowfx: LOWFX, level });
 const skater = new Skater(level);
 const character = new Character();
 scene.add(character.root);
@@ -68,7 +70,6 @@ skater.events.ollie = (charge) => { audio.pop(charge); input.rumble(0.15 + charg
 skater.events.trickStart = (name) => { audio.trickStart(name); const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
 skater.events.land = (points, text, mult) => {
   audio.land(skater.landSquash);
-  fx.burst(skater.pos, 10 + Math.round(skater.landSquash * 16), [0.75, 0.72, 0.68], 1.6 + skater.landSquash * 1.5, 0.5);
   input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
   followCam.land(skater.landSquash);
   hud.landed(points, text, mult); // the trick names stay up next to the payout for a beat
@@ -76,7 +77,6 @@ skater.events.land = (points, text, mult) => {
 };
 skater.events.bail = (reason) => {
   audio.bail();
-  fx.burst(skater.pos, 24, [0.8, 0.76, 0.7], 2.5, 0.6);
   input.rumbleSustainStop(); input.rumble(1, 1, 320);
   followCam.bail();
   const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST', balance: 'LOST BALANCE' }[reason] || 'BAILED';
@@ -185,8 +185,8 @@ function frame(now) {
   }
   const onRail = mode === 'playing' && skater.state === 'grind' && skater.balance.active;
   const onManual = mode === 'playing' && !!skater.manual && skater.manualBalance.active;
-  if (onManual) hud.balance(true, skater.manualBalance.x, true, 'MANUAL');
-  else hud.balance(onRail, skater.balance.x, false, 'BALANCE');
+  if (onManual) hud.balance(true, skater.manualBalance.x, true, character, camera);
+  else hud.balance(onRail, skater.balance.x, false, character, camera);
   hud.update(dt, skater.score, timeLeft, skater.speed / 14);
   if (skater.combo.tricks.length && (skater.state === 'grind' || skater.manual)) refreshCombo();
   input.hapticsCommit(dt);
@@ -194,4 +194,4 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun, renderer, scene, camera };
+window.__game = { skater, level, input, character, followCam, startRun, renderer, scene, camera, floorSurface };
