@@ -8,7 +8,7 @@ export const TUNING = {
   gravity: 22,
   uphillGrav: 0.55,    // ramp assist: slopes slow you less than they speed you up
   maxPush: 9.6,        // top speed from pushing
-  pushAcc: 7.5,        // m/s² while pushing (stick up / RT)
+  pushAcc: 7.5,        // m/s² while pushing (stick up)
   crouchAcc: 9.5,      // m/s² while holding crouch on the ground (THPS: crouch = speed)
   crouchMax: 10.8,     // crouch is the fastest way to go: it tops out above the stick push
   autoPushSpeed: 5.4,  // below this on flat ground the skater pushes by itself
@@ -40,6 +40,12 @@ export const TUNING = {
   grindMagnetAcc: 18,     // m/s² lateral pull
   grindMagnetSpeed: 4.5,  // max lateral closing speed
   trickBuffer: 0.25,      // flip/grab pressed this long before the pop still fires on takeoff
+  revertBuffer: 0.22,     // trigger tap this long before a ramp landing still counts
+  revertWindow: 0.18,     // late trigger forgiveness after touching down
+  revertDuration: 0.26,   // visual 180-degree wheel slide
+  revertLink: 0.9,        // time to connect a manual while rolling down the transition
+  revertMinSpeed: 2.2,
+  revertSpeedLoss: 0.85,  // m/s scrubbed per revert; no free speed from the connector
   // ---- manuals ----
   manualFlick: 0.42,      // seconds to complete the down-up (or up-down) flick that starts a manual
   manualAirFlick: 0.75,   // wider in air so a flip direction can double as the first half of the command
@@ -104,6 +110,9 @@ export class Skater {
     this.lastRail = null; this.railCooldown = 0;
     this.landSquash = 0; this.groundTime = 1;
     this.lastAirWasTiny = false;
+    this.revertBuffer = null; this.revertWindow = 0; this.revertLink = 0;
+    this.revertT = 0; this.revertDir = 1; this.revertManualIntent = null;
+    this.landingPending = false;
     this.queued = null;                       // trick pressed on the ground, fired on the next takeoff
     this.grindIntent = 0; this.grindIntentDir = 'C'; // "I want to grind" window armed by a tap of Y
     this._inp = null;
@@ -133,6 +142,15 @@ export class Skater {
     this.steer = shapeStick(inp.steer);
     this.spinVelocity = 0;
     this._inp = inp;
+    this.revertT = Math.max(0, this.revertT - dt);
+    if (this.revertBuffer) {
+      this.revertBuffer.time -= dt;
+      if (this.revertBuffer.time <= 0) this.revertBuffer = null;
+    }
+    const revertDir = inp.revertRightPressed ? 1 : inp.revertLeftPressed ? -1 : 0;
+    if (revertDir && (this.state === 'air' || (this.state === 'ride' && this.revertT === 0))) {
+      this.revertBuffer = { dir: revertDir, time: this.T.revertBuffer };
+    }
     // input buffers (THPS forgiveness): a flip/grab pressed just before or exactly on the pop fires on takeoff,
     // and a tap of grind arms a window during which nearby rails pull you in.
     if (this.state === 'ride' || this.state === 'grind') {
@@ -169,6 +187,10 @@ export class Skater {
   updateRide(dt, inp) {
     const T = this.T;
     this.groundTime += dt;
+    if (this.revertBuffer) this.startRevert(this.revertBuffer.dir);
+    this.revertWindow = Math.max(0, this.revertWindow - dt);
+    this.revertLink = Math.max(0, this.revertLink - dt);
+    if (this.landingPending && this.revertWindow === 0 && this.revertLink === 0) this.bankCombo(false);
     this.handleCrouch(dt, inp);
     if (this.state !== 'ride') return;
 
@@ -178,7 +200,7 @@ export class Skater {
     this.pushing = 0; this.braking = inp.brake;
     // On two wheels you cannot push, pump or brake — the whole vertical stick axis belongs to balance,
     // which is also what keeps the manual input from fighting push/brake for the same stick.
-    if (this.manual) {
+    if (this.manual || this.revertT > 0) {
       sp = Math.max(0, sp - T.manualDrag * dt);
     } else {
       if (inp.push > 0 && sp < T.maxPush) {
@@ -203,7 +225,10 @@ export class Skater {
 
     // manuals: enter on a stick flick, then hold the pitch axis
     const flick = this.detectManualFlick(dt, inp);
-    if (flick !== 0 && this.normal.y > 0.85 && sp > 2.2) {
+    if (flick !== 0 && this.revertLink > 0) this.revertManualIntent = (flick * this.stance) < 0 ? 'tail' : 'nose';
+    if (this.revertLink > 0 && this.revertManualIntent && this.normal.y > 0.85 && sp > 2.2) {
+      this.startManual(this.revertManualIntent);
+    } else if (flick !== 0 && this.normal.y > 0.85 && sp > 2.2 && !this.landingPending) {
       // account for stance: when riding fakie, down is towards nose and up is towards tail
       const want = (flick * this.stance) < 0 ? 'tail' : 'nose';
       if (!this.manual) this.startManual(want);
@@ -283,6 +308,7 @@ export class Skater {
   }
 
   startManual(which) {
+    this.landingPending = false; this.revertWindow = 0; this.revertLink = 0; this.revertManualIntent = null;
     const [name, base] = MANUALS[which];
     this.manual = { kind: name, time: 0 };
     this.startBalance(this.manualBalance);
@@ -302,16 +328,18 @@ export class Skater {
   }
 
   bankCombo(boost) {
+    const impactHandled = this.landingPending;
+    this.landingPending = false; this.revertWindow = 0; this.revertLink = 0; this.revertManualIntent = null;
     this.resetBalanceChain();
     if (this.combo.tricks.length) {
       const banked = this.combo.total;
       this.score += banked;
       if (boost) this.speed = Math.min(this.speed + this.T.landBoost, 16);
-      this.emit('land', banked, this.combo.text, this.combo.multiplier);
+      this.emit('land', banked, this.combo.text, this.combo.multiplier, impactHandled);
       this.combo.reset();
       return banked;
     }
-    this.emit('land', 0, '', 0);
+    this.emit('land', 0, '', 0, impactHandled);
     return 0;
   }
 
@@ -365,6 +393,9 @@ export class Skater {
   }
 
   startAir(launchNormal, popped) {
+    // A revert connects through a manual, not by hopping before its grace timer expires.
+    if (this.landingPending) this.bankCombo(false);
+    this.revertBuffer = null; this.revertWindow = 0;
     this.state = 'air';
     this.airTime = 0; this.spinDeg = 0; this.spinVelocity = 0; this.spinTickCount = 0;
     this.trick = null;
@@ -574,13 +605,48 @@ export class Skater {
     this.vel.copy(this.heading).multiplyScalar(sp);
     const manualIntent = this.manualIntent;
     this.manualIntent = null;
-    if (tiny && !manualIntent) return;
+    if (tiny && !manualIntent) {
+      if (this.revertBuffer) this.startRevert(this.revertBuffer.dir);
+      return;
+    }
     this.bankSpin(false);
+    // Only a timed transition revert earns a combo link. Ground stance changes are always available.
+    const canRevert = !tiny && this.airTime >= 0.18 && sp > T.revertMinSpeed && n.y >= 0.3
+      && (this.vertAir || n.y < 0.85);
+    if (canRevert) {
+      this.revertWindow = T.revertWindow; this.landingPending = true;
+      this.revertManualIntent = manualIntent;
+      this.emit('touchdown');
+      if (this.revertBuffer) this.startRevert(this.revertBuffer.dir);
+      return;
+    }
+    const groundRevert = this.revertBuffer?.dir;
+    this.revertBuffer = null;
     if (manualIntent && n.y > 0.85 && sp > 2.2) {
       this.startManual(manualIntent);
+      if (groundRevert) this.startRevert(groundRevert);
       return;
     }
     this.bankCombo(true);
+    if (groundRevert) this.startRevert(groundRevert);
+  }
+
+  startRevert(dir) {
+    if (this.state !== 'ride' || this.revertT > 0) return false;
+    const linksCombo = this.landingPending && this.revertWindow > 0 && !this.manual && this.speed > this.T.revertMinSpeed;
+    this.revertBuffer = null; this.revertWindow = 0;
+    if (linksCombo) this.revertLink = this.T.revertLink;
+    this.revertT = this.T.revertDuration; this.revertDir = dir;
+    // Travel stays unchanged: the wheels slide 180 and the rider rolls away fakie.
+    this.stance = -this.stance; this.facing.negate();
+    this.speed = Math.max(0, this.speed - this.T.revertSpeedLoss);
+    this.vel.copy(this.heading).multiplyScalar(this.speed);
+    // The project's scoring reference prices a revert at zero base points, +1 multiplier.
+    // Flat-ground taps (including manual pivots) do not add points, renew a link timer,
+    // or reset balance. They only change stance, so repeated taps cannot farm multipliers.
+    if (linksCombo) this.combo.add('Revert', 0);
+    this.emit('revert');
+    return true;
   }
 
   // ---------- GRIND ----------
@@ -609,6 +675,7 @@ export class Skater {
   }
 
   startGrind(found, inp) {
+    this.revertBuffer = null;
     if (this.trick && !(this.trick.kind === 'grab' && this.trick.t >= this.trick.dur)) { this.bail('trick'); return; }
     if (this.trick) this.completeTrick();
     const r = found.rail;
@@ -683,6 +750,8 @@ export class Skater {
 
   // ---------- BAIL ----------
   bail(reason) {
+    this.revertBuffer = null; this.revertWindow = 0; this.revertLink = 0; this.revertT = 0;
+    this.revertManualIntent = null; this.landingPending = false;
     if (this.state === 'grind') this.grind = null;
     this.manual = null; this.manualBalance.stop();
     this.balance.stop();
@@ -737,6 +806,11 @@ export class Skater {
     project(fwd, up, fwd);
     if (fwd.lengthSq() < 1e-4) fwd.set(this.facing.x, 0, this.facing.z);
     fwd.normalize();
+    if (this.revertT > 0) {
+      const progress = 1 - this.revertT / this.T.revertDuration;
+      const eased = progress * progress * (3 - 2 * progress);
+      fwd.applyAxisAngle(up, this.revertDir * Math.PI * (1 - eased));
+    }
     const right = _v3.crossVectors(up, fwd).normalize();
     const m = new THREE.Matrix4().makeBasis(right, up, fwd);
     this._targetQuat.setFromRotationMatrix(m);

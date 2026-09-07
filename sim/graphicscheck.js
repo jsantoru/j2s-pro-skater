@@ -108,6 +108,25 @@ try {
   console.log('PASS: curved grind/manual HUD remains in desktop, portrait and landscape viewports; pointer axes agree with controls.');
   await shot('skater');
   await evaluate(`qaView([-5.9,1.25,16.0],[-4,0.93,14]);`); await shot('skater-close');
+  // Capture the complete slide with the actual controller and rig, not a posed stand-in.
+  await evaluate(`(async()=>{
+    const {Skater}=await import('/src/skater.js'); const {makeState}=await import('/src/input.js');
+    window.qaRevert=new Skater(__game.level); const s=qaRevert;
+    s.state='air'; s.vertAir=true; s.airTime=0.5; s.popped=true;
+    s.pos.set(-4,0.04,14); s.vel.set(0,-2,8); s.heading.set(0,0,1); s.facing.set(0,0,1);
+    s.combo.add('Kickflip',100); s.updateModelQuat(1); s.land(s.pos.clone().setY(0),s.normal);
+    s.update(1/120,Object.assign(makeState(),{revertRightPressed:true,autoPush:false}));
+    window.qaRevertFrame=(frames)=>{for(let i=0;i<frames;i++)s.update(1/120,Object.assign(makeState(),{autoPush:false}));
+      __game.character.root.position.copy(s.pos);__game.character.root.quaternion.copy(s.modelQuat);
+      __game.character.update(s,1/60,0);__game.scene.updateMatrixWorld(true);
+      qaView([s.pos.x-2.3,1.45,s.pos.z+2.3],[s.pos.x,0.85,s.pos.z]);};
+    qaRevertFrame(0);
+  })()`);
+  await shot('revert-start');
+  await evaluate('qaRevertFrame(15)'); await shot('revert-middle');
+  await evaluate('qaRevertFrame(40)'); await shot('revert-finish');
+  if (!await evaluate('qaRevert.stance === -1 && qaRevert.combo.text.includes("Revert") && qaRevert.score === 0')) throw new Error('Revert animation lost its combo or stance');
+  await evaluate(`qaPose('ride');`);
   await evaluate(`qaView([-4.7,0.55,15.0],[-4,0.16,14]);`); await shot('feet-ride');
   for (const [name, state, extra] of [
     ['manual','ride',{manualLean:1}], ['nose-manual','ride',{manualLean:-1}],
@@ -175,6 +194,35 @@ try {
   console.log('Live keyboard ollie / lowfx:', JSON.stringify(live));
   if (live.shadows || live.pixelRatio !== 1 || live.glError || live.state !== 'air') throw new Error('Live lowfx/ollie check failed');
   await shot('lowfx-playing');
+  for (const [code, dir] of [['KeyZ', -1], ['KeyC', 1]]) {
+    const revert = await evaluate(`(async()=>{
+      __game.startRun(); const s=__game.skater;
+      s.state='air';s.vertAir=true;s.airTime=0.5;s.popped=true;
+      s.pos.set(-4,0,14);s.vel.set(0,-2,8);s.heading.set(0,0,1);s.facing.set(0,0,1);
+      s.combo.add('Kickflip',100);s.land(s.pos.clone(),s.normal);
+      window.dispatchEvent(new KeyboardEvent('keydown',{code:${JSON.stringify(code)}}));
+      window.dispatchEvent(new KeyboardEvent('keyup',{code:${JSON.stringify(code)}}));
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      return {dir:s.revertDir,stance:s.stance,count:s.combo.tricks.filter(t=>t.name==='Revert').length};
+    })()`);
+    if (revert.dir !== dir || revert.stance !== -1 || revert.count !== 1) throw new Error(`Live keyboard revert failed: ${JSON.stringify(revert)}`);
+  }
+  console.log('PASS: live keyboard Z/C taps survive polling and fixed substeps and revert exactly once.');
+  const groundReverts = await evaluate(`(async()=>{
+    __game.startRun(); const s=__game.skater;
+    s.pos.set(-4,0,14);s.speed=8;s.heading.set(0,0,1);s.facing.set(0,0,1);
+    const results=[];
+    for(const code of ['KeyZ','KeyC']) {
+      window.dispatchEvent(new KeyboardEvent('keydown',{code}));
+      window.dispatchEvent(new KeyboardEvent('keyup',{code}));
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      results.push({stance:s.stance,mult:s.combo.multiplier,score:s.score});
+      await new Promise(resolve=>setTimeout(resolve,400));
+    }
+    return results;
+  })()`);
+  if (groundReverts[0].stance !== -1 || groundReverts[1].stance !== 1 || groundReverts.some(r=>r.mult || r.score)) throw new Error(`Ground stance toggles failed: ${JSON.stringify(groundReverts)}`);
+  console.log('PASS: live ground reverts toggle regular -> switch -> regular without scoring.');
   const timing = await evaluate(`new Promise(resolve => { const times=[]; let prev=performance.now(); const tick=now=>{times.push(now-prev);prev=now;if(times.length<90) requestAnimationFrame(tick);else {times.sort((a,b)=>a-b);resolve({medianMs:times[45],p95Ms:times[85]});}}; requestAnimationFrame(tick); })`);
   console.log('Headless lowfx frame timing (not a hardware benchmark):', JSON.stringify(timing));
   if (await evaluate('Boolean(__game.floorSurface)')) {
