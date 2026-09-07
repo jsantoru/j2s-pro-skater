@@ -206,6 +206,12 @@ export class Audio {
     this.tone(285, 0.04, 0.055, 'triangle', 0.75, 0.004, 0.025);
   }
 
+  revert(speed = 7) {
+    const force = Math.min(1, speed / 10);
+    this.burst(1900, 0.22, 0.12 + force * 0.12, 'bandpass', 1.8, 0, 'road', 0.025);
+    this.burst(3100, 0.12, 0.05 + force * 0.06, 'bandpass', 2.5, 0.035, 'pink', 0.02);
+  }
+
   bail() {
     this.tone(58, 0.32, 0.58, 'sine', 0.42, 0, 0.09);
     this.burst(520, 0.34, 0.58, 'lowpass', 0.65, 0, 'brown', 0.09);

@@ -14,6 +14,7 @@ function makeState() {
     grab: false, grabPressed: false,
     grind: false, grindPressed: false,
     spinLeft: false, spinRight: false,
+    revertLeftPressed: false, revertRightPressed: false,
     camX: 0,
     startPressed: false, selectPressed: false,
     dir8: 'C',       // stick direction: C N NE E SE S SW W NW
@@ -139,6 +140,7 @@ export class Input {
     // reset edges
     s.olliePressed = s.ollieReleased = s.flipPressed = s.grabPressed = s.grindPressed = false;
     s.startPressed = s.selectPressed = false;
+    s.revertLeftPressed = s.revertRightPressed = false;
 
     let gp = null;
     if (typeof navigator !== 'undefined' && navigator.getGamepads) {
@@ -161,6 +163,7 @@ export class Input {
     let steer = this.kbSteer, sy = this.kbY, push = ky > 0 ? 1 : 0, brake = ky < 0 ? 1 : 0;
     let ollie = k.has('Space'), flip = k.has('KeyJ'), grab = k.has('KeyK'), grind = k.has('KeyL');
     let spinL = k.has('KeyQ'), spinR = k.has('KeyE');
+    let revertL = k.has('KeyZ'), revertR = k.has('KeyC');
     let start = k.has('Enter'), select = k.has('Tab');
     let camX = 0;
     let dirX = kx, dirY = ky;
@@ -176,8 +179,9 @@ export class Input {
       if (dx || dy) { ax = dx; ay = dy; }
       if (Math.abs(ax) > 0 || Math.abs(ay) > 0) { steer = ax; sy = ay; dirX = ax; dirY = ay; }
       const rt = Math.max(bv(7), b(7) ? 1 : 0), lt = Math.max(bv(6), b(6) ? 1 : 0);
-      push = Math.max(push, rt, ay > 0.3 ? Math.min(1, (ay - 0.3) / 0.6) : 0);
-      brake = Math.max(brake, lt, ay < -0.4 ? Math.min(1, (-ay - 0.4) / 0.5) : 0);
+      push = Math.max(push, ay > 0.3 ? Math.min(1, (ay - 0.3) / 0.6) : 0);
+      brake = Math.max(brake, ay < -0.4 ? Math.min(1, (-ay - 0.4) / 0.5) : 0);
+      revertL = revertL || lt > 0.5; revertR = revertR || rt > 0.5;
       ollie = ollie || b(0);
       grab = grab || b(1);
       flip = flip || b(2);
@@ -198,6 +202,9 @@ export class Input {
     s.grindPressed = grind && !prev.grind;
     s.startPressed = start && !e.start;
     s.selectPressed = select && !e.select;
+    s.revertLeftPressed = revertL && !e.revertL;
+    s.revertRightPressed = revertR && !e.revertR;
+    e.revertL = revertL; e.revertR = revertR;
     e.flip = flip; e.start = start; e.select = select;
 
     s.steer = steer; s.stickY = sy; s.push = push; s.brake = brake;
@@ -205,7 +212,7 @@ export class Input {
     s.spinLeft = spinL; s.spinRight = spinR; s.camX = camX;
     s.dir8 = dir8FromStick(dirX, dirY);
     L.clear();
-    s.anyPressed = s.olliePressed || s.flipPressed || s.grabPressed || s.grindPressed || s.startPressed;
+    s.anyPressed = s.olliePressed || s.flipPressed || s.grabPressed || s.grindPressed || s.startPressed || s.revertLeftPressed || s.revertRightPressed;
     return s;
   }
 }

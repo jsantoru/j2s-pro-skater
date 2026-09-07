@@ -65,15 +65,17 @@ const fx = new Effects(scene);
 let mode = 'title'; // title | playing | over
 let timeLeft = RUN_TIME;
 let accumulator = 0, last = performance.now();
-const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed'];
+const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed', 'revertLeftPressed', 'revertRightPressed'];
 const pending = {};
 
 skater.events.ollie = (charge) => { audio.pop(charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
 skater.events.trickStart = (name) => { audio.trickStart(name); const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
-skater.events.land = (points, text, mult) => {
-  audio.land(skater.landSquash);
-  input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
-  followCam.land(skater.landSquash);
+skater.events.land = (points, text, mult, impactHandled = false) => {
+  if (!impactHandled) {
+    audio.land(skater.landSquash);
+    input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
+    followCam.land(skater.landSquash);
+  }
   hud.landed(points, text, mult); // the trick names stay up next to the payout for a beat
   if (points > 0) audio.score();
 };
@@ -90,6 +92,8 @@ skater.events.grindEnd = () => { audio.grindEnd(skater.grind?.rail.kind || 'meta
 skater.events.manualStart = () => { audio.manualStart(); input.rumble(0.3, 0.15, 70); input.rumbleSustainStop(); refreshCombo(); };
 skater.events.manualEnd = () => { input.rumbleSustainStop(); refreshCombo(); };
 skater.events.spinTick = () => { input.rumble(0.08, 0.58, 34); };
+skater.events.touchdown = () => { audio.land(skater.landSquash); followCam.land(skater.landSquash); input.rumble(0.35, 0.2, 90); };
+skater.events.revert = () => { audio.revert(skater.speed); input.rumble(0.18, 0.48, 110); refreshCombo(); };
 
 function refreshCombo() {
   const c = skater.combo;

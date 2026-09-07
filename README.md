@@ -32,14 +32,15 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 | X + direction | Flip trick (Kickflip, Heelflip, Pop Shove-it, Impossible, 360 Flip, Varial Heel, Hardflip, Inward Heel). Can be pressed during the crouch or on the release frame – it fires on takeoff |
 | B + direction | Grab trick (hold; Indy, Melon, Nosegrab, Tailgrab, Method, Stalefish, Judo, Airwalk) |
 | Y + direction | Grind – a tap in the air arms a 0.6 s window; any rail within 2.6 m pulls you onto it like a magnet, coping included (50-50, Nosegrind, 5-0, Boardslide, Lipslide, Crooked, Overcrook, Smith, Feeble) |
-| Left stick down / LT | Brake |
-| Left stick up / RT | Extra push – optional, the skater pushes by himself below 5.4 m/s on flat |
+| Left stick down | Brake |
+| Left stick up | Extra push – optional, the skater pushes by himself below 5.4 m/s on flat |
+| L2 / R2 (ZL / ZR, LT / RT) | Revert left / right anywhere on the ground to toggle regular/switch. On ramp landings, flick into a manual to keep the combo. Triggers no longer push or brake |
 | LB / RB | Spin left / right (digital, handy with the d-pad) |
 | Right stick | Nudge the camera |
 | Start | Start / restart the 2-minute free skate |
 | Back | Toggle the controls panel |
 
-Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin), Enter, Tab.
+Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin), Z/C (revert), Enter, Tab.
 
 ## What is in the box
 
@@ -99,6 +100,9 @@ Final Score = Σ(base × stance × degradation) × combo multiplier
   250, 540 is 450, 720 is 700, and every further half-turn adds 400.
 - **Holding** pays flat and undegraded: 100/s on a rail, 50/s in a manual, 100/s on a grab held past its
   minimum tuck. Length is worth something; it is not worth as much as another trick.
+- **Reverts** change stance and scrub speed anywhere on the ground, including during manuals.
+  A timed ramp-landing revert adds zero base points and one multiplier to connect into a manual.
+  Other stance changes add no score or multiplier and never refresh the combo window or balance.
 - Gaps are the one multiplier source from the document that is not implemented — the warehouse has no
   named gaps to clear yet.
 
@@ -118,7 +122,7 @@ Restarting mid-run abandons it without recording anything.
   full crouch ≈ 1.7 m / 0.79 s. Flip tricks take 0.38–0.55 s so a tap ollie can still land a kickflip.
 - Holding crouch is the fastest way to move: 9.5 m/s² up to 10.8 m/s, above the 9.6 m/s stick push, so it
   reaches 9.3 m/s in a second and tops out in about 1.4 s. The skater auto-pushes to 5.4 m/s on flat so you
-  never crawl; stick-up / RT push still works on top. Rolling friction is gentle.
+  never crawl; stick-up push still works on top. Rolling friction is gentle.
 - Grind magnet: a tap of Y arms 0.6 s; rails within 2.6 m pull at up to 18 m/s² (4.5 m/s max closing speed)
   and snap from 1.3 m away, even when the rail is up to 0.45 m above the feet. In the sim, a line 1.4 m off
   the flat rail with a single tap becomes a 50-50; the same line without the tap lands on the floor.
@@ -126,6 +130,14 @@ Restarting mid-run abandons it without recording anything.
   X on the same frame as the A release, or during the crouch, always produces the trick.
 - Turn rate 3.1 rad/s at a standstill down to 1.75 rad/s at speed; crouching tightens turns by 30%.
 - Spin 560°/s at full stick, so a full ollie is a comfortable 360 and a tap is a 180.
+- Reverts accept a fresh trigger tap on the ground at any speed; let the slide finish before tapping
+  again to switch back. Airborne taps buffer for touchdown for 0.22 s. For a ramp combo link, tap
+  up to 0.22 s before or 0.18 s after a valid ramp/vert landing.
+  The wheel slide turns 180° over 0.26 s, keeps travel direction and loses 0.85 m/s. There is a 0.9 s
+  window to connect a manual; a buffered flick waits for the transition to flatten. Without a manual
+  the combo banks, and simply hopping during that window cannot carry it. The existing balance needle
+  and accumulated difficulty survive the connection. `node sim/reverttest.js` covers inputs, timing,
+  scoring, balance carryover, invalid landings and foot contact during the slide.
 - Uphill gravity is scaled by 0.55 so a pushed run reaches every lip; downhill is full gravity.
 - The skater rides regular: left foot forward, chest toward the right of travel. The push cycle plants the
   back foot on the ground beside the deck and strokes nose→tail along the travel axis, with the front leg
