@@ -207,12 +207,21 @@ It retains the floor textures and wear. If texture loading fails, skating contin
 floor and its paint. The isolated browser check covers this failure case as well as normal and lowfx rendering.
 These are detailed stylized assets; they are not scanned or externally authored AAA character assets.
 
-Art code: `src/materials.js`, `src/skater-art.js`, `src/warehouse-art.js`, and `src/concrete-floor.js`.
+The skater uses narrower, sloped shoulders, a larger head, tapered clothing and a more settled riding
+pose. Each hand is one cached, continuous skin surface with finger webbing and a rooted thumb;
+`src/hand-art.js` generates those surfaces once, not during animation. Facial contours, eyelids and
+surface-fitted lips replace the disconnected facial primitives. Board dimensions and foot anchors
+are unchanged. The hoodie hem and pocket blend from hip to chest motion so torso twists do not
+pull the elastic waistband through the jeans.
+
+Art code: `src/materials.js`, `src/skater-art.js`, `src/hand-art.js`, `src/warehouse-art.js`, and `src/concrete-floor.js`.
 For repeatable browser visual checks on Windows, run `node sim/graphicscheck.js http://127.0.0.1:5173/`
 with the dev server running. It launches a disposable headless Edge profile, verifies rendering and
 keyboard/lowfx operation, and saves screenshots under `screenshots/visual-upgrade/`.
 The captures include both wrists, the temple/hood opening and the shoe side for close-up polish review.
 Run `node sim/arttest.js` to check closed cuffs, tucked sleeve edges, hood lining and smooth UV seams.
+Run `node sim/proportiontest.js` to check the shoulder/head ratio, hip-anchored hem and watertight, connected hand geometry.
+The dev server ignores generated screenshot directories so QA captures do not trigger page reloads.
 Set `EDGE_PATH` if Edge is installed elsewhere. Headless frame timings are diagnostic, not a
 performance guarantee for other devices. Existing gameplay checks remain available through `npm run sim`,
 `npm run sim:feel`, `npm run sim:balance`, and `node sim/animtest.js`.

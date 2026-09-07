@@ -20,7 +20,7 @@ const KEYS = ['torsoX', 'torsoY', 'torsoZ', 'headX', 'headY', 'lArmX', 'lArmZ', 
 const P = (o) => { const p = {}; for (const k of KEYS) p[k] = 0; return Object.assign(p, o); };
 
 export const POSES = {
-  ride: P({ torsoX: 10, headY: -55, lArmX: 8, lArmZ: 24, lElbow: 22, rArmX: -6, rArmZ: -26, rElbow: 24, lHip: 23, lKnee: 38, rHip: 20, rKnee: 34 }),
+  ride: P({ torsoX: 16, torsoY: -5, headX: -5, headY: -48, lArmX: 13, lArmZ: 14, lElbow: 16, rArmX: 6, rArmZ: -18, rElbow: 20, lHip: 32, lKnee: 52, rHip: 29, rKnee: 48 }),
   // Counter the forward torso lean so the arms hang beside the knees, ready to pop.
   crouch: P({ torsoX: 34, headY: -55, headX: -20, lArmX: 40, lArmZ: 8, lElbow: 16, rArmX: 38, rArmZ: -8, rElbow: 18, lHip: 68, lKnee: 112, rHip: 66, rKnee: 110 }),
   air: P({ torsoX: 14, headY: -50, lArmX: 5, lArmZ: 60, lElbow: 35, rArmX: -5, rArmZ: -60, rElbow: 35, lHip: 42, lKnee: 78, rHip: 44, rKnee: 82 }),
