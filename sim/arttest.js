@@ -82,10 +82,11 @@ for (const z of [-0.055, -0.065, -0.080, -0.10]) {
   ray.set(new THREE.Vector3(0, 0.55, z), new THREE.Vector3(0, -1, 0));
   assert.ok(ray.intersectObject(hood).length, 'Fabric bridges the hood to the rear collar without daylight');
 }
-let shoes = 0, digits = 0;
+let shoes = 0, hands = 0;
 character.root.traverse(object => {
-  if (object.name === 'Continuous curled digit') {
-    checkSeam(object.geometry, 12, object.geometry.attributes.position.count / 13, true); digits++;
+  if (object.name === 'Continuous palm and wrist') {
+    hands++;
+    assert.equal(object.parent.children.filter(child => child.isMesh).length, 1, 'Palm, thumb and fingers share one skin surface');
   }
   if (object.geometry?.name === 'Seamless shoe last') {
     const g = object.geometry;
@@ -93,7 +94,7 @@ character.root.traverse(object => {
   }
 });
 assert.equal(shoes, 6, 'Upper, sole and stripe on both feet');
-assert.equal(digits, 10, 'Each hand has five continuous digits');
+assert.equal(hands, 2, 'Both hands use connected skin');
 checkSeam(character.head.getObjectByName('Seamless cap crown').geometry, 44, 16);
 checkSeam(character.head.getObjectByName('Tailored hairline').geometry, 48, 17);
 console.log(`PASS: closed cuffs and visible inner lips, lined hood, continuous palms, ${seamChecks} smooth UV seams.`);
