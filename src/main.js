@@ -6,6 +6,7 @@ import { FollowCamera } from './camera.js';
 import { Input } from './input.js';
 import { HUD } from './hud.js';
 import { HighScores } from './highscores.js';
+import { Settings } from './settings.js';
 import { Audio } from './audio.js';
 import { Effects } from './fx.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -59,6 +60,7 @@ const input = new Input();
 const hud = new HUD();
 const highScores = new HighScores();
 const audio = new Audio();
+const settings = new Settings();
 const fx = new Effects(scene);
 
 // ---- game state ----
@@ -103,6 +105,17 @@ input.onGamepadChange = (connected, id) => {
 hud.setPad(false);
 hud.highScores(highScores.list, 0); // the title screen opens on the table
 
+// Settings. The score is off unless the player has switched it on, and switching it on is itself a
+// gesture, so it doubles as the permission the browser needs to start the audio context.
+audio.setMusic(settings.music);
+hud.musicSetting(settings.music);
+hud.onMusicToggle = () => {
+  const on = settings.toggleMusic();
+  if (on && !audio.enabled) audio.init();
+  audio.setMusic(on);
+  hud.musicSetting(on);
+};
+
 function startRun() {
   skater.reset();
   timeLeft = RUN_TIME; mode = 'playing';
@@ -137,7 +150,7 @@ function frame(now) {
   const inp = input.poll(dt);
   input.hapticsBegin();
   if (inp.anyPressed && !audio.enabled) audio.init();
-  if (inp.selectPressed) hud.toggleControls();
+  if (inp.selectPressed) { if (hud.settingsOpen) hud.toggleSettings(false); else hud.toggleControls(); }
   if (inp.startPressed) {
     if (mode === 'title' || mode === 'over') startRun();
     else if (mode === 'playing') startRun(); // restart
@@ -201,4 +214,4 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun, endRun, highScores, renderer, scene, camera, floorSurface };
+window.__game = { skater, level, input, character, followCam, startRun, endRun, highScores, settings, audio, renderer, scene, camera, floorSurface };

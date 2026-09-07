@@ -14,11 +14,45 @@ export class HUD {
       trick: $('trick-text'), landed: $('landed-text'), toast: $('toast'), controls: $('controls-panel'),
       overlay: $('overlay'), overlayMsg: $('overlay-msg'), finalScore: $('final-score'),
       bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'),
+      settings: $('settings-panel'), settingsBtn: $('settings-btn'), settingsClose: $('settings-close'),
+      musicToggle: $('music-toggle'), musicState: document.querySelector('#music-toggle .switch-state'),
     };
+    this.onMusicToggle = null; // main wires this to the persisted setting + the audio bus
+    this.bindSettings();
     this.shownScore = 0; this.holdTimer = 0; this.toastTimer = 0;
     this.shownBest = -1; this.shownRecord = null;
     this.balanceShown = false; this.balanceVertical = undefined;
     this.balanceHead = new THREE.Vector3(); this.balanceFeet = new THREE.Vector3();
+  }
+  // The settings dialog. Clicks leave the button focused, which would let a later Space or Enter
+  // both skate and re-fire the control, so a pointer activation (detail > 0) hands focus back to
+  // the page while a keyboard one keeps it.
+  bindSettings() {
+    const { settings, settingsBtn, settingsClose, musicToggle } = this.el;
+    if (!settings || !settingsBtn) return;
+    const drop = (e) => { if (e.detail > 0) e.currentTarget.blur(); };
+    settingsBtn.addEventListener('click', (e) => { this.toggleSettings(); drop(e); });
+    settingsClose.addEventListener('click', (e) => { this.toggleSettings(false); drop(e); });
+    musicToggle.addEventListener('click', (e) => { this.onMusicToggle?.(); drop(e); });
+    // Clicking the darkened surround, but not the card itself, closes.
+    settings.addEventListener('click', (e) => { if (e.target === settings) this.toggleSettings(false); });
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape' && this.settingsOpen) { this.toggleSettings(false); e.preventDefault(); }
+    });
+  }
+  get settingsOpen() { return this.el.settings && !this.el.settings.classList.contains('hidden'); }
+  toggleSettings(force) {
+    const open = force === undefined ? !this.settingsOpen : !!force;
+    this.el.settings.classList.toggle('hidden', !open);
+    this.el.settingsBtn.setAttribute('aria-expanded', String(open));
+    if (open) this.el.musicToggle.focus();
+    return open;
+  }
+  // Reflects the live setting; the switch itself never decides, it only shows.
+  musicSetting(on) {
+    this.el.musicToggle.classList.toggle('on', on);
+    this.el.musicToggle.setAttribute('aria-checked', String(!!on));
+    this.el.musicState.textContent = on ? 'ON' : 'OFF';
   }
   setPad(connected, id) {
     this.el.pad.textContent = connected ? '🎮 ' + (id || 'GAMEPAD').replace(/\(.*\)/, '').trim().slice(0, 28).toUpperCase() : '⌨ KEYBOARD (no gamepad)';
