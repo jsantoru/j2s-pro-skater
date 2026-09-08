@@ -83,26 +83,17 @@ function plywood(ctx, s, rng) {
 }
 
 function masonry(ctx, s, rng, heightOnly = false) {
-  // Separate mineral colour from relief: dark stains aren't deep holes in the wall.
-  grain(ctx, s, heightOnly ? [104, 104, 104] : [119, 120, 115], 12, rng);
-  const row = s / 12, brick = s / 4;
-  for (let y = 0, r = 0; y < s; y += row, r++) {
-    for (let x = -(r % 2) * brick / 2; x < s; x += brick) {
-      const variation = rng();
-      const v = heightOnly ? 165 : Math.floor(133 + variation * 9);
-      ctx.fillStyle = heightOnly ? `rgb(${v},${v},${v})` : `rgb(${v + 2},${v + 2},${v - 2})`;
-      ctx.fillRect(x + 1.5, y + 1.5, brick - 3, row - 3);
-      ctx.strokeStyle = heightOnly ? '#8e8e8e' : 'rgba(196,194,181,0.24)';
-      ctx.lineWidth = 1; ctx.strokeRect(x + 2.5, y + 2.5, brick - 5, row - 5);
-      for (let i = 0; i < 700; i++) {
-        const px = x + 3 + rng() * (brick - 6), py = y + 3 + rng() * (row - 6);
-        const pore = rng(), width = 0.5 + rng() * 1.4;
-        ctx.fillStyle = heightOnly ? `rgba(60,60,60,${pore * 0.35})` : `rgba(64,65,59,${pore * 0.18})`;
-        ctx.fillRect(px, py, width, width * 0.65);
-      }
+  const row=s/24,brick=s/8;
+  ctx.fillStyle=heightOnly?'#686868':'#77756a';ctx.fillRect(0,0,s,s);
+  for(let y=0,r=0;y<s;y+=row,r++)for(let x=-(r%2)*brick/2;x<s;x+=brick){
+    const v=rng();ctx.fillStyle=heightOnly?'#bcbcbc':`rgb(${105+v*26},${68+v*21},${49+v*17})`;
+    ctx.fillRect(x+2,y+2,brick-4,row-4);
+    for(let i=0;i<130;i++){
+      ctx.fillStyle=heightOnly?'rgba(65,65,65,.2)':'rgba(38,31,22,.16)';
+      ctx.fillRect(x+3+rng()*(brick-6),y+3+rng()*(row-6),1+rng()*3,1+rng()*2);
     }
   }
-  if (!heightOnly) stains(ctx, s, rng, 32, '72,75,67');
+  if(!heightOnly)stains(ctx,s,rng,24,'38,31,18');
 }
 
 export function makeMaterials() {
@@ -113,11 +104,11 @@ export function makeMaterials() {
   const wallBump = canvasMap((c, s, r) => masonry(c, s, r, true), 1024, false);
   const M = (color, map, roughness = 0.85, metalness = 0, extra = {}) => new THREE.MeshStandardMaterial({ color, map, roughness, metalness, ...extra });
   const stone = { bumpMap: micro, bumpScale: 0.018, roughnessMap: rough };
-  return {
+  const materials = {
     floor: M(0xffffff, floor, 0.92, 0, stone),
     concrete: M(0xffffff, floor, 0.92, 0, stone),
     wood: M(0xffffff, wood, 0.78, 0, { bumpMap: woodBump, bumpScale: 0.014, roughnessMap: rough }),
-    wall: M(0xe0cbb0, wall, 0.96, 0, { bumpMap: wallBump, bumpScale: 0.018 }),
+    wall: M(0xe6e0cd, wall, 0.96, 0, { bumpMap: wallBump, bumpScale: 0.026 }),
     metal: M(0xadb5b7, null, 0.38, 0.8, { bumpMap: micro, bumpScale: 0.002 }),
     roof: M(0x30383b, null, 0.91),
     coping: M(0xbfc5c6, null, 0.26, 0.92), rail: M(0xc4ced1, null, 0.24, 0.95),
@@ -127,6 +118,25 @@ export function makeMaterials() {
     blue: M(0x366776, null, 0.72), green: M(0x50694d, null, 0.72),
     dark: M(0x252e30, null, 0.6, 0.45), sky: new THREE.MeshBasicMaterial({ color: 0xe4e8d9 }),
   };
+  // World-space wear avoids repeating the same large damage island in every tile.
+  materials.wall.onBeforeCompile = shader => {
+    shader.vertexShader = 'varying vec3 vWallPoint;\n' + shader.vertexShader;
+    shader.vertexShader = shader.vertexShader.replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvWallPoint = (modelMatrix * vec4(transformed,1.)).xyz;');
+    shader.fragmentShader = `varying vec3 vWallPoint;
+      float wallHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float wallNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(wallHash(i),wallHash(i+vec2(1,0)),f.x),mix(wallHash(i+vec2(0,1)),wallHash(i+vec2(1,1)),f.x),f.y);}
+      float wallFbm(vec2 p){return wallNoise(p)*.5+wallNoise(p*2.13)*.25+wallNoise(p*4.31)*.125+wallNoise(p*9.07)*.0625;}
+    ` + shader.fragmentShader;
+    shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
+      vec2 p=vec2(vWallPoint.x+vWallPoint.z,vWallPoint.y);
+      float wear=wallFbm(p*.36+vec2(vWallPoint.z*.23,3.));
+      float paint=smoothstep(.30,.48,wear+wallNoise(p*17.)*.07);
+      vec3 lime=vec3(.45,.435,.375)*(.86+wallNoise(p*2.8)*.18);
+      diffuseColor.rgb=mix(diffuseColor.rgb,lime,paint*.96);
+    `);
+  };
+  materials.wall.customProgramCacheKey=()=> 'brewery-limewashed-brick-v1';
+  return materials;
 }
 
 // UVs measured in metres keep concrete grain and plywood sheets consistent across differently sized props.

@@ -228,7 +228,7 @@ export class Level {
     
     // deck safety back of the south deck: a low ledge for grinding on the deck
     // ---- WEST long quarter pipe (rides toward -x) ----
-    this.paintRainbow(this.quarterPipe(2.7, 24, -31.5, 0, 6, Math.PI, { vert: 0.25, deck: 1.4, mat: M.rainbow }));
+    this.quarterPipe(2.7, 24, -31.5, 0, 6, Math.PI, { vert: 0.25, deck: 1.4 });
     // ---- EAST quarter pipe (rides toward +x) ----
     this.quarterPipe(2.7, 14, 31.5, 0, -6, 0, { vert: 0.25, deck: 1.4 });
     // ---- SOUTH bank wall (rides toward +z), long shallow bank to carve on ----

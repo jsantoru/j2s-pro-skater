@@ -8,17 +8,17 @@ export function lightWarehouse(scene, level, { lowfx = false } = {}) {
   scene.background = new THREE.Color(0x78868a);
   scene.fog = new THREE.FogExp2(0x78868a, 0.006);
   scene.environmentIntensity = 0.32;
-  const ambient = new THREE.HemisphereLight(0xc5e1ef, 0x504234, 0.85);
+  const ambient = new THREE.HemisphereLight(0xc5e1ef, 0x504234, 0.68);
   const sun = new THREE.DirectionalLight(0xffdeb0, 3.4);
   sun.position.set(-24, 32, -18);
   sun.castShadow = !lowfx;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.mapSize.set(4096, 4096);
   Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 38, bottom: -38, near: 1, far: 100 });
   sun.shadow.camera.updateProjectionMatrix();
   sun.shadow.bias = -0.00025;
   sun.shadow.normalBias = 0.035;
-  sun.shadow.radius = 3;
-  const fill = new THREE.DirectionalLight(0xa1c8df, 0.55);
+  sun.shadow.radius = 2;
+  const fill = new THREE.DirectionalLight(0xa1c8df, 0.38);
   fill.position.set(20, 9, 16);
   scene.add(ambient, sun, fill);
 
@@ -33,7 +33,8 @@ export function lightWarehouse(scene, level, { lowfx = false } = {}) {
   for (let x = -25; x <= 35; x += 10) {
     const width = x === 35 ? 3 : 4, centre = x === 35 ? 34.5 : x;
     for (const z of [-21.5, 21.5]) slab(width, 3, centre, z);
-    for (let z = -18; z <= 18; z += 6) slab(width, 0.09, centre, z);
+    for (let z = -18; z <= 18; z += 1.5) slab(width, 0.075, centre, z);
+    slab(.075, 40, centre, 0);
   }
   const occluder = new THREE.Mesh(mergeGeometries(roof), level.mats.roof);
   occluder.name = 'Skylight roof and sun occlusion';

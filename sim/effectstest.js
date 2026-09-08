@@ -45,8 +45,10 @@ fx.clear(); assert.equal(count(fx.dust) + count(fx.sparks), 0, 'Restart clears e
 lightWarehouse(scene, level);
 level.group.updateMatrixWorld(true);
 const roof = level.group.getObjectByName('Skylight roof and sun occlusion');
-const ray = new THREE.Raycaster(new THREE.Vector3(-25, 11, 1), new THREE.Vector3(0, -1, 0));
+const ray = new THREE.Raycaster(new THREE.Vector3(-24, 11, 1), new THREE.Vector3(0, -1, 0));
 assert.equal(ray.intersectObject(roof).length, 0, 'Factory skylights transmit sunlight');
+ray.ray.origin.x = -25;
+assert.ok(ray.intersectObject(roof).length, 'Central skylight mullions cast the window grid');
 ray.ray.origin.x = -20;
 assert.ok(ray.intersectObject(roof).length, 'Opaque roof strips block sunlight');
 assert.ok(!level.colliders.includes(roof), 'Roof art does not alter skating collision');
