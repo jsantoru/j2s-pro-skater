@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { canvasMap } from './materials.js';
+import { dressBreweryProps } from './brewery-props.js';
+import { dressBreweryWear } from './brewery-wear.js';
 
 export function brewerySign(title, subtitle, bg = '#812f29', fg = '#d9cab0') {
   const map = canvasMap((c, s, rng) => {
@@ -106,18 +108,11 @@ export function dressBrewery(level, {add,box,bar,flat}) {
     add(new THREE.CylinderGeometry(.035,.18,.58,24),orange,[x,y+.345,z]);
     add(new THREE.CylinderGeometry(.076,.101,.105,24),white,[x,y+.47,z]);
   }
-  // Returnable kegs on timber pallets: a brewing warehouse at the edges of the skate lines.
-  const steel=new THREE.MeshStandardMaterial({color:0x9b9e94,roughness:.46,metalness:.83});
-  for(const [x,z] of [[-28,-21],[-26.7,-21],[18.7,-21]]){
-    for(const dx of [-.44,0,.44])box(.14,.12,1.05,x+dx,.06,z,M.wood);
-    for(let dz=-.45;dz<=.45;dz+=.18)box(1.15,.06,.12,x,.15,z+dz,M.wood);
-    for(const dx of [-.28,.28]){
-      add(new THREE.CylinderGeometry(.25,.25,.79,24),steel,[x+dx,.575,z]);
-      for(const y of [.23,.39,.80,.94])add(new THREE.TorusGeometry(.255,.019,8,24),steel,[x+dx,y,z],new THREE.Euler(Math.PI/2,0,0));
-      add(new THREE.CylinderGeometry(.045,.045,.025,12),M.dark,[x+dx,.985,z]);
-    }
-    flat(.95,.27,x,.69,z+.26,brewerySign('GENESEE','RETURNABLE / ROCHESTER'));
-  }
+  dressBreweryProps(level, {add,box,bar,flat});
+  dressBreweryWear(level, {add,box,bar,flat});
+  flat(4.2,1.4,-32.6,3.2,-22.82,brewerySign('KEG RETURNS','EMPTY COOPERAGE / INSPECTION','#a89b79','#384b40'));
+  flat(4.2,1.4,33,3.5,-22.82,brewerySign('PACKING 02','GENESEE BEER & ALE / SHIPPING'));
+  flat(5.4,1.8,-35.85,5.45,-14.8,brewerySign('CELLAR 04','BREWERY OPERATIONS / KEEP CLEAR','#455b4d','#d6ccb0'),Math.PI/2);
   const paper=new THREE.MeshStandardMaterial({color:0xa99b7d,roughness:1,side:THREE.DoubleSide});
   for(let i=0;i<28;i++){
     const x=-18+(i%8)*.62,z=21.3+Math.sin(i*3)*.5;

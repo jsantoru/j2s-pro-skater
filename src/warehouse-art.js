@@ -9,6 +9,9 @@ export function dressWarehouse(level) {
   const M = level.mats, batches = new Map(), matrix = new THREE.Matrix4(), q = new THREE.Quaternion();
   const one = new THREE.Vector3(1, 1, 1), up = new THREE.Vector3(0, 1, 0);
   const add = (g, mat, pos, rotation = null) => {
+    // Rounded stock parts arrive unindexed; all pieces in a material batch need
+    // the same representation for mergeGeometries.
+    if (!g.index) g.setIndex(Array.from({length: g.attributes.position.count}, (_, i) => i));
     q.identity(); if (rotation) q.setFromEuler(rotation);
     matrix.compose(new THREE.Vector3(...pos), q, one); g.applyMatrix4(matrix);
     if (!batches.has(mat)) batches.set(mat, []); batches.get(mat).push(g);
@@ -187,7 +190,7 @@ export function dressWarehouse(level) {
   }, 2048);
   level.floor.userData.paintMap = groundMap;
 
-  // Rail shoes and sleeves, worn ledge edges, barrel hoops and crate framing.
+  // Rail shoes and sleeves and worn ledge edges.
   for (const rail of level.rails) if (rail.kind === 'rail') {
     const n = Math.max(2, Math.round(rail.len / 2));
     for (let i = 0; i < n; i++) {
@@ -196,15 +199,6 @@ export function dressWarehouse(level) {
       for (const dx of [-0.063, 0.063]) for (const dz of [-0.063, 0.063]) add(new THREE.CylinderGeometry(0.012, 0.012, 0.012, 6), M.metal, [p.x + dx, 0.027, p.z + dz]);
     }
   }
-  for (const [x, z] of [[-33, -19], [-32, -20.2], [33, 20], [32, 21.2]]) {
-    for (const y of [0.07, 0.34, 0.76, 1.07]) add(new THREE.TorusGeometry(0.451, 0.014, 6, 24), M.railDark, [x, y, z], new THREE.Euler(Math.PI / 2, 0, 0));
-    add(new THREE.CylinderGeometry(0.426, 0.426, 0.014, 24), M.railDark, [x, 1.106, z]);
-    add(new THREE.CylinderGeometry(0.048, 0.048, 0.019, 12), M.metal, [x + 0.2, 1.12, z]);
-  }
-  for (const [x, y, z, size] of [[30, 1, -20, 2], [30.2, 2.7, -20, 1.4]]) {
-    for (const dx of [-1, 1]) for (const dz of [-1, 1]) box(0.07, size, 0.07, x + dx * size / 2, y, z + dz * size / 2, M.railDark);
-    for (const dy of [-1, 1]) { box(size + 0.08, 0.065, size + 0.08, x, y + dy * (size / 2 - 0.03), z, M.railDark); }
-  }
   dressBrewery(level, { add, box, bar, flat });
   // Commit static batches, including opaque and transparent parts separately by material.
   const dressing = new THREE.Group(); dressing.name = 'Warehouse visual details';
@@ -212,7 +206,7 @@ export function dressWarehouse(level) {
     const combined = mergeGeometries(geometries, false);
     const m = new THREE.Mesh(combined, material); m.receiveShadow = true;
     // Existing structural meshes already supply the shadows. Avoid a second shadow pass for tiny dressing.
-    m.castShadow = false; dressing.add(m); geometries.forEach(g => g.dispose());
+    m.castShadow = material.userData.castShadow === true; dressing.add(m); geometries.forEach(g => g.dispose());
   }
   level.group.add(dressing);
 }

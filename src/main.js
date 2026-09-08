@@ -153,7 +153,9 @@ const idle = { steer: 0, stickY: 0, push: 0, brake: 0, ollie: false, olliePresse
 
 function frame(now) {
   requestAnimationFrame(frame);
-  let dt = Math.min(0.1, (now - last) / 1000); last = now;
+  // The first RAF timestamp can precede `last` after synchronous asset creation.
+  // Never let that subtract seconds from the fixed-step accumulator at startup.
+  let dt = Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
   const inp = input.poll(dt);
   input.hapticsBegin();
   if (inp.anyPressed && !audio.enabled) audio.init();
