@@ -4,7 +4,7 @@ import { Character } from '../src/character.js';
 
 const c = new Character();
 // Check authored silhouette independently from camera perspective and pose blends.
-const sleeve = c.lArm.sh.getObjectByName('Short cotton sleeve').geometry;
+const sleeve = c.lArm.sh.getObjectByName('Continuous hoodie sleeve').geometry;
 sleeve.computeBoundingBox();
 const face = c.head.getObjectByName('Seamless cap crown').geometry;
 face.computeBoundingBox();
@@ -13,13 +13,13 @@ const headWidth = (face.boundingBox.max.x - face.boundingBox.min.x) * c.head.sca
 assert.ok(shoulderWidth / headWidth < 2.9, 'Head is not dwarfed by padded shoulders');
 assert.ok(shoulderWidth / headWidth > 2.2, 'Keep an adult rather than oversized cartoon head');
 assert.ok(c.lArm.sh.position.y < 0.41, 'Shoulders slope below the neckline');
-const shorts = c.lLeg.hp.getObjectByName('Front shorts continuous hip').geometry;
-shorts.computeBoundingBox();
-const hipWidth = 2 * (c.lLeg.hp.position.x + shorts.boundingBox.max.x);
+const jeans = c.lLeg.hp.getObjectByName('Front jeans continuous hip').geometry;
+jeans.computeBoundingBox();
+const hipWidth = 2 * (c.lLeg.hp.position.x + jeans.boundingBox.max.x);
 assert.ok(hipWidth / shoulderWidth < .85, 'Clothed hips remain narrower than the shoulders');
 
-const hoodie = c.torso.getObjectByName('Tailored cotton tee');
-assert.ok(hoodie.isSkinnedMesh, 'T-shirt bends between hips and chest');
+const hoodie = c.torso.getObjectByName('Tailored black hoodie');
+assert.ok(hoodie.isSkinnedMesh, 'Hoodie bends between hips and chest');
 const hem = [], vtx = new THREE.Vector3();
 c.root.updateMatrixWorld(true);
 for (let i = 0; i < hoodie.geometry.attributes.position.count; i++) {

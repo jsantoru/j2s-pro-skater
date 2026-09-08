@@ -4,6 +4,7 @@ import { canvasMap } from './materials.js';
 import { handGeometry } from './hand-art.js';
 import { skaterMaterials } from './skater-materials.js';
 import { addBeard, addShaggyHair } from './groom-art.js';
+import { geneseeMarkPath } from './genesee-mark.js';
 
 const mat = (color, roughness = 0.85, metalness = 0) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
 function mesh(parent, geometry, material, x = 0, y = 0, z = 0) {
@@ -42,7 +43,7 @@ function garment(parent, rings, material, zScale = 1, foldAmount = 0.023, segmen
     for (let i = 0; i <= segments; i++) {
       const a = i / segments * Math.PI * 2;
       const denim = material.name === 'Worn indigo denim';
-      const fleece = material.name.startsWith('Washed navy cotton');
+      const fleece = material.name.includes('hoodie fleece');
       const gather = denim ? Math.exp(-(((y + 0.75) / 0.085) ** 2)) + 0.55 * Math.exp(-(((y + 0.42) / 0.07) ** 2))
         : fleece ? Math.exp(-(((y + 0.06) / 0.10) ** 2)) + .55 * Math.exp(-(((y - .13) / .16) ** 2)) : 0;
       const wrinkle = gather * Math.sin(y * 48 + Math.sin(a * 3) * 2.4) * .045;
@@ -64,21 +65,29 @@ function garment(parent, rings, material, zScale = 1, foldAmount = 0.023, segmen
 }
 
 // Continuous cloth across the elbow/knee, with a soft transition between bones.
-function jointCloth(rig, upper, lower, rings, material, joint, folds, anchor = null) {
-  const shell = garment(upper, rings, material, 1, folds);
+function jointCloth(rig, upper, lower, rings, material, joint, folds, anchor = null, end = null) {
+  const shell = garment(upper, rings, material, 1, folds, 32);
   upper.remove(shell);
   const g = shell.geometry, p = g.attributes.position, indices = [], weights = [];
   for (let i = 0; i < p.count; i++) {
     const w = THREE.MathUtils.smoothstep(-p.getY(i), joint - 0.065, joint + 0.065);
     const fixed = anchor ? 1 - THREE.MathUtils.smoothstep(-p.getY(i), 0.015, 0.15) : 0;
-    indices.push(0, 1, 2, 0); weights.push((1 - w) * (1 - fixed), w * (1 - fixed), fixed, 0);
+    const tip = end ? THREE.MathUtils.smoothstep(-p.getY(i), end.from, end.to) : 0;
+    indices.push(0, 1, 2, 3); weights.push((1 - w) * (1 - fixed) * (1 - tip), w * (1 - fixed) * (1 - tip), fixed * (1 - tip), tip);
   }
   g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(indices, 4));
   g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(weights, 4));
   const cloth = new THREE.SkinnedMesh(g, material); upper.add(cloth);
   cloth.castShadow = cloth.receiveShadow = true; cloth.frustumCulled = false;
-  rig.root.updateMatrixWorld(true); cloth.bind(new THREE.Skeleton(anchor ? [upper, lower, anchor] : [upper, lower, upper]));
+  rig.root.updateMatrixWorld(true); cloth.bind(new THREE.Skeleton([upper, lower, anchor || upper, end?.bone || lower]));
   return cloth;
+}
+
+// Physical garment height keeps pocket/print placement independent of profile-ring density.
+function garmentUV(surface, top, bottom) {
+  const { position, uv } = surface.geometry.attributes;
+  for (let i = 0; i < position.count; i++) uv.setY(i, (position.getY(i) - bottom) / (top - bottom));
+  return surface;
 }
 
 // A shoe-shaped shell: superellipse cross-sections lofted from heel to toe, with both
@@ -449,10 +458,9 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
 }
 
 export function buildDetailedBody(rig) {
-  const { skin, shoe, shirt, pants, sole, sock } = skaterMaterials();
+  const { skin, shoe, shirt, pants, sole, sock, rib } = skaterMaterials();
   const cap = mat(0x383736), hair = mat(0x392c24), eye = mat(0x302a27, .5);
   const cloth = shirt.normalMap;
-  const rib = shirt.clone(); rib.name = 'Cotton collar binding';
   rig.hips = new THREE.Bone(); rig.body.add(rig.hips);
   rounded(rig.hips, .265, .16, .17, pants, 0, .02, 0, .065);
   rig.torso = new THREE.Bone(); rig.torso.position.y = 0.1; rig.hips.add(rig.torso);
@@ -473,30 +481,86 @@ export function buildDetailedBody(rig) {
     cloth.bind(new THREE.Skeleton([rig.hips, rig.torso]));
     return cloth;
   };
-  // Loose straight-cut cotton, narrower than the shoulders and without a flared hip silhouette.
-  const tee = garment(rig.torso, [[-.10,.181,.122],[-.08,.182,.122],[-.02,.175,.116],[.10,.171,.111],[.25,.177,.106],[.35,.185,.105],[.40,.185,.098],[.44,.136,.077],[.47,.063,.056]], shirt, 1, .013, 48);
-  tee.name = 'Tailored cotton tee';
-  const printed = shirt.clone(); printed.name = 'Washed navy cotton with worn back print';
+  const hoodie = garmentUV(garment(rig.torso, [
+    [-.105,.180,.123],[-.06,.183,.125],[.035,.181,.123],[.13,.178,.120],
+    [.25,.182,.115],[.35,.191,.111],[.40,.188,.103],[.443,.14,.082],[.47,.064,.058],
+  ], shirt, 1, .016, 48), .47, -.105);
+  hoodie.name = 'Tailored black hoodie';
+  const printed = shirt.clone(); printed.name = 'Washed black hoodie fleece with Genesee print';
   printed.map = canvasMap((c,s,rng) => {
     c.drawImage(shirt.map.image,0,0,s,s);
-    c.save(); c.translate(s*.75,s*.49); c.scale(-1,1);
-    c.fillStyle='#ac4037'; c.fillRect(-s*.067,-s*.16,s*.134,s*.31);
-    c.fillStyle='#e0d6b8'; c.textAlign='center'; c.font='italic 900 144px Georgia, serif'; c.fillText('G',0,s*.045,s*.114);
-    c.font='bold 14px sans-serif'; c.fillText('ROCHESTER',0,s*.103,s*.117); c.font='bold 13px sans-serif'; c.fillText('1878',0,s*.13);
-    // Screenprint wear reveals the underlying cotton through small broken strokes.
-    for(let i=0;i<1400;i++){ const x=(rng()-.5)*s*.134,y=(rng()-.5)*s*.31; c.globalAlpha=.18; c.fillStyle='#303e66'; c.fillRect(x,y,rng()*3+1,rng()*1.5+.4); }
-    c.restore();
+    c.save(); c.translate(s*.75,s*.565); c.scale(-s*.00185,s*.0037);
+    c.translate(-49.75,-58); c.fillStyle='#c72d38'; c.fill(new Path2D(geneseeMarkPath)); c.restore();
+    // Fine broken ink exposes fleece without turning the mark into a rectangular badge.
+    const printedPixels=c.getImageData(0,0,s,s), base=shirt.map.image.getContext('2d').getImageData(0,0,s,s);
+    for(let i=0;i<printedPixels.data.length;i+=4){
+      if(printedPixels.data[i] > 110 && rng()<.085){
+        for(let j=0;j<3;j++) printedPixels.data[i+j]=printedPixels.data[i+j]*.77+base.data[i+j]*.23;
+      }
+    }
+    c.putImageData(printedPixels,0,0);
   },1024);
-  tee.material = printed; anchorHem(tee);
-  anchorHem(garment(rig.torso,[[-.105,.180,.122],[-.098,.183,.124],[-.088,.182,.123],[-.082,.179,.120]],shirt,1,.009,48));
-  const collar=mesh(rig.torso,new THREE.TorusGeometry(.059,.007,10,40),rib,0,.467,0); collar.rotation.x=Math.PI/2;
+  hoodie.material=printed; anchorHem(hoodie);
+  const hem=garment(rig.torso,[[-.112,.177,.121],[-.105,.182,.125],[-.083,.183,.125],[-.070,.178,.121]],rib,1,.006,48);
+  hem.name='Ribbed hoodie waistband';anchorHem(hem);
+  const collar=mesh(rig.torso,new THREE.TorusGeometry(.061,.008,10,40),rib,0,.467,-.002);collar.rotation.x=Math.PI/2;
+  collar.name='Hood neckline binding';
+  // A folded fabric bag: the return rings form the dark inner surface and rolled opening.
+  const hood=garment(rig.torso,[
+    [.275,0,0,-.117],[.30,.054,.020,-.133],[.34,.098,.033,-.135],
+    [.392,.109,.039,-.123],[.445,.094,.033,-.101],[.482,.063,.024,-.065],
+    [.488,.055,.018,-.063],[.467,.048,.016,-.063],[.428,.075,.025,-.103],
+    [.38,.077,.018,-.13],[.342,.036,.008,-.139],[.335,0,0,-.14],
+  ],shirt,1,.025,48);hood.name='Lowered double-wall hood';
+  const hoodVertices=hood.geometry.attributes.position;
+  for(let i=0;i<hoodVertices.count;i++){
+    const x=hoodVertices.getX(i),y=hoodVertices.getY(i),z=hoodVertices.getZ(i);
+    if(z<-.12) hoodVertices.setZ(i,z+.009*Math.exp(-((x/.025)**2))*Math.exp(-(((y-.37)/.07)**2))
+      +.004*Math.sin(y*82+x*19)*Math.exp(-(((y-.34)/.055)**2)));
+  }
+  hood.geometry.computeVertexNormals();smoothRingSeams(hood.geometry,48,hoodVertices.count/49);
+  // The pocket follows the actual front surface and shares its hip/chest weights.
+  const points=[],uvs=[],faces=[],ray=new THREE.Raycaster(),probe=new THREE.Mesh(hoodie.geometry,shirt);
+  for(let j=0;j<=12;j++)for(let i=0;i<=24;i++){
+    const v=j/12,u=i/24,y=.018+v*.14,halfWidth=.128-.042*Math.pow(v,3),x=(u*2-1)*halfWidth;
+    ray.set(new THREE.Vector3(x,y,.3),new THREE.Vector3(0,0,-1));
+    const hit=ray.intersectObject(probe)[0];
+    points.push(x,y,(hit?.point.z || .1)+.003+Math.sin(u*Math.PI)*Math.sin(v*Math.PI)*.008);
+    uvs.push(u,v);
+    if(i&&j){const b=j*25+i,a=b-25;faces.push(a-1,a,b-1,a,b,b-1);}
+  }
+  const pocketGeo=new THREE.BufferGeometry();pocketGeo.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
+  pocketGeo.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));pocketGeo.setIndex(faces);pocketGeo.computeVertexNormals();
+  const pocketMat=shirt.clone();pocketMat.name='Kangaroo pocket fleece';
+  pocketMat.map=canvasMap((c,s)=>{
+    c.drawImage(shirt.map.image,0,0,s,s);c.fillStyle='rgba(100,108,113,.05)';c.fillRect(0,0,s,s);
+    c.strokeStyle='#1b1e21';c.lineWidth=12;c.strokeRect(5,5,s-10,s-10);
+    c.strokeStyle='#64696d';c.globalAlpha=.45;c.lineWidth=2;c.setLineDash([5,4]);c.strokeRect(13,13,s-26,s-26);
+  },512);
+  const pocket=mesh(rig.torso,pocketGeo,pocketMat);pocket.name='Sewn kangaroo pocket';anchorHem(pocket);
+  const cord=mat(0x93948b,.96),aglet=mat(0x515655,.46,.4);
+  for(const side of [-1,1]){
+    const cordPoints=[[side*.037,.445],[side*.04,.401],[side*.031,.348],[side*.042,.30+side*.007]].map(([x,y])=>{
+      ray.set(new THREE.Vector3(x,y,.3),new THREE.Vector3(0,0,-1));
+      return new THREE.Vector3(x,y,ray.intersectObject(probe)[0].point.z+.006);
+    });
+    const eyelet=mesh(rig.torso,new THREE.TorusGeometry(.004,.0013,6,12),aglet,...cordPoints[0].toArray());
+    eyelet.name='Drawstring eyelet';eyelet.rotation.x=-.5;
+    const line=new THREE.CatmullRomCurve3(cordPoints);
+    mesh(rig.torso,new THREE.TubeGeometry(line,18,.0024,6,false),cord).name='Cotton hood drawstring';
+    mesh(rig.torso,new THREE.CylinderGeometry(.0027,.0027,.013,8),aglet,side*.042,.294+side*.007,cordPoints[3].z).name='Drawstring aglet';
+  }
   buildConnectedHead(rig, { skin, cap, hair, eye, cloth });
   const arm = (side) => {
     const sh = new THREE.Bone(); sh.position.set(side * 0.177, 0.392, 0); rig.torso.add(sh);
     const el = new THREE.Bone(); el.position.y = -0.29; sh.add(el);
-    const sleeve = garment(sh,[[.05,0,0],[.025,.048,.049],[-.025,.063,.062],[-.11,.068,.064],[-.17,.064,.061],[-.19,.061,.058],[-.192,.055,.052],[-.175,.055,.052]],shirt,1,.018,32);
-    sleeve.name='Short cotton sleeve';
-    jointCloth(rig,sh,el,[[-.14,.041,.043],[-.20,.040,.041],[-.26,.034,.036],[-.29,.032,.034],[-.33,.039,.038],[-.39,.035,.035],[-.47,.026,.027],[-.535,.020,.024],[-.550,.016,.021],[-.560,.014,.018]],skin,.29,.002).name='Continuous bare arm';
+    const sleeve=jointCloth(rig,sh,el,[
+      [.023,0,0,0,-side*.023],[.012,.032,.033,0,-side*.013],[-.025,.062,.062],[-.08,.073,.068],[-.18,.065,.061],
+      [-.26,.059,.056],[-.29,.057,.053],[-.33,.059,.055],[-.40,.052,.049],
+      [-.47,.043,.042],[-.507,.035,.035],[-.52,.03,.031],[-.535,.027,.028],
+    ],shirt,.29,.018,rig.torso);garmentUV(sleeve,.023,-.535);sleeve.name='Continuous hoodie sleeve';
+    const cuff=garment(el,[[-.218,.032,.033],[-.226,.034,.034],[-.251,.030,.030],[-.26,.025,.027],[-.261,.021,.022],[-.248,.021,.022]],rib,1,.005,32);
+    cuff.name='Ribbed wrist cuff';
     // A relaxed hand rather than a paddle: a shaped palm with the thumb and little-finger
     // pads either side of it, fingers that curl over two joints, and a thumb folded alongside.
     const hand = new THREE.Group(); hand.position.set(0, -0.262, 0.002);
@@ -514,23 +578,17 @@ export function buildDetailedBody(rig) {
   const leg = (side) => {
     const hp = new THREE.Bone(); hp.position.set(side * .103, 0, 0); rig.hips.add(hp);
     const kn = new THREE.Bone(); kn.position.y = -0.42; hp.add(kn);
-    const shorts = jointCloth(rig,hp,kn,[[.080,0,0,0,-side*.022],[.045,.072,.082,0,-side*.023],[0,.083,.091,0,-side*.015],[-.08,.088,.091],[-.19,.087,.085],[-.29,.080,.080],[-.35,.078,.074],[-.39,.080,.075],[-.40,.076,.071],[-.385,.067,.063]],pants,.42,.019,rig.hips);
-    shorts.name=side===1?'Front shorts continuous hip':'Back shorts continuous hip';
-    // A sculpted knee, shin ridge and tapered calf; one smooth skin surface spans the knee.
-    jointCloth(rig,hp,kn,[[-.24,.055,.060],[-.33,.043,.046],[-.385,.041,.045,.004],[-.42,.038,.043,.004],[-.455,.039,.040],[-.51,.051,.049,-.007],[-.57,.051,.048,-.01],[-.65,.041,.039,-.004],[-.74,.027,.030],[-.82,.025,.028]],skin,.42,.002).name='Continuous knee and calf';
-    // Sewn pocket follows the thigh's curvature instead of standing off as a rigid box.
-    const pp=[],pu=[],pi=[];
-    for(let j=0;j<=6;j++)for(let i=0;i<=10;i++){
-      const z=(i/10-.5)*.105,y=-.14-j/6*.16;
-      const radius=.089-j/6*.009;
-      pp.push(side*(radius*Math.sqrt(1-(z/.086)**2)+.002),y,z);
-      pu.push(i/10,j/6);
-      if(i&&j){const b=j*11+i,a=b-11; if(side>0)pi.push(a-1,b,a,a-1,b-1,b);else pi.push(a-1,a,b,a-1,b,b-1);}
-    }
-    const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.Float32BufferAttribute(pp,3));pg.setAttribute('uv',new THREE.Float32BufferAttribute(pu,2));pg.setIndex(pi);pg.computeVertexNormals();
-    mesh(hp,pg,pants).name='Sewn cargo pocket';
-    const socks=garment(kn,[[-.235,.043,.043,-.004],[-.242,.044,.044,-.004],[-.26,.040,.040,-.003],[-.33,.030,.033],[-.41,.028,.032]],sock,1,.012,32); socks.name='Crew sock';
     const ankle = new THREE.Group(); ankle.position.y = -0.42; kn.add(ankle);
+    const jeans = jointCloth(rig,hp,kn,[
+      [.080,0,0,0,-side*.022],[.045,.071,.082,0,-side*.023],[0,.080,.088,0,-side*.015],
+      [-.09,.084,.087],[-.22,.080,.080],[-.33,.070,.075],[-.39,.065,.070,.004],
+      [-.43,.064,.067,.004],[-.49,.068,.066,-.004],[-.59,.065,.062,-.004],
+      [-.68,.059,.056],[-.72,.061,.058],[-.745,.059,.056],[-.765,.052,.050,.003],
+      [-.78,.049,.047,.003],[-.785,.049,.047,.003],[-.786,.044,.042,.003],[-.774,.044,.042,.003],
+    ],pants,.42,.017,rig.hips,{bone:ankle,from:.71,to:.765});
+    garmentUV(jeans,.08,-.786);jeans.name=side===1?'Front jeans continuous hip':'Back jeans continuous hip';
+    const socks=garment(ankle,[[.085,.027,.030],[.065,.028,.031],[.012,.028,.032]],sock,1,.006,32);
+    socks.name='Ankle sock beneath jeans';
     // Anatomical ankle is behind the shoe centre. Keep the shoe-centre frame for
     // deck contacts; IK compensates this offset instead of sliding the soles forward.
     const an = new THREE.Group(); an.position.z = 0.078; ankle.add(an);
