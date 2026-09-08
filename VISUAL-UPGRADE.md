@@ -1,5 +1,9 @@
 # Warehouse visual pass — September 2026
 
+The newer [Genesee reference pass](BREWERY-UPDATE.md) replaces the skater outfit,
+adds brewery dressing and increases the sun shadow map to 4096px. This document
+records the preceding warehouse/push checkpoint.
+
 Implemented and visually reviewed in Playwright. The earlier browser startup blocker was resolved through the connected Playwright browser. Git write access was restored when this session's permissions changed to full access; checkpoints use `codex/warehouse-visual-polish`.
 
 ## Art direction and changes

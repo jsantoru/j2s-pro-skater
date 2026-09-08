@@ -13,6 +13,10 @@ const headWidth = (face.boundingBox.max.x - face.boundingBox.min.x) * c.head.sca
 assert.ok(shoulderWidth / headWidth < 2.9, 'Head is not dwarfed by padded shoulders');
 assert.ok(shoulderWidth / headWidth > 2.2, 'Keep an adult rather than oversized cartoon head');
 assert.ok(c.lArm.sh.position.y < 0.41, 'Shoulders slope below the neckline');
+const shorts = c.lLeg.hp.getObjectByName('Front shorts continuous hip').geometry;
+shorts.computeBoundingBox();
+const hipWidth = 2 * (c.lLeg.hp.position.x + shorts.boundingBox.max.x);
+assert.ok(hipWidth / shoulderWidth < .85, 'Clothed hips remain narrower than the shoulders');
 
 const hoodie = c.torso.getObjectByName('Tailored cotton tee');
 assert.ok(hoodie.isSkinnedMesh, 'T-shirt bends between hips and chest');
