@@ -1,0 +1,76 @@
+{
+  "baseline": {
+    "errors": [],
+    "metrics": {
+      "calls": 92,
+      "triangles": 144490,
+      "textures": 77,
+      "gl": 0
+    }
+  },
+  "live": {
+    "checks": [
+      "Drop In remains in phone viewport",
+      "Drop In remains in landscape viewport",
+      "Drop In remains in desktop viewport",
+      "Controls button opens control map",
+      "Tab closes control map",
+      "Settings opens",
+      "Keyboard settings activation does not start skating",
+      "Drop In starts run",
+      "Live regular push faces travel",
+      "Live fakie push faces travel",
+      "Live keyboard ollie and kickflip land and score",
+      "Keyboard revert changes stance",
+      "Opposite revert returns to regular",
+      "Live rail grind emits sparks",
+      "Live grind shows balance meter",
+      "Live concrete grind emits dust without sparks",
+      "Standard gamepad A hold/release ollies through live polling",
+      "Standard gamepad X flip lands and scores",
+      "End of run shows replay screen",
+      "Replay button resets score",
+      "Lowfx plays with shadows/reflections disabled",
+      "No WebGL errors",
+      "No browser runtime or shader errors"
+    ],
+    "errors": [],
+    "playingTiming": {
+      "medianMs": 16.700000000000728,
+      "p95Ms": 16.799999999999272,
+      "frames": 360
+    }
+  },
+  "assets": {
+    "checks": [
+      "Production build loads captain texture",
+      "Normal follow-camera push approach remains playable",
+      "Delayed image permits skating, then replaces fallback",
+      "404 asset preserves branded fallback and playable run"
+    ],
+    "errors": [],
+    "riding": {
+      "state": "ride",
+      "speed": 7.034801273538933,
+      "gl": 0
+    },
+    "delayed": {
+      "status": "loading",
+      "speed": 4.101452831980129
+    },
+    "missing": {
+      "status": "fallback",
+      "speed": 3.431687232134424,
+      "gl": 0
+    }
+  },
+  "after": {
+    "errors": [],
+    "metrics": {
+      "calls": 93,
+      "triangles": 144492,
+      "textures": 78,
+      "gl": 0
+    }
+  }
+}
