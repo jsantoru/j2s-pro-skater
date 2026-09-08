@@ -9,15 +9,25 @@ const url = process.argv[2] || 'http://127.0.0.1:5173/';
 const output = resolve(process.argv[3] || 'screenshots/visual-upgrade');
 const executable = process.env.EDGE_PATH || 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';
 const profile = await mkdtemp(join(tmpdir(), 'j2s-graphics-'));
-const edge = spawn(executable, ['--headless=new', '--no-first-run', '--no-default-browser-check', '--disable-extensions', '--disable-background-timer-throttling', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'], { windowsHide: true, stdio: 'ignore' });
+const edge = spawn(executable, ['--headless=new', '--no-first-run', '--no-default-browser-check', '--disable-extensions', '--disable-background-timer-throttling', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'], { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 let socket, id = 0, testingMissingAssets = false;
+let browserFailure = null, browserLog = '';
 const pending = new Map(), errors = [];
+edge.stderr.on('data', data => { browserLog = (browserLog + data).slice(-5000); });
+const failed = message => {
+  browserFailure = new Error(`${message}\n${browserLog}`);
+  for (const waiter of pending.values()) waiter.reject(browserFailure);
+  pending.clear();
+};
+edge.on('error', error => failed(`Cannot launch Edge: ${error.message}`));
+edge.on('exit', code => failed(`Edge exited (${code}) before the check completed`));
 function send(method, params = {}) {
+  if (browserFailure) return Promise.reject(browserFailure);
   const callId = ++id;
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => { pending.delete(callId); reject(new Error(`Timed out: ${method}`)); }, 30000);
-    pending.set(callId, { resolve: value => { clearTimeout(timer); resolve(value); }, reject });
+    pending.set(callId, { resolve: value => { clearTimeout(timer); resolve(value); }, reject: error => { clearTimeout(timer); reject(error); } });
     socket.send(JSON.stringify({ id: callId, method, params }));
   });
 }
@@ -34,9 +44,10 @@ async function shot(name) {
 try {
   let port;
   for (let i = 0; i < 100; i++) {
+    if (browserFailure) throw browserFailure;
     try { port = (await readFile(join(profile, 'DevToolsActivePort'), 'utf8')).split('\n')[0]; break; } catch { await sleep(100); }
   }
-  if (!port) throw new Error('Headless Edge did not start');
+  if (!port) throw new Error(`Headless Edge did not start\n${browserLog}`);
   const pages = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
   socket = new WebSocket(pages.find(p => p.type === 'page').webSocketDebuggerUrl);
   await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
@@ -63,6 +74,15 @@ try {
   }
   await mkdir(output, { recursive: true });
   await shot('title');
+  for (const [width, height, label] of [[390, 844, 'phone'], [844, 390, 'landscape']]) {
+    await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+    await shot(`title-${label}`);
+    if (await evaluate('Boolean(document.querySelector(".session-card"))')) {
+      const fits = await evaluate(`(() => { const r=document.querySelector('.session-card').getBoundingClientRect(); return r.left>=0 && r.right<=innerWidth; })()`);
+      if (!fits) throw new Error(`Title overflows the ${label} viewport`);
+    }
+  }
+  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
   console.log('Headless normal frame timing (not a hardware benchmark):', JSON.stringify(await evaluate(`new Promise(resolve => {const times=[]; let prev=performance.now(); const tick=now=>{times.push(now-prev);prev=now;if(times.length<90)requestAnimationFrame(tick);else{times.sort((a,b)=>a-b);resolve({medianMs:times[45],p95Ms:times[85]});}};requestAnimationFrame(tick);})`)));
   console.log('Initial renderer:', JSON.stringify(await evaluate(`({ calls: __game.renderer.info.render.calls, triangles: __game.renderer.info.render.triangles, textures: __game.renderer.info.memory.textures, shadow: __game.renderer.shadowMap.enabled, colliders: __game.level.colliders.length, rails: __game.level.rails.length })`)));
   // Freeze only this disposable QA page so views and rig poses are reproducible.
@@ -79,6 +99,11 @@ try {
       g.renderer.render(g.scene,g.camera);
     }; document.getElementById('hud').style.display='block';})()`);
   await evaluate(`qaFollow('ride');`); await shot('camera-ride');
+  if (await evaluate('typeof __game.fx?.land === "function"')) {
+    await evaluate(`__game.fx.clear(); __game.fx.land(__game.skater,1); __game.fx.update(.06,__game.skater); qaFollow('ride');`);
+    await shot('landing-dust');
+    await evaluate(`__game.fx.clear();`);
+  }
   await evaluate(`qaFollow('grind',false,0.34);`); await shot('hud-grind');
   await evaluate(`qaFollow('ride',true,-0.30);`); await shot('hud-manual');
   for (const [width,height,label] of [[1440,900,'desktop'],[390,844,'phone'],[844,390,'landscape']]) {

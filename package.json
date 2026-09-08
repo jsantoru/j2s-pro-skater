@@ -11,7 +11,11 @@
     "sim:balance": "node sim/balancetest.js",
     "sim:feel": "node sim/feeltest.js",
     "sim:score": "node sim/scoretest.js",
-    "sim:revert": "node sim/reverttest.js"
+    "sim:revert": "node sim/reverttest.js",
+    "sim:effects": "node sim/effectstest.js",
+    "sim:menu": "node sim/menutest.js",
+    "sim:push": "node sim/pushtest.js",
+    "qa:visual": "node sim/graphicscheck.js"
   },
   "dependencies": {
     "three": "^0.170.0"

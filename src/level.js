@@ -5,6 +5,7 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
 import { makeMaterials, surfaceUV, HAS_DOM } from './materials.js';
 import { dressWarehouse } from './warehouse-art.js';
+import { addBreweryColliders } from './brewery-layout.js';
 export { makeMaterials } from './materials.js';
 
 export class Level {
@@ -228,7 +229,7 @@ export class Level {
     
     // deck safety back of the south deck: a low ledge for grinding on the deck
     // ---- WEST long quarter pipe (rides toward -x) ----
-    this.paintRainbow(this.quarterPipe(2.7, 24, -31.5, 0, 6, Math.PI, { vert: 0.25, deck: 1.4, mat: M.rainbow }));
+    this.quarterPipe(2.7, 24, -31.5, 0, 6, Math.PI, { vert: 0.25, deck: 1.4 });
     // ---- EAST quarter pipe (rides toward +x) ----
     this.quarterPipe(2.7, 14, 31.5, 0, -6, 0, { vert: 0.25, deck: 1.4 });
     // ---- SOUTH bank wall (rides toward +z), long shallow bank to carve on ----
@@ -252,7 +253,10 @@ export class Level {
       const len = Math.hypot(tread * steps + 0.5, PH); const ang = Math.atan2(PH, tread * steps + 0.5);
       const hub = new THREE.Mesh(surfaceUV(new THREE.BoxGeometry(0.6, 0.45, len + 0.3), 3), M.concrete);
       hub.position.set(29.8, PH * 0.5 + 0.2, 10 - (tread * steps + 0.5) / 2 + 0.1);
-      hub.rotation.x = ang; this.add(hub);
+      // Positive world Z is the platform end; the hubba must rise toward it,
+      // matching the stairs and the grind segment instead of jutting uphill into space.
+      hub.name = 'Stair hubba';
+      hub.rotation.x = -ang; this.add(hub);
       const a = new THREE.Vector3(29.8, PH + 0.45 - 0.02, 10.4), b = new THREE.Vector3(29.8, 0.43, 10 - tread * steps - 0.5);
       this.addRail(a, b, 'ledge', false);
     }
@@ -277,10 +281,7 @@ export class Level {
     this.bank(3, 1.2, 4, 23, 0, -14, 0, M.concrete);
     this.addRail(new THREE.Vector3(27.6, 1.75, -14), new THREE.Vector3(33, 0.6, -14), 'rail');
     // ---- Props (non-critical, add readability) ----
-    const barrel = (x, z, mat) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 1.1, 10), mat); m.position.set(x, 0.55, z); this.add(m); };
-    barrel(-33, -19, M.blue); barrel(-32, -20.2, M.red); barrel(33, 20, M.green); barrel(32, 21.2, M.yellow);
-    this.box(1.6, 0.16, 1.6, -30, 0.08, -8, M.wood, { collide: false }); this.box(1.6, 0.16, 1.6, -30, 0.24, -7.9, M.wood, { collide: false });
-    this.box(2, 2, 2, 30, 1, -20, M.wood); this.box(1.4, 1.4, 1.4, 30.2, 2.7, -20, M.wood);
+    addBreweryColliders(this);
     // lane markings (visual only)
     for (const [x, z, ry] of [[-16, 4, 0], [10, 12, 0], [20, -2, Math.PI / 2]]) {
       const s = new THREE.Mesh(new THREE.PlaneGeometry(10, 0.12), M.yellow);

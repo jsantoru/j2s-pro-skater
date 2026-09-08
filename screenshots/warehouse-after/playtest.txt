@@ -1,0 +1,330 @@
+
+=== push from rest, then coast === bails=0 landings=1 score=0
+  t=0.00 pos=(-20.00,0.00,14.00) v=0.09 head=(1.00,0.00,0.00) st=ride
+  t=1.00 pos=(-15.72,0.00,14.00) v=7.82 head=(1.00,0.00,0.00) st=ride
+  t=2.00 pos=(-6.34,0.00,14.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=3.00 pos=(3.25,0.00,14.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=4.00 pos=(12.85,0.00,14.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=5.00 pos=(21.29,1.37,14.00) v=6.87 head=(0.95,0.30,0.00) st=ride
+  t=6.00 pos=(27.47,1.60,14.00) v=5.95 head=(1.00,0.00,0.00) st=ride
+  t=7.00 pos=(33.18,1.60,14.00) v=5.48 head=(1.00,0.00,0.00) st=ride
+7.16 ride->air pos=(34.04,1.60,14.00) v=5.41 vy=0.00 n.y=1.00
+  air 0.39s apex y=1.60
+7.55 air->ride pos=(35.70,0.00,14.00) v=0.00 vy=0.00 n.y=1.00
+  t=8.00 pos=(35.56,0.00,14.00) v=0.27 head=(1.00,0.00,0.00) st=ride
+
+=== brake from cruise === bails=0 landings=0 score=0
+  t=0.00 pos=(-19.93,0.00,14.00) v=8.99 head=(1.00,0.00,0.00) st=ride
+  t=0.25 pos=(-17.70,0.00,14.00) v=8.82 head=(1.00,0.00,0.00) st=ride
+  t=0.50 pos=(-15.51,0.00,14.00) v=8.54 head=(1.00,0.00,0.00) st=ride
+  t=0.75 pos=(-13.85,0.00,14.00) v=4.91 head=(1.00,0.00,0.00) st=ride
+  t=1.00 pos=(-13.09,0.00,14.00) v=1.32 head=(1.00,0.00,0.00) st=ride
+  t=1.25 pos=(-13.03,0.00,14.00) v=0.00 head=(1.00,0.00,0.00) st=ride
+  t=1.50 pos=(-13.03,0.00,14.00) v=0.00 head=(1.00,0.00,0.00) st=ride
+  t=1.75 pos=(-13.03,0.00,14.00) v=0.00 head=(1.00,0.00,0.00) st=ride
+  t=2.00 pos=(-13.03,0.00,14.00) v=0.00 head=(1.00,0.00,0.00) st=ride
+  t=2.25 pos=(-13.03,0.00,14.00) v=0.00 head=(1.00,0.00,0.00) st=ride
+  t=2.50 pos=(-13.03,0.00,14.00) v=0.00 head=(1.00,0.00,0.00) st=ride
+
+=== full-lock turn at cruise === bails=0 landings=1 score=100
+  t=0.00 pos=(-9.93,0.00,14.00) v=8.05 head=(1.00,0.00,0.02) st=ride
+  t=0.50 pos=(-6.21,0.00,16.36) v=9.59 head=(0.50,0.00,0.87) st=ride
+  t=1.00 pos=(-6.10,1.40,20.67) v=9.59 head=(-0.45,0.36,0.82) st=ride
+  t=1.50 pos=(-9.94,2.20,22.99) v=9.59 head=(-1.00,0.00,0.06) st=ride
+1.62 ride->air pos=(-11.05,2.20,22.91) v=9.59 vy=0.00 n.y=1.00
+  t=2.00 pos=(-14.63,0.55,22.09) v=9.59 head=(-0.98,0.00,-0.18) st=air
+  air 0.44s apex y=2.20
+2.06 air->ride pos=(-15.17,0.00,21.93) v=6.88 vy=0.00 n.y=1.00
+  t=2.50 pos=(-17.60,0.00,19.40) v=9.55 head=(-0.32,0.00,-0.95) st=ride
+  t=3.00 pos=(-16.76,0.00,14.88) v=9.59 head=(0.63,0.00,-0.78) st=ride
+  ev 2.06 LAND +100 [FS 180] x1
+
+=== ollie hold=0.04s at 8 m/s === bails=0 landings=1 score=0
+0.24 ride->air pos=(-8.08,0.00,14.00) v=8.17 vy=6.46 n.y=1.00
+  air 0.57s apex y=0.92
+0.82 air->ride pos=(-3.38,0.00,14.00) v=8.17 vy=0.00 n.y=1.00
+
+=== ollie hold=0.25s at 8 m/s === bails=0 landings=1 score=0
+0.45 ride->air pos=(-6.18,0.00,14.00) v=10.00 vy=7.42 n.y=1.00
+  air 0.67s apex y=1.22
+1.12 air->ride pos=(0.49,0.00,14.00) v=10.00 vy=0.00 n.y=1.00
+
+=== ollie hold=0.6s at 8 m/s === bails=0 landings=1 score=0
+0.81 ride->air pos=(-2.34,0.00,14.00) v=10.79 vy=8.80 n.y=1.00
+  air 0.79s apex y=1.72
+1.60 air->ride pos=(6.20,0.00,14.00) v=10.79 vy=0.00 n.y=1.00
+
+=== tap ollie + immediate kickflip, then 360 flip with full crouch === bails=0 landings=2 score=800
+0.28 ride->air pos=(-7.73,0.00,14.00) v=8.54 vy=6.65 n.y=1.00
+  air 0.59s apex y=0.98
+0.87 air->ride pos=(-2.68,0.00,14.00) v=9.24 vy=0.00 n.y=1.00
+2.61 ride->air pos=(13.46,0.00,14.00) v=10.79 vy=8.80 n.y=1.00
+  air 0.64s apex y=1.72
+3.25 air->ride pos=(20.37,1.08,14.45) v=9.39 vy=2.61 n.y=0.95
+  ev 0.72 TRICK Kickflip
+  ev 0.87 LAND +100 [Kickflip] x1
+  ev 3.16 TRICK 360 Flip
+  ev 3.25 LAND +700 [BS 360 360 Flip] x2
+
+=== west quarter pipe: ride in at speed, air, land, ride out === bails=0 landings=1 score=0
+  t=0.00 pos=(-20.05,0.00,6.00) v=6.06 head=(-1.00,0.00,0.00) st=ride
+  t=0.25 pos=(-21.79,0.00,6.00) v=7.80 head=(-1.00,0.00,0.00) st=ride
+  t=0.50 pos=(-23.96,0.00,6.00) v=9.51 head=(-1.00,0.00,0.00) st=ride
+  t=0.75 pos=(-26.36,0.00,6.00) v=9.59 head=(-1.00,0.00,0.00) st=ride
+  t=1.00 pos=(-28.76,0.00,6.00) v=9.59 head=(-1.00,0.00,0.00) st=ride
+  t=1.25 pos=(-31.16,0.00,6.00) v=9.59 head=(-1.00,0.00,0.00) st=ride
+  t=1.50 pos=(-33.36,0.75,6.00) v=9.56 head=(-0.75,0.67,0.00) st=ride
+  t=1.75 pos=(-34.20,2.80,6.00) v=8.55 head=(0.00,1.00,0.00) st=ride
+1.77 ride->air pos=(-34.20,3.01,6.00) v=8.41 vy=8.41 n.y=1.00
+  t=2.00 pos=(-33.91,4.32,6.00) v=8.41 head=(0.00,1.00,0.00) st=air
+  t=2.25 pos=(-33.58,4.48,6.00) v=8.41 head=(0.00,1.00,0.00) st=air
+  t=2.50 pos=(-33.26,3.26,6.00) v=8.41 head=(0.00,1.00,0.00) st=air
+  t=2.75 pos=(-32.93,0.67,6.00) v=8.41 head=(0.00,1.00,0.00) st=air
+  air 0.99s apex y=4.58
+2.77 air->ride pos=(-32.91,0.40,6.00) v=7.62 vy=-3.69 n.y=0.88
+  t=3.00 pos=(-30.86,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=3.25 pos=(-28.46,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=3.50 pos=(-26.06,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=3.75 pos=(-23.66,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=4.00 pos=(-21.26,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=4.25 pos=(-18.87,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=4.50 pos=(-16.47,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=4.75 pos=(-14.07,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=5.00 pos=(-11.67,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=5.25 pos=(-9.27,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=5.50 pos=(-6.87,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=5.75 pos=(-4.47,0.00,6.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+
+=== west quarter pipe: ollie off the lip + melon === bails=0 landings=1 score=310
+1.66 ride->air pos=(-34.20,2.97,6.00) v=9.34 vy=11.17 n.y=1.00
+  air 1.22s apex y=5.76
+2.88 air->ride pos=(-28.15,0.00,6.00) v=4.87 vy=0.00 n.y=1.00
+  ev 2.17 TRICK Melon
+  ev 3.07 LAND +310 [Melon] x1
+
+=== kicker -> flat rail (assist held) === bails=0 landings=1 score=180
+0.89 ride->air pos=(-19.96,0.67,4.00) v=9.59 vy=4.11 n.y=1.00
+  air 0.27s apex y=1.04
+1.17 air->grind pos=(-17.50,0.72,4.00) v=9.59 vy=-1.94 n.y=1.00
+2.07 grind->air pos=(-10.00,0.72,4.00) v=8.30 vy=1.00 n.y=1.00
+  air 0.29s apex y=0.74
+2.36 air->ride pos=(-7.58,0.00,4.00) v=8.99 vy=0.00 n.y=1.00
+  ev 1.17 GRIND 50-50
+  ev 2.36 LAND +180 [50-50] x1
+
+=== ollie onto flat rail along its axis, 50-50, ride off === bails=0 landings=1 score=190
+0.51 ride->air pos=(-9.49,0.00,10.00) v=7.36 vy=6.62 n.y=1.00
+  air 0.19s apex y=0.83
+0.70 air->grind pos=(-8.00,0.57,10.00) v=7.36 vy=2.40 n.y=1.00
+1.69 grind->air pos=(-1.00,0.57,10.00) v=6.97 vy=1.00 n.y=1.00
+  air 0.27s apex y=0.59
+1.96 air->ride pos=(0.86,0.00,10.00) v=7.66 vy=0.00 n.y=1.00
+  ev 0.70 GRIND 50-50
+  ev 1.96 LAND +190 [50-50] x1
+
+=== ollie onto rail at 30° with assist (boardslide) === bails=0 landings=1 score=270
+0.42 ride->air pos=(-5.96,0.00,10.96) v=7.17 vy=6.50 n.y=1.00
+  air 0.14s apex y=0.66
+0.56 air->grind pos=(-5.29,0.57,10.00) v=7.17 vy=3.38 n.y=1.00
+1.29 grind->air pos=(-1.00,0.57,10.00) v=5.77 vy=1.00 n.y=1.00
+  air 0.27s apex y=0.59
+1.56 air->ride pos=(0.54,0.00,10.00) v=6.47 vy=0.00 n.y=1.00
+  ev 0.56 GRIND Boardslide
+  ev 1.56 LAND +270 [Boardslide] x1
+
+=== bank up to platform, ollie down the stairs === bails=1 landings=2 score=0
+  t=0.00 pos=(8.07,0.00,16.00) v=8.06 head=(1.00,0.00,0.00) st=ride
+  t=0.50 pos=(12.70,0.00,16.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=1.00 pos=(17.47,0.15,16.00) v=9.59 head=(0.95,0.30,0.00) st=ride
+  t=1.50 pos=(22.05,1.60,16.00) v=9.59 head=(1.00,0.00,0.00) st=ride
+  t=2.00 pos=(26.67,1.60,15.18) v=9.59 head=(0.83,0.00,-0.56) st=ride
+  t=2.50 pos=(29.02,1.60,11.13) v=9.59 head=(0.30,0.00,-0.95) st=ride
+2.60 ride->air pos=(29.29,1.60,10.29) v=9.89 vy=6.46 n.y=1.00
+  t=3.00 pos=(30.48,2.39,6.51) v=9.89 head=(0.30,0.00,-0.95) st=air
+  air 0.77s apex y=2.52
+3.37 air->ride pos=(31.58,0.00,3.06) v=9.89 vy=0.00 n.y=1.00
+  t=3.50 pos=(31.98,0.00,1.81) v=9.79 head=(0.30,0.00,-0.95) st=ride
+  t=4.00 pos=(33.24,0.64,-2.80) v=9.59 head=(0.21,0.19,-0.96) st=ride
+  t=4.50 pos=(34.02,1.73,-7.40) v=9.59 head=(0.11,0.26,-0.96) st=ride
+4.98 ride->air pos=(34.20,2.96,-11.78) v=9.59 vy=2.62 n.y=1.00
+  t=5.00 pos=(34.17,3.01,-12.01) v=9.59 head=(0.00,0.27,-0.96) st=air
+  t=5.50 pos=(33.52,1.25,-16.63) v=9.59 head=(0.00,0.27,-0.96) st=air
+  air 0.65s apex y=3.10
+5.63 air->ride pos=(33.33,0.00,-17.94) v=9.32 vy=0.00 n.y=1.00
+  t=6.00 pos=(32.83,0.00,-21.50) v=9.59 head=(-0.14,0.00,-0.99) st=ride
+6.11 ride->bail pos=(32.70,0.00,-22.45) v=9.59 vy=2.50 n.y=1.00
+  t=6.50 pos=(32.73,0.00,-22.19) v=9.59 head=(-0.14,0.00,-0.99) st=bail
+  ev 6.11 BAIL(wall)
+
+=== half pipe: pump back and forth === bails=0 landings=3 score=0
+  t=0.00 pos=(-4.00,0.00,-14.08) v=9.06 head=(0.00,0.00,-1.00) st=ride
+  t=0.50 pos=(-4.00,0.63,-18.69) v=9.11 head=(0.00,0.67,-0.75) st=ride
+0.85 ride->air pos=(-4.00,2.86,-19.60) v=5.08 vy=5.08 n.y=1.00
+  t=1.00 pos=(-4.00,3.36,-19.40) v=5.08 head=(0.00,1.00,0.00) st=air
+  t=1.50 pos=(-4.00,1.46,-18.75) v=5.08 head=(0.00,1.00,0.00) st=air
+  air 0.73s apex y=3.43
+1.58 air->ride pos=(-4.00,0.56,-18.61) v=7.46 vy=-4.31 n.y=0.82
+  t=2.00 pos=(-4.00,0.00,-14.92) v=9.59 head=(0.00,0.00,1.00) st=ride
+  t=2.50 pos=(-4.00,0.03,-10.12) v=9.59 head=(0.00,0.17,0.99) st=ride
+  t=3.00 pos=(-4.00,2.84,-7.90) v=5.12 head=(0.00,1.00,0.00) st=ride
+3.01 ride->air pos=(-4.00,2.88,-7.90) v=5.01 vy=5.01 n.y=1.00
+  t=3.50 pos=(-4.00,2.64,-8.54) v=5.01 head=(0.00,1.00,0.00) st=air
+  air 0.73s apex y=3.43
+3.74 air->ride pos=(-4.00,0.56,-8.88) v=7.50 vy=-4.34 n.y=0.82
+  t=4.00 pos=(-4.00,0.00,-11.06) v=9.59 head=(0.00,0.00,-1.00) st=ride
+  t=4.50 pos=(-4.00,0.00,-15.86) v=9.59 head=(0.00,0.00,-1.00) st=ride
+  t=5.00 pos=(-4.00,1.89,-19.50) v=7.09 head=(0.00,0.96,-0.28) st=ride
+5.17 ride->air pos=(-4.00,2.88,-19.60) v=5.01 vy=5.01 n.y=1.00
+  t=5.50 pos=(-4.00,3.30,-19.17) v=5.01 head=(0.00,1.00,0.00) st=air
+  air 0.73s apex y=3.43
+5.90 air->ride pos=(-4.00,0.56,-18.62) v=7.50 vy=-4.34 n.y=0.82
+  t=6.00 pos=(-4.00,0.17,-17.91) v=8.72 head=(0.00,-0.38,0.92) st=ride
+  t=6.50 pos=(-4.00,0.00,-13.16) v=9.59 head=(0.00,0.00,1.00) st=ride
+  t=7.00 pos=(-4.00,0.81,-8.62) v=8.83 head=(0.00,0.75,0.67) st=ride
+7.33 ride->air pos=(-4.00,2.88,-7.90) v=5.01 vy=5.01 n.y=1.00
+  t=7.50 pos=(-4.00,3.40,-8.13) v=5.01 head=(0.00,1.00,0.00) st=air
+
+=== ride into a wall at 9 m/s === bails=1 landings=1 score=0
+2.32 ride->air pos=(21.35,1.39,22.02) v=9.59 vy=2.69 n.y=1.00
+  air 0.53s apex y=1.58
+2.85 air->ride pos=(25.34,0.00,22.70) v=5.89 vy=0.00 n.y=1.00
+3.36 ride->bail pos=(29.17,0.00,22.70) v=9.40 vy=2.50 n.y=1.00
+4.72 bail->ride pos=(28.86,0.00,22.70) v=0.00 vy=0.00 n.y=1.00
+  ev 3.36 BAIL(wall)
+
+=== kicker gap === bails=0 landings=1 score=0
+0.83 ride->air pos=(7.73,0.56,12.00) v=9.80 vy=10.44 n.y=1.00
+  air 0.98s apex y=2.99
+1.82 air->ride pos=(14.20,0.06,12.00) v=8.55 vy=-1.59 n.y=0.98
+3.92 ride->air pos=(34.04,1.60,12.00) v=9.59 vy=0.00 n.y=1.00
+
+=== full crouch ollie + full-stick spin, land === bails=0 landings=1 score=500
+0.81 ride->air pos=(-2.34,0.00,14.00) v=10.79 vy=8.80 n.y=1.00
+  air 0.79s apex y=1.72
+1.60 air->ride pos=(6.17,0.00,14.68) v=11.49 vy=0.00 n.y=1.00
+  ev 1.60 LAND +500 [BS 360] x2
+
+=== no input: skater auto-pushes to cruise on flat === bails=0 landings=0 score=0
+  t=0.00 pos=(-20.00,0.00,14.00) v=0.06 head=(1.00,0.00,0.00) st=ride
+  t=1.00 pos=(-17.00,0.00,14.00) v=5.38 head=(1.00,0.00,0.00) st=ride
+  t=2.00 pos=(-11.60,0.00,14.00) v=5.40 head=(1.00,0.00,0.00) st=ride
+  t=3.00 pos=(-6.21,0.00,14.00) v=5.40 head=(1.00,0.00,0.00) st=ride
+  t=4.00 pos=(-0.81,0.00,14.00) v=5.40 head=(1.00,0.00,0.00) st=ride
+  t=5.00 pos=(4.59,0.00,14.00) v=5.40 head=(1.00,0.00,0.00) st=ride
+
+=== hold crouch from rest = accelerate, release = big ollie === bails=0 landings=1 score=0
+  t=0.00 pos=(-20.00,0.00,14.00) v=0.06 head=(1.00,0.00,0.00) st=ride
+  t=0.50 pos=(-18.76,0.00,14.00) v=4.81 head=(1.00,0.00,0.00) st=ride
+  t=1.00 pos=(-15.21,0.00,14.00) v=9.28 head=(1.00,0.00,0.00) st=ride
+  t=1.50 pos=(-9.94,0.00,14.00) v=10.79 head=(1.00,0.00,0.00) st=ride
+  t=2.00 pos=(-4.54,0.00,14.00) v=10.79 head=(1.00,0.00,0.00) st=ride
+  t=2.50 pos=(0.85,0.00,14.00) v=10.79 head=(1.00,0.00,0.00) st=ride
+2.61 ride->air pos=(1.93,0.00,14.00) v=10.79 vy=8.80 n.y=1.00
+  t=3.00 pos=(6.16,1.72,14.00) v=10.79 head=(1.00,0.00,0.00) st=air
+  air 0.79s apex y=1.72
+3.40 air->ride pos=(10.48,0.00,14.00) v=10.79 vy=0.00 n.y=1.00
+  t=3.50 pos=(11.55,0.00,14.00) v=10.71 head=(1.00,0.00,0.00) st=ride
+  t=4.00 pos=(16.80,0.00,14.00) v=10.30 head=(1.00,0.00,0.00) st=ride
+
+=== flip pressed ON the release frame, then flip pressed DURING the crouch === bails=0 landings=2 score=200
+0.50 ride->air pos=(-9.66,0.00,14.00) v=10.44 vy=7.65 n.y=1.00
+  air 0.68s apex y=1.30
+1.18 air->ride pos=(-2.53,0.00,14.00) v=11.14 vy=0.00 n.y=1.00
+2.51 ride->air pos=(11.67,0.00,14.00) v=10.79 vy=8.61 n.y=1.00
+  air 0.68s apex y=1.65
+3.19 air->ride pos=(19.05,0.65,14.00) v=9.02 vy=2.54 n.y=0.95
+  ev 0.92 TRICK Kickflip
+  ev 1.18 LAND +100 [Kickflip] x1
+  ev 2.93 TRICK Kickflip
+  ev 3.19 LAND +100 [Kickflip] x1
+
+=== grind magnet: 1.4 m off-line, single tap of grind === bails=0 landings=1 score=180
+0.41 ride->air pos=(-10.17,0.00,11.40) v=7.34 vy=6.58 n.y=1.00
+  air 0.40s apex y=0.96
+0.81 air->grind pos=(-7.29,0.57,10.00) v=7.34 vy=-2.22 n.y=1.00
+1.65 grind->air pos=(-1.00,0.57,10.00) v=7.43 vy=1.00 n.y=1.00
+  air 0.27s apex y=0.59
+1.92 air->ride pos=(0.98,0.00,10.00) v=8.13 vy=0.00 n.y=1.00
+  ev 0.81 GRIND 50-50
+  ev 1.92 LAND +180 [50-50] x1
+
+=== control: same line, grind never pressed (should land on the floor, no grind) === bails=0 landings=2 score=0
+0.41 ride->air pos=(-10.17,0.00,11.40) v=7.34 vy=6.58 n.y=1.00
+  air 0.58s apex y=0.96
+0.99 air->ride pos=(-5.89,0.00,11.40) v=7.34 vy=0.00 n.y=1.00
+3.10 ride->air pos=(8.00,0.70,11.40) v=4.73 vy=2.15 n.y=1.00
+  air 0.36s apex y=0.80
+3.46 air->ride pos=(9.51,0.00,11.40) v=4.21 vy=0.00 n.y=1.00
+
+=== grind magnet: tapped while still crouching, before the pop === bails=0 landings=1 score=190
+0.41 ride->air pos=(-10.14,0.00,11.00) v=7.73 vy=6.77 n.y=1.00
+  air 0.27s apex y=0.99
+0.68 air->grind pos=(-8.00,0.57,10.00) v=7.73 vy=0.90 n.y=1.00
+1.60 grind->air pos=(-1.00,0.57,10.00) v=7.52 vy=1.00 n.y=1.00
+  air 0.27s apex y=0.59
+1.87 air->ride pos=(1.01,0.00,10.00) v=8.22 vy=0.00 n.y=1.00
+  ev 0.68 GRIND 50-50
+  ev 1.87 LAND +190 [50-50] x1
+
+=== long coping grind, no input: the meter runs away === bails=0 landings=1 score=400
+0.00 ride->air pos=(-34.20,3.35,13.94) v=7.00 vy=0.00 n.y=1.00
+  air 0.01s apex y=3.35
+0.01 air->grind pos=(-34.20,2.97,13.94) v=7.00 vy=-0.18 n.y=1.00
+3.02 grind->air pos=(-34.20,2.97,-6.00) v=6.24 vy=1.00 n.y=1.00
+  air 0.56s apex y=2.99
+3.58 air->ride pos=(-34.20,0.00,-9.48) v=6.94 vy=0.00 n.y=1.00
+  ev 0.01 GRIND 50-50
+  ev 3.58 LAND +400 [50-50] x1
+
+=== long coping grind, stick held over: falls fast === bails=1 landings=0 score=0
+0.00 ride->air pos=(-34.20,3.35,13.94) v=7.00 vy=0.00 n.y=1.00
+  air 0.01s apex y=3.35
+0.01 air->grind pos=(-34.20,2.97,13.94) v=7.00 vy=-0.18 n.y=1.00
+1.37 grind->bail pos=(-34.20,2.97,4.73) v=6.66 vy=1.50 n.y=1.00
+2.72 bail->ride pos=(-34.20,2.68,3.01) v=0.00 vy=0.00 n.y=0.06
+  ev 0.01 GRIND 50-50
+  ev 1.37 BAIL(balance)
+
+=== long coping grind, feathered back to centre: holds === bails=0 landings=1 score=400
+0.00 ride->air pos=(-34.20,3.35,13.94) v=7.00 vy=0.00 n.y=1.00
+  air 0.01s apex y=3.35
+0.01 air->grind pos=(-34.20,2.97,13.94) v=7.00 vy=-0.18 n.y=1.00
+3.02 grind->air pos=(-34.20,2.97,-6.00) v=6.24 vy=1.00 n.y=1.00
+  air 0.56s apex y=2.99
+3.58 air->ride pos=(-34.20,0.00,-9.48) v=6.94 vy=0.00 n.y=1.00
+  ev 0.01 GRIND 50-50
+  ev 3.58 LAND +400 [50-50] x1
+
+=== flick into a manual, feather it, ollie out === bails=0 landings=1 score=235
+3.16 ride->air pos=(0.49,0.00,14.00) v=4.88 vy=7.00 n.y=1.00
+  air 0.62s apex y=1.08
+3.78 air->ride pos=(3.54,0.00,14.00) v=5.58 vy=0.00 n.y=1.00
+  ev 0.43 MANUAL Manual
+  ev 3.16 MANUAL-END Manual 2.73s
+  ev 3.78 LAND +235 [Manual] x1
+
+=== manual with the stick pinned back: falls === bails=1 landings=0 score=0
+1.27 ride->bail pos=(-10.48,0.00,14.00) v=6.80 vy=1.50 n.y=1.00
+2.63 bail->ride pos=(-9.57,0.00,14.00) v=0.00 vy=0.00 n.y=1.00
+  ev 0.43 MANUAL Manual
+  ev 1.27 BAIL(balance)
+
+=== manual with no input at all: runs away === bails=1 landings=0 score=0
+2.21 ride->bail pos=(-4.59,0.00,14.00) v=5.82 vy=1.50 n.y=1.00
+3.57 bail->ride pos=(-3.81,0.00,14.00) v=0.00 vy=0.00 n.y=1.00
+  ev 0.43 MANUAL Manual
+  ev 2.21 BAIL(balance)
+
+=== flick up-then-down into a nose manual === bails=0 landings=0 score=0
+  ev 0.43 MANUAL Nose Manual
+
+=== push then brake (must not enter a manual) === bails=0 landings=0 score=0
+
+=== brake then push (must not enter a manual) === bails=0 landings=0 score=0
+
+=== flip direction overlaps the first half of a generously buffered landing manual === bails=0 landings=0 score=0
+0.76 ride->air pos=(-12.88,0.00,14.00) v=10.79 vy=8.80 n.y=1.00
+  air 0.79s apex y=1.72
+1.55 air->ride pos=(-4.34,0.00,14.00) v=10.79 vy=0.00 n.y=1.00
+  ev 1.31 TRICK 360 Flip
+  ev 1.55 MANUAL Manual

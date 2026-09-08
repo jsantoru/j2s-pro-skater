@@ -3,11 +3,15 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { canvasMap } from './materials.js';
+import { dressBrewery } from './brewery-art.js';
 
 export function dressWarehouse(level) {
   const M = level.mats, batches = new Map(), matrix = new THREE.Matrix4(), q = new THREE.Quaternion();
   const one = new THREE.Vector3(1, 1, 1), up = new THREE.Vector3(0, 1, 0);
   const add = (g, mat, pos, rotation = null) => {
+    // Rounded stock parts arrive unindexed; all pieces in a material batch need
+    // the same representation for mergeGeometries.
+    if (!g.index) g.setIndex(Array.from({length: g.attributes.position.count}, (_, i) => i));
     q.identity(); if (rotation) q.setFromEuler(rotation);
     matrix.compose(new THREE.Vector3(...pos), q, one); g.applyMatrix4(matrix);
     if (!batches.has(mat)) batches.set(mat, []); batches.get(mat).push(g);
@@ -21,7 +25,18 @@ export function dressWarehouse(level) {
   };
   const flat = (w, h, x, y, z, mat, ry = 0, rx = 0) => add(new THREE.PlaneGeometry(w, h), mat, [x, y, z], new THREE.Euler(rx, ry, 0));
   const lit = new THREE.MeshBasicMaterial({ color: 0xffedcb, toneMapped: false });
-  const glass = new THREE.MeshBasicMaterial({ color: 0xa2bcc2 });
+  const windowMap = canvasMap((c, s, rng) => {
+    const gradient = c.createLinearGradient(0, 0, 0, s);
+    gradient.addColorStop(0, '#a2c5cd'); gradient.addColorStop(.65, '#d4d5bd'); gradient.addColorStop(1, '#dca56c');
+    c.fillStyle = gradient; c.fillRect(0, 0, s, s);
+    for (let i = 0; i < 250; i++) {
+      c.fillStyle = `rgba(55,74,71,${rng() * .10})`;
+      c.fillRect(rng() * s, 0, 1 + rng() * 3, s);
+    }
+    c.fillStyle = '#425e6455';
+    for (let x = 0; x < s; x += 42) c.fillRect(x, s * (.72 + rng() * .13), 34, s);
+  }, 256);
+  const glass = new THREE.MeshBasicMaterial({ map: windowMap });
   const paint = new THREE.MeshStandardMaterial({ color: 0x3c5659, roughness: 0.86 });
 
   // Open-web roof trusses and skylight mullions; leave the existing shadow-casting beams in charge.
@@ -68,15 +83,10 @@ export function dressWarehouse(level) {
       c.strokeStyle = fg; c.lineWidth = 3; c.strokeRect(16, 12, s - 32, h - 24);
       c.textAlign = 'center'; c.fillStyle = fg; c.font = '900 88px sans-serif'; c.fillText(title, s / 2, h * 0.59, s * 0.89);
       c.font = 'bold 20px sans-serif'; c.fillText(sub, s / 2, h * 0.8, s * 0.83);
-      c.font = 'bold 14px sans-serif'; c.fillText('EST. 1999  /  INDEPENDENT SKATEPARK', s / 2, h * 0.22, s * 0.8);
+      c.font = 'bold 14px sans-serif'; c.fillText('EST. 1878  /  GENESEE BREWING COMPANY', s / 2, h * 0.22, s * 0.8);
       for (let i = 0; i < 1800; i++) { c.fillStyle = `rgba(31,28,21,${rng() * 0.16})`; c.fillRect(rng() * s, rng() * h, rng() * 6, rng() * 1.2); }
     }, 1024, true, 256),
   });
-  flat(12, 3.1, 0, 5.1, -22.9, signMaterial('J2S / WAREHOUSE', 'SESSION 01     •     KEEP THE LINE ALIVE'));
-  flat(8, 2.2, 0, 5.5, 22.9, signMaterial('MAKE SOME NOISE', 'NO SPECTATORS. JUST SKATERS.', '#a64735', '#e6d9b6'), Math.PI);
-  flat(7, 2, -35.9, 5.7, 3, signMaterial('CONCRETE CLUB', 'FALL. GET UP. GO AGAIN.', '#d6c397', '#2d4549'), Math.PI / 2);
-  flat(6, 2, 35.9, 5.5, -5, signMaterial('PUSH / REPEAT', 'J2S SKATE DIVISION', '#2e4a4e', '#dcd2b7'), -Math.PI / 2);
-
   // High factory windows, framed loading doors, vents and electrical service boxes.
   for (const z of [-22.86, 22.86]) for (const x of [-24, -14, 14, 24]) {
     const ry = z < 0 ? 0 : Math.PI;
@@ -96,22 +106,75 @@ export function dressWarehouse(level) {
     bar([x, 2.8, 22.7], [x, 6.6, 22.7], 0.024, M.metal);
   }
 
-  // Wall mural: layered original lettering and skate marks, built into one transparent decal.
-  const mural = new THREE.MeshStandardMaterial({ transparent: true, depthWrite: false, roughness: 1,
+  // High maintenance gallery: a strong silhouette above the north wall, with
+  // open steel grating, triangular brackets and a continuous ochre handrail.
+  // Entirely above the perimeter decks; no props placed in approach lanes.
+  const safety = new THREE.MeshStandardMaterial({ color: 0xb2834c, metalness: .55, roughness: .57 });
+  box(66, .16, 1.0, 0, 6.65, -22.25, M.railDark);
+  for (let x = -32; x <= 32; x += 2) {
+    bar([x, 6.7, -21.75], [x, 7.6, -21.75], .023, safety);
+    bar([x, 6.6, -21.75], [x, 6.0, -22.86], .042, M.railDark);
+  }
+  for (const y of [7.15, 7.6]) bar([-33, y, -21.75], [33, y, -21.75], .024, safety);
+  box(66, .16, .04, 0, 6.82, -21.75, safety);
+  for (const x of [-28, 28]) {
+    for (const dx of [-.26, .26]) bar([x + dx, 4.8, -22.7], [x + dx, 7.4, -22.7], .023, M.metal);
+    for (let y = 4.9; y < 7.4; y += .27) bar([x - .26, y, -22.7], [x + .26, y, -22.7], .017, M.metal);
+  }
+
+  // Service-bay practicals and original wall graphics make opposite sides of
+  // the park recognisable immediately from the follow camera.
+  const bayInk = new THREE.MeshStandardMaterial({
+    roughness: .9, transparent: true, depthWrite: false,
     map: canvasMap((c, s, rng) => {
-      c.save(); c.translate(s / 2, s / 2); c.rotate(-0.08); c.textAlign = 'center';
-      c.font = 'italic 900 238px sans-serif'; c.lineJoin = 'round'; c.lineWidth = 24; c.strokeStyle = '#28383a'; c.strokeText('STAY', -20, -30); c.strokeText('ROLLING', 0, 190, s * 0.92);
-      c.lineWidth = 5; c.strokeStyle = '#dcbd83'; c.strokeText('STAY', -20, -30); c.strokeText('ROLLING', 0, 190, s * 0.92);
-      c.fillStyle = '#c97545'; c.fillText('STAY', -20, -30); c.fillStyle = '#9daf9e'; c.fillText('ROLLING', 0, 190, s * 0.92);
-      c.restore(); c.fillStyle = '#b66a43';
-      for (let i = 0; i < 28; i++) { c.beginPath(); c.arc(rng() * s, s * 0.15 + rng() * s * 0.7, rng() * 4 + 1, 0, 7); c.fill(); }
-    }, 1024) });
-  flat(10, 3.2, -15, 2.8, 22.92, mural, Math.PI);
-  flat(8, 2.8, 15, 2.3, -22.92, mural);
+      c.fillStyle = '#deb778'; c.font = '900 760px Impact, sans-serif'; c.textAlign = 'center';
+      c.fillText('01', s / 2, s * .77, s * .88);
+      c.globalCompositeOperation = 'destination-out';
+      for (let i = 0; i < 3000; i++) c.clearRect(rng() * s, rng() * s, 1 + rng() * 9, 1 + rng() * 2);
+    }, 1024),
+  });
+  flat(5, 4.0, 35.89, 4.3, 9, bayInk, -Math.PI / 2);
+  flat(4.5, 3.7, -35.89, 4.5, -13, bayInk, Math.PI / 2);
+  for (const [x, z] of [[-24, 22.6], [24, -22.6]]) {
+    box(5.5, .15, .55, x, 4.5, z, M.dark);
+    flat(4.8, .16, x, 4.412, z, lit, 0, Math.PI / 2);
+    flat(4.8, .7, x, 4.95, z, signMaterial('LOADING / 01', 'KEEP THE APPROACH CLEAR', '#b4804d', '#1d3236'), z > 0 ? Math.PI : 0);
+  }
+
+  // A welded ventilation run, flange seams and mounts under the east eaves.
+  for (let z = -18; z <= 18; z += 6) {
+    const duct = new THREE.CylinderGeometry(.27, .27, 5.96, 16);
+    add(duct, M.railDark, [35.4, 7.15, z], new THREE.Euler(Math.PI / 2, 0, 0));
+    add(new THREE.TorusGeometry(.275, .025, 6, 20), M.metal, [35.4, 7.15, z - 3]);
+    box(.6, .08, .10, 35.6, 6.8, z, M.dark);
+  }
+
+  // Stacked flyposters at human scale near the two service doors.
+  const poster = (title, subtitle, color) => new THREE.MeshStandardMaterial({ roughness: .98,
+    map: canvasMap((c, s, rng) => {
+      c.fillStyle = color; c.fillRect(0, 0, s, s);
+      c.strokeStyle = '#e6dac2'; c.lineWidth = 5; c.strokeRect(20, 20, s - 40, s - 40);
+      c.fillStyle = '#e6dac2'; c.font = '900 96px Impact, sans-serif'; c.textAlign = 'center';
+      c.fillText(title, s / 2, s * .4, s * .86);
+      c.font = 'bold 24px sans-serif'; c.fillText(subtitle, s / 2, s * .53, s * .84);
+      c.font = '900 140px Impact, sans-serif'; c.fillText('J2S', s / 2, s * .83);
+      for (let i = 0; i < 900; i++) { c.fillStyle = `rgba(12,24,26,${rng() * .22})`; c.fillRect(rng() * s, rng() * s, rng() * 8, rng() * 2); }
+    }, 512),
+  });
+  for (const [x, z, ry] of [[-19.6, 22.82, Math.PI], [19.6, -22.82, 0]]) {
+    flat(.8, 1.12, x, 1.8, z, poster('NIGHT JAM', 'FRIDAY / OPEN SESSION', '#8a493b'), ry);
+    flat(.65, .88, x + 1, 2.0, z, poster('NO LIMIT', 'LOCAL CREW / ALL WELCOME', '#375b5c'), ry);
+  }
 
   // Scuffed lane paint and wheel tracks, in one transparent ground decal.
   const groundMap = canvasMap((c, s, rng) => {
     c.scale(s / 72, s / 46); c.translate(36, 23);
+    // Ground-in brewery dust and old spill rings accumulate at storage bays and wall edges.
+    for(const [x,z,r] of [[-14,21,3],[-28,-21,3],[19,-21,2.5],[-31,-8,2],[-24,21,2.4],[15,21,2.5]]){
+      const dirt=c.createRadialGradient(x,z,0,x,z,r);dirt.addColorStop(0,'rgba(54,43,29,.48)');dirt.addColorStop(.5,'rgba(74,57,37,.23)');dirt.addColorStop(1,'rgba(74,57,37,0)');
+      c.fillStyle=dirt;c.fillRect(x-r,z-r,r*2,r*2);
+      for(let i=0;i<140;i++){c.fillStyle='rgba(48,40,27,.2)';c.fillRect(x+(rng()-.5)*r*2,z+(rng()-.5)*r*2,.025+rng()*.045,.014+rng()*.04);}
+    }
     c.strokeStyle = '#bda76d'; c.lineWidth = 0.055;
     for (const [x, z, w, d] of [[-14, 4, 12, 4.2], [10.2, 12, 10, 5.2], [20, -2, 3, 10]]) c.strokeRect(x - w / 2, z - d / 2, w, d);
     c.fillStyle = '#bbaa80'; c.font = 'bold 0.48px sans-serif'; c.fillText('01 / STREET', -9, 8.5); c.fillText('02 / TRANSITION', -8, -5.5); c.fillText('KEEP CLEAR', 23, 5.5);
@@ -127,7 +190,7 @@ export function dressWarehouse(level) {
   }, 2048);
   level.floor.userData.paintMap = groundMap;
 
-  // Rail shoes and sleeves, worn ledge edges, barrel hoops and crate framing.
+  // Rail shoes and sleeves and worn ledge edges.
   for (const rail of level.rails) if (rail.kind === 'rail') {
     const n = Math.max(2, Math.round(rail.len / 2));
     for (let i = 0; i < n; i++) {
@@ -136,22 +199,14 @@ export function dressWarehouse(level) {
       for (const dx of [-0.063, 0.063]) for (const dz of [-0.063, 0.063]) add(new THREE.CylinderGeometry(0.012, 0.012, 0.012, 6), M.metal, [p.x + dx, 0.027, p.z + dz]);
     }
   }
-  for (const [x, z] of [[-33, -19], [-32, -20.2], [33, 20], [32, 21.2]]) {
-    for (const y of [0.07, 0.34, 0.76, 1.07]) add(new THREE.TorusGeometry(0.451, 0.014, 6, 24), M.railDark, [x, y, z], new THREE.Euler(Math.PI / 2, 0, 0));
-    add(new THREE.CylinderGeometry(0.426, 0.426, 0.014, 24), M.railDark, [x, 1.106, z]);
-    add(new THREE.CylinderGeometry(0.048, 0.048, 0.019, 12), M.metal, [x + 0.2, 1.12, z]);
-  }
-  for (const [x, y, z, size] of [[30, 1, -20, 2], [30.2, 2.7, -20, 1.4]]) {
-    for (const dx of [-1, 1]) for (const dz of [-1, 1]) box(0.07, size, 0.07, x + dx * size / 2, y, z + dz * size / 2, M.railDark);
-    for (const dy of [-1, 1]) { box(size + 0.08, 0.065, size + 0.08, x, y + dy * (size / 2 - 0.03), z, M.railDark); }
-  }
+  dressBrewery(level, { add, box, bar, flat });
   // Commit static batches, including opaque and transparent parts separately by material.
   const dressing = new THREE.Group(); dressing.name = 'Warehouse visual details';
   for (const [material, geometries] of batches) {
     const combined = mergeGeometries(geometries, false);
     const m = new THREE.Mesh(combined, material); m.receiveShadow = true;
     // Existing structural meshes already supply the shadows. Avoid a second shadow pass for tiny dressing.
-    m.castShadow = false; dressing.add(m); geometries.forEach(g => g.dispose());
+    m.castShadow = material.userData.castShadow === true; dressing.add(m); geometries.forEach(g => g.dispose());
   }
   level.group.add(dressing);
 }

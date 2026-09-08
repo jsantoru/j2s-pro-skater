@@ -9,9 +9,9 @@ const sk = (extra = {}) => ({ state: 'ride', crouch: 0, landSquash: 0, pushing: 
 const point = new THREE.Vector3(), normal = new THREE.Vector3(), q = new THREE.Quaternion();
 const seams = [];
 c.root.updateMatrixWorld(true);
-for (const name of ['Front jeans continuous hip', 'Back jeans continuous hip']) {
+for (const name of ['Front shorts continuous hip', 'Back shorts continuous hip']) {
   const mesh = c.root.getObjectByName(name), p = mesh.geometry.attributes.position;
-  assert.ok(mesh?.isSkinnedMesh, 'Jeans must deform continuously into the hips');
+  assert.ok(mesh?.isSkinnedMesh, 'Shorts must deform continuously into the hips');
   const samples = [];
   for (let i = 0; i < p.count; i++) if (mesh.geometry.attributes.skinWeight.getZ(i) === 1) {
     const bind = new THREE.Vector3().fromBufferAttribute(p, i);
@@ -34,13 +34,13 @@ function step(state) {
       seamPoint.fromBufferAttribute(mesh.geometry.attributes.position, i);
       mesh.applyBoneTransform(i, seamPoint); mesh.localToWorld(seamPoint);
       seamExpected.copy(bind); c.hips.localToWorld(seamExpected);
-      assert.ok(seamPoint.distanceTo(seamExpected) < 1e-5, 'Jeans hip seam must stay attached during leg flex');
+      assert.ok(seamPoint.distanceTo(seamExpected) < 1e-5, 'Shorts hip seam must stay attached during leg flex');
     }
   }
 }
 function contact(leg, z, label) {
   leg.ankle.getWorldPosition(point); leg.an.worldToLocal(point);
-  assert.ok(point.z < -0.04 && point.z > -0.08, `${label}: ankle enters the heel half, not the shoe centre`);
+  assert.ok(point.z < -0.070 && point.z > -0.09, `${label}: ankle enters the rear third of the shoe`);
   point.set(0, -0.0405, 0); leg.an.localToWorld(point); c.board.worldToLocal(point);
   assert.ok(Math.abs(point.x) < 0.001, `${label}: shoe centered across deck: ${point.x}`);
   assert.ok(Math.abs(point.z - z) < 0.001, `${label}: stance stays over trucks: ${point.z}`);

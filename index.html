@@ -7,7 +7,7 @@
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
-<body>
+<body data-mode="title">
   <canvas id="game"></canvas>
   <div id="hud">
     <div id="top-left">
@@ -29,6 +29,7 @@
       <div id="trick-text"></div>
       <div id="landed-text"></div>
     </div>
+    <div id="venue"><span class="venue-dot"></span> GENESEE WAREHOUSE <span>01 / FREE SKATE</span></div>
     <div id="balance" class="hidden" role="meter" aria-label="Grind balance" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0">
       <svg id="balance-track" viewBox="0 0 320 104" aria-hidden="true">
         <defs>
@@ -129,12 +130,18 @@
     </div>
   </div>
   <div id="overlay">
-    <div class="title">J2S <span>PRO SKATER</span></div>
-    <div class="sub">WAREHOUSE · FREE SKATE · 2:00</div>
-    <div id="overlay-msg">Press START / ENTER to skate</div>
-    <div id="final-score"></div>
-    <div id="high-scores"></div>
-    <div class="small">Plug in an Xbox-style USB controller and press any button</div>
+    <div class="session-card">
+      <div class="eyebrow"><span>J2S SKATE DIVISION</span> INDEPENDENT / EST. 1999</div>
+      <h1 class="title">J2S<span>PRO SKATER</span></h1>
+      <div class="sub">MAKE EVERY LINE COUNT.</div>
+      <div class="session-info"><b>01</b><div>GENESEE WAREHOUSE<span>FREE SKATE <i>/</i> TWO MINUTES. YOUR LINE.</span></div></div>
+      <button id="overlay-msg" type="button">DROP IN <span>ENTER / START →</span></button>
+      <button id="overlay-controls" type="button">VIEW CONTROLS <span>TAB / BACK</span></button>
+      <div id="final-score"></div>
+      <div id="high-scores"></div>
+      <div class="small">Keyboard or controller. Find your flow.</div>
+    </div>
+    <div class="location-stamp" aria-hidden="true"><span>ROCHESTER, NEW YORK</span>GENESEE WAREHOUSE<small>GENESEE BREWING COMPANY / EST. 1878</small></div>
   </div>
   <script type="module" src="/src/main.js"></script>
 </body>
