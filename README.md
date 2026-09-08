@@ -237,6 +237,12 @@ surface-fitted lips replace the disconnected facial primitives. Board dimensions
 are unchanged. The hoodie hem and pocket blend from hip to chest motion so torso twists do not
 pull the elastic waistband through the jeans.
 
+The current outfit is full-length blue denim and a charcoal-black Genesee pullover hoodie.
+The hoodie has a lowered hood, a red G back print, drawstrings, a kangaroo pocket and ribbed
+trim. The jean cuffs follow the ankles to preserve shoe clearance during pushes and tricks.
+See [OUTFIT-UPDATE.md](OUTFIT-UPDATE.md) for matching before/after views, live gameplay evidence
+and rendering measurements. `node sim/outfittest.js` checks the cuff and hood clearances.
+
 Art code: `src/materials.js`, `src/skater-art.js`, `src/hand-art.js`, `src/warehouse-art.js`, and `src/concrete-floor.js`.
 For repeatable browser visual checks on Windows, run `node sim/graphicscheck.js http://127.0.0.1:5173/`
 with the dev server running. It launches a disposable headless Edge profile, verifies rendering and

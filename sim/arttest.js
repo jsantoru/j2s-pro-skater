@@ -1,4 +1,4 @@
-// Geometry regressions for the close-up polish: finished short sleeves, bare limbs,
+// Geometry regressions for the close-up polish: finished hoodie sleeves, cuff openings,
 // continuous palms and smooth shading across duplicated UV seams.
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
@@ -22,15 +22,16 @@ function localMesh(source) {
   return result;
 }
 for (const arm of [character.lArm, character.rArm]) {
-  const sleeve=arm.sh.getObjectByName('Short cotton sleeve');
-  const skin=arm.sh.getObjectByName('Continuous bare arm');
-  assert.ok(sleeve && skin?.isSkinnedMesh, 'Cotton sleeves reveal continuously skinned arms');
+  const sleeve=arm.sh.getObjectByName('Continuous hoodie sleeve');
+  const cuff=arm.el.getObjectByName('Ribbed wrist cuff');
+  assert.ok(sleeve?.isSkinnedMesh && cuff, 'Full sleeves bend continuously into finished cuffs');
   checkSeam(sleeve.geometry,32,sleeve.geometry.attributes.position.count/33);
-  const isolated=localMesh(sleeve);
+  checkSeam(cuff.geometry,32,cuff.geometry.attributes.position.count/33);
+  const isolated=localMesh(cuff);
   for(let i=0;i<32;i++){
     const angle=i/32*Math.PI*2;
-    ray.set(new THREE.Vector3(Math.cos(angle)*.058,-.24,Math.sin(angle)*.055),new THREE.Vector3(0,1,0));
-    assert.ok(ray.intersectObject(isolated).length,'Short sleeve has a visible turned hem from below');
+    ray.set(new THREE.Vector3(Math.cos(angle)*.024,-.29,Math.sin(angle)*.025),new THREE.Vector3(0,1,0));
+    assert.ok(ray.intersectObject(isolated).length,'Wrist cuff has a visible turned hem from below');
   }
   assert.ok(arm.el.getObjectByName('Continuous palm and wrist'), 'No stacked palm/wrist blobs');
   const side = Math.sign(arm.sh.position.x), thumb = arm.hand.getObjectByName('Thumb root');
@@ -54,4 +55,4 @@ assert.equal(shoes, 6, 'Upper, sole and stripe on both feet');
 assert.equal(hands, 2, 'Both hands use connected skin');
 checkSeam(character.head.getObjectByName('Seamless cap crown').geometry, 44, 16);
 checkSeam(character.head.getObjectByName('Tailored hairline').geometry, 48, 17);
-console.log(`PASS: turned short-sleeve hems, continuous bare arms and palms, ${seamChecks} smooth UV seams.`);
+console.log(`PASS: turned wrist cuffs, continuous sleeves and palms, ${seamChecks} smooth UV seams.`);
