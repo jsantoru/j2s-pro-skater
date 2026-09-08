@@ -56,9 +56,10 @@ const fx = new Effects(scene, { level, lowfx: LOWFX });
 // ---- game state ----
 let mode = 'title'; // title | playing | over
 let timeLeft = RUN_TIME;
-let accumulator = 0, last = performance.now();
+let accumulator = 0, last = performance.now(), visualTime = 0;
 const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed', 'revertLeftPressed', 'revertRightPressed'];
 const pending = {};
+hud.setMode(mode);
 
 skater.events.ollie = (charge) => { audio.pop(charge); fx.ollie(skater, charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
 skater.events.trickStart = (name) => { audio.trickStart(name); const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
@@ -111,12 +112,33 @@ hud.onMusicToggle = () => {
   audio.setMusic(on);
   hud.musicSetting(on);
 };
+hud.onPauseChange = (open) => {
+  document.body.dataset.paused = String(open);
+  input.setMenuOpen(open);
+  input.stopHaptics();
+  audio.setPaused(open);
+  accumulator = 0; last = performance.now();
+  for (const k of EDGES) pending[k] = false;
+  if (!open) {
+    // Releasing an ollie button in the menu must not pop on return to skating.
+    // The visual pose eases out normally once simulation resumes.
+    if (skater.crouching) { skater.crouching = false; skater.crouchTime = 0; skater.queued = null; }
+    skater.bufferedOllie = false;
+  }
+};
+hud.onRestart = () => startRun();
 
 function startRun() {
+  hud.toggleSettings(false);
+  input.stopHaptics();
+  accumulator = 0; last = performance.now();
+  for (const k of EDGES) pending[k] = false;
   skater.reset();
   fx.clear();
   timeLeft = RUN_TIME; mode = 'playing';
   document.body.dataset.mode = mode;
+  hud.setMode(mode);
+  hud.toggleControls(false);
   hud.overlay(false);
   hud.combo('', 0, 0);
   followCam.snap(skater);
@@ -124,6 +146,7 @@ function startRun() {
 function endRun() {
   mode = 'over';
   document.body.dataset.mode = mode;
+  hud.setMode(mode);
   // Bank the run before the overlay draws, so the table shows where it landed. The score to beat
   // only moves now — during a run it stays the target you started with.
   const rank = highScores.submit(skater.score);
@@ -157,14 +180,23 @@ function frame(now) {
   // Never let that subtract seconds from the fixed-step accumulator at startup.
   let dt = Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
   const inp = input.poll(dt);
-  input.hapticsBegin();
   if (inp.anyPressed && !audio.enabled) audio.init();
-  if (inp.selectPressed) { if (hud.settingsOpen) hud.toggleSettings(false); else hud.toggleControls(); }
-  if (inp.startPressed) {
-    if (mode === 'title' || mode === 'over') startRun();
-    else if (mode === 'playing') startRun(); // restart
+  if (hud.settingsOpen) {
+    hud.updateMenuInput(inp);
+    audio.update(skater);
+    renderer.render(scene, camera);
+    return;
   }
+  if (inp.pausePressed || (inp.startPressed && mode === 'playing')) {
+    hud.toggleSettings(true);
+    renderer.render(scene, camera);
+    return;
+  }
+  input.hapticsBegin();
+  if (inp.selectPressed) hud.toggleControls();
+  if (inp.startPressed && (mode === 'title' || mode === 'over')) startRun();
   if (mode === 'title' && inp.anyPressed && !inp.selectPressed) startRun();
+  visualTime += dt;
 
   // fixed-step simulation. Edge inputs are latched until a substep consumes them, so a press is never
   // dropped on frames that run zero substeps (high-refresh displays) and never fires twice.
@@ -184,14 +216,14 @@ function frame(now) {
   // visuals
   character.root.position.copy(skater.pos);
   character.root.quaternion.copy(skater.modelQuat);
-  character.update(skater, dt, now / 1000);
+  character.update(skater, dt, visualTime);
   followCam.update(dt, skater, inp.camX);
   audio.update(skater);
   fx.update(dt, skater);
-  atmosphere.update(now / 1000);
+  atmosphere.update(visualTime);
   if (mode === 'title') {
     // A slow establishing shot gives the title the same rendered park as gameplay.
-    const t = reducedMotion.matches ? 0 : now / 1000 * 0.035;
+    const t = reducedMotion.matches ? 0 : visualTime * 0.035;
     camera.position.set(-16 + Math.sin(t) * 3, 4.1, 18 + Math.cos(t) * 2);
     camera.lookAt(5, 1.4, -4);
     camera.fov = 56; camera.updateProjectionMatrix();
@@ -231,4 +263,5 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun, endRun, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx };
+window.__game = { skater, level, input, character, followCam, startRun, endRun, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx,
+  get session() { return { mode, paused: hud.settingsOpen, timeLeft, visualTime }; } };

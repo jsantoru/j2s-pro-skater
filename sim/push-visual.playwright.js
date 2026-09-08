@@ -12,7 +12,7 @@ async (page) => {
     await qa.waitForTimeout(100);
     await qa.evaluate(() => {
       __game.startRun(); document.querySelector('#hud').style.display = 'none';
-      document.querySelector('#settings-btn').style.display = 'none';
+      document.querySelector('#start-btn').style.display = 'none';
       __game.character.root.position.set(-4, 0, 14);
       __game.camera.position.set(-2, 1.65, 11); __game.camera.fov = 35;
       __game.camera.lookAt(-4, .9, 14); __game.camera.updateProjectionMatrix();

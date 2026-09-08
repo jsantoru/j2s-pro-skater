@@ -7,6 +7,7 @@ export class Audio {
     this.ctx = null; this.enabled = false; this.lastUpdate = 0;
     this.rollDistance = 0; this.nextWheelClick = 0.8;
     this.musicOn = false; // off until the player switches the stereo on in settings
+    this.paused = false;
   }
 
   init() {
@@ -50,7 +51,8 @@ export class Audio {
     [this.grindFilter, this.grindGain] = this.loopNoise('scrape', 'bandpass', 1900, 1.05);
     [this.grindChatterFilter, this.grindChatterGain] = this.loopNoise('scrape', 'bandpass', 3900, 0.8);
     [this.grindBodyFilter, this.grindBodyGain] = this.loopNoise('road', 'bandpass', 460, 0.9);
-    this.lastUpdate = c.currentTime; this.enabled = true; c.resume();
+    this.lastUpdate = c.currentTime; this.enabled = true;
+    this.setPaused(this.paused); c.resume();
   }
 
   // Switching the score on and off mid-run. Scheduling stops immediately; the bus fades over a
@@ -59,6 +61,17 @@ export class Audio {
   setMusic(on) {
     this.musicOn = !!on;
     if (this.musicBus) this.musicBus.gain.setTargetAtTime(this.musicOn ? 1 : 0, this.ctx.currentTime, 0.12);
+  }
+
+  setPaused(paused) {
+    this.paused = paused;
+    if (!this.enabled) return;
+    // Keep the stereo editable/audible in settings; silence skating and its reverb.
+    for (const [bus, volume] of [[this.worldBus, .72], [this.sfxBus, .78], [this.reverbGain, .11]]) {
+      bus.gain.cancelScheduledValues(this.ctx.currentTime);
+      bus.gain.setTargetAtTime(paused ? 0 : volume, this.ctx.currentTime, .015);
+    }
+    this.lastUpdate = this.ctx.currentTime;
   }
 
   makeNoise(seconds, memory) {
@@ -248,6 +261,7 @@ export class Audio {
     if (c.state === 'suspended') return;
     if (this.musicOn) this.music.update(t);
     const dt = Math.max(0, Math.min(0.05, t - this.lastUpdate)); this.lastUpdate = t;
+    if (this.paused) return;
     const speed = Math.max(0, sk.speed || 0), onGround = sk.state === 'ride', inAir = sk.state === 'air';
     const rolling = onGround ? Math.min(1, speed / 11) : 0, steer = Math.min(1, Math.abs(sk.steer || 0));
     // Pavement contact trails off rather than being gated. The quieter high wheel whir then carries
