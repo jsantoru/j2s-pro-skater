@@ -4,6 +4,7 @@ import { dressBreweryProps } from './brewery-props.js';
 import { dressBreweryWear } from './brewery-wear.js';
 import { geneseeWallSign, rochesterWallPaint } from './warehouse-identity.js';
 import { displayFont, labelFont } from './typography.js';
+import { captainMural } from './captain-mural.js';
 
 export function brewerySign(title, subtitle, bg = '#812f29', fg = '#d9cab0') {
   const map = canvasMap((c, s, rng) => {
@@ -80,6 +81,8 @@ export function dressBrewery(level, {add,box,bar,flat}) {
   flat(10,3.3,0,5.55,22.87,brewerySign('Genesee','NEW YORK STATE’S OLDEST BREWERY'),Math.PI);
   flat(7.5,2.5,-35.86,5.7,3,brewerySign('CREAM ALE','GENESEE  /  ROCHESTER, N.Y.','#435c46','#d6ccb0'),Math.PI/2);
   flat(7.5,2.5,35.86,5.5,-5,brewerySign('BEER & ALE','BREWED IN ROCHESTER SINCE 1878'),-Math.PI/2);
+  // An old enamel mascot panel fills the east bay below the duct, off the skate line.
+  flat(4.3,5.375,35.85,4.1,2.1,captainMural(level),-Math.PI/2);
   for(const [word,color,x,y,z,w,h,ry] of [
     ['HIGH FALLS','#ad8e74',-16,3,22.85,11,3.5,Math.PI],
     ['ROC','#8d9fa4',16,2.5,-22.84,8,3.2,0],
