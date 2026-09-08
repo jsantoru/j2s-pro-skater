@@ -51,6 +51,7 @@
     </div>
   </div>
   <div id="toast"></div>
+  <button id="settings-btn" type="button" aria-haspopup="dialog" aria-expanded="false">⚙ SETTINGS</button>
   <div id="controls-panel" class="hidden">
     <h2>CONTROLS</h2>
     <div class="cols">
@@ -107,6 +108,24 @@
       <i>50/s</i> in a manual, <i>100/s</i> on a held grab.<br/>
       Repeat a trick in one combo and it decays to <i>75% → 50% → 25% → 10%</i>. Landing switch is worth
       <i>1.2×</i> <i>and</i> counts as a different trick, so it wipes that decay. Variety pays; spamming does not.
+    </div>
+  </div>
+  <div id="settings-panel" class="hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="card">
+      <button id="settings-close" type="button" aria-label="Close settings">✕</button>
+      <h2 id="settings-title">SETTINGS</h2>
+      <div class="rule"></div>
+      <div class="set-row">
+        <div>
+          <div class="set-name">MUSIC</div>
+          <div class="set-note">The warehouse stereo</div>
+        </div>
+        <button id="music-toggle" class="switch" type="button" role="switch" aria-checked="false">
+          <span class="switch-track"><span class="switch-knob"></span></span>
+          <span class="switch-state">OFF</span>
+        </button>
+      </div>
+      <div class="set-foot">ESC / BACK to close</div>
     </div>
   </div>
   <div id="overlay">

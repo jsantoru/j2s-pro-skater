@@ -67,6 +67,9 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
 - `src/highscores.js` – the best-runs table, persisted to `localStorage` and rendered on the title and
   end-of-run overlays. Stored data is re-validated on load, and every access is guarded so a browser
   with storage blocked simply keeps the table in memory for the session.
+- `src/settings.js` – player preferences, persisted to `localStorage` with the same guarded access as
+  the high-score table. Music is off by default; the ⚙ SETTINGS dialog in the top-right corner is the
+  only way it turns on, and switching it on is the gesture that starts the audio context.
 - `src/balance.js` – the balance meter, as an inverted pendulum. One class, two tunings: `BALANCE` for
   grinds (roll axis, stick X) and `MANUAL_BALANCE` for manuals (pitch axis, stick Y). Standalone with an
   injectable rng so it can be tested on its own (`npm run sim:balance`).

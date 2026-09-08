@@ -19,6 +19,14 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #pad-status { color: #9ad4ff; font-weight: bold; }
 #pad-status.connected { color: #7dff8a; }
 .hint { color: #bbb; font-size: 12px; margin-top: 4px; }
+/* The gear sits in the free bottom-right corner rather than inside #hud: the HUD is fixed-position, so
+   it traps its children's z-index and the title/end overlay would bury the one control you can click.
+   Out here it stays above the overlay, so the stereo can be switched on before a run, not only during. */
+#settings-btn { position: fixed; right: 22px; bottom: 18px; z-index: 12; font-family: inherit; font-size: 13px;
+  letter-spacing: 2px; color: #ffcf3a; background: rgba(8,10,16,0.55); backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,207,58,0.5); border-radius: 8px; padding: 6px 12px; cursor: pointer;
+  text-shadow: 1px 1px 0 #000; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+#settings-btn:hover, #settings-btn:focus-visible { background: #ffcf3a; border-color: #ffcf3a; color: #12141a; text-shadow: none; outline: none; }
 #bottom { bottom: 60px; left: 0; right: 0; text-align: center; z-index: 1; transition: opacity 0.35s; }
 #combo-line { font-size: 34px; font-family: Impact, "Arial Black", sans-serif; text-shadow: 3px 3px 0 #000; min-height: 40px; }
 #combo-points { color: #fff; }
@@ -58,6 +66,36 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #controls-panel .tricks i { color: #ffcf3a; font-style: normal; }
 #controls-panel .tricks.scoring { color: #bbb; }
 #controls-panel .tricks.scoring b { color: #9ad4ff; }
+/* Settings: a small ramp-sign of a dialog — hazard-tape rule, hard black drop shadow, the same
+   yellow the rest of the HUD is trimmed in. One switch for now, so it stays deliberately spare. */
+#settings-panel { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
+  background: rgba(6,8,14,0.74); backdrop-filter: blur(3px); }
+#settings-panel .card { position: relative; width: min(430px, calc(100vw - 40px)); background: rgba(12,14,20,0.97);
+  border: 3px solid #ffcf3a; box-shadow: 10px 10px 0 rgba(0,0,0,0.6); padding: 22px 26px 16px; }
+#settings-panel .card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(255,207,58,0.22); pointer-events: none; }
+#settings-panel h2 { margin: 0; font-family: Impact, "Arial Black", sans-serif; font-size: 42px; font-style: italic;
+  letter-spacing: 4px; color: #fff; text-shadow: 3px 3px 0 #000, 6px 6px 0 #c0392b; }
+#settings-panel .rule { height: 5px; margin: 14px 0 20px;
+  background: repeating-linear-gradient(135deg, #ffcf3a 0 9px, #12141a 9px 18px); }
+#settings-close { position: absolute; top: 10px; right: 12px; font-family: inherit; font-size: 16px; line-height: 1;
+  color: #bbb; background: none; border: 0; padding: 4px 6px; cursor: pointer; }
+#settings-close:hover, #settings-close:focus-visible { color: #ffcf3a; outline: none; }
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.set-name { font-family: Impact, "Arial Black", sans-serif; font-size: 24px; letter-spacing: 3px; color: #ffcf3a;
+  text-shadow: 2px 2px 0 #000; }
+.set-note { font-size: 12px; letter-spacing: 1px; color: #9ad4ff; margin-top: 2px; }
+.set-foot { margin-top: 22px; font-size: 12px; letter-spacing: 2px; color: #777; text-align: right; }
+.switch { display: flex; align-items: center; gap: 12px; background: none; border: 0; padding: 4px; cursor: pointer; }
+.switch-track { position: relative; width: 62px; height: 28px; border: 2px solid #ffcf3a; border-radius: 999px;
+  background: #23262f; transition: background 0.18s; }
+.switch-knob { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%;
+  background: #8b8f9a; box-shadow: 0 1px 2px rgba(0,0,0,0.7); transition: transform 0.18s, background 0.18s; }
+.switch.on .switch-track { background: #23502a; }
+.switch.on .switch-knob { transform: translateX(34px); background: #7dff8a; }
+.switch-state { font-family: Impact, "Arial Black", sans-serif; font-size: 20px; letter-spacing: 2px; color: #8b8f9a;
+  width: 3ch; text-align: left; text-shadow: 2px 2px 0 #000; }
+.switch.on .switch-state { color: #7dff8a; }
+.switch:focus-visible { outline: 2px solid #9ad4ff; outline-offset: 2px; }
 #overlay { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(6,8,14,0.72); z-index: 5; text-align: center; }
 #overlay .title { font-family: Impact, "Arial Black", sans-serif; font-size: 84px; font-style: italic; letter-spacing: 2px; color: #fff; text-shadow: 5px 5px 0 #000, 8px 8px 0 #ffcf3a; }
 #overlay .title span { color: #ffcf3a; text-shadow: 5px 5px 0 #000, 8px 8px 0 #c0392b; }

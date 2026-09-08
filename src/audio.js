@@ -6,6 +6,7 @@ export class Audio {
   constructor() {
     this.ctx = null; this.enabled = false; this.lastUpdate = 0;
     this.rollDistance = 0; this.nextWheelClick = 0.8;
+    this.musicOn = false; // off until the player switches the stereo on in settings
   }
 
   init() {
@@ -19,7 +20,9 @@ export class Audio {
     this.master.connect(this.compressor).connect(c.destination);
     this.sfxBus = c.createGain(); this.sfxBus.gain.value = 0.78; this.sfxBus.connect(this.master);
     this.worldBus = c.createGain(); this.worldBus.gain.value = 0.72; this.worldBus.connect(this.master);
-    this.music = new SkateMusic(c, this.master);
+    // The score gets its own bus so it can be faded in and out without touching the skating audio.
+    this.musicBus = c.createGain(); this.musicBus.gain.value = this.musicOn ? 1 : 0; this.musicBus.connect(this.master);
+    this.music = new SkateMusic(c, this.musicBus);
 
     const impulse = c.createBuffer(2, Math.floor(c.sampleRate * 0.3), c.sampleRate);
     for (let ch = 0; ch < 2; ch++) {
@@ -48,6 +51,14 @@ export class Audio {
     [this.grindChatterFilter, this.grindChatterGain] = this.loopNoise('scrape', 'bandpass', 3900, 0.8);
     [this.grindBodyFilter, this.grindBodyGain] = this.loopNoise('road', 'bandpass', 460, 0.9);
     this.lastUpdate = c.currentTime; this.enabled = true; c.resume();
+  }
+
+  // Switching the score on and off mid-run. Scheduling stops immediately; the bus fades over a
+  // beat or so, which both avoids a click and lets bars already queued ahead die away naturally.
+  // `update` re-anchors the bar clock after a silence, so turning it back on picks up right away.
+  setMusic(on) {
+    this.musicOn = !!on;
+    if (this.musicBus) this.musicBus.gain.setTargetAtTime(this.musicOn ? 1 : 0, this.ctx.currentTime, 0.12);
   }
 
   makeNoise(seconds, memory) {
@@ -235,7 +246,7 @@ export class Audio {
     if (!this.enabled) return;
     const c = this.ctx, t = c.currentTime;
     if (c.state === 'suspended') return;
-    this.music.update(t);
+    if (this.musicOn) this.music.update(t);
     const dt = Math.max(0, Math.min(0.05, t - this.lastUpdate)); this.lastUpdate = t;
     const speed = Math.max(0, sk.speed || 0), onGround = sk.state === 'ride', inAir = sk.state === 'air';
     const rolling = onGround ? Math.min(1, speed / 11) : 0, steer = Math.min(1, Math.abs(sk.steer || 0));
