@@ -37,10 +37,18 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 | L2 / R2 (ZL / ZR, LT / RT) | Revert left / right anywhere on the ground to toggle regular/switch. On ramp landings, flick into a manual to keep the combo. Triggers no longer push or brake |
 | LB / RB | Spin left / right (digital, handy with the d-pad) |
 | Right stick | Nudge the camera |
-| Start | Start / restart the 2-minute free skate |
+| Start | Start the 2-minute free skate; pause / resume during play |
 | Back | Toggle the controls panel |
 
-Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin), Z/C (revert), Enter, Tab.
+Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin), Z/C (revert), Enter (start / pause), Escape (pause / resume), Tab (controls).
+
+Start, Enter or the on-screen Pause button opens the pause/settings menu during a run. Resume keeps
+your position, score and remaining time; Restart Run explicitly resets the session. Navigate with
+Up/Down, Tab/Shift+Tab, the D-pad or left stick; select with Enter/Space or controller A. Escape,
+Start, controller B/Back, Resume or the backdrop closes it. Music remains adjustable while the
+simulation, animations, effects, timer and skating audio/haptics pause. Held menu inputs must be
+released before skating again; an interrupted ollie charge cancels to avoid an accidental pop.
+Before a run, use Escape or Menu for settings. See [pause verification](PAUSE-MENU.md).
 
 ## What is in the box
 
@@ -68,8 +76,8 @@ Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin
   end-of-run overlays. Stored data is re-validated on load, and every access is guarded so a browser
   with storage blocked simply keeps the table in memory for the session.
 - `src/settings.js` – player preferences, persisted to `localStorage` with the same guarded access as
-  the high-score table. Music is off by default; the ⚙ SETTINGS dialog in the top-right corner is the
-  only way it turns on, and switching it on is the gesture that starts the audio context.
+  the high-score table. Music is off by default; the pause/settings menu controls it, and switching
+  it on is the gesture that starts the audio context.
 - `src/balance.js` – the balance meter, as an inverted pendulum. One class, two tunings: `BALANCE` for
   grinds (roll axis, stick X) and `MANUAL_BALANCE` for manuals (pitch axis, stick Y). Standalone with an
   injectable rng so it can be tested on its own (`npm run sim:balance`).
