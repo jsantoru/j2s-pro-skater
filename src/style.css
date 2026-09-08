@@ -19,14 +19,12 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #pad-status { color: #a6c6c9; font-weight: bold; }
 #pad-status.connected { color: #aacfad; }
 .hint { color: #bbb; font-size: 12px; margin-top: 4px; }
-/* The gear sits in the free bottom-right corner rather than inside #hud: the HUD is fixed-position, so
-   it traps its children's z-index and the title/end overlay would bury the one control you can click.
-   Out here it stays above the overlay, so the stereo can be switched on before a run, not only during. */
-#settings-btn { position: fixed; right: 22px; bottom: 18px; z-index: 12; font-family: inherit; font-size: 13px;
-  letter-spacing: 2px; color: #edb66b; background: rgba(8,10,16,0.55); backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,207,58,0.5); border-radius: 8px; padding: 6px 12px; cursor: pointer;
-  text-shadow: 1px 1px 0 #000; transition: background 0.15s, color 0.15s, border-color 0.15s; }
-#settings-btn:hover, #settings-btn:focus-visible { background: #edb66b; border-color: #edb66b; color: #12141a; text-shadow: none; outline: none; }
+/* A visible equivalent of controller Start keeps pause accessible to mouse/touch users. */
+#start-btn { position: fixed; right: 22px; bottom: 18px; z-index: 12; font-family: inherit; font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px; color: #edb66b; background: rgba(12,23,27,.92); border: 1px solid #edb66b70;
+  border-radius: 2px; padding: 12px 16px; cursor: pointer; }
+#start-btn span { margin-left: 14px; color: #b8c8c6; font-size: 9px; }
+#start-btn:hover, #start-btn:focus-visible { background: #283c3d; outline: 2px solid #edb66b; outline-offset: 3px; }
 #bottom { bottom: 60px; left: 0; right: 0; text-align: center; z-index: 1; transition: opacity 0.35s; }
 #combo-line { font-size: 34px; font-family: Impact, "Arial Black", sans-serif; text-shadow: 3px 3px 0 #000; min-height: 40px; }
 #combo-points { color: #fff; }
@@ -66,25 +64,49 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #controls-panel .tricks i { color: #edb66b; font-style: normal; }
 #controls-panel .tricks.scoring { color: #bbb; }
 #controls-panel .tricks.scoring b { color: #a6c6c9; }
-/* Settings: a small ramp-sign of a dialog — hazard-tape rule, hard black drop shadow, the same
-   yellow the rest of the HUD is trimmed in. One switch for now, so it stays deliberately spare. */
+/* The paused scene stays recognizable behind a compact brewery-sign menu. */
 #settings-panel { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center;
-  background: rgba(6,8,14,0.74); backdrop-filter: blur(3px); }
-#settings-panel .card { position: relative; width: min(430px, calc(100vw - 40px)); background: rgba(12,14,20,0.97);
-  border: 3px solid #edb66b; box-shadow: 10px 10px 0 rgba(0,0,0,0.6); padding: 22px 26px 16px; }
-#settings-panel .card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(255,207,58,0.22); pointer-events: none; }
-#settings-panel h2 { margin: 0; font-family: Impact, "Arial Black", sans-serif; font-size: 42px; font-style: italic;
-  letter-spacing: 4px; color: #fff; text-shadow: 3px 3px 0 #000, 6px 6px 0 #c0392b; }
-#settings-panel .rule { height: 5px; margin: 14px 0 20px;
-  background: repeating-linear-gradient(135deg, #edb66b 0 9px, #12141a 9px 18px); }
-#settings-close { position: absolute; top: 10px; right: 12px; font-family: inherit; font-size: 16px; line-height: 1;
-  color: #bbb; background: none; border: 0; padding: 4px 6px; cursor: pointer; }
-#settings-close:hover, #settings-close:focus-visible { color: #edb66b; outline: none; }
-.set-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-.set-name { font-family: Impact, "Arial Black", sans-serif; font-size: 24px; letter-spacing: 3px; color: #edb66b;
-  text-shadow: 2px 2px 0 #000; }
-.set-note { font-size: 12px; letter-spacing: 1px; color: #a6c6c9; margin-top: 2px; }
-.set-foot { margin-top: 22px; font-size: 12px; letter-spacing: 2px; color: #777; text-align: right; }
+  background: rgba(6,13,17,.62); backdrop-filter: blur(3px); padding: 20px; }
+#settings-panel .card { position: relative; width: min(460px, 100%); max-height: 100%; overflow: auto;
+  background: rgba(12,23,27,.97); border: 1px solid #edb66b70; border-top: 3px solid #edb66b;
+  box-shadow: 0 20px 90px #0007; padding: 30px; }
+.menu-eyebrow { display: flex; justify-content: space-between; gap: 14px; font-size: 8px; letter-spacing: 1.4px;
+  color: #edb66b; margin-bottom: 22px; }
+.menu-eyebrow span { color: #8fa5a7; }
+#settings-panel h2 { margin: 0; font-family: Impact, 'Arial Black', sans-serif; font-size: 36px;
+  font-weight: 400; letter-spacing: 1.5px; color: #f1ecdf; }
+#menu-status { margin: 10px 0 0; color: #b4c0ba; font-size: 12px; line-height: 1.5; }
+#settings-panel .rule { height: 1px; margin: 22px 0; background: #edb66b45; }
+.pause-actions { display: grid; gap: 10px; margin-bottom: 22px; }
+.pause-actions button { width: 100%; padding: 15px 18px; text-align: left; font: inherit; font-size: 13px;
+  letter-spacing: 1.5px; font-weight: 700; border-radius: 2px; cursor: pointer; }
+#resume-run { color: #152327; background: #edb66b; border: 1px solid #edb66b; }
+#restart-run { color: #e5decc; background: #ffffff05; border: 1px solid #e5decc30; }
+#restart-run span { display: block; margin-top: 6px; font-size: 10px; font-weight: 400; letter-spacing: .5px; color: #9eaeae; }
+#settings-panel button:focus { outline: 2px solid #f1ecdf; outline-offset: 3px; }
+.pause-actions button:hover { filter: brightness(1.15); }
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; border-top: 1px solid #e5decc20; padding-top: 18px; }
+.set-name { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #edb66b; }
+.set-note { font-size: 11px; color: #9eaeae; margin-top: 4px; }
+.set-foot { display: flex; flex-wrap: wrap; gap: 9px 16px; margin-top: 24px; color: #9eaeae;
+  font-size: 8px; letter-spacing: .8px; line-height: 1.5; }
+@media (max-width: 480px) {
+  #settings-panel { padding: 14px; }
+  #settings-panel .card { padding: 22px; }
+  #settings-panel h2 { font-size: 30px; }
+  .menu-eyebrow { letter-spacing: .8px; }
+  #start-btn { right: 14px; bottom: 14px; }
+}
+@media (max-height: 480px) {
+  #settings-panel .card { padding: 18px 24px; }
+  .menu-eyebrow { margin-bottom: 10px; }
+  #settings-panel h2 { font-size: 28px; }
+  #settings-panel .rule { margin: 12px 0; }
+  .pause-actions { margin-bottom: 12px; gap: 8px; }
+  .pause-actions button { padding: 10px 14px; }
+  .set-row { padding-top: 12px; }
+  .set-foot { margin-top: 14px; }
+}
 .switch { display: flex; align-items: center; gap: 12px; background: none; border: 0; padding: 4px; cursor: pointer; }
 .switch-track { position: relative; width: 62px; height: 28px; border: 2px solid #edb66b; border-radius: 999px;
   background: #23262f; transition: background 0.18s; }
@@ -141,10 +163,7 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
 #top-right { font-size: 10px; }
 #score-to-beat { font-size: 10px; letter-spacing: 1px; }
 .label { font-size: 10px; text-shadow: none; }
-#settings-btn { border-radius: 2px; font-size: 10px; padding: 10px 14px; }
-#controls-panel, #settings-panel .card { border-width: 1px; border-color: #edb66b70; background: rgba(12,23,27,.97); }
-#settings-panel .rule { height: 1px; background: #edb66b70; }
-#settings-panel h2 { text-shadow: none; font-size: 32px; }
+#controls-panel { border-width: 1px; border-color: #edb66b70; background: rgba(12,23,27,.97); }
 @keyframes arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @media (max-width: 800px) {
   .location-stamp { display: none; }

@@ -52,7 +52,7 @@
     </div>
   </div>
   <div id="toast"></div>
-  <button id="settings-btn" type="button" aria-haspopup="dialog" aria-expanded="false">⚙ SETTINGS</button>
+  <button id="start-btn" type="button" aria-haspopup="dialog" aria-controls="settings-panel" aria-expanded="false">MENU <span>ESC</span></button>
   <div id="controls-panel" class="hidden">
     <h2>CONTROLS</h2>
     <div class="cols">
@@ -72,7 +72,7 @@
           <tr><td>L2 / R2 · ZL / ZR · LT / RT</td><td>Revert left / right anywhere on the ground to switch stance. On ramp landings, manual afterward to keep the combo</td></tr>
           <tr><td>LB / RB</td><td>Spin left / right in air</td></tr>
           <tr><td>Right stick</td><td>Nudge camera</td></tr>
-          <tr><td>Start</td><td>Start / restart run</td></tr>
+          <tr><td>Start</td><td>Start run · Pause / resume during play</td></tr>
           <tr><td>Back</td><td>Toggle this panel</td></tr>
         </table>
       </div>
@@ -90,7 +90,8 @@
           <tr><td>↑ / W</td><td>Extra push</td></tr>
           <tr><td>Q / E</td><td>Spin left / right in air</td></tr>
           <tr><td>Z / C</td><td>Revert left / right on the ground to switch stance; ramp landing → manual links the combo</td></tr>
-          <tr><td>Enter</td><td>Start / restart</td></tr>
+          <tr><td>Enter</td><td>Start run · Open pause menu during play</td></tr>
+          <tr><td>Esc</td><td>Pause / resume · Open settings before a run</td></tr>
           <tr><td>Tab</td><td>Toggle this panel</td></tr>
         </table>
       </div>
@@ -111,22 +112,27 @@
       <i>1.2×</i> <i>and</i> counts as a different trick, so it wipes that decay. Variety pays; spamming does not.
     </div>
   </div>
-  <div id="settings-panel" class="hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+  <div id="settings-panel" class="hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-describedby="menu-status">
     <div class="card">
-      <button id="settings-close" type="button" aria-label="Close settings">✕</button>
+      <div class="menu-eyebrow">GENESEE WAREHOUSE <span>FREE SKATE / 01</span></div>
       <h2 id="settings-title">SETTINGS</h2>
+      <p id="menu-status">Set the soundtrack before you drop in.</p>
       <div class="rule"></div>
+      <div class="pause-actions">
+        <button id="resume-run" type="button">BACK TO MENU</button>
+        <button id="restart-run" type="button" hidden>RESTART RUN <span>New 2-minute session · resets score</span></button>
+      </div>
       <div class="set-row">
         <div>
           <div class="set-name">MUSIC</div>
-          <div class="set-note">The warehouse stereo</div>
+          <div class="set-note" id="music-label">The warehouse stereo</div>
         </div>
-        <button id="music-toggle" class="switch" type="button" role="switch" aria-checked="false">
+        <button id="music-toggle" class="switch" type="button" role="switch" aria-label="Music" aria-describedby="music-label" aria-checked="false">
           <span class="switch-track"><span class="switch-knob"></span></span>
           <span class="switch-state">OFF</span>
         </button>
       </div>
-      <div class="set-foot">ESC / BACK to close</div>
+      <div class="set-foot"><span>↑ ↓ / D-PAD &nbsp; SELECT</span><span>ENTER / A &nbsp; CONFIRM</span><span>ESC / START / B / BACK &nbsp; CLOSE</span></div>
     </div>
   </div>
   <div id="overlay">

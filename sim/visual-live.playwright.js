@@ -18,7 +18,7 @@ async (page) => {
     check(await qa.locator('#controls-panel').isVisible(), 'Controls button opens control map');
     await qa.keyboard.press('Tab'); await qa.waitForFunction(() => document.querySelector('#controls-panel').classList.contains('hidden'));
     check(!await qa.locator('#controls-panel').isVisible(), 'Tab closes control map');
-    await qa.locator('#settings-btn').click(); check(await qa.locator('#settings-panel').isVisible(), 'Settings opens');
+    await qa.locator('#start-btn').click(); check(await qa.locator('#settings-panel').isVisible(), 'Settings opens');
     await qa.locator('#music-toggle').focus(); await qa.keyboard.press('Space');
     check(await qa.evaluate(() => document.body.dataset.mode === 'title' && __game.settings.music), 'Keyboard settings activation does not start skating');
     await qa.keyboard.press('Space'); await qa.keyboard.press('Escape');

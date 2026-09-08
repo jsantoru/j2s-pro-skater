@@ -16,7 +16,8 @@ function makeState() {
     spinLeft: false, spinRight: false,
     revertLeftPressed: false, revertRightPressed: false,
     camX: 0,
-    startPressed: false, selectPressed: false,
+    startPressed: false, selectPressed: false, pausePressed: false,
+    menuMove: 0, menuConfirm: false, menuCancel: false,
     dir8: 'C',       // stick direction: C N NE E SE S SW W NW
   };
 }
@@ -47,6 +48,9 @@ export class Input {
     this.onGamepadChange = null;
     this.kbSteer = 0; this.kbY = 0;
     this._prevKeys = {};
+    this.menuOpen = false;
+    this.blockedKeys = new Set(); this.blockedButtons = new Set(); this.blockedAxes = new Set();
+    this._menuPrev = {};
     this._hapticStrong = 0; this._hapticWeak = 0;
     this._pulseStrong = 0; this._pulseWeak = 0; this._pulseT = 0;
     this._hapticEmitT = 0; this._hapticPulseFresh = false;
@@ -57,7 +61,7 @@ export class Input {
         // must not also queue a run restart or Space-powered ollie.
         if (['Enter', 'Space'].includes(e.code) && e.target?.closest?.('button, input, select, textarea')) return;
         this.keys.add(e.code); this.latched.add(e.code);
-        if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.code)) e.preventDefault();
+        if (!this.menuOpen && ['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', 'Escape'].includes(e.code)) e.preventDefault();
       });
       window.addEventListener('keyup', (e) => this.keys.delete(e.code));
       window.addEventListener('blur', () => this.keys.clear());
@@ -87,6 +91,27 @@ export class Input {
   }
 
   get hasGamepad() { return this.gamepadIndex >= 0; }
+
+  setMenuOpen(open) {
+    this.menuOpen = open;
+    this.latched.clear(); this.kbSteer = this.kbY = 0;
+    // A held menu button/stick must return to neutral before it can skate again.
+    if (!open) {
+      this.blockedKeys = new Set(this.keys);
+      const gp = typeof navigator !== 'undefined' && navigator.getGamepads?.()[this.gamepadIndex];
+      this.blockedButtons = new Set(gp ? gp.buttons.flatMap((b, i) => b.pressed || b.value > .14 ? [i] : []) : []);
+      this.blockedAxes = new Set(gp ? gp.axes.flatMap((v, i) => Math.abs(v) > DEADZONE ? [i] : []) : []);
+    }
+    Object.assign(this.state, makeState());
+  }
+
+  stopHaptics() {
+    this.rumbleSustainStop();
+    this._pulseStrong = this._pulseWeak = this._pulseT = 0;
+    this._hapticPulseFresh = false;
+    const gp = typeof navigator !== 'undefined' && navigator.getGamepads?.()[this.gamepadIndex];
+    try { gp?.vibrationActuator?.reset?.().catch(() => {}); } catch { /* unsupported actuator */ }
+  }
 
   // Haptics (Chrome/Edge dual-rumble). `strong` is the low-frequency motor and `weak` is
   // the high-frequency motor. Everything is mixed once per frame so simultaneous feedback
@@ -154,7 +179,9 @@ export class Input {
 
     // --- keyboard (smoothed digital → pseudo-analog) ---
     const L = this.latched, K = this.keys;
-    const k = { has: (c) => K.has(c) || L.has(c) };
+    for (const code of this.blockedKeys) if (!K.has(code)) this.blockedKeys.delete(code);
+    const rawKey = (c) => K.has(c) || L.has(c);
+    const k = { has: (c) => !this.menuOpen && !this.blockedKeys.has(c) && rawKey(c) };
     const kx = (k.has('ArrowRight') || k.has('KeyD') ? 1 : 0) - (k.has('ArrowLeft') || k.has('KeyA') ? 1 : 0);
     const ky = (k.has('ArrowUp') || k.has('KeyW') ? 1 : 0) - (k.has('ArrowDown') || k.has('KeyS') ? 1 : 0);
     const rate = dt * 9; // reaches full deflection in ~0.11s, returns to center faster
@@ -167,15 +194,26 @@ export class Input {
     let ollie = k.has('Space'), flip = k.has('KeyJ'), grab = k.has('KeyK'), grind = k.has('KeyL');
     let spinL = k.has('KeyQ'), spinR = k.has('KeyE');
     let revertL = k.has('KeyZ'), revertR = k.has('KeyC');
-    let start = k.has('Enter'), select = k.has('Tab');
+    let start = rawKey('Enter'), select = rawKey('Tab'), pause = rawKey('Escape');
     let camX = 0;
     let dirX = kx, dirY = ky;
 
     // --- gamepad (standard mapping) ---
+    const rawButton = (i) => !!gp?.buttons[i]?.pressed;
+    const menuDir = rawButton(12) || (gp?.axes[1] || 0) < -.55 ? -1
+      : rawButton(13) || (gp?.axes[1] || 0) > .55 ? 1 : 0;
+    const confirm = rawButton(0), cancel = rawButton(1) || rawButton(8);
+    s.menuMove = menuDir && menuDir !== this._menuPrev.dir ? menuDir : 0;
+    s.menuConfirm = confirm && !this._menuPrev.confirm;
+    s.menuCancel = cancel && !this._menuPrev.cancel;
+    this._menuPrev = { dir: menuDir, confirm, cancel };
     if (gp) {
-      const b = (i) => !!(gp.buttons[i] && gp.buttons[i].pressed);
-      const bv = (i) => (gp.buttons[i] ? gp.buttons[i].value : 0);
-      let [ax, ay] = radialDeadzone(gp.axes[0] || 0, -(gp.axes[1] || 0));
+      for (const i of this.blockedButtons) if (!rawButton(i) && (gp.buttons[i]?.value || 0) <= .14) this.blockedButtons.delete(i);
+      for (const i of this.blockedAxes) if (Math.abs(gp.axes[i] || 0) <= DEADZONE) this.blockedAxes.delete(i);
+      const b = (i) => !this.menuOpen && !this.blockedButtons.has(i) && rawButton(i);
+      const bv = (i) => !this.menuOpen && !this.blockedButtons.has(i) ? gp.buttons[i]?.value || 0 : 0;
+      const axis = (i) => !this.menuOpen && !this.blockedAxes.has(i) ? gp.axes[i] || 0 : 0;
+      let [ax, ay] = radialDeadzone(axis(0), -axis(1));
       // d-pad mirrors the stick
       const dx = (b(15) ? 1 : 0) - (b(14) ? 1 : 0);
       const dy = (b(12) ? 1 : 0) - (b(13) ? 1 : 0);
@@ -190,8 +228,8 @@ export class Input {
       flip = flip || b(2);
       grind = grind || b(3);
       spinL = spinL || b(4); spinR = spinR || b(5);
-      select = select || b(8); start = start || b(9);
-      const [cx] = radialDeadzone(gp.axes[2] || 0, gp.axes[3] || 0);
+      select = select || rawButton(8); start = start || rawButton(9);
+      const [cx] = radialDeadzone(axis(2), axis(3));
       camX = cx;
       this._gpFlip = flip;
     }
@@ -205,10 +243,11 @@ export class Input {
     s.grindPressed = grind && !prev.grind;
     s.startPressed = start && !e.start;
     s.selectPressed = select && !e.select;
+    s.pausePressed = pause && !e.pause;
     s.revertLeftPressed = revertL && !e.revertL;
     s.revertRightPressed = revertR && !e.revertR;
     e.revertL = revertL; e.revertR = revertR;
-    e.flip = flip; e.start = start; e.select = select;
+    e.flip = flip; e.start = start; e.select = select; e.pause = pause;
 
     s.steer = steer; s.stickY = sy; s.push = push; s.brake = brake;
     s.ollie = ollie; s.grab = grab; s.grind = grind;
