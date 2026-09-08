@@ -1,5 +1,9 @@
 # Genesee warehouse — reference pass
 
+The subsequent [brewery detail and character pass](BREWERY-DETAILS.md) adds the
+keg/case storage areas, machinery, heel adjustment, brown hair and beard.
+This document records the earlier THPS reference pass.
+
 Completed on `codex/warehouse-visual-polish`, following the supplied THPS 1+2 screenshots.
 Git access is restored and implementation checkpoints are pushed:
 
