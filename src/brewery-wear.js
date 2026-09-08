@@ -1,3 +1,4 @@
+import { displayFont } from './typography.js';
 import * as THREE from 'three';
 import { canvasMap, randomSeed } from './materials.js';
 
@@ -6,7 +7,7 @@ export function dressBreweryWear(level, {add,box,flat}) {
   const stencil = (title, sub, width, depth, x, z, turn = 0) => {
     const map = canvasMap((c,s,r) => {
       const h=s/2; c.strokeStyle='#bca976';c.fillStyle='#bca976';c.lineWidth=9;c.strokeRect(12,12,s-24,h-24);
-      c.textAlign='center';c.font='900 67px sans-serif';c.fillText(title,s/2,h*.43,s*.85);
+      c.textAlign='center';c.font=displayFont(74);c.fillText(title,s/2,h*.43,s*.85);
       c.font='bold 25px monospace';c.fillText(sub,s/2,h*.61,s*.80);
       for(let i=0;i<14;i++) {c.save();c.translate(25+i*73,h*.83);c.rotate(-.65);c.fillRect(0,-20,12,42);c.restore();}
       c.globalCompositeOperation='destination-out';

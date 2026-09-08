@@ -4,6 +4,8 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { canvasMap } from './materials.js';
 import { dressBrewery } from './brewery-art.js';
+import { paintMark, rochesterPlaque } from './warehouse-identity.js';
+import { displayFont, labelFont } from './typography.js';
 
 export function dressWarehouse(level) {
   const M = level.mats, batches = new Map(), matrix = new THREE.Matrix4(), q = new THREE.Quaternion();
@@ -81,9 +83,9 @@ export function dressWarehouse(level) {
       const h = s / 4;
       c.fillStyle = bg; c.fillRect(0, 0, s, h);
       c.strokeStyle = fg; c.lineWidth = 3; c.strokeRect(16, 12, s - 32, h - 24);
-      c.textAlign = 'center'; c.fillStyle = fg; c.font = '900 88px sans-serif'; c.fillText(title, s / 2, h * 0.59, s * 0.89);
-      c.font = 'bold 20px sans-serif'; c.fillText(sub, s / 2, h * 0.8, s * 0.83);
-      c.font = 'bold 14px sans-serif'; c.fillText('EST. 1878  /  GENESEE BREWING COMPANY', s / 2, h * 0.22, s * 0.8);
+      c.textAlign = 'center'; c.fillStyle = fg; c.font = displayFont(88); c.fillText(title, s / 2, h * 0.59, s * 0.89);
+      c.font = labelFont(20); c.fillText(sub, s / 2, h * 0.8, s * 0.83);
+      c.font = labelFont(14); c.fillText('EST. 1878  /  GENESEE BREWING COMPANY', s / 2, h * 0.22, s * 0.8);
       for (let i = 0; i < 1800; i++) { c.fillStyle = `rgba(31,28,21,${rng() * 0.16})`; c.fillRect(rng() * s, rng() * h, rng() * 6, rng() * 1.2); }
     }, 1024, true, 256),
   });
@@ -127,7 +129,7 @@ export function dressWarehouse(level) {
   const bayInk = new THREE.MeshStandardMaterial({
     roughness: .9, transparent: true, depthWrite: false,
     map: canvasMap((c, s, rng) => {
-      c.fillStyle = '#deb778'; c.font = '900 760px Impact, sans-serif'; c.textAlign = 'center';
+      c.fillStyle = '#deb778'; c.font = displayFont(760); c.textAlign = 'center';
       c.fillText('01', s / 2, s * .77, s * .88);
       c.globalCompositeOperation = 'destination-out';
       for (let i = 0; i < 3000; i++) c.clearRect(rng() * s, rng() * s, 1 + rng() * 9, 1 + rng() * 2);
@@ -154,16 +156,18 @@ export function dressWarehouse(level) {
     map: canvasMap((c, s, rng) => {
       c.fillStyle = color; c.fillRect(0, 0, s, s);
       c.strokeStyle = '#e6dac2'; c.lineWidth = 5; c.strokeRect(20, 20, s - 40, s - 40);
-      c.fillStyle = '#e6dac2'; c.font = '900 96px Impact, sans-serif'; c.textAlign = 'center';
+      c.fillStyle = '#e6dac2'; c.font = displayFont(96); c.textAlign = 'center';
       c.fillText(title, s / 2, s * .4, s * .86);
-      c.font = 'bold 24px sans-serif'; c.fillText(subtitle, s / 2, s * .53, s * .84);
-      c.font = '900 140px Impact, sans-serif'; c.fillText('J2S', s / 2, s * .83);
+      c.font = labelFont(24); c.fillText(subtitle, s / 2, s * .53, s * .84);
+      c.font = displayFont(140); c.fillText('J2S', s / 2, s * .83);
       for (let i = 0; i < 900; i++) { c.fillStyle = `rgba(12,24,26,${rng() * .22})`; c.fillRect(rng() * s, rng() * s, rng() * 8, rng() * 2); }
     }, 512),
   });
+  const flowerPlaque = rochesterPlaque();
   for (const [x, z, ry] of [[-19.6, 22.82, Math.PI], [19.6, -22.82, 0]]) {
     flat(.8, 1.12, x, 1.8, z, poster('NIGHT JAM', 'FRIDAY / OPEN SESSION', '#8a493b'), ry);
     flat(.65, .88, x + 1, 2.0, z, poster('NO LIMIT', 'LOCAL CREW / ALL WELCOME', '#375b5c'), ry);
+    flat(1.45, 1.45, x + .1, 3.45, z, flowerPlaque, ry);
   }
 
   // Scuffed lane paint and wheel tracks, in one transparent ground decal.
@@ -177,9 +181,11 @@ export function dressWarehouse(level) {
     }
     c.strokeStyle = '#bda76d'; c.lineWidth = 0.055;
     for (const [x, z, w, d] of [[-14, 4, 12, 4.2], [10.2, 12, 10, 5.2], [20, -2, 3, 10]]) c.strokeRect(x - w / 2, z - d / 2, w, d);
-    c.fillStyle = '#bbaa80'; c.font = 'bold 0.48px sans-serif'; c.fillText('01 / STREET', -9, 8.5); c.fillText('02 / TRANSITION', -8, -5.5); c.fillText('KEEP CLEAR', 23, 5.5);
-    c.save(); c.translate(-4, 15); c.rotate(-Math.PI / 2); c.textAlign = 'center';
-    c.font = 'italic 900 2px sans-serif'; c.fillStyle = 'rgba(218,209,178,0.55)'; c.fillText('J2S', 0, 0); c.font = 'bold 0.25px sans-serif'; c.fillText('WAREHOUSE / SKATE DIVISION', 0, 0.6); c.restore();
+    c.fillStyle = '#bbaa80'; c.font = displayFont(.53); c.fillText('01 / STREET', -9, 8.5); c.fillText('02 / TRANSITION', -8, -5.5); c.fillText('KEEP CLEAR', 23, 5.5);
+    c.save(); c.translate(-4, 15); c.rotate(Math.PI / 2); c.textAlign = 'center';
+    c.globalAlpha = .82; paintMark(c, 'genesee', 0, 0, 3.8, '#a4383b');
+    c.font = displayFont(.46); c.fillStyle = '#d5c5a1'; c.fillText('GENESEE BREWING CO.', 0, 2.45);
+    c.font = labelFont(.20); c.fillText('ROCHESTER, NEW YORK  /  1878', 0, 2.82); c.restore();
     for (let i = 0; i < 160; i++) {
       const x = rng() * 60 - 30, z = rng() * 38 - 19;
       c.strokeStyle = `rgba(40,37,30,${0.025 + rng() * 0.08})`; c.lineWidth = 0.012 + rng() * 0.023;
