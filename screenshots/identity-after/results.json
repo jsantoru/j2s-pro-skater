@@ -1,0 +1,152 @@
+{
+  "before": {
+    "errors": [],
+    "metrics": {
+      "calls": 148,
+      "triangles": 147854,
+      "textures": 76,
+      "gl": 0
+    }
+  },
+  "after": {
+    "errors": [],
+    "metrics": {
+      "calls": 149,
+      "triangles": 147858,
+      "textures": 77,
+      "gl": 0
+    }
+  },
+  "fonts": [
+    {
+      "mode": "normal",
+      "selection": "ready",
+      "signFonts": [
+        "bold 0.46px \"Barlow Condensed\", \"Arial Narrow\", sans-serif",
+        "bold 26px Barlow, Arial, sans-serif"
+      ],
+      "uiFont": "\"Barlow Condensed\", \"Arial Narrow\", Arial, sans-serif",
+      "resources": [
+        "http://127.0.0.1:5175/fonts/barlow-regular-latin.woff2",
+        "http://127.0.0.1:5175/fonts/barlow-condensed-bold-latin.woff2",
+        "http://127.0.0.1:5175/fonts/barlow-bold-latin.woff2"
+      ],
+      "gl": 0,
+      "errors": []
+    },
+    {
+      "mode": "unavailable",
+      "selection": "fallback",
+      "signFonts": [
+        "bold 0.46px \"Arial Narrow\", Arial, sans-serif",
+        "bold 26px Arial, sans-serif"
+      ],
+      "uiFont": "\"Arial Narrow\", Arial, sans-serif",
+      "resources": [
+        "http://127.0.0.1:5175/fonts/barlow-regular-latin.woff2",
+        "http://127.0.0.1:5175/fonts/barlow-bold-latin.woff2",
+        "http://127.0.0.1:5175/fonts/barlow-condensed-bold-latin.woff2"
+      ],
+      "gl": 0,
+      "errors": []
+    },
+    {
+      "mode": "late",
+      "selection": "fallback",
+      "signFonts": [
+        "bold 0.46px \"Arial Narrow\", Arial, sans-serif",
+        "bold 26px Arial, sans-serif"
+      ],
+      "uiFont": "\"Arial Narrow\", Arial, sans-serif",
+      "resources": [
+        "http://127.0.0.1:5175/fonts/barlow-regular-latin.woff2",
+        "http://127.0.0.1:5175/fonts/barlow-bold-latin.woff2",
+        "http://127.0.0.1:5175/fonts/barlow-condensed-bold-latin.woff2"
+      ],
+      "gl": 0,
+      "errors": []
+    }
+  ],
+  "gameplay": {
+    "checks": [
+      "Drop In remains in phone viewport",
+      "Drop In remains in landscape viewport",
+      "Drop In remains in desktop viewport",
+      "Controls button opens control map",
+      "Tab closes control map",
+      "Settings opens",
+      "Keyboard settings activation does not start skating",
+      "Drop In starts run",
+      "Live regular push faces travel",
+      "Live fakie push faces travel",
+      "Live keyboard ollie and kickflip land and score",
+      "Keyboard revert changes stance",
+      "Opposite revert returns to regular",
+      "Live rail grind emits sparks",
+      "Live grind shows balance meter",
+      "Live concrete grind emits dust without sparks",
+      "Standard gamepad A hold/release ollies through live polling",
+      "Standard gamepad X flip lands and scores",
+      "End of run shows replay screen",
+      "Replay button resets score",
+      "Lowfx plays with shadows/reflections disabled",
+      "No WebGL errors",
+      "No browser runtime or shader errors"
+    ],
+    "errors": [],
+    "playingTiming": {
+      "medianMs": 16.700000000000728,
+      "p95Ms": 16.799999999999272,
+      "frames": 360
+    }
+  },
+  "pause": {
+    "checks": [
+      "Pre-run settings cannot restart an inactive session",
+      "Tab reaches music",
+      "Music keyboard activation preserves title state",
+      "Tab wraps within the dialog",
+      "Reverse Tab wraps within the dialog",
+      "Background controls are inert while settings are open",
+      "Enter pauses the earned score/run instead of restarting",
+      "Riding pause: physics, pose, camera, effects, score and exact timer freeze",
+      "Riding pause: scene is still within GPU rounding tolerance {\"changed\":1,\"max\":1}",
+      "Riding pause: skating audio is silent",
+      "Resume keeps score/time without catching up paused seconds",
+      "Pause captures an actual airborne ollie",
+      "Midair pause: physics, pose, camera, effects, score and exact timer freeze",
+      "Midair pause: rendered scene stays identical",
+      "Midair pause: skating audio is silent",
+      "Held menu flip/steering keys do not leak after resume",
+      "Airborne pause resumes and lands normally",
+      "Crouch pose stays frozen when the key is released in the menu",
+      "Interrupted crouch cancels without an accidental ollie",
+      "Holding controller Start pauses once without restarting/closing",
+      "Rail grind pause: physics, pose, camera, effects, score and exact timer freeze",
+      "Rail grind pause: rendered scene stays identical",
+      "Rail grind pause: skating audio is silent",
+      "Pause resets the actuator and sends no further rumble commands",
+      "Controller D-pad focuses Restart",
+      "Controller stick focuses Music",
+      "Controller A changes music while the run stays paused",
+      "Controller B resumes the existing grind",
+      "Controller Back closes pause without opening the controls panel",
+      "Explicit controller Restart resets run and preserves music; held A does not crouch",
+      "Fresh controller A works normally after leaving the menu",
+      "On-screen Pause opens the same paused settings menu",
+      "Backdrop resumes the session",
+      "All pause controls fit the phone viewport",
+      "All pause controls fit the landscape viewport",
+      "All pause controls fit the desktop viewport",
+      "End-screen settings hide the in-run Restart action",
+      "Replay still starts a fresh session",
+      "Music choice persists after reload",
+      "Low-effects pause: physics, pose, camera, effects, score and exact timer freeze",
+      "Low-effects pause: scene is still within GPU rounding tolerance {\"changed\":1,\"max\":1}",
+      "Low-effects pause: skating audio is silent",
+      "No WebGL errors",
+      "No browser runtime or shader errors"
+    ],
+    "errors": []
+  }
+}

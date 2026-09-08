@@ -243,6 +243,11 @@ trim. The jean cuffs follow the ankles to preserve shoe clearance during pushes 
 See [OUTFIT-UPDATE.md](OUTFIT-UPDATE.md) for matching before/after views, live gameplay evidence
 and rendering measurements. `node sim/outfittest.js` checks the cuff and hood clearances.
 
+The warehouse now carries the Genesee G on its floor and main wall sign, plus a Rochester
+flower mural and loading-area plaques. Local Barlow fonts connect the warehouse signage
+with the menus and HUD. See [WAREHOUSE-IDENTITY.md](WAREHOUSE-IDENTITY.md) for comparisons,
+asset sources and production-build checks, including font failure/delay handling.
+
 Art code: `src/materials.js`, `src/skater-art.js`, `src/hand-art.js`, `src/warehouse-art.js`, and `src/concrete-floor.js`.
 For repeatable browser visual checks on Windows, run `node sim/graphicscheck.js http://127.0.0.1:5173/`
 with the dev server running. It launches a disposable headless Edge profile, verifies rendering and

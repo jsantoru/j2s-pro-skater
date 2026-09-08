@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { canvasMap } from './materials.js';
 import { dressBreweryProps } from './brewery-props.js';
 import { dressBreweryWear } from './brewery-wear.js';
+import { geneseeWallSign, rochesterWallPaint } from './warehouse-identity.js';
+import { displayFont, labelFont } from './typography.js';
 
 export function brewerySign(title, subtitle, bg = '#812f29', fg = '#d9cab0') {
   const map = canvasMap((c, s, rng) => {
@@ -21,10 +23,10 @@ export function brewerySign(title, subtitle, bg = '#812f29', fg = '#d9cab0') {
     }
     c.strokeStyle = fg; c.lineWidth = 3; c.strokeRect(18,18,s-36,h-36);
     c.textAlign = 'center'; c.fillStyle = fg;
-    c.font = 'bold 19px Georgia, serif'; c.fillText('GENESEE BREWING COMPANY  /  ROCHESTER, NEW YORK',s/2,h*.19,s*.87);
-    c.font = title === 'Genesee' ? 'italic bold 176px Georgia, serif' : '900 112px Georgia, serif';
-    c.fillText(title,s/2,h*.65,s*.86);
-    c.font = 'bold 25px Georgia, serif'; c.fillText(subtitle,s/2,h*.84,s*.85);
+    c.font = labelFont(19); c.fillText('GENESEE BREWING COMPANY  /  ROCHESTER, NEW YORK',s/2,h*.19,s*.87);
+    c.font = displayFont(title === 'Genesee' ? 192 : 128);
+    c.fillText(title.toUpperCase(),s/2,h*.65,s*.86);
+    c.font = labelFont(25); c.fillText(subtitle,s/2,h*.84,s*.85);
     // Worn flecks break the lettering as well as the background.
     for(let i=0;i<7500;i++){
       c.fillStyle=rng()>.4?bg:'rgba(31,25,16,.27)';
@@ -47,7 +49,7 @@ export function brewerySign(title, subtitle, bg = '#812f29', fg = '#d9cab0') {
 export function graffiti(word, fill = '#93a6a2', seed = 0) {
   const map = canvasMap((c,s,rng)=>{
     c.translate(s*.5,s*.55);c.rotate(-.045+seed*.017);c.textAlign='center';c.lineJoin='round';
-    c.font='italic 900 270px Impact, sans-serif';
+    c.font=`italic ${displayFont(270)}`;
     // Old broad tags underneath the new piece; uneven cap pressure and overspray.
     for(let i=0;i<12;i++){
       c.strokeStyle=i%2?'rgba(133,59,46,.35)':'rgba(34,46,45,.42)';c.lineWidth=3+rng()*6;
@@ -74,7 +76,7 @@ export function graffiti(word, fill = '#93a6a2', seed = 0) {
 
 export function dressBrewery(level, {add,box,bar,flat}) {
   const M=level.mats;
-  flat(13,4.1,0,4.95,-22.87,brewerySign('Genesee','BEER & ALE  /  ESTABLISHED 1878'));
+  flat(13,4.1,0,4.95,-22.87,geneseeWallSign());
   flat(10,3.3,0,5.55,22.87,brewerySign('Genesee','NEW YORK STATE’S OLDEST BREWERY'),Math.PI);
   flat(7.5,2.5,-35.86,5.7,3,brewerySign('CREAM ALE','GENESEE  /  ROCHESTER, N.Y.','#435c46','#d6ccb0'),Math.PI/2);
   flat(7.5,2.5,35.86,5.5,-5,brewerySign('BEER & ALE','BREWED IN ROCHESTER SINCE 1878'),-Math.PI/2);
@@ -82,9 +84,10 @@ export function dressBrewery(level, {add,box,bar,flat}) {
     ['HIGH FALLS','#ad8e74',-16,3,22.85,11,3.5,Math.PI],
     ['ROC','#8d9fa4',16,2.5,-22.84,8,3.2,0],
     ['585','#b3a47c',-35.85,4.1,15,5.5,2.7,Math.PI/2],
-    ['FLOW','#83a5a2',35.85,3.8,16,6,2.5,-Math.PI/2],
     ['GENNY','#b58670',-25,2,-22.83,6,2.6,0],
   ]) flat(w,h,x,y,z,graffiti(word,color,Math.abs(x)%4),ry);
+  // Local identity in the old FLOW position, clear of the bay number and ductwork.
+  flat(5.6,5.6,35.85,4.15,16.3,rochesterWallPaint(),-Math.PI/2);
   // The exposed back of the half-pipe is a prominent canvas from the street section.
   flat(10.5,2.15,-2,1.45,-6.87,graffiti('ROCHESTER','#8caaa6',2));
   flat(3.1,1.05,7.2,1.50,-6.865,brewerySign('BOTTLING','DEPARTMENT 03','#b9aa85','#453f31'));

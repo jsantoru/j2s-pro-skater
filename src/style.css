@@ -1,5 +1,10 @@
+@font-face { font-family: Barlow; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/barlow-regular-latin.woff2') format('woff2'); }
+@font-face { font-family: Barlow; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/barlow-bold-latin.woff2') format('woff2'); }
+@font-face { font-family: 'Barlow Condensed'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/barlow-condensed-bold-latin.woff2') format('woff2'); }
+:root { --font-ui: Barlow, 'Segoe UI', Arial, sans-serif; --font-display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif; }
+:root[data-fonts='fallback'] { --font-ui: Arial, sans-serif; --font-display: 'Arial Narrow', Arial, sans-serif; }
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; font-family: "Bahnschrift", "Segoe UI", Arial, sans-serif; color: #fff; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; font-family: var(--font-ui); color: #fff; }
 #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 #hud { position: fixed; inset: 0; pointer-events: none; user-select: none; }
 #hud::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(8,17,21,0.24) 100%); }
@@ -7,13 +12,13 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 .label { font-size: 14px; letter-spacing: 3px; color: #edb66b; text-shadow: 2px 2px 0 #000; }
 #top-left, #top-center, #top-right { background: linear-gradient(120deg, rgba(15,25,28,.87), rgba(15,25,28,.55)); border: 1px solid rgba(227,222,202,.16); border-radius: 2px; padding: 12px 18px; }
 #top-left { top: 18px; left: 22px; }
-#score { font-size: 44px; font-weight: 900; font-style: normal; letter-spacing: 1px; text-shadow: 0 2px 6px #0005; font-variant-numeric: tabular-nums; font-family: Impact, "Arial Black", sans-serif; }
+#score { font-size: 44px; font-weight: 700; font-style: normal; letter-spacing: 1px; text-shadow: 0 2px 6px #0005; font-variant-numeric: tabular-nums; font-family: var(--font-display); }
 /* Sits directly under the score in the same panel: the number to chase, deliberately small so it
    never competes with the live score. */
 #score-to-beat { font-size: 13px; letter-spacing: 2px; color: #a6c6c9; text-shadow: 2px 2px 0 #000; margin-top: -2px; min-height: 15px; }
 #score-to-beat.record { color: #aacfad; }
 #top-center { top: 14px; left: 50%; transform: translateX(-50%); text-align: center; }
-#timer { font-size: 40px; font-family: Impact, "Arial Black", sans-serif; text-shadow: 3px 3px 0 #000; color: #fff; }
+#timer { font-size: 40px; font-family: var(--font-display); text-shadow: 3px 3px 0 #000; color: #fff; }
 #timer.low { color: #ff5a3a; }
 #top-right { top: 18px; right: 22px; text-align: right; font-size: 15px; letter-spacing: 1px; text-shadow: 2px 2px 0 #000; }
 #pad-status { color: #a6c6c9; font-weight: bold; }
@@ -26,12 +31,12 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 #start-btn span { margin-left: 14px; color: #b8c8c6; font-size: 9px; }
 #start-btn:hover, #start-btn:focus-visible { background: #283c3d; outline: 2px solid #edb66b; outline-offset: 3px; }
 #bottom { bottom: 60px; left: 0; right: 0; text-align: center; z-index: 1; transition: opacity 0.35s; }
-#combo-line { font-size: 34px; font-family: Impact, "Arial Black", sans-serif; text-shadow: 3px 3px 0 #000; min-height: 40px; }
+#combo-line { font-size: 34px; font-family: var(--font-display); text-shadow: 3px 3px 0 #000; min-height: 40px; }
 #combo-points { color: #fff; }
 #combo-mult { color: #edb66b; margin-left: 14px; }
 #trick-text { font-size: 26px; font-weight: bold; font-style: italic; color: #ffe9a3; text-shadow: 2px 2px 0 #000; min-height: 32px; padding: 0 40px; }
 #trick-text.bail { color: #ff5a3a; }
-#landed-text { font-size: 30px; font-family: Impact, "Arial Black", sans-serif; color: #aacfad; text-shadow: 3px 3px 0 #000; min-height: 36px; opacity: 0; transition: opacity 0.25s; }
+#landed-text { font-size: 30px; font-family: var(--font-display); color: #aacfad; text-shadow: 3px 3px 0 #000; min-height: 36px; opacity: 0; transition: opacity 0.25s; }
 #landed-text.show { opacity: 1; }
 #landed-text.bail { color: #ff5a3a; }
 #bottom.fading { opacity: 0; }
@@ -54,7 +59,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 /* !important because these elements set display at ID specificity (#overlay is display:flex), which a
    bare .hidden loses to — that is how the balance meter ended up permanently on screen. */
 .hidden { display: none !important; }
-#controls-panel h2 { margin: 0 0 12px; font-family: Impact, sans-serif; letter-spacing: 4px; color: #edb66b; }
+#controls-panel h2 { margin: 0 0 12px; font-family: var(--font-display); letter-spacing: 4px; color: #edb66b; }
 #controls-panel h3 { margin: 8px 0; color: #a6c6c9; }
 #controls-panel .cols { display: flex; gap: 40px; flex-wrap: wrap; }
 #controls-panel table { border-collapse: collapse; font-size: 15px; }
@@ -73,7 +78,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
 .menu-eyebrow { display: flex; justify-content: space-between; gap: 14px; font-size: 8px; letter-spacing: 1.4px;
   color: #edb66b; margin-bottom: 22px; }
 .menu-eyebrow span { color: #8fa5a7; }
-#settings-panel h2 { margin: 0; font-family: Impact, 'Arial Black', sans-serif; font-size: 36px;
+#settings-panel h2 { margin: 0; font-family: var(--font-display); font-size: 36px;
   font-weight: 400; letter-spacing: 1.5px; color: #f1ecdf; }
 #menu-status { margin: 10px 0 0; color: #b4c0ba; font-size: 12px; line-height: 1.5; }
 #settings-panel .rule { height: 1px; margin: 22px 0; background: #edb66b45; }
@@ -114,7 +119,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #1a1c22; fon
   background: #8b8f9a; box-shadow: 0 1px 2px rgba(0,0,0,0.7); transition: transform 0.18s, background 0.18s; }
 .switch.on .switch-track { background: #23502a; }
 .switch.on .switch-knob { transform: translateX(34px); background: #aacfad; }
-.switch-state { font-family: Impact, "Arial Black", sans-serif; font-size: 20px; letter-spacing: 2px; color: #8b8f9a;
+.switch-state { font-family: var(--font-display); font-size: 20px; letter-spacing: 2px; color: #8b8f9a;
   width: 3ch; text-align: left; text-shadow: 2px 2px 0 #000; }
 .switch.on .switch-state { color: #aacfad; }
 .switch:focus-visible { outline: 2px solid #a6c6c9; outline-offset: 2px; }
@@ -126,19 +131,19 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
 .session-card { width: min(540px, 100%); animation: arrive .55s ease-out both; }
 .eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 1.9px; color: #8faaaa; margin-bottom: 30px; }
 .eyebrow span { color: #e5decc; margin-right: 18px; }
-#overlay .title { margin: 0; font-family: Impact, "Arial Black", sans-serif; font-weight: 900;
+#overlay .title { margin: 0; font-family: var(--font-display); font-weight: 700;
   font-size: clamp(70px, 8vw, 116px); line-height: .85; letter-spacing: -2px; color: #f1ecdf; }
 #overlay .title span { display: block; font-size: .53em; line-height: 1.25; letter-spacing: .5px; color: #edb66b; }
 #overlay .sub { font-size: 11px; letter-spacing: 4px; margin: 20px 0 34px; color: #b4c0ba; }
 .session-info { display: flex; gap: 18px; align-items: center; border-top: 1px solid #e5decc30;
   border-bottom: 1px solid #e5decc30; padding: 18px 0; margin-bottom: 24px; }
-.session-info > b { font-size: 38px; line-height: 1; color: #edb66b; font-family: Impact, sans-serif; }
+.session-info > b { font-size: 38px; line-height: 1; color: #edb66b; font-family: var(--font-display); }
 .session-info > div { font-size: 16px; letter-spacing: 2px; font-weight: 700; }
 .session-info span { display: block; font-size: 9px; color: #9eaeae; letter-spacing: 1.6px; margin-top: 6px; }
 .session-info i { color: #edb66b; font-style: normal; padding: 0 7px; }
 #overlay-msg, #overlay-controls { width: 100%; font-family: inherit; cursor: pointer; display: flex;
   align-items: center; justify-content: space-between; text-align: left; border: 0; border-radius: 2px; }
-#overlay-msg { background: #edb66b; color: #152327; padding: 18px 22px; font-size: 19px; font-weight: 800;
+#overlay-msg { background: #edb66b; color: #152327; padding: 18px 22px; font-size: 19px; font-weight: 700;
   letter-spacing: 2px; box-shadow: 0 4px 24px #0003; transition: background .15s, transform .15s; }
 #overlay-msg span { font-size: 10px; letter-spacing: 1px; font-weight: 700; }
 #overlay-msg:hover { background: #f8ce95; transform: translateX(3px); }
@@ -146,11 +151,11 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
 #overlay-controls span { color: #8fa5a7; font-size: 9px; }
 #overlay-controls:hover { color: #edb66b; }
 #overlay button:focus-visible { outline: 2px solid #f5e8cd; outline-offset: 5px; }
-#final-score { font-family: Impact, sans-serif; font-size: 36px; color: #edb66b; margin: 10px 0; }
+#final-score { font-family: var(--font-display); font-size: 36px; color: #edb66b; margin: 10px 0; }
 #final-score:empty { display: none; }
 #overlay .small { margin-top: 20px; color: #829898; font-size: 11px; letter-spacing: .5px; }
 .location-stamp { position: absolute; right: 5vw; bottom: 9vh; color: #f1ecdf; font-size: 26px;
-  font-weight: 800; letter-spacing: 2px; text-align: right; text-shadow: 0 2px 10px #000; }
+  font-weight: 700; letter-spacing: 2px; text-align: right; text-shadow: 0 2px 10px #000; }
 .location-stamp span, .location-stamp small { display: block; font-size: 9px; letter-spacing: 2.5px; margin: 9px 0; }
 .location-stamp span { color: #edb66b; }
 #venue { left: 24px; bottom: 24px; display: flex; gap: 10px; align-items: center; font-size: 10px;
@@ -197,9 +202,13 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
 }
 
 #high-scores { margin: 4px 0 6px; font-size: 16px; letter-spacing: 1px; min-width: 260px; }
-#high-scores .hs-title { font-family: Impact, sans-serif; letter-spacing: 4px; color: #edb66b; font-size: 18px; margin-bottom: 8px; }
+#high-scores .hs-title { font-family: var(--font-display); letter-spacing: 4px; color: #edb66b; font-size: 18px; margin-bottom: 8px; }
 #high-scores .hs-row { display: flex; justify-content: space-between; gap: 18px; padding: 2px 6px; color: #ddd; }
 #high-scores .hs-row.you { background: rgba(255,207,58,0.18); color: #fff; font-weight: bold; }
 #high-scores .hs-rank { width: 2em; text-align: right; color: #a6c6c9; }
-#high-scores .hs-score { flex: 1; text-align: right; font-family: Impact, sans-serif; font-size: 18px; }
+#high-scores .hs-score { flex: 1; text-align: right; font-family: var(--font-display); font-size: 18px; }
 #high-scores .hs-date { width: 6.5em; text-align: right; color: #a4b0ad; font-size: 13px; }
+
+/* Keep the display face at its authored weight, including numeric HUD elements. */
+#timer, #combo-line, #landed-text, #controls-panel h2, #settings-panel h2, .switch-state,
+.session-info > b, #final-score, #high-scores .hs-title, #high-scores .hs-score { font-weight: 700; }
