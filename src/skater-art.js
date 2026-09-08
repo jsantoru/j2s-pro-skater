@@ -177,6 +177,7 @@ export function buildDetailedBoard(parent) {
   const e = new THREE.BufferGeometry(); e.setAttribute('position', new THREE.Float32BufferAttribute(rim, 3));
   e.setAttribute('uv', new THREE.Float32BufferAttribute(rimUV, 2)); e.setIndex(rimIndex); e.computeVertexNormals(); mesh(board, e, maple);
   const alloy = mat(0xaab4b5, 0.25, 0.92), rubber = mat(0x272d2a), urethane = mat(0xe7ddbc, 0.58), ink = mat(0x943e2c);
+  board.userData.wheels = [];
   for (const s of [-1, 1]) {
     rounded(board, 0.077, 0.012, 0.085, alloy, 0, 0.105, s * 0.24, 0.006);
     const hanger = mesh(board, new THREE.CylinderGeometry(0.014, 0.02, 0.18, 12), alloy, 0, 0.043, s * 0.24); hanger.rotation.z = Math.PI / 2;
@@ -184,8 +185,15 @@ export function buildDetailedBoard(parent) {
     mesh(board, new THREE.CylinderGeometry(0.022, 0.022, 0.015, 14), rubber, 0, 0.068, s * 0.235);
     for (const w of [-1, 1]) {
       const profile = [[0.007, -0.0165], [0.026, -0.0165], [0.030, -0.014], [0.032, -0.009], [0.032, 0.009], [0.030, 0.014], [0.026, 0.0165], [0.007, 0.0165]].map(p => new THREE.Vector2(...p));
-      const wheel = mesh(board, new THREE.LatheGeometry(profile, 24), urethane, w * 0.091, 0.032, s * 0.24); wheel.rotation.z = Math.PI / 2;
-      const ring = mesh(board, new THREE.TorusGeometry(0.02, 0.002, 6, 24), ink, w * 0.108, 0.032, s * 0.24); ring.rotation.y = Math.PI / 2;
+      const rolling = new THREE.Group(); rolling.position.set(w * .091, .032, s * .24);
+      rolling.name = 'Rolling urethane wheel'; board.add(rolling); board.userData.wheels.push(rolling);
+      const wheel = mesh(rolling, new THREE.LatheGeometry(profile, 24), urethane); wheel.rotation.z = Math.PI / 2;
+      const ring = mesh(rolling, new THREE.TorusGeometry(0.02, 0.002, 6, 24), ink, w * .017, 0, 0); ring.rotation.y = Math.PI / 2;
+      // Sidewall markings make rotation readable, even at the end of an ollie.
+      for (const angle of [0, 2.0, 4.0]) {
+        const mark = mesh(rolling, new THREE.BoxGeometry(.001, .006, .009), ink, w * .0175, Math.cos(angle) * .02, Math.sin(angle) * .02);
+        mark.rotation.x = angle;
+      }
       const nut = mesh(board, new THREE.CylinderGeometry(0.007, 0.007, 0.037, 6), alloy, w * 0.091, 0.032, s * 0.24); nut.rotation.z = Math.PI / 2;
       for (const dz of [-0.025, 0.025]) mesh(board, new THREE.CylinderGeometry(0.003, 0.003, 0.002, 8), alloy, w * 0.031, 0.132, s * 0.24 + dz);
     }
@@ -450,7 +458,9 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
 }
 
 export function buildDetailedBody(rig) {
-  const skin = mat(0xc39175, 0.76), shirt = mat(0x383a3d, 0.96), pants = mat(0x425d7b, 0.97), shoe = mat(0x202329, 0.9);
+  const skin = mat(0xc39175, 0.76), shoe = mat(0x202329, 0.9);
+  const shirt = new THREE.MeshPhysicalMaterial({ color: 0x454b49, roughness: .96, sheen: .45, sheenColor: 0x8b9283, sheenRoughness: 1 });
+  const pants = new THREE.MeshPhysicalMaterial({ color: 0x42566a, roughness: .97, sheen: .22, sheenColor: 0x8f9eae, sheenRoughness: 1 });
   shirt.name = 'Washed black hoodie'; pants.name = 'Worn indigo denim';
   const sole = mat(0xd6d4cb, 0.86), cap = mat(0x292b30), hair = mat(0x392c24), eye = mat(0x302a27, 0.5);
   const cloth = canvasMap((c, s, rng) => {
@@ -529,6 +539,25 @@ export function buildDetailedBody(rig) {
   // denim saws through the fleece in front; it flares out and draws back in at the lip.
   const hoodie = garment(rig.torso, [[-0.088, 0.230, 0.154], [-0.072, 0.237, 0.158], [-0.045, 0.229, 0.154], [-0.015, 0.216, 0.146], [0.09, 0.190, 0.128], [0.25, 0.191, 0.114], [0.34, 0.195, 0.112], [0.39, 0.198, 0.103], [0.42, 0.179, 0.096], [0.447, 0.130, 0.081], [0.47, 0.065, 0.06]], shirt, 1, 0.016, 48);
   hoodie.name = 'Tailored hoodie torso';
+  // The back print is part of the torso's cloth texture, so it deforms with
+  // the garment and never floats above it or repeats on the sleeves.
+  const printed = shirt.clone();
+  printed.color.set(0xffffff);
+  printed.map = canvasMap((c, s) => {
+    c.drawImage(shirt.map.image, 0, 0, s, s);
+    // Bake the fabric tint before printing, so pale ink is not multiplied by
+    // the dark cloth colour. Place the badge below the draped hood.
+    c.globalCompositeOperation = 'multiply'; c.fillStyle = '#' + shirt.color.getHexString();
+    c.fillRect(0, 0, s, s); c.globalCompositeOperation = 'source-over';
+    c.save(); c.translate(s * .75, s * .62); c.scale(-1, 1); // rear ring UVs run right-to-left
+    c.strokeStyle = '#b7b39a'; c.lineWidth = 2;
+    c.beginPath(); c.ellipse(0, 0, s * .081, s * .085, 0, 0, Math.PI * 2); c.stroke();
+    c.textAlign = 'center'; c.fillStyle = '#d2c4a5';
+    c.font = '900 35px Impact, sans-serif'; c.fillText('J2S', 0, 8, s * .14);
+    c.font = 'bold 7px sans-serif'; c.fillText('LOCAL CREW', 0, s * .045, s * .13);
+    c.restore();
+  }, 512);
+  hoodie.material = printed;
   // Ribbed waistband, tucked just inside the fleece so a fold never uncovers the jeans.
   anchorHem(garment(rig.torso, [[-0.104, 0.211, 0.140], [-0.090, 0.219, 0.146], [-0.072, 0.223, 0.149], [-0.048, 0.216, 0.144]], rib, 1, 0.012));
   const collar = mesh(rig.torso, new THREE.TorusGeometry(0.061, 0.01, 8, 24), shirt, 0, 0.466, 0); collar.rotation.x = Math.PI / 2;

@@ -11,9 +11,11 @@ import { Audio } from './audio.js';
 import { Effects } from './fx.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { ConcreteFloor } from './concrete-floor.js';
+import { lightWarehouse } from './atmosphere.js';
 
 const RUN_TIME = 120;
 const FIXED_DT = 1 / 120;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 const canvas = document.getElementById('game');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -23,7 +25,7 @@ renderer.shadowMap.enabled = !LOWFX;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.95;
+renderer.toneMappingExposure = 0.9;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x35405a);
@@ -36,21 +38,9 @@ scene.fog = new THREE.Fog(0x35405a, 50, 120);
 }
 
 const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
-const hemi = new THREE.HemisphereLight(0xdcecff, 0x5a5044, 0.55);
-scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xfff1d6, 2.2);
-sun.position.set(18, 30, 10);
-sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
-sun.shadow.camera.left = -40; sun.shadow.camera.right = 40;
-sun.shadow.camera.top = 30; sun.shadow.camera.bottom = -30;
-sun.shadow.camera.near = 5; sun.shadow.camera.far = 80;
-sun.shadow.bias = -0.0008; sun.shadow.normalBias = 0.03; sun.shadow.radius = 4;
-scene.add(sun);
-const fill = new THREE.DirectionalLight(0x8fb7ff, 0.35); fill.position.set(-20, 15, -15); scene.add(fill);
-
 const level = new Level();
 scene.add(level.group);
+const atmosphere = lightWarehouse(scene, level, { lowfx: LOWFX });
 const floorSurface = new ConcreteFloor(level.floor, { lowfx: LOWFX, level });
 const skater = new Skater(level);
 const character = new Character();
@@ -61,7 +51,7 @@ const hud = new HUD();
 const highScores = new HighScores();
 const audio = new Audio();
 const settings = new Settings();
-const fx = new Effects(scene);
+const fx = new Effects(scene, { level, lowfx: LOWFX });
 
 // ---- game state ----
 let mode = 'title'; // title | playing | over
@@ -70,13 +60,14 @@ let accumulator = 0, last = performance.now();
 const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed', 'revertLeftPressed', 'revertRightPressed'];
 const pending = {};
 
-skater.events.ollie = (charge) => { audio.pop(charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
+skater.events.ollie = (charge) => { audio.pop(charge); fx.ollie(skater, charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
 skater.events.trickStart = (name) => { audio.trickStart(name); const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
 skater.events.land = (points, text, mult, impactHandled = false) => {
   if (!impactHandled) {
     audio.land(skater.landSquash);
     input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
     followCam.land(skater.landSquash);
+    fx.land(skater);
   }
   hud.landed(points, text, mult); // the trick names stay up next to the payout for a beat
   if (points > 0) audio.score();
@@ -85,6 +76,7 @@ skater.events.bail = (reason) => {
   audio.bail();
   input.rumbleSustainStop(); input.rumble(1, 1, 320);
   followCam.bail();
+  fx.land(skater, 1);
   const why = { wall: 'SLAMMED!', trick: 'BAILED MID-TRICK', sketchy: 'SKETCHY LANDING', void: 'LOST', balance: 'LOST BALANCE' }[reason] || 'BAILED';
   hud.bailed(why, skater.lostCombo || '', skater.lostPoints || 0, skater.lostMult || 0);
 };
@@ -94,8 +86,8 @@ skater.events.grindEnd = () => { audio.grindEnd(skater.grind?.rail.kind || 'meta
 skater.events.manualStart = () => { audio.manualStart(); input.rumble(0.3, 0.15, 70); input.rumbleSustainStop(); refreshCombo(); };
 skater.events.manualEnd = () => { input.rumbleSustainStop(); refreshCombo(); };
 skater.events.spinTick = () => { input.rumble(0.08, 0.58, 34); };
-skater.events.touchdown = () => { audio.land(skater.landSquash); followCam.land(skater.landSquash); input.rumble(0.35, 0.2, 90); };
-skater.events.revert = () => { audio.revert(skater.speed); input.rumble(0.18, 0.48, 110); refreshCombo(); };
+skater.events.touchdown = () => { audio.land(skater.landSquash); followCam.land(skater.landSquash); fx.land(skater); input.rumble(0.35, 0.2, 90); };
+skater.events.revert = () => { audio.revert(skater.speed); fx.revert(skater); input.rumble(0.18, 0.48, 110); refreshCombo(); };
 
 function refreshCombo() {
   const c = skater.combo;
@@ -122,19 +114,30 @@ hud.onMusicToggle = () => {
 
 function startRun() {
   skater.reset();
+  fx.clear();
   timeLeft = RUN_TIME; mode = 'playing';
+  document.body.dataset.mode = mode;
   hud.overlay(false);
   hud.combo('', 0, 0);
   followCam.snap(skater);
 }
 function endRun() {
   mode = 'over';
+  document.body.dataset.mode = mode;
   // Bank the run before the overlay draws, so the table shows where it landed. The score to beat
   // only moves now — during a run it stays the target you started with.
   const rank = highScores.submit(skater.score);
   hud.overlay(true, 'Press START / ENTER to skate again', skater.score);
   hud.highScores(highScores.list, rank);
 }
+
+document.getElementById('overlay-msg').addEventListener('click', (event) => {
+  if (!audio.enabled) audio.init();
+  startRun(); event.currentTarget.blur();
+});
+document.getElementById('overlay-controls').addEventListener('click', (event) => {
+  hud.toggleControls(); event.currentTarget.blur();
+});
 
 function resize() {
   const w = window.innerWidth, h = window.innerHeight;
@@ -183,6 +186,14 @@ function frame(now) {
   followCam.update(dt, skater, inp.camX);
   audio.update(skater);
   fx.update(dt, skater);
+  atmosphere.update(now / 1000);
+  if (mode === 'title') {
+    // A slow establishing shot gives the title the same rendered park as gameplay.
+    const t = reducedMotion.matches ? 0 : now / 1000 * 0.035;
+    camera.position.set(-16 + Math.sin(t) * 3, 4.1, 18 + Math.cos(t) * 2);
+    camera.lookAt(5, 1.4, -4);
+    camera.fov = 56; camera.updateProjectionMatrix();
+  }
   // Crouching loads the low motor progressively so ollie charge can be felt before the pop.
   // It mixes with grind texture when charging an ollie off a rail.
   if (mode === 'playing' && skater.crouching && (skater.state === 'ride' || skater.state === 'grind')) {
@@ -218,4 +229,4 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun, endRun, highScores, settings, audio, renderer, scene, camera, floorSurface };
+window.__game = { skater, level, input, character, followCam, startRun, endRun, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx };

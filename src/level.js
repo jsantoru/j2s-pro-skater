@@ -252,7 +252,10 @@ export class Level {
       const len = Math.hypot(tread * steps + 0.5, PH); const ang = Math.atan2(PH, tread * steps + 0.5);
       const hub = new THREE.Mesh(surfaceUV(new THREE.BoxGeometry(0.6, 0.45, len + 0.3), 3), M.concrete);
       hub.position.set(29.8, PH * 0.5 + 0.2, 10 - (tread * steps + 0.5) / 2 + 0.1);
-      hub.rotation.x = ang; this.add(hub);
+      // Positive world Z is the platform end; the hubba must rise toward it,
+      // matching the stairs and the grind segment instead of jutting uphill into space.
+      hub.name = 'Stair hubba';
+      hub.rotation.x = -ang; this.add(hub);
       const a = new THREE.Vector3(29.8, PH + 0.45 - 0.02, 10.4), b = new THREE.Vector3(29.8, 0.43, 10 - tread * steps - 0.5);
       this.addRail(a, b, 'ledge', false);
     }

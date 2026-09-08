@@ -1,0 +1,68 @@
+import assert from 'node:assert/strict';
+import * as THREE from 'three';
+import { Effects } from '../src/fx.js';
+import { lightWarehouse } from '../src/atmosphere.js';
+import { Level } from '../src/level.js';
+import { Character } from '../src/character.js';
+
+const scene = new THREE.Scene(), level = new Level(); scene.add(level.group);
+const hub = level.group.getObjectByName('Stair hubba');
+const hubLow = hub.localToWorld(new THREE.Vector3(0, .225, -1.5));
+const hubHigh = hub.localToWorld(new THREE.Vector3(0, .225, 1.5));
+assert.ok(hubHigh.y > hubLow.y && hubHigh.z > hubLow.z, 'Stair hubba rises toward the platform like its grind segment');
+const fx = new Effects(scene, { level });
+const sk = { pos: new THREE.Vector3(-4, 0, 14), heading: new THREE.Vector3(0, 0, 1), speed: 8, state: 'ride', landSquash: .8 };
+const count = pool => pool.life.filter(v => v > 0).length;
+const unchanged = JSON.stringify(sk);
+fx.land(sk); fx.update(1 / 60, sk);
+assert.ok(count(fx.dust) > 0 && count(fx.sparks) === 0, 'Landing raises dust without sparks');
+assert.equal(JSON.stringify(sk), unchanged, 'Effects cannot mutate controller state');
+assert.ok(fx.shadow.visible && fx.shadow.position.y < .01, 'Contact shadow sits on floor');
+const floorOpacity = fx.shadow.material.opacity;
+sk.pos.y = 2; fx.update(1 / 60, sk);
+assert.ok(fx.shadow.material.opacity < floorOpacity, 'Airborne shadow fades with height');
+sk.pos.set(27, 1.6, 16); fx.update(1 / 60, sk);
+assert.ok(Math.abs(fx.shadow.position.y - 1.608) < .01, 'Shadow sits on the raised platform');
+sk.pos.set(19, .64, 16); fx.update(1 / 60, sk);
+assert.ok(fx.normal.x < -.2 && fx.normal.y > .9, 'Shadow follows bank normal');
+fx.clear();
+sk.pos.set(-4, .57, 10); sk.state = 'grind'; sk.grind = { rail: { kind: 'rail' } };
+for (let i = 0; i < 60; i++) fx.update(1 / 60, sk);
+assert.ok(count(fx.sparks) > 0 && count(fx.dust) === 0, 'Metal grinds produce sparks');
+fx.clear(); sk.grind.rail.kind = 'ledge';
+for (let i = 0; i < 60; i++) fx.update(1 / 60, sk);
+assert.ok(count(fx.dust) > 0 && count(fx.sparks) === 0, 'Concrete grinds produce only dust');
+sk.state = 'ride';
+for (let i = 0; i < 120; i++) fx.update(1 / 60, sk);
+assert.equal(count(fx.dust) + count(fx.sparks), 0, 'Effects expire after leaving the rail');
+const children = scene.children.length, geometry = fx.dust.geometry;
+for (let i = 0; i < 2000; i++) { fx.land(sk); fx.revert(sk); fx.ollie(sk, 1); fx.update(1 / 60, sk); }
+assert.equal(scene.children.length, children, 'Long sessions never add particle objects');
+assert.equal(fx.dust.geometry, geometry, 'Particle geometry is reused');
+assert.ok(count(fx.dust) <= fx.dust.count, 'Burst pool stays bounded');
+fx.clear(); assert.equal(count(fx.dust) + count(fx.sparks), 0, 'Restart clears every particle');
+
+lightWarehouse(scene, level);
+level.group.updateMatrixWorld(true);
+const roof = level.group.getObjectByName('Skylight roof and sun occlusion');
+const ray = new THREE.Raycaster(new THREE.Vector3(-25, 11, 1), new THREE.Vector3(0, -1, 0));
+assert.equal(ray.intersectObject(roof).length, 0, 'Factory skylights transmit sunlight');
+ray.ray.origin.x = -20;
+assert.ok(ray.intersectObject(roof).length, 'Opaque roof strips block sunlight');
+assert.ok(!level.colliders.includes(roof), 'Roof art does not alter skating collision');
+
+const lowScene = new THREE.Scene(), lowLevel = new Level();
+const low = new Effects(lowScene, { level: lowLevel, lowfx: true });
+const lighting = lightWarehouse(lowScene, lowLevel, { lowfx: true });
+assert.ok(!lighting.sun.castShadow && !lowScene.getObjectByName('Drifting warehouse dust'), 'Lowfx avoids sun shadows and ambient particles');
+assert.ok(low.dust.count < fx.dust.count && low.sparks.count < fx.sparks.count, 'Lowfx reduces effect budgets');
+
+const character = new Character();
+const pose = { state: 'ride', crouch: 0, landSquash: 0, pushing: 0, stance: 1, lean: 0, speed: 3, bailT: 0, trick: null, grind: null };
+character.update(pose, 1 / 60, 0);
+assert.equal(character.board.userData.wheels.length, 4);
+const angle = character.board.userData.wheels[0].rotation.x;
+assert.ok(angle !== 0, 'Wheels rotate during riding');
+pose.state = 'air'; character.update(pose, 1 / 60, 1 / 60);
+assert.notEqual(character.board.userData.wheels[0].rotation.x, angle, 'Wheels keep spinning in the air');
+console.log('PASS: surface contact, ramp normals, dust/spark materials, bounded pools, expiry/reset, skylight occlusion, lowfx budgets and rolling wheels.');

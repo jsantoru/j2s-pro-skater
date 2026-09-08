@@ -16,7 +16,7 @@ const DOWN = new THREE.Vector3(0, -1, 0);
 
 // pose keys (degrees unless noted)
 const KEYS = ['torsoX', 'torsoY', 'torsoZ', 'headX', 'headY', 'lArmX', 'lArmZ', 'lElbow', 'rArmX', 'rArmZ', 'rElbow',
-  'lHip', 'lKnee', 'lLegZ', 'rHip', 'rKnee', 'rLegZ', 'hipsX', 'hipsZ', 'hipsY', 'hipsFwd'];
+  'lHip', 'lKnee', 'lLegZ', 'rHip', 'rKnee', 'rLegZ', 'hipsX', 'hipsZ', 'hipsYaw', 'hipsSide', 'hipsY', 'hipsFwd'];
 const P = (o) => { const p = {}; for (const k of KEYS) p[k] = 0; return Object.assign(p, o); };
 
 export const POSES = {
@@ -38,12 +38,11 @@ export const POSES = {
   manual: P({ torsoX: 4, headY: -55, lArmX: 20, lArmZ: 62, lElbow: 22, rArmX: -20, rArmZ: -62, rElbow: 22, lHip: 40, lKnee: 30, rHip: 24, rKnee: 56, hipsZ: -14 }),
   noseManual: P({ torsoX: 24, headY: -55, lArmX: 20, lArmZ: 62, lElbow: 22, rArmX: -20, rArmZ: -62, rElbow: 22, lHip: 26, lKnee: 58, rHip: 44, rKnee: 30, hipsZ: 16 }),
   bail: P({ torsoX: -35, headX: -25, headY: 0, lArmX: -40, lArmZ: 150, lElbow: 60, rArmX: -40, rArmZ: -150, rElbow: 60, lHip: -15, lKnee: 35, rHip: 20, rKnee: 60, lLegZ: 20, rLegZ: -20 }),
-  // push cycle: the back (right) foot leaves the deck, lands beside it on the toe side (rHip) and strokes
-  // nose -> tail along the travel axis (rLegZ + -> -) with a straight knee; the front leg bends so the
-  // pushing foot reaches the ground (deck top is 0.13 m up); the torso turns toward the nose.
-  pushPlant: P({ torsoX: 14, torsoY: -32, headY: -50, lArmX: -15, lArmZ: 18, lElbow: 35, rArmX: 25, rArmZ: -18, rElbow: 30, lHip: 55, lKnee: 80, rHip: 14, rKnee: 3, rLegZ: 20 }),
-  pushStroke: P({ torsoX: 18, torsoY: -24, headY: -50, lArmX: 20, lArmZ: 18, lElbow: 35, rArmX: -25, rArmZ: -18, rElbow: 30, lHip: 55, lKnee: 80, rHip: 14, rKnee: 5, rLegZ: -22 }),
-  pushReturn: P({ torsoX: 16, torsoY: -28, headY: -50, lArmX: 5, lArmZ: 18, lElbow: 35, rArmX: 0, rArmZ: -18, rElbow: 30, lHip: 52, lKnee: 76, rHip: 40, rKnee: 70, rLegZ: -4 }),
+  // Open the pelvis toward travel and distribute the remaining turn through chest and neck.
+  // IK pivots the leading shoe and strokes the trailing foot beside the deck; fakie swaps the feet.
+  pushPlant: P({ hipsYaw: 60, hipsSide: .12, torsoX: 10, torsoY: -20, headY: -10, headX: -8, lArmX: -15, lArmZ: 12, lElbow: 30, rArmX: 25, rArmZ: -12, rElbow: 30, lHip: 45, lKnee: 68, rHip: 14, rKnee: 3, rLegZ: 20 }),
+  pushStroke: P({ hipsYaw: 60, hipsSide: .12, torsoX: 16, torsoY: -20, headY: -10, headX: -12, lArmX: 20, lArmZ: 12, lElbow: 30, rArmX: -25, rArmZ: -12, rElbow: 30, lHip: 45, lKnee: 68, rHip: 14, rKnee: 5, rLegZ: -22 }),
+  pushReturn: P({ hipsYaw: 60, hipsSide: .12, torsoX: 12, torsoY: -20, headY: -10, headX: -10, lArmX: 5, lArmZ: 12, lElbow: 30, rArmX: 0, rArmZ: -12, rElbow: 30, lHip: 42, lKnee: 64, rHip: 40, rKnee: 70, rLegZ: -4 }),
 };
 const GRAB_POSE = { Indy: 'indy', Melon: 'melon', Nosegrab: 'nosegrab', Tailgrab: 'tailgrab', Method: 'method', Stalefish: 'melon', Judo: 'method', Airwalk: 'nosegrab' };
 const FLIP_POSE = { Kickflip: 'kickflip', Heelflip: 'heelflip', 'Pop Shove-it': 'shoveit', Impossible: 'shoveit', '360 Flip': 'kickflip', 'Varial Heelflip': 'heelflip', Hardflip: 'kickflip', 'Inward Heelflip': 'heelflip' };
@@ -64,6 +63,7 @@ export class Character {
     this.root.add(this.body);
     this.cur = P({}); this.cur.hipsY = STAND_DROP;
     this.pushPhase = 0; this.bobT = 0;
+    this.wheelSpeed = 0;
     this.contactWeight = 1;
     this.pushContact = 0;
     this.buildBoard(); this.buildBody();
@@ -115,6 +115,8 @@ export class Character {
     if (sk.state !== 'ride') this.pushContact = 0;
     if (this.pushContact < 0.0001) this.pushContact = 0;
     const push = this.pushPhase % (Math.PI * 2);
+    // The trailing foot pushes in either direction; the leading foot pivots on the grip.
+    const pushFoot = sk.stance < 0 ? 0 : 1;
     for (let i = 0; i < 2; i++) {
       const z = i === 0 ? 0.235 : -0.255;
       targets[i].set(0, BOARD_TOP + 0.002 + SOLE_OFFSET, z);
@@ -125,7 +127,11 @@ export class Character {
       orientations[i].setFromEuler(new THREE.Euler(0, footYaw, 0));
       (flip ? this.root : this.board).getWorldQuaternion(this.ik.worldQ);
       orientations[i].premultiply(this.ik.worldQ);
-      if (this.pushContact > 0 && i === 1) {
+      if (this.pushContact > 0) {
+        this.ik.footQ.setFromEuler(new THREE.Euler(0, sk.stance < 0 ? -Math.PI + .12 : -.12, 0)).premultiply(this.root.getWorldQuaternion(this.ik.worldQ));
+        orientations[i].slerp(this.ik.footQ, this.pushContact);
+      }
+      if (this.pushContact > 0 && i === pushFoot) {
         // Plant beside the toe edge, stroke nose to tail, then lift and recover.
         const stroke = push < Math.PI ? push / Math.PI : (push - Math.PI) / Math.PI;
         const zPush = push < Math.PI ? 0.30 - stroke * 0.65 : -0.35 + stroke * 0.65;
@@ -184,13 +190,17 @@ export class Character {
         if (p < Math.PI) { a = POSES.pushPlant; b = POSES.pushStroke; s = p / Math.PI; }
         else { const u = (p - Math.PI) / Math.PI; if (u < 0.5) { a = POSES.pushStroke; b = POSES.pushReturn; s = u * 2; } else { a = POSES.pushReturn; b = POSES.pushPlant; s = (u - 0.5) * 2; } }
         mix(a, (1 - s) * (1 - c)); mix(b, s * (1 - c));
-      } else { mix(POSES.ride, 1 - c); this.pushPhase = 0; }
+      } else {
+        mix(POSES.ride, 1 - c);
+        // Recover from the current foot position, without snapping back to plant.
+        if (this.pushContact === 0) this.pushPhase = 0;
+      }
       mix(POSES.crouch, c);
     }
     // normalise weights
     if (T._w && Math.abs(T._w - 1) > 1e-3) for (const k of KEYS) T[k] /= T._w;
     // fakie: look (and turn the push) the other way
-    if (sk.stance < 0 && st !== 'bail') { T.headY = -T.headY; T.torsoY = -T.torsoY; }
+    if (sk.stance < 0 && st !== 'bail') { T.headY = -T.headY; T.torsoY = -T.torsoY; T.hipsYaw = -T.hipsYaw; T.hipsSide = -T.hipsSide; }
     // carve lean: tilt sideways into the turn (about the body's nose axis)
     T.hipsX += sk.lean * 40;
     // leg drop / hips height from the front (standing) leg, so an extended pushing leg reaches the ground
@@ -200,6 +210,9 @@ export class Character {
     // crouch. On the ground, slide the pelvis back by the same amount so the front foot stays planted and
     // the hips travel back-and-down like a real squat. Airborne poses keep the old free-swinging look.
     T.hipsFwd = (st === 'air' || st === 'bail') ? 0 : -legReach(T.lHip, T.lKnee);
+    // With the pelvis opened for a push, balance over the leading truck instead of
+    // retaining the sideways squat offset from the normal riding stance.
+    T.hipsFwd = THREE.MathUtils.lerp(T.hipsFwd, -.025, Math.abs(T.hipsYaw) / 60);
     // The board rides with BOTH feet, not the front one: a flick trick throws the front leg right out
     // (a heelflip reaches 0.59 m, nearly three deck widths) and tracking that alone glues the board to
     // the flicking foot instead of letting it spin free. Average the legs, and cap the sideways chase.
@@ -221,10 +234,10 @@ export class Character {
     // subtle riding bob
     this.bobT += dt * (2 + sk.speed * 0.4);
     const bob = sk.state === 'ride' ? Math.sin(this.bobT) * 0.006 * Math.min(1, sk.speed / 4) : 0;
-    this.hips.position.set(0, BOARD_TOP + c.hipsY + bob, c.hipsFwd);
+    this.hips.position.set(c.hipsSide, BOARD_TOP + c.hipsY + bob, c.hipsFwd);
     // Y / Z keys are authored as "toward the nose = negative torsoY / positive limb Z"; body +x is the nose,
     // so rotations about y/z that should move things nose-ward get the signs below.
-    this.hips.rotation.set(c.hipsX * D2R, 0, -c.hipsZ * D2R);
+    this.hips.rotation.set(c.hipsX * D2R, c.hipsYaw * D2R, -c.hipsZ * D2R);
     this.torso.rotation.set(c.torsoX * D2R, -c.torsoY * D2R, -c.torsoZ * D2R);
     this.head.rotation.set(c.headX * D2R, -c.headY * D2R, 0);
     this.lArm.sh.rotation.set(-c.lArmX * D2R, 0, c.lArmZ * D2R);
@@ -276,5 +289,10 @@ export class Character {
       this.body.rotation.set(0, -Math.PI / 2, 0); this.body.position.set(0, 0, 0);
     }
     this.anchorFeet(sk, dt);
+    const rolling = sk.state === 'ride';
+    this.wheelSpeed = rolling ? sk.speed / .032 * (sk.stance || 1) : this.wheelSpeed * Math.exp(-dt * .8);
+    for (const wheel of this.board.userData.wheels || []) {
+      wheel.rotation.x = (wheel.rotation.x + this.wheelSpeed * dt) % (Math.PI * 2);
+    }
   }
 }

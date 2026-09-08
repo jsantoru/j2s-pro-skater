@@ -117,7 +117,7 @@ export function makeMaterials() {
     floor: M(0xffffff, floor, 0.92, 0, stone),
     concrete: M(0xffffff, floor, 0.92, 0, stone),
     wood: M(0xffffff, wood, 0.78, 0, { bumpMap: woodBump, bumpScale: 0.014, roughnessMap: rough }),
-    wall: M(0xcbd0d1, wall, 0.96, 0, { bumpMap: wallBump, bumpScale: 0.018 }),
+    wall: M(0xe0cbb0, wall, 0.96, 0, { bumpMap: wallBump, bumpScale: 0.018 }),
     metal: M(0xadb5b7, null, 0.38, 0.8, { bumpMap: micro, bumpScale: 0.002 }),
     roof: M(0x30383b, null, 0.91),
     coping: M(0xbfc5c6, null, 0.26, 0.92), rail: M(0xc4ced1, null, 0.24, 0.95),
@@ -125,7 +125,7 @@ export function makeMaterials() {
     rainbow: M(0xffffff, null, 0.63, 0.05, { vertexColors: true, bumpMap: micro, bumpScale: 0.01, roughnessMap: rough }),
     yellow: M(0xe6b848, null, 0.68, 0.15), red: M(0xa93d32, null, 0.72),
     blue: M(0x366776, null, 0.72), green: M(0x50694d, null, 0.72),
-    dark: M(0x252e30, null, 0.6, 0.45), sky: new THREE.MeshBasicMaterial({ color: 0xdff1ff }),
+    dark: M(0x252e30, null, 0.6, 0.45), sky: new THREE.MeshBasicMaterial({ color: 0xe4e8d9 }),
   };
 }
 

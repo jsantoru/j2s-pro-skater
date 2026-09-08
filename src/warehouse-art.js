@@ -21,7 +21,18 @@ export function dressWarehouse(level) {
   };
   const flat = (w, h, x, y, z, mat, ry = 0, rx = 0) => add(new THREE.PlaneGeometry(w, h), mat, [x, y, z], new THREE.Euler(rx, ry, 0));
   const lit = new THREE.MeshBasicMaterial({ color: 0xffedcb, toneMapped: false });
-  const glass = new THREE.MeshBasicMaterial({ color: 0xa2bcc2 });
+  const windowMap = canvasMap((c, s, rng) => {
+    const gradient = c.createLinearGradient(0, 0, 0, s);
+    gradient.addColorStop(0, '#a2c5cd'); gradient.addColorStop(.65, '#d4d5bd'); gradient.addColorStop(1, '#dca56c');
+    c.fillStyle = gradient; c.fillRect(0, 0, s, s);
+    for (let i = 0; i < 250; i++) {
+      c.fillStyle = `rgba(55,74,71,${rng() * .10})`;
+      c.fillRect(rng() * s, 0, 1 + rng() * 3, s);
+    }
+    c.fillStyle = '#425e6455';
+    for (let x = 0; x < s; x += 42) c.fillRect(x, s * (.72 + rng() * .13), 34, s);
+  }, 256);
+  const glass = new THREE.MeshBasicMaterial({ map: windowMap });
   const paint = new THREE.MeshStandardMaterial({ color: 0x3c5659, roughness: 0.86 });
 
   // Open-web roof trusses and skylight mullions; leave the existing shadow-casting beams in charge.
@@ -94,6 +105,66 @@ export function dressWarehouse(level) {
     box(0.9, 1.4, 0.25, x, 2.1, 22.7, M.railDark);
     for (let y = 1.8; y <= 2.5; y += 0.1) box(0.65, 0.018, 0.04, x, y, 22.55, M.metal);
     bar([x, 2.8, 22.7], [x, 6.6, 22.7], 0.024, M.metal);
+  }
+
+  // High maintenance gallery: a strong silhouette above the north wall, with
+  // open steel grating, triangular brackets and a continuous ochre handrail.
+  // Entirely above the perimeter decks; no props placed in approach lanes.
+  const safety = new THREE.MeshStandardMaterial({ color: 0xb2834c, metalness: .55, roughness: .57 });
+  box(66, .16, 1.0, 0, 6.65, -22.25, M.railDark);
+  for (let x = -32; x <= 32; x += 2) {
+    bar([x, 6.7, -21.75], [x, 7.6, -21.75], .023, safety);
+    bar([x, 6.6, -21.75], [x, 6.0, -22.86], .042, M.railDark);
+  }
+  for (const y of [7.15, 7.6]) bar([-33, y, -21.75], [33, y, -21.75], .024, safety);
+  box(66, .16, .04, 0, 6.82, -21.75, safety);
+  for (const x of [-28, 28]) {
+    for (const dx of [-.26, .26]) bar([x + dx, 4.8, -22.7], [x + dx, 7.4, -22.7], .023, M.metal);
+    for (let y = 4.9; y < 7.4; y += .27) bar([x - .26, y, -22.7], [x + .26, y, -22.7], .017, M.metal);
+  }
+
+  // Service-bay practicals and original wall graphics make opposite sides of
+  // the park recognisable immediately from the follow camera.
+  const bayInk = new THREE.MeshStandardMaterial({
+    roughness: .9, transparent: true, depthWrite: false,
+    map: canvasMap((c, s, rng) => {
+      c.fillStyle = '#deb778'; c.font = '900 760px Impact, sans-serif'; c.textAlign = 'center';
+      c.fillText('01', s / 2, s * .77, s * .88);
+      c.globalCompositeOperation = 'destination-out';
+      for (let i = 0; i < 3000; i++) c.clearRect(rng() * s, rng() * s, 1 + rng() * 9, 1 + rng() * 2);
+    }, 1024),
+  });
+  flat(5, 4.0, 35.89, 4.3, 9, bayInk, -Math.PI / 2);
+  flat(4.5, 3.7, -35.89, 4.5, -13, bayInk, Math.PI / 2);
+  for (const [x, z] of [[-24, 22.6], [24, -22.6]]) {
+    box(5.5, .15, .55, x, 4.5, z, M.dark);
+    flat(4.8, .16, x, 4.412, z, lit, 0, Math.PI / 2);
+    flat(4.8, .7, x, 4.95, z, signMaterial('LOADING / 01', 'KEEP THE APPROACH CLEAR', '#b4804d', '#1d3236'), z > 0 ? Math.PI : 0);
+  }
+
+  // A welded ventilation run, flange seams and mounts under the east eaves.
+  for (let z = -18; z <= 18; z += 6) {
+    const duct = new THREE.CylinderGeometry(.27, .27, 5.96, 16);
+    add(duct, M.railDark, [35.4, 7.15, z], new THREE.Euler(Math.PI / 2, 0, 0));
+    add(new THREE.TorusGeometry(.275, .025, 6, 20), M.metal, [35.4, 7.15, z - 3]);
+    box(.6, .08, .10, 35.6, 6.8, z, M.dark);
+  }
+
+  // Stacked flyposters at human scale near the two service doors.
+  const poster = (title, subtitle, color) => new THREE.MeshStandardMaterial({ roughness: .98,
+    map: canvasMap((c, s, rng) => {
+      c.fillStyle = color; c.fillRect(0, 0, s, s);
+      c.strokeStyle = '#e6dac2'; c.lineWidth = 5; c.strokeRect(20, 20, s - 40, s - 40);
+      c.fillStyle = '#e6dac2'; c.font = '900 96px Impact, sans-serif'; c.textAlign = 'center';
+      c.fillText(title, s / 2, s * .4, s * .86);
+      c.font = 'bold 24px sans-serif'; c.fillText(subtitle, s / 2, s * .53, s * .84);
+      c.font = '900 140px Impact, sans-serif'; c.fillText('J2S', s / 2, s * .83);
+      for (let i = 0; i < 900; i++) { c.fillStyle = `rgba(12,24,26,${rng() * .22})`; c.fillRect(rng() * s, rng() * s, rng() * 8, rng() * 2); }
+    }, 512),
+  });
+  for (const [x, z, ry] of [[-19.6, 22.82, Math.PI], [19.6, -22.82, 0]]) {
+    flat(.8, 1.12, x, 1.8, z, poster('NIGHT JAM', 'FRIDAY / OPEN SESSION', '#8a493b'), ry);
+    flat(.65, .88, x + 1, 2.0, z, poster('NO LIMIT', 'LOCAL CREW / ALL WELCOME', '#375b5c'), ry);
   }
 
   // Wall mural: layered original lettering and skate marks, built into one transparent decal.
