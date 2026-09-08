@@ -1,0 +1,111 @@
+{
+  "liveRegression": {
+    "checks": [
+      "Drop In remains in phone viewport",
+      "Drop In remains in landscape viewport",
+      "Drop In remains in desktop viewport",
+      "Controls button opens control map",
+      "Tab closes control map",
+      "Settings opens",
+      "Keyboard settings activation does not start skating",
+      "Drop In starts run",
+      "Live regular push faces travel",
+      "Live fakie push faces travel",
+      "Live keyboard ollie and kickflip land and score",
+      "Keyboard revert changes stance",
+      "Opposite revert returns to regular",
+      "Live rail grind emits sparks",
+      "Live grind shows balance meter",
+      "Live concrete grind emits dust without sparks",
+      "Standard gamepad A hold/release ollies through live polling",
+      "Standard gamepad X flip lands and scores",
+      "End of run shows replay screen",
+      "Replay button resets score",
+      "Lowfx plays with shadows/reflections disabled",
+      "No WebGL errors",
+      "No browser runtime or shader errors"
+    ],
+    "errors": [],
+    "playingTiming": {
+      "medianMs": 16.700000000000728,
+      "p95Ms": 16.799999999999272,
+      "frames": 360
+    }
+  },
+  "outfitMotion": {
+    "captures": [
+      {
+        "name": "regular-push",
+        "state": "ride",
+        "speed": 6.142820603649243,
+        "crouch": 0,
+        "pushing": 1,
+        "stance": 1,
+        "landSquash": 0,
+        "score": 0
+      },
+      {
+        "name": "regular-ride",
+        "state": "ride",
+        "speed": 6.9442672555855705,
+        "crouch": 0,
+        "pushing": 0,
+        "stance": 1,
+        "landSquash": 0,
+        "score": 0
+      },
+      {
+        "name": "fakie-push",
+        "state": "ride",
+        "speed": 6.02596095402757,
+        "crouch": 0,
+        "pushing": 1,
+        "stance": -1,
+        "landSquash": 0,
+        "score": 0
+      },
+      {
+        "name": "fakie-ride",
+        "state": "ride",
+        "speed": 6.606033391533179,
+        "crouch": 0,
+        "pushing": 0,
+        "stance": -1,
+        "landSquash": 0,
+        "score": 0
+      },
+      {
+        "name": "charged-crouch",
+        "state": "ride",
+        "speed": 10.792959333333334,
+        "crouch": 0.9883891916467451,
+        "pushing": 0,
+        "stance": 1,
+        "landSquash": 0,
+        "score": 0
+      },
+      {
+        "name": "live-grab",
+        "state": "air",
+        "speed": 10.792959333333334,
+        "crouch": 0.005512488016404788,
+        "pushing": 0,
+        "stance": 1,
+        "trick": "Indy",
+        "landSquash": 0,
+        "score": 0
+      },
+      {
+        "name": "live-landing",
+        "state": "ride",
+        "speed": 11.492959333333333,
+        "crouch": 1.675555833280214e-7,
+        "pushing": 0,
+        "stance": 1,
+        "landSquash": 0.9733333333333334,
+        "score": 300
+      }
+    ],
+    "errors": []
+  }
+}
