@@ -3,6 +3,7 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 import { canvasMap } from './materials.js';
 import { handGeometry } from './hand-art.js';
 import { skaterMaterials } from './skater-materials.js';
+import { addBeard, addShaggyHair } from './groom-art.js';
 
 const mat = (color, roughness = 0.85, metalness = 0) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
 function mesh(parent, geometry, material, x = 0, y = 0, z = 0) {
@@ -233,7 +234,7 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
       beard *= THREE.MathUtils.smoothstep(Math.sin(a), -0.50, 0.15);
       const moustache = Math.exp(-(((height - 0.095) / 0.006) ** 2)) * Math.pow(front, 28) * 0.72;
       // Stubble belongs in the skin, not a dark painted mask over the lower face.
-      beard = Math.max(beard * 0.28, moustache * 0.35);
+      beard = Math.max(beard * 0.60, moustache * 0.60);
       const grain = (rng() - 0.5) * (4 + beard * 18), o = (y * s + x) * 4;
       const flush = Math.exp(-(((height - 0.115) / 0.018) ** 2)) * front * side;
       pixels.data[o] = 238 - beard * 134 + grain;
@@ -259,6 +260,7 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   headSurface.frustumCulled = false; rig.torso.add(headSurface);
   rig.root.updateMatrixWorld(true);
   headSurface.bind(new THREE.Skeleton([anchor, rig.head]));
+  addBeard(rig, headSurface, rings);
 
   // Brow, cheek planes and a shaped nose give the face adult proportions.
   // The bridge and tip now belong to the face mesh, not a separate pasted-on wedge.
@@ -323,9 +325,9 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
     const brow = rounded(rig.head, 0.027, 0.003, 0.003, hair, side * 0.033, 0.155, 0.075, 0.001); brow.rotation.z = side * 0.09;
   }
 
-  hair.roughness = 0.96; hair.color.setHex(0x2c2623);
+  hair.roughness = 0.91; hair.color.setHex(0x785034);
   hair.map = canvasMap((c, s, rng) => {
-    c.fillStyle = '#cdbbaa'; c.fillRect(0, 0, s, s);
+    c.fillStyle = '#cfbda8'; c.fillRect(0, 0, s, s);
     for (let i = 0; i < 1500; i++) {
       const x = rng() * s, y = rng() * s;
       c.strokeStyle = rng() > 0.5 ? 'rgba(30,22,18,0.20)' : 'rgba(235,216,180,0.16)';
@@ -350,17 +352,19 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
     const front = Math.max(0, Math.sin(a)), back = Math.max(0, -Math.sin(a));
     // A broad, shallow sideburn transition, not the narrow triangular tooth below the band.
     const temple = Math.exp(-Math.pow((Math.sin(a) - 0.18) / 0.34, 2)) * 0.009;
-    const edge = 0.158 + front * 0.048 - back * 0.065 - temple + Math.sin(a * 19) * 0.0005;
+    const edge = 0.147 + front * 0.059 - back * 0.042 - temple + Math.sin(a * 19) * 0.002;
     const radius = 1 + Math.sin(a * 17 + y * 6) * 0.018 * (1 - y);
     const height = edge + (0.266 - edge) * y;
     const [srx, srz, centerZ] = skullAt(height);
-    const rx = srx + 0.003, rz = srz + 0.003;
+    const inset = THREE.MathUtils.smoothstep(height, .16, .19) * .004;
+    const rx = srx + 0.003 - inset, rz = srz + 0.003 - inset;
     const horizontal = Math.hypot(x, z);
     hp.setXYZ(i, horizontal > 1e-6 ? x / horizontal * rx * radius : 0, height,
       centerZ + (horizontal > 1e-6 ? z / horizontal * rz * radius : 0));
   }
   hairGeo.computeVertexNormals(); smoothRingSeams(hairGeo, 48, 17);
   mesh(rig.head, hairGeo, hair).name = 'Tailored hairline';
+  addShaggyHair(rig, skullAt, hair);
 
   cap.roughness = 0.94; cap.bumpMap = cloth; cap.bumpScale = 0.0008;
   cap.map = canvasMap((c, s, rng) => {
@@ -529,7 +533,12 @@ export function buildDetailedBody(rig) {
     const ankle = new THREE.Group(); ankle.position.y = -0.42; kn.add(ankle);
     // Anatomical ankle is behind the shoe centre. Keep the shoe-centre frame for
     // deck contacts; IK compensates this offset instead of sliding the soles forward.
-    const an = new THREE.Group(); an.position.z = 0.055; ankle.add(an);
+    const an = new THREE.Group(); an.position.z = 0.078; ankle.add(an);
+    // Padded heel opening wraps the sock at the anatomical ankle. The forefoot
+    // remains fixed over the truck because plantFoot solves the offset in shoe space.
+    const opening = mesh(an, new THREE.TorusGeometry(1, .13, 8, 32), shoe, 0, .037, -.075);
+    opening.name = 'Padded heel opening'; opening.rotation.x = Math.PI / 2;
+    opening.scale.set(.030, .033, .033);
     // A lasted skate shoe: the upper narrows at the heel and arch, swells over the ball of
     // the foot and rounds off at the toe, and a vulcanised cupsole wraps up around it.
     // The old stack of rounded boxes read as a brick whichever way the foot turned.

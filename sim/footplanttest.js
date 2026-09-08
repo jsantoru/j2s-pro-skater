@@ -40,7 +40,7 @@ function step(state) {
 }
 function contact(leg, z, label) {
   leg.ankle.getWorldPosition(point); leg.an.worldToLocal(point);
-  assert.ok(point.z < -0.04 && point.z > -0.08, `${label}: ankle enters the heel half, not the shoe centre`);
+  assert.ok(point.z < -0.070 && point.z > -0.09, `${label}: ankle enters the rear third of the shoe`);
   point.set(0, -0.0405, 0); leg.an.localToWorld(point); c.board.worldToLocal(point);
   assert.ok(Math.abs(point.x) < 0.001, `${label}: shoe centered across deck: ${point.x}`);
   assert.ok(Math.abs(point.z - z) < 0.001, `${label}: stance stays over trucks: ${point.z}`);
