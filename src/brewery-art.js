@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { canvasMap } from './materials.js';
 import { dressBreweryProps } from './brewery-props.js';
 import { dressBreweryWear } from './brewery-wear.js';
-import { geneseeWallSign, rochesterWallPaint } from './warehouse-identity.js';
+import { geneseeWallSign, rochesterWallPaint, rochesterFlowerPaint } from './warehouse-identity.js';
 import { displayFont, labelFont } from './typography.js';
 import { captainMural } from './captain-mural.js';
 
@@ -92,7 +92,7 @@ export function dressBrewery(level, {add,box,bar,flat}) {
   // Local identity in the old FLOW position, clear of the bay number and ductwork.
   flat(5.6,5.6,35.85,4.15,16.3,rochesterWallPaint(),-Math.PI/2);
   // The exposed back of the half-pipe is a prominent canvas from the street section.
-  flat(10.5,2.15,-2,1.45,-6.87,graffiti('ROCHESTER','#8caaa6',2));
+  flat(3,3,-2,1.5,-6.87,rochesterFlowerPaint());
   flat(3.1,1.05,7.2,1.50,-6.865,brewerySign('BOTTLING','DEPARTMENT 03','#b9aa85','#453f31'));
 
   const grime = new THREE.MeshStandardMaterial({transparent:true,depthWrite:false,roughness:1,map:canvasMap((c,s,rng)=>{

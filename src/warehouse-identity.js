@@ -51,6 +51,16 @@ export function geneseeWallSign() {
   mat.name = 'Genesee G heritage wall sign'; return mat;
 }
 
+export function rochesterFlowerPaint() {
+  const map = canvasMap((c, s, rng) => {
+    paintMark(c, 'rochester', s * .5, s * .5, s * .82, '#ffffff');
+    paintLoss(c, s, s, rng, 8500);
+  }, 1024);
+  const mat = new THREE.MeshStandardMaterial({ map, transparent: true, depthWrite: false, roughness: 1,
+    polygonOffset: true, polygonOffsetFactor: -2 });
+  mat.name = 'Rochester white flower paint'; return mat;
+}
+
 export function rochesterWallPaint() {
   const map = canvasMap((c, s, rng) => {
     paintMark(c, 'rochester', s * .5, s * .36, s * .57, '#cbbfaa');
