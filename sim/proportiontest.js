@@ -4,7 +4,7 @@ import { Character } from '../src/character.js';
 
 const c = new Character();
 // Check authored silhouette independently from camera perspective and pose blends.
-const sleeve = c.lArm.sh.getObjectByName('Sleeve tucked into cuff').geometry;
+const sleeve = c.lArm.sh.getObjectByName('Short cotton sleeve').geometry;
 sleeve.computeBoundingBox();
 const face = c.head.getObjectByName('Seamless cap crown').geometry;
 face.computeBoundingBox();
@@ -14,8 +14,8 @@ assert.ok(shoulderWidth / headWidth < 2.9, 'Head is not dwarfed by padded should
 assert.ok(shoulderWidth / headWidth > 2.2, 'Keep an adult rather than oversized cartoon head');
 assert.ok(c.lArm.sh.position.y < 0.41, 'Shoulders slope below the neckline');
 
-const hoodie = c.torso.getObjectByName('Tailored hoodie torso');
-assert.ok(hoodie.isSkinnedMesh, 'Hoodie bends between hips and chest');
+const hoodie = c.torso.getObjectByName('Tailored cotton tee');
+assert.ok(hoodie.isSkinnedMesh, 'T-shirt bends between hips and chest');
 const hem = [], vtx = new THREE.Vector3();
 c.root.updateMatrixWorld(true);
 for (let i = 0; i < hoodie.geometry.attributes.position.count; i++) {

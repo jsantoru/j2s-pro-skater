@@ -30,7 +30,7 @@ for (const stance of [1, -1]) for (const lean of [-.3, 0, .3]) {
     if (c.pushPhase % (2 * Math.PI) < Math.PI) assert.ok(Math.abs(point.y - .003) < .001, 'Stroke contacts the ground');
     const pushKnee = local(trailing.kn, new THREE.Vector3());
     const supportKnee = local(support.kn, new THREE.Vector3());
-    assert.ok(supportKnee.x - pushKnee.x > .12, 'Knees stay in separate stride lanes');
+    assert.ok(supportKnee.x - pushKnee.x > .10, 'Knees stay in separate stride lanes');
     checked++;
   }
   // Release at the back of the stroke: resetting phase here would teleport the

@@ -9,9 +9,9 @@ const sk = (extra = {}) => ({ state: 'ride', crouch: 0, landSquash: 0, pushing: 
 const point = new THREE.Vector3(), normal = new THREE.Vector3(), q = new THREE.Quaternion();
 const seams = [];
 c.root.updateMatrixWorld(true);
-for (const name of ['Front jeans continuous hip', 'Back jeans continuous hip']) {
+for (const name of ['Front shorts continuous hip', 'Back shorts continuous hip']) {
   const mesh = c.root.getObjectByName(name), p = mesh.geometry.attributes.position;
-  assert.ok(mesh?.isSkinnedMesh, 'Jeans must deform continuously into the hips');
+  assert.ok(mesh?.isSkinnedMesh, 'Shorts must deform continuously into the hips');
   const samples = [];
   for (let i = 0; i < p.count; i++) if (mesh.geometry.attributes.skinWeight.getZ(i) === 1) {
     const bind = new THREE.Vector3().fromBufferAttribute(p, i);
@@ -34,7 +34,7 @@ function step(state) {
       seamPoint.fromBufferAttribute(mesh.geometry.attributes.position, i);
       mesh.applyBoneTransform(i, seamPoint); mesh.localToWorld(seamPoint);
       seamExpected.copy(bind); c.hips.localToWorld(seamExpected);
-      assert.ok(seamPoint.distanceTo(seamExpected) < 1e-5, 'Jeans hip seam must stay attached during leg flex');
+      assert.ok(seamPoint.distanceTo(seamExpected) < 1e-5, 'Shorts hip seam must stay attached during leg flex');
     }
   }
 }
