@@ -15,6 +15,8 @@
     "sim:effects": "node sim/effectstest.js",
     "sim:menu": "node sim/menutest.js",
     "sim:push": "node sim/pushtest.js",
+    "sim:level": "node sim/goaltest.js && node sim/sessiontest.js && node sim/collectibletest.js && node sim/levelroutetest.js",
+    "qa:level": "node sim/levelcheck.js",
     "qa:visual": "node sim/graphicscheck.js"
   },
   "dependencies": {

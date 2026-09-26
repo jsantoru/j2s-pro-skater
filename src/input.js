@@ -59,7 +59,7 @@ export class Input {
         if (e.repeat) return;
         // Native buttons own their activation keys; pressing Enter on a menu
         // must not also queue a run restart or Space-powered ollie.
-        if (['Enter', 'Space'].includes(e.code) && e.target?.closest?.('button, input, select, textarea')) return;
+        if (['Enter', 'Space'].includes(e.code) && e.target?.closest?.('button, input, select, textarea, summary')) return;
         this.keys.add(e.code); this.latched.add(e.code);
         if (!this.menuOpen && ['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', 'Escape'].includes(e.code)) e.preventDefault();
       });

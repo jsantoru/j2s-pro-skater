@@ -15,7 +15,7 @@ export class HUD {
       overlay: $('overlay'), overlayMsg: $('overlay-msg'), finalScore: $('final-score'),
       bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'),
       settings: $('settings-panel'), startBtn: $('start-btn'), settingsTitle: $('settings-title'),
-      resume: $('resume-run'), restart: $('restart-run'), menuStatus: $('menu-status'),
+      resume: $('resume-run'), restart: $('restart-run'), board: $('goals-menu'), menuStatus: $('menu-status'),
       musicToggle: $('music-toggle'), musicState: document.querySelector('#music-toggle .switch-state'),
     };
     this.onMusicToggle = null; // main wires this to the persisted setting + the audio bus
@@ -32,7 +32,9 @@ export class HUD {
     startBtn.addEventListener('click', () => this.toggleSettings());
     resume.addEventListener('click', () => this.toggleSettings(false));
     restart.addEventListener('click', () => this.onRestart?.());
+    this.el.board.addEventListener('click', () => this.onBoard?.());
     musicToggle.addEventListener('click', () => this.onMusicToggle?.());
+    $('controls-close').addEventListener('click', () => this.toggleControls(false));
     settings.addEventListener('click', (e) => { if (e.target === settings) this.toggleSettings(false); });
     window.addEventListener('keydown', (e) => {
       if (!this.settingsOpen) return;
@@ -69,11 +71,13 @@ export class HUD {
       this.el.settingsTitle.textContent = playing ? 'SESSION PAUSED' : 'SETTINGS';
       this.el.resume.textContent = playing ? 'RESUME SESSION' : 'BACK TO MENU';
       this.el.restart.hidden = !playing;
+      this.el.board.hidden = !playing;
       this.el.menuStatus.textContent = playing ? 'Your run is on hold. Pick up where you left off.' : 'Set the soundtrack before you drop in.';
     }
     this.el.settings.classList.toggle('hidden', !open);
     this.el.startBtn.setAttribute('aria-expanded', String(open));
     for (const el of [this.el.overlay, this.el.controls, this.el.startBtn]) el.inert = open;
+    this.el.overlay.inert = open || this.controlsOpen;
     this.onPauseChange?.(open);
     if (open) this.el.resume.focus();
     else {
@@ -93,7 +97,19 @@ export class HUD {
     this.el.pad.classList.toggle('connected', connected);
   }
   toast(msg) { this.el.toast.textContent = msg; this.el.toast.classList.add('show'); this.toastTimer = 2.6; }
-  toggleControls(force) { this.el.controls.classList.toggle('hidden', force === undefined ? undefined : !force); }
+  toggleControls(force) {
+    const open = force === undefined ? !this.controlsOpen : !!force;
+    if (open === this.controlsOpen) return;
+    if (open) this.controlsReturnFocus = document.activeElement;
+    this.el.controls.classList.toggle('hidden', !open);
+    this.el.overlay.inert = open || this.settingsOpen;
+    this.onControlsChange?.(open);
+    if (open) $('controls-close').focus({ preventScroll: true });
+    else {
+      document.activeElement?.blur();
+      if (this.mode !== 'playing' && this.controlsReturnFocus?.isConnected) this.controlsReturnFocus.focus({ preventScroll: true });
+    }
+  }
   get controlsOpen() { return !this.el.controls.classList.contains('hidden'); }
   overlay(show, msg, score) {
     this.el.overlay.classList.toggle('hidden', !show);
@@ -205,8 +221,8 @@ export class HUD {
     this.shownScore += (score - this.shownScore) * Math.min(1, dt * 6);
     if (Math.abs(score - this.shownScore) < 1) this.shownScore = score;
     this.el.score.textContent = fmt(Math.round(this.shownScore));
-    const t = Math.max(0, timeLeft), m = Math.floor(t / 60), s = Math.floor(t % 60);
-    this.el.timer.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    const t = Math.max(0, timeLeft), seconds = Math.ceil(t), m = Math.floor(seconds / 60), s = seconds % 60;
+    this.el.timer.textContent = Number.isFinite(t) ? m + ':' + (s < 10 ? '0' : '') + s : '∞';
     this.el.timer.classList.toggle('low', t < 15);
     if (this.toastTimer > 0) { this.toastTimer -= dt; if (this.toastTimer <= 0) this.el.toast.classList.remove('show'); }
     if (this.holdTimer > 0) {

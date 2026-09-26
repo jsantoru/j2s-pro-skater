@@ -1,6 +1,6 @@
 # J2S Pro Skater
 
-A single-level, gamepad-first 3D skateboarding prototype in the spirit of Tony Hawk's Pro Skater 1.
+A single-level, gamepad-first 3D skateboarding game in the spirit of Tony Hawk's Pro Skater 1.
 The point of this build is **game feel**: the skater controller, camera and animation are one
 hand-tuned kinematic system (no rigid-body physics), and every number in it was play-tested.
 
@@ -17,8 +17,42 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
-Plug in an Xbox-style (XInput / "standard mapping") USB controller, press any button, skate.
+Plug in an Xbox-style (XInput / "standard mapping") USB controller, press a button to connect it,
+then choose a goal and start your run.
 Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the full control map in game.
+
+## Genesee Warehouse goals
+
+Choose a focus on the goal board and **Start Goal Run** for a two-minute session. All seven goals
+are active together; the selected goal gets a live tracker. Use the arrow keys or controller D-pad
+to navigate, Enter / A to select, and Start to drop in.
+
+| Goal | Target |
+|---|---|
+| High Score | 2,500 banked points |
+| Pro Score | 10,000 banked points |
+| Sick Score | 25,000 banked points |
+| Big Combo | One landed 3,000-point combo |
+| Collect S-K-A-T-E | All five gold letters in one run, any order |
+| Bottle Cap Hunt | All five teal caps in one run |
+| Secret Tape | The pink tape on the raised loading deck |
+
+Completed goals and best records save immediately in this browser. Partial letter/cap collections
+reset on every run; a bail does not take away pickups already collected. Pickups do not add score.
+Score goals count only landed combos. When the buzzer catches a combo, **LAND IT!** gives you up
+to 20 seconds to finish that line; pickups close at the buzzer, and a bail loses the unbanked points.
+The results screen shows goals earned, new completions, the run score, and the best landed combo.
+
+**Free Skate** has no timer or career goals. Pause to restart or return to the goal board. Pausing
+freezes the level and goal notifications; switching tabs automatically pauses the session. Existing
+high scores remain available under **Best Runs** on the results screen. If browser storage is
+unavailable, the game still works and retains progress in memory until reload.
+
+![Genesee Warehouse goal board](screenshots/level-goals/board-desktop.png)
+
+`npm run sim:level` checks progression, timing, all pickup approaches, a complete S-K-A-T-E route,
+and attainable score/combo targets using actual skating physics. With the dev server running,
+`npm run qa:level` checks the integrated browser flow in an isolated Edge profile and captures the UI.
 
 `npm run build` produces a static bundle in `dist/`; `npm run preview` serves it.
 
@@ -37,7 +71,7 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 | L2 / R2 (ZL / ZR, LT / RT) | Revert left / right anywhere on the ground to toggle regular/switch. On ramp landings, flick into a manual to keep the combo. Triggers no longer push or brake |
 | LB / RB | Spin left / right (digital, handy with the d-pad) |
 | Right stick | Nudge the camera |
-| Start | Start the 2-minute free skate; pause / resume during play |
+| Start | Start a goal run; pause / resume during play |
 | Back | Toggle the controls panel |
 
 Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin), Z/C (revert), Enter (start / pause), Escape (pause / resume), Tab (controls).
@@ -72,8 +106,8 @@ Before a run, use Escape or Menu for settings. See [pause verification](PAUSE-ME
   two ledges, flat rails, a down bar. Also builds the raycast colliders and grind segments.
 - `src/tricks.js` – trick tables, spin naming and the combo maths, priced from
   [`THPS-SCORING-SYSTEM.md`](THPS-SCORING-SYSTEM.md). See [Scoring](#scoring).
-- `src/highscores.js` – the best-runs table, persisted to `localStorage` and rendered on the title and
-  end-of-run overlays. Stored data is re-validated on load, and every access is guarded so a browser
+- `src/highscores.js` – the best-runs table, persisted to `localStorage` and available from the
+  end-of-run record display. Stored data is re-validated on load, and every access is guarded so a browser
   with storage blocked simply keeps the table in memory for the session.
 - `src/settings.js` – player preferences, persisted to `localStorage` with the same guarded access as
   the high-score table. Music is off by default; the pause/settings menu controls it, and switching
@@ -124,7 +158,7 @@ Final Score = Σ(base × stance × degradation) × combo multiplier
 Finished runs go into a ten-deep table in `localStorage`, newest ranking applied at the moment the clock
 hits zero. The best of them shows under the live score as `SCORE TO BEAT`, in small type so it never
 competes with the number you are watching; pass it and the line turns green and reads `NEW RECORD`. The
-full table appears on the title screen and after a run, with the run you just finished highlighted.
+full table appears under Best Runs after a run, with the run you just finished highlighted.
 Restarting mid-run abandons it without recording anything.
 
 ## Tuning notes (the numbers that matter)
@@ -268,9 +302,9 @@ performance guarantee for other devices. Existing gameplay checks remain availab
 
 ### Title Screen
 
-![Title screen](screenshots/title.png)
+![Goal board](screenshots/level-goals/board-desktop.png)
 
-The home page—press START or ENTER to begin a 2-minute free-skate session.
+The goal board—choose a focus and start a two-minute goal run, or choose untimed Free Skate.
 
 ### Kickflip
 

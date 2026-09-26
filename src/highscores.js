@@ -24,7 +24,8 @@ function sanitise(list) {
 
 export class HighScores {
   constructor(storage) {
-    this.storage = storage !== undefined ? storage : globalThis.localStorage;
+    try { this.storage = storage !== undefined ? storage : globalThis.localStorage; }
+    catch { this.storage = null; }
     this.list = this.load();
   }
   load() {

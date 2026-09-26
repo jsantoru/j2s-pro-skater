@@ -12,6 +12,10 @@ import { Effects } from './fx.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { ConcreteFloor } from './concrete-floor.js';
 import { lightWarehouse } from './atmosphere.js';
+import { GOALS, GoalProgress, GoalRun } from './goals.js';
+import { Collectibles } from './collectibles.js';
+import { LevelUI } from './level-ui.js';
+import { SessionClock } from './session.js';
 
 const RUN_TIME = 120;
 const FIXED_DT = 1 / 120;
@@ -52,10 +56,19 @@ const highScores = new HighScores();
 const audio = new Audio();
 const settings = new Settings();
 const fx = new Effects(scene, { level, lowfx: LOWFX });
+const progress = new GoalProgress();
+// Earlier versions already recorded two-minute runs. Keep that record visible on
+// the new board without awarding any of the new goals retroactively.
+progress.record({ score: highScores.best });
+const goals = new GoalRun(progress);
+const collectibles = new Collectibles(scene);
+const sessionClock = new SessionClock(RUN_TIME);
+const levelUI = new LevelUI(GOALS, { onStart: startRun, onBoard: showGoalBoard });
 
 // ---- game state ----
 let mode = 'title'; // title | playing | over
-let timeLeft = RUN_TIME;
+let runMode = 'goals', focusGoal = GOALS[0].id;
+let bankedThisStep = false;
 let accumulator = 0, last = performance.now(), visualTime = 0;
 const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed', 'revertLeftPressed', 'revertRightPressed'];
 const pending = {};
@@ -64,6 +77,8 @@ hud.setMode(mode);
 skater.events.ollie = (charge) => { audio.pop(charge); fx.ollie(skater, charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
 skater.events.trickStart = (name) => { audio.trickStart(name); const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
 skater.events.land = (points, text, mult, impactHandled = false) => {
+  if (points > 0) bankedThisStep = true;
+  if (mode === 'playing') handleGoalEvents(goals.bankCombo(points));
   if (!impactHandled) {
     audio.land(skater.landSquash);
     input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
@@ -100,7 +115,7 @@ input.onGamepadChange = (connected, id) => {
   hud.toast(connected ? 'CONTROLLER CONNECTED: ' + id.slice(0, 40) : 'CONTROLLER DISCONNECTED — keyboard active');
 };
 hud.setPad(false);
-hud.highScores(highScores.list, 0); // the title screen opens on the table
+hud.highScores(highScores.list, 0);
 
 // Settings. The score is off unless the player has switched it on, and switching it on is itself a
 // gesture, so it doubles as the permission the browser needs to start the audio context.
@@ -112,11 +127,12 @@ hud.onMusicToggle = () => {
   audio.setMusic(on);
   hud.musicSetting(on);
 };
-hud.onPauseChange = (open) => {
+function syncPause() {
+  const open = hud.settingsOpen || hud.controlsOpen;
   document.body.dataset.paused = String(open);
-  input.setMenuOpen(open);
+  input.setMenuOpen(open || mode !== 'playing');
   input.stopHaptics();
-  audio.setPaused(open);
+  audio.setPaused(open || mode !== 'playing');
   accumulator = 0; last = performance.now();
   for (const k of EDGES) pending[k] = false;
   if (!open) {
@@ -125,39 +141,91 @@ hud.onPauseChange = (open) => {
     if (skater.crouching) { skater.crouching = false; skater.crouchTime = 0; skater.queued = null; }
     skater.bufferedOllie = false;
   }
-};
-hud.onRestart = () => startRun();
+}
+hud.onPauseChange = syncPause;
+hud.onControlsChange = syncPause;
+hud.onRestart = () => startRun(runMode, focusGoal);
+hud.onBoard = () => showGoalBoard();
 
-function startRun() {
+function handleGoalEvents(events) {
+  for (const event of events) {
+    if (event.type === 'goal') {
+      levelUI.notifyGoal(event.goal);
+      input.rumble(0.25, 0.5, 160);
+    } else if (event.type === 'pickup') {
+      audio.score();
+      input.rumble(0.08, 0.3, 65);
+    }
+  }
+  if (events.length) collectibles.sync(goals.collected);
+}
+
+function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
   hud.toggleSettings(false);
+  if (!audio.enabled) audio.init();
   input.stopHaptics();
+  input.setMenuOpen(false);
   accumulator = 0; last = performance.now();
   for (const k of EDGES) pending[k] = false;
   skater.reset();
   fx.clear();
-  timeLeft = RUN_TIME; mode = 'playing';
+  runMode = selectedMode === 'free' ? 'free' : 'goals';
+  focusGoal = GOALS.some(goal => goal.id === selectedGoal) ? selectedGoal : GOALS[0].id;
+  goals.start({ mode: runMode, skater });
+  sessionClock.start(runMode);
+  collectibles.sync(goals.collected);
+  mode = 'playing';
   document.body.dataset.mode = mode;
   hud.setMode(mode);
   hud.toggleControls(false);
-  hud.overlay(false);
+  levelUI.hide();
   hud.combo('', 0, 0);
+  hud.shownScore = 0;
+  hud.el.timer.classList.remove('overtime');
+  document.querySelector('#venue > span:last-child').textContent = runMode === 'free' ? '01 / FREE SKATE' : '01 / GOAL RUN';
+  document.getElementById('top-center').dataset.session = runMode === 'free' ? 'FREE SKATE' : 'GOAL RUN';
   followCam.snap(skater);
+  audio.setPaused(false);
 }
 function endRun() {
+  if (mode !== 'playing') return;
   mode = 'over';
+  sessionClock.finish();
+  const result = goals.finish();
+  input.setMenuOpen(true);
+  input.stopHaptics();
+  audio.setPaused(true);
+  hud.toggleSettings(false);
   document.body.dataset.mode = mode;
   hud.setMode(mode);
   // Bank the run before the overlay draws, so the table shows where it landed. The score to beat
   // only moves now — during a run it stays the target you started with.
-  const rank = highScores.submit(skater.score);
-  hud.overlay(true, 'Press START / ENTER to skate again', skater.score);
+  const rank = runMode === 'goals' ? highScores.submit(skater.score) : 0;
+  levelUI.showResults(result, progress.snapshot());
   hud.highScores(highScores.list, rank);
+  collectibles.update(0, false, camera);
 }
 
-document.getElementById('overlay-msg').addEventListener('click', (event) => {
-  if (!audio.enabled) audio.init();
-  startRun(); event.currentTarget.blur();
-});
+function showGoalBoard() {
+  mode = 'title';
+  sessionClock.finish();
+  goals.finish();
+  hud.toggleSettings(false);
+  hud.setMode(mode);
+  document.body.dataset.mode = mode;
+  input.setMenuOpen(true);
+  input.stopHaptics();
+  hud.toggleControls(false);
+  hud.combo('', 0, 0);
+  hud.balance(false, 0, false);
+  fx.clear();
+  skater.reset();
+  followCam.snap(skater);
+  collectibles.update(0, false, camera);
+  levelUI.showBoard(progress.snapshot());
+  audio.setPaused(true);
+  accumulator = 0; last = performance.now();
+}
 document.getElementById('overlay-controls').addEventListener('click', (event) => {
   hud.toggleControls(); event.currentTarget.blur();
 });
@@ -170,6 +238,13 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 followCam.snap(skater);
+showGoalBoard();
+
+// Losing the tab must never burn a run or leave a held direction skating unattended.
+window.addEventListener('blur', () => { if (mode === 'playing') hud.toggleSettings(true); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && mode === 'playing') hud.toggleSettings(true);
+});
 
 // idle demo input on the title screen: nothing pressed
 const idle = { steer: 0, stickY: 0, push: 0, brake: 0, ollie: false, olliePressed: false, ollieReleased: false, flipPressed: false, grab: false, grabPressed: false, grind: false, grindPressed: false, spinLeft: false, spinRight: false, camX: 0, dir8: 'C', autoPush: false };
@@ -181,6 +256,12 @@ function frame(now) {
   let dt = Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
   const inp = input.poll(dt);
   if (inp.anyPressed && !audio.enabled) audio.init();
+  if (hud.controlsOpen && !hud.settingsOpen) {
+    if (inp.selectPressed || inp.pausePressed || inp.menuCancel || inp.startPressed) hud.toggleControls(false);
+    audio.update(skater);
+    renderer.render(scene, camera);
+    return;
+  }
   if (hud.settingsOpen) {
     hud.updateMenuInput(inp);
     audio.update(skater);
@@ -193,25 +274,29 @@ function frame(now) {
     return;
   }
   input.hapticsBegin();
-  if (inp.selectPressed) hud.toggleControls();
-  if (inp.startPressed && (mode === 'title' || mode === 'over')) startRun();
-  if (mode === 'title' && inp.anyPressed && !inp.selectPressed) startRun();
+  if (inp.selectPressed) {
+    hud.toggleControls(true);
+    renderer.render(scene, camera);
+    return;
+  }
+  if (mode !== 'playing') levelUI.updateMenuInput(inp);
   visualTime += dt;
+  levelUI.tick?.(dt);
 
   // fixed-step simulation. Edge inputs are latched until a substep consumes them, so a press is never
   // dropped on frames that run zero substeps (high-refresh displays) and never fires twice.
   const simInput = mode === 'playing' ? inp : idle;
   for (const k of EDGES) pending[k] = pending[k] || inp[k];
-  accumulator += dt;
+  accumulator += mode === 'playing' ? dt : 0;
   let steps = 0;
-  while (accumulator >= FIXED_DT && steps < 8) {
+  while (mode === 'playing' && accumulator >= FIXED_DT && steps < 12) {
     if (mode === 'playing') for (const k of EDGES) { simInput[k] = pending[k]; pending[k] = false; }
+    bankedThisStep = false;
     skater.update(FIXED_DT, simInput);
+    const ended = sessionClock.advance(FIXED_DT, skater, { banked: bankedThisStep });
+    handleGoalEvents(goals.update(skater, { collect: !ended && !sessionClock.overtime && sessionClock.remaining > 0 }));
     accumulator -= FIXED_DT; steps++;
-  }
-  if (mode === 'playing') {
-    timeLeft -= dt;
-    if (timeLeft <= 0) { timeLeft = 0; endRun(); }
+    if (ended) endRun();
   }
   // visuals
   character.root.position.copy(skater.pos);
@@ -220,6 +305,7 @@ function frame(now) {
   followCam.update(dt, skater, inp.camX);
   audio.update(skater);
   fx.update(dt, skater);
+  collectibles.update(dt, mode === 'playing' && runMode === 'goals' && !sessionClock.overtime, camera);
   atmosphere.update(visualTime);
   if (mode === 'title') {
     // A slow establishing shot gives the title the same rendered park as gameplay.
@@ -256,12 +342,15 @@ function frame(now) {
   const onManual = mode === 'playing' && !!skater.manual && skater.manualBalance.active;
   if (onManual) hud.balance(true, skater.manualBalance.x, true, character, camera);
   else hud.balance(onRail, skater.balance.x, false, character, camera);
-  hud.update(dt, skater.score, timeLeft, highScores.best);
+  hud.update(dt, skater.score, sessionClock.remaining, highScores.best);
+  hud.el.timer.classList.toggle('overtime', sessionClock.overtime);
+  if (sessionClock.overtime) hud.el.timer.textContent = 'LAND IT!';
+  levelUI.update({ ...goals.snapshot(), focusGoal, overtime: sessionClock.overtime });
   if (skater.combo.tricks.length && (skater.state === 'grind' || skater.manual)) refreshCombo();
   input.hapticsCommit(dt);
   renderer.render(scene, camera);
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun, endRun, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx,
-  get session() { return { mode, paused: hud.settingsOpen, timeLeft, visualTime }; } };
+window.__game = { skater, level, input, character, followCam, startRun, endRun, showGoalBoard, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx, goals, progress, collectibles, levelUI, sessionClock,
+  get session() { return { mode, runMode, focusGoal, paused: hud.settingsOpen || hud.controlsOpen, timeLeft: sessionClock.remaining, overtime: sessionClock.overtime, visualTime }; } };
