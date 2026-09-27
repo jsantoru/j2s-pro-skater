@@ -23,14 +23,14 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 
 ## Genesee Warehouse goals
 
-Choose a focus on the goal board and **Start Goal Run** for a two-minute session. All seven goals
-are active together; the selected goal gets a live tracker. Use the arrow keys or controller D-pad
+Choose a focus on the goal board and **Start Goal Run** for a two-minute session. Only unfinished
+career goals are active; the selected goal gets a live tracker. Use the arrow keys or controller D-pad
 to navigate, Enter / A to select, and Start to drop in.
 
 Between runs, the focus stays on your selected goal while it is unfinished. Once earned, the
 next run highlights the first unfinished career goal on the board, including after a restart
-or reload. Results show that next focus before you drop in. You can still select a completed
-goal manually to replay it; after all seven are done, your selected goal stays available.
+or reload. Results show that next focus before you drop in. Completed goals stay checked off on
+the board as achievements, and cannot be selected again. After all seven are done, drop into Free Skate.
 
 | Goal | Target |
 |---|---|
@@ -44,6 +44,11 @@ goal manually to replay it; after all seven are done, your selected goal stays a
 
 Completed goals and best records save immediately in this browser. Partial letter/cap collections
 reset on every run; a bail does not take away pickups already collected. Pickups do not add score.
+Once a collectible goal is complete, its pickups and HUD indicator disappear from later runs:
+all five caps after Bottle Cap Hunt, all five letters only after the complete S-K-A-T-E goal,
+and the tape after Secret Tape. Partial sets respawn in full until the goal is earned. Completed
+score/combo goals also retire, so later runs cannot award them again. Each run keeps the goal set
+it started with until the next restart or session.
 Score goals count only landed combos. When the buzzer catches a combo, **LAND IT!** gives you up
 to 20 seconds to finish that line; pickups close at the buzzer, and a bail loses the unbanked points.
 The results screen shows goals earned, new completions, the run score, and the best landed combo.

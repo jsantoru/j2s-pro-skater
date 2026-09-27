@@ -90,7 +90,9 @@ async function fixtureCareer(completed, selected = 'high-score') {
     __game.progress.bestScore=${completed.includes('sick-score') ? 25000 : completed.length ? 3000 : 0};
     __game.progress.bestCombo=${completed.length ? 3000 : 0};
     localStorage.setItem('j2s-pro-skater.genesee.goals.v1',JSON.stringify(__game.progress.snapshot()));
-    __game.levelUI.selectGoal(${JSON.stringify(selected)});
+    // Seed even a stale completed focus so the board must resolve it against
+    // this fixture's career. selectGoal correctly rejects completed user picks.
+    __game.levelUI.selectedGoal=${JSON.stringify(selected)};
     __game.showGoalBoard();
   })()`);
   await step();
@@ -98,6 +100,19 @@ async function fixtureCareer(completed, selected = 'high-score') {
 async function finishTimedRun() {
   await evaluate('__game.sessionClock.remaining=1/120'); await step(2);
   assert.equal(await evaluate('__game.session.mode'),'over');
+}
+async function fixturePickup(id) {
+  // Place the rider at a pickup for the real frame-loop collision/notification
+  // path. Route reachability is covered independently by collectibletest.js.
+  await evaluate(`(() => {
+    const p=__game.goals.pickups.find(p=>p.id===${JSON.stringify(id)});
+    const s=__game.skater;s.reset();s.pos.set(p.position[0],p.position[1]-.85,p.position[2]);s.state='air';
+    __game.goals.previousPosition=null;
+  })()`);
+  await step(2);
+}
+async function visiblePickupCounts() {
+  return evaluate(`Object.fromEntries(['skate','caps','tape'].map(id=>[id,__game.collectibles.items.filter(p=>p.definition.goalId===id&&(p.root.visible||p.ring.visible)).length]))`);
 }
 
 const driver = `(() => {
@@ -323,29 +338,30 @@ try {
     await evaluate('__qa.pad=null'); await step();
   });
 
-  await check('manual completed-goal replay is respected, then results advance using earlier career completion', async () => {
+  await check('completed goals stay disabled and cannot be selected or awarded again', async () => {
     await fixtureCareer(['high-score','combo']);
     // Let the preceding controller-connection toast expire on the idle board so
     // the focus screenshots show only the user-facing next-goal state.
     await step(165);
     await click('[data-goal="high-score"]'); await click('#overlay-msg'); await step();
-    assert.equal(await evaluate('__game.session.focusGoal'),'high-score');
-    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'high-score');
+    assert.equal(await evaluate('document.querySelector("[data-goal=high-score]").disabled'),true);
+    assert.equal(await evaluate('__game.session.focusGoal'),'pro-score');
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'pro-score');
     await fixtureCombo(100); await step(3);
-    assert.equal(await evaluate('__game.session.focusGoal'),'high-score','focus must not move midrun');
-    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'High Score');
+    assert.equal(await evaluate('__game.session.focusGoal'),'pro-score','focus must not move midrun');
+    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'Pro Score');
     assert.deepEqual(await evaluate('__game.goals.snapshot().completed'),[]);
     await finishTimedRun();
     assert.deepEqual(await evaluate('__game.goals.snapshot().newlyCompleted'),[]);
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'pro-score','career completion matters even when no goal was completed this run');
     assert.match(await evaluate('document.querySelector(".results-next .level-eyebrow").textContent'),/UP NEXT/);
     assert.match(await evaluate('document.querySelector(".results-next h2").textContent'),/Pro Score/i);
-    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/START NEXT RUN/);
-    await shot('focus-next-results');
+    assert.match(await evaluate('document.getElementById("results-goals").textContent'),/0\s*\/\s*5/);
+    await shot('unfinished-results');
     await resize(390,844);
     await evaluate('document.querySelector(".results-next").scrollIntoView({block:"center"})');
     assert.ok(await evaluate('(() => {const r=document.querySelector(".results-next").getBoundingClientRect();return r.left>=0&&r.right<=innerWidth;})()'));
-    await shot('focus-next-results-phone');
+    await shot('unfinished-results-phone');
     await resize(1440,900);
     await click('#retry-run'); await step();
     assert.equal(await evaluate('__game.session.focusGoal'),'pro-score');
@@ -354,7 +370,10 @@ try {
     await tap('Escape'); await click('#goals-menu'); await step();
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'pro-score');
     assert.equal(await evaluate('document.getElementById("mission-status").textContent'),'TO DO');
-    await shot('focus-next-board');
+    await shot('unfinished-board');
+    await click('#overlay-msg'); await fixtureCombo(10000); await step();
+    assert.deepEqual(await evaluate('__game.goals.snapshot().completed'),['pro-score']);
+    assert.deepEqual(await evaluate('__game.goals.snapshot().availableGoals'),['pro-score','sick-score','skate','caps','tape']);
   });
 
   await check('an unfinished chosen collectible remains focused through score completion, results and the board', async () => {
@@ -366,7 +385,7 @@ try {
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'caps');
     await finishTimedRun();
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'caps');
-    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/RUN IT BACK/);
+    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/TRY AGAIN/);
     await click('#retry-run'); await step();
     assert.equal(await evaluate('__game.session.focusGoal'),'caps');
     await finishTimedRun(); await click('#results-board'); await step();
@@ -393,26 +412,89 @@ try {
     await fixtureCareer(['high-score','pro-score','sick-score','combo','caps'],'caps');
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'skate');
     await click('[data-goal="caps"]'); await click('#overlay-msg'); await step();
-    assert.equal(await evaluate('__game.session.focusGoal'),'caps');
+    assert.equal(await evaluate('__game.session.focusGoal'),'skate');
     await finishTimedRun();
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'skate');
     await click('#retry-run'); await step();
     assert.equal(await evaluate('__game.session.focusGoal'),'skate');
   });
 
-  await check('all-complete careers keep a valid chosen focus for results, retry and board', async () => {
-    await fixtureCareer(['high-score','pro-score','sick-score','combo','skate','caps','tape'],'tape');
-    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'tape');
+  await check('completed caps vanish while unfinished letters and tape remain collectible', async () => {
+    await fixtureCareer(['caps'],'skate'); await click('#overlay-msg'); await step();
+    assert.deepEqual(await visiblePickupCounts(),{skate:5,caps:0,tape:1});
+    assert.equal(await evaluate('document.getElementById("caps-tracker").classList.contains("hidden")'),true);
+    assert.equal(await evaluate('document.getElementById("skate-tracker").classList.contains("hidden")'),false);
+    await shot('retired-caps-run');
+    await fixturePickup('cap-1');
+    assert.equal(await evaluate('__game.goals.count("caps")'),0);
+    await fixturePickup('letter-s');
+    assert.deepEqual(await evaluate('__game.goals.snapshot().letters'),['S']);
+  });
+
+  await check('partial letter and cap sets return in full on restart until their entire goal is earned', async () => {
+    await fixtureCareer([],'skate'); await click('#overlay-msg');
+    await fixturePickup('letter-s'); await fixturePickup('letter-k'); await fixturePickup('cap-1');
+    assert.equal(await evaluate('__game.progress.has("skate")||__game.progress.has("caps")'),false);
+    await tap('Escape'); await click('#restart-run'); await step();
+    assert.equal(await evaluate('__game.goals.collected.size'),0);
+    assert.deepEqual(await visiblePickupCounts(),{skate:5,caps:5,tape:1});
+    assert.equal(await evaluate('document.querySelectorAll("#skate-tracker .collected").length'),0);
+    for (const id of ['letter-s','letter-k','letter-a','letter-t','letter-e']) await fixturePickup(id);
+    assert.equal(await evaluate('__game.progress.has("skate")'),true);
+    await tap('Escape'); await click('#restart-run'); await step();
+    assert.deepEqual(await visiblePickupCounts(),{skate:0,caps:5,tape:1});
+    assert.equal(await evaluate('document.getElementById("skate-tracker").classList.contains("hidden")'),true);
+    assert.equal(await evaluate('document.getElementById("caps-tracker").classList.contains("hidden")'),false);
+  });
+
+  await check('completed collectible goals stay absent after reload and leave no HUD counters or pickup effects', async () => {
+    await fixtureCareer(['skate','caps','tape']);
+    await send('Page.reload',{ignoreCache:true}); await sleep(200); await boot();
     await click('#overlay-msg'); await step();
-    assert.equal(await evaluate('__game.session.focusGoal'),'tape');
+    assert.deepEqual(await visiblePickupCounts(),{skate:0,caps:0,tape:0});
+    assert.equal(await evaluate('document.querySelector(".pickup-tracker").classList.contains("hidden")'),true);
+    assert.equal(await evaluate('__game.goals.availableGoals.size'),4);
+    await shot('retired-collectibles-run');
+    const touchUrl=new URL(url); touchUrl.searchParams.set('touch','1');
+    await send('Page.navigate',{url:touchUrl.href}); await sleep(200); await boot();
+    await resize(390,844); await click('#overlay-msg'); await step();
+    assert.equal(await evaluate('document.body.classList.contains("touch-enabled")'),true);
+    assert.equal(await evaluate('document.getElementById("touch-controls").hidden'),false);
+    assert.equal(await evaluate('__game.renderer.shadowMap.enabled'),false);
+    assert.deepEqual(await visiblePickupCounts(),{skate:0,caps:0,tape:0});
+    assert.equal(await evaluate('document.querySelector(".pickup-tracker").classList.contains("hidden")'),true);
+    await shot('retired-collectibles-phone');
+    await send('Page.navigate',{url}); await sleep(200); await boot();
+    await resize(1440,900); await click('#overlay-msg'); await step();
+    for (const id of ['letter-s','cap-1','secret-tape']) await fixturePickup(id);
+    assert.deepEqual(await evaluate('__game.goals.snapshot().collected'),[]);
+    assert.deepEqual(await evaluate('__game.goals.snapshot().completed'),[]);
+  });
+
+  await check('earning the final remaining goal offers Free Skate with no stale goal selection', async () => {
+    await fixtureCareer(['high-score','pro-score','sick-score','combo','skate','caps'],'tape');
+    await click('#overlay-msg'); await step();
+    assert.deepEqual(await visiblePickupCounts(),{skate:0,caps:0,tape:1});
+    assert.match(await evaluate('document.getElementById("tracker-completed").textContent'),/0\s*\/\s*1/);
+    await fixturePickup('secret-tape');
+    assert.equal(await evaluate('__game.progress.has("tape")'),true);
     await finishTimedRun();
-    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'tape');
-    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/RUN IT BACK/);
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),null);
+    assert.match(await evaluate('document.getElementById("results-goals").textContent'),/1\s*\/\s*1/);
+    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/FREE SKATE/);
+    await shot('warehouse-cleared-results');
     await click('#retry-run'); await step();
-    assert.equal(await evaluate('__game.session.focusGoal'),'tape');
-    await finishTimedRun(); await click('#results-board'); await step();
-    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'tape');
-    assert.equal(await evaluate('document.querySelector(".goal-row.selected").dataset.goal'),'tape');
+    assert.equal(await evaluate('__game.session.runMode'),'free');
+    assert.equal(await evaluate('__game.session.focusGoal'),null);
+    assert.equal(await evaluate('__game.session.timeLeft===Infinity'),true);
+    await board();
+    assert.equal(await evaluate('document.querySelectorAll(".goal-row:disabled").length'),7);
+    assert.equal(await evaluate('document.querySelector(".goal-row.selected")'),null);
+    assert.match(await evaluate('document.getElementById("overlay-msg").textContent'),/FREE SKATE/);
+    await shot('warehouse-cleared-board');
+    await evaluate('__game.startRun("goals","high-score")'); await step();
+    assert.equal(await evaluate('__game.session.runMode'),'free');
+    assert.deepEqual(await visiblePickupCounts(),{skate:0,caps:0,tape:0});
   });
 
   await check('next-focus policy leaves free-skate restart and replay untimed without career writes', async () => {
@@ -426,7 +508,7 @@ try {
     assert.equal(await evaluate('__game.session.runMode'),'free');
     assert.equal(await evaluate('__game.session.timeLeft === Infinity'),true);
     await evaluate('__game.endRun()'); await step();
-    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/RUN IT BACK/);
+    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/KEEP FREE SKATING/);
     await click('#retry-run'); await step();
     assert.equal(await evaluate('__game.session.runMode'),'free');
     assert.equal(await evaluate('__game.session.timeLeft === Infinity'),true);

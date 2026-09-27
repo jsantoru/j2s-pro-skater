@@ -1,5 +1,6 @@
 // Genesee's career goals are independent of rendering. Only banked landings count toward
 // score goals; collecting and saving happen exclusively in timed goal runs.
+// A new run activates only goals that were unfinished when it started.
 export const GOALS = Object.freeze([
   { id: 'high-score', title: 'High Score', description: 'Bank 2,500 points in one run.', type: 'score', target: 2500, category: 'Score' },
   { id: 'pro-score', title: 'Pro Score', description: 'Bank 10,000 points in one run.', type: 'score', target: 10000, category: 'Score' },
@@ -117,6 +118,7 @@ export class GoalRun {
     this.active = false;
     this.score = 0;
     this.bestCombo = 0;
+    this.availableGoals = new Set();
     this.collected = new Set();
     this.completed = new Set();
     this.newlyCompleted = new Set();
@@ -127,6 +129,9 @@ export class GoalRun {
   start({ mode = 'goals', skater = null } = {}) {
     this.reset();
     this.mode = mode === 'free' ? 'free' : 'goals';
+    if (this.mode === 'goals') {
+      this.availableGoals = new Set(GOALS.filter(goal => !this.progress.has(goal.id)).map(goal => goal.id));
+    }
     this.active = true;
     this.previousPosition = skater?.state === 'bail' ? null : bodyPosition(skater);
     return this;
@@ -143,10 +148,10 @@ export class GoalRun {
   }
 
   evaluate() {
-    if (this.mode !== 'goals') return [];
+    if (!this.active || this.mode !== 'goals') return [];
     const events = [];
     for (const goal of GOALS) {
-      if (!this.completed.has(goal.id) && this.current(goal) >= goal.target) {
+      if (this.availableGoals.has(goal.id) && !this.completed.has(goal.id) && this.current(goal) >= goal.target) {
         this.completed.add(goal.id);
         const newCareer = !this.progress.has(goal.id);
         if (newCareer) this.newlyCompleted.add(goal.id);
@@ -181,7 +186,7 @@ export class GoalRun {
     if (distanceSquared(start, end) > MAX_SWEEP ** 2) return [];
     const events = [];
     for (const pickup of this.pickups) {
-      if (!this.collected.has(pickup.id) && touchesSegment(start, end, pickup)) {
+      if (this.availableGoals.has(pickup.goalId) && !this.collected.has(pickup.id) && touchesSegment(start, end, pickup)) {
         this.collected.add(pickup.id);
         events.push({ type: 'pickup', pickup });
       }
@@ -202,13 +207,16 @@ export class GoalRun {
       active: this.active,
       score: this.score,
       bestCombo: this.bestCombo,
+      // Keep the initial goal set through results; completion does not remove a
+      // goal midway through its run or change the run's completion denominator.
+      availableGoals: [...this.availableGoals],
       collected: [...this.collected],
       completed: [...this.completed],
       newlyCompleted: [...this.newlyCompleted],
       letters: this.pickups.filter(pickup => pickup.goalId === 'skate' && this.collected.has(pickup.id)).map(pickup => pickup.label),
       caps: this.count('caps'),
       tape: this.count('tape') > 0,
-      goals: GOALS.map(goal => ({ ...goal, current: this.current(goal), complete: this.completed.has(goal.id), careerComplete: this.progress.has(goal.id) })),
+      goals: GOALS.map(goal => ({ ...goal, current: this.current(goal), available: this.availableGoals.has(goal.id), complete: this.completed.has(goal.id), careerComplete: this.progress.has(goal.id) })),
     };
   }
 }

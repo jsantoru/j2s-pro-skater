@@ -259,6 +259,10 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
 .goal-row.selected .goal-target { color: #c0ae8b; }
 .goal-row.complete .goal-check { color: #b8d4aa; }
 .goal-row.complete .goal-order { color: #a0b895; }
+.goal-row:disabled { cursor: default; background: #c3d3c704; border-color: #c5d2c619; border-left-color: transparent; }
+.goal-row:disabled .goal-name { color: #9fae9b; }
+.goal-row:disabled .goal-icon { color: #819a83; }
+.goal-row:disabled .goal-target { color: #738977; }
 .goal-board-note { margin: 14px 0 0; color: #8fa398; font-size: 10px; line-height: 1.5; }
 .mission-panel { position: relative; min-width: 0; padding: 22px 25px 17px; background: linear-gradient(145deg, #23322dec, #142420ed);
   border: 1px solid #d2c5a633; border-top: 2px solid #edb66b; border-radius: 2px; display: flex; flex-direction: column; overflow: hidden; }
@@ -278,6 +282,11 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
 .mission-session > b { font: 700 30px/1 var(--font-display); color: #edb66b; }
 .mission-session > span { font-size: 7px; letter-spacing: 1.15px; font-weight: 700; color: #d4d4bd; }
 .mission-session small { display: block; font-size: 9px; font-weight: 400; letter-spacing: 0; margin-top: 5px; color: #8c9f90; }
+.mission-panel.career-complete { border-top-color: #b8d4aa; }
+.mission-panel.career-complete #mission-title { max-width: 280px; font-size: 36px; }
+.mission-panel.career-complete #mission-target, .mission-panel.career-complete #mission-session-time { color: #b8d4aa; }
+.mission-panel.career-complete #mission-session-time { font-size: 42px; }
+#free-skate[hidden] { display: none; }
 #overlay-msg, .level-primary { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; padding: 15px 17px;
   font: 700 12px var(--font-ui); letter-spacing: 1.3px; border: 1px solid #edb66b; border-radius: 2px; background: #edb66b; color: #162622; cursor: pointer; box-shadow: none; }
 #overlay-msg span, .level-primary span { font-size: 8px; letter-spacing: .8px; }

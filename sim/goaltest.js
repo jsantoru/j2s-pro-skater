@@ -61,6 +61,8 @@ check('blocked reads and writes preserve an in-memory career', () => {
   assert.ok(progress.has('pro-score'));
   run.start();
   assert.ok(progress.has('pro-score'));
+  assert.ok(!run.availableGoals.has('pro-score'));
+  assert.deepEqual(run.bankCombo(10000), [], 'blocked storage cannot reactivate goals already earned in memory');
 });
 
 check('a throwing global localStorage getter is also guarded', () => {
@@ -153,7 +155,7 @@ check('elevated E needs an ollie while ground-height letters collect while ridin
   assert.deepEqual(run.snapshot().letters, ['S', 'E']);
 });
 
-check('partial collections reset between runs while earned career goals persist immediately', () => {
+check('partial SKATE resets on restart but a completed set stays unavailable in later runs', () => {
   const store = storage();
   const progress = new GoalProgress(store);
   const run = new GoalRun(progress).start();
@@ -161,6 +163,7 @@ check('partial collections reset between runs while earned career goals persist 
   for (const pickup of letters.slice(0, 4)) visit(run, pickup);
   assert.ok(!progress.has('skate'));
   run.start();
+  assert.ok(run.availableGoals.has('skate'));
   visit(run, letters[4]);
   assert.equal(run.count('skate'), 1);
   assert.ok(!progress.has('skate'));
@@ -173,11 +176,117 @@ check('partial collections reset between runs while earned career goals persist 
   assert.equal(run.collected.size, 0);
   assert.equal(run.completed.size, 0);
   assert.equal(run.snapshot().goals.find(goal => goal.id === 'skate').careerComplete, true);
+  assert.equal(run.snapshot().goals.find(goal => goal.id === 'skate').available, false);
   const events = letters.flatMap(pickup => visit(run, pickup));
-  const repeated = events.filter(event => event.type === 'goal');
-  assert.equal(repeated.length, 1);
-  assert.equal(repeated[0].newCareer, false);
+  assert.deepEqual(events, [], 'finished SKATE cannot collect or award a second time');
+  assert.deepEqual(run.snapshot().letters, []);
+  assert.deepEqual(run.snapshot().completed, []);
   assert.deepEqual(run.snapshot().newlyCompleted, []);
+});
+
+check('a run captures only unfinished career goals in its available set and snapshots', () => {
+  const progress = new GoalProgress(storage(JSON.stringify({ completed: ['high-score','caps','tape'], bestScore: 2500, bestCombo: 1000 })));
+  const run = new GoalRun(progress).start();
+  const expected = ['pro-score','sick-score','combo','skate'];
+  assert.deepEqual([...run.availableGoals], expected);
+  assert.deepEqual(run.snapshot().availableGoals, expected);
+  for (const goal of run.snapshot().goals) {
+    assert.equal(goal.available, expected.includes(goal.id), goal.id);
+    assert.equal(goal.complete, false, 'career completion is not completion in this run');
+  }
+});
+
+check('partial caps reset after reload and a pause-style restart still includes all five', () => {
+  const store = storage();
+  const run = new GoalRun(new GoalProgress(store)).start();
+  const caps = PICKUPS.filter(pickup => pickup.goalId === 'caps');
+  for (const pickup of caps.slice(0,4)) visit(run,pickup);
+  assert.equal(run.snapshot().caps,4);
+  assert.ok(!run.progress.has('caps'));
+  const reloaded = new GoalRun(new GoalProgress(store)).start();
+  assert.ok(reloaded.availableGoals.has('caps'));
+  assert.equal(reloaded.snapshot().caps,0);
+  visit(reloaded,caps[0]);
+  reloaded.start(); // the same model restart used by the pause menu
+  assert.ok(reloaded.availableGoals.has('caps'));
+  assert.equal(reloaded.snapshot().caps,0);
+  for (const pickup of caps) visit(reloaded,pickup);
+  assert.deepEqual(reloaded.snapshot().completed,['caps']);
+  assert.ok(reloaded.progress.has('caps'));
+});
+
+check('finished caps and tape stay uncollectible after restart and reload while SKATE remains available', () => {
+  const store = storage();
+  const run = new GoalRun(new GoalProgress(store)).start();
+  const completedPickups = PICKUPS.filter(pickup => pickup.goalId === 'caps' || pickup.goalId === 'tape');
+  for (const pickup of completedPickups) visit(run,pickup);
+  for (const next of [run.start(),new GoalRun(new GoalProgress(store)).start()]) {
+    assert.ok(!next.availableGoals.has('caps'));
+    assert.ok(!next.availableGoals.has('tape'));
+    assert.ok(next.availableGoals.has('skate'));
+    assert.deepEqual(completedPickups.flatMap(pickup=>visit(next,pickup)),[]);
+    assert.equal(next.collected.size,0);
+    assert.equal(next.snapshot().caps,0);
+    assert.equal(next.snapshot().tape,false);
+    assert.deepEqual(next.snapshot().completed,[]);
+    visit(next,PICKUPS.find(pickup=>pickup.id==='letter-s'));
+    assert.deepEqual(next.snapshot().letters,['S']);
+  }
+});
+
+check('banking later runs updates score but never re-awards completed score or combo goals', () => {
+  const run = fresh();
+  assert.deepEqual(run.bankCombo(3000).map(event=>event.goal.id),['high-score','combo']);
+  run.start();
+  assert.ok(!run.availableGoals.has('high-score'));
+  assert.ok(!run.availableGoals.has('combo'));
+  assert.deepEqual(run.bankCombo(3000),[]);
+  assert.equal(run.score,3000);
+  assert.deepEqual(run.snapshot().completed,[]);
+  assert.deepEqual(run.bankCombo(7000).map(event=>event.goal.id),['pro-score']);
+  assert.deepEqual(run.bankCombo(15000).map(event=>event.goal.id),['sick-score']);
+  assert.deepEqual(run.snapshot().completed,['pro-score','sick-score']);
+  assert.deepEqual(run.snapshot().newlyCompleted,['pro-score','sick-score']);
+  run.start();
+  assert.deepEqual([...run.availableGoals],['skate','caps','tape']);
+  assert.deepEqual(run.bankCombo(40000),[]);
+  assert.equal(run.progress.bestScore,40000,'best records still improve while working on remaining collectibles');
+});
+
+check('earning goals preserves the active set and result count until the next start', () => {
+  const run = fresh();
+  const initial = run.snapshot().availableGoals;
+  run.bankCombo(3000);
+  for (const pickup of PICKUPS.filter(pickup=>pickup.goalId==='caps')) visit(run,pickup);
+  assert.deepEqual(run.snapshot().availableGoals,initial);
+  for (const id of ['high-score','combo','caps']) {
+    const goal = run.snapshot().goals.find(goal=>goal.id===id);
+    assert.equal(goal.available,true,id);
+    assert.equal(goal.complete,true,id);
+    assert.equal(goal.careerComplete,true,id);
+  }
+  const result = run.finish();
+  assert.deepEqual(result.availableGoals,initial);
+  assert.deepEqual(result.completed,['high-score','combo','caps']);
+  assert.deepEqual(run.bankCombo(50000),[]);
+  assert.deepEqual(run.evaluate(),[]);
+  assert.deepEqual(visit(run,PICKUPS.find(pickup=>pickup.id==='secret-tape')),[]);
+  run.start();
+  assert.deepEqual(run.snapshot().availableGoals,['pro-score','sick-score','skate','tape']);
+  assert.deepEqual(run.snapshot().completed,[]);
+  assert.deepEqual(run.snapshot().newlyCompleted,[]);
+});
+
+check('an entirely completed career has no eligible goals or pickups', () => {
+  const progress = new GoalProgress(null);
+  progress.record({completed:GOALS.map(goal=>goal.id)});
+  const run = new GoalRun(progress).start();
+  assert.deepEqual(run.snapshot().availableGoals,[]);
+  assert.ok(run.snapshot().goals.every(goal=>!goal.available&&goal.careerComplete&&!goal.complete));
+  assert.deepEqual(PICKUPS.flatMap(pickup=>visit(run,pickup)),[]);
+  assert.deepEqual(run.bankCombo(50000),[]);
+  assert.deepEqual(run.snapshot().completed,[]);
+  assert.deepEqual(run.snapshot().newlyCompleted,[]);
 });
 
 check('caps and tape finish separately and repeated contact does not double-count', () => {
@@ -204,11 +313,16 @@ check('clock expiration stops pickups but allows the last combo until finish', (
 
 check('free skate cannot collect or award career goals and records', () => {
   const run = fresh([tinyPickup]).start({ mode: 'free' });
+  assert.equal(run.availableGoals.size,0);
+  assert.deepEqual(run.snapshot().availableGoals,[]);
+  assert.ok(run.snapshot().goals.every(goal=>!goal.available));
   assert.deepEqual(run.update(rider(0)), []);
   assert.deepEqual(run.bankCombo(25000), []);
   assert.equal(run.score, 25000);
   assert.equal(run.collected.size, 0);
   assert.deepEqual(run.progress.snapshot(), { completed: [], bestScore: 0, bestCombo: 0 });
+  run.start();
+  assert.deepEqual(run.snapshot().availableGoals,GOALS.map(goal=>goal.id));
 });
 
 check('best records survive restarts and reloads and never decrease', () => {
@@ -231,10 +345,13 @@ check('snapshot arrays cannot mutate the run or saved career', () => {
   run.bankCombo(3000);
   const result = run.snapshot();
   result.completed.length = 0;
+  result.availableGoals.length = 0;
   result.goals[0].complete = false;
+  result.goals[0].available = false;
   const saved = run.progress.snapshot();
   saved.completed.length = 0;
   assert.ok(run.completed.has('high-score'));
+  assert.ok(run.availableGoals.has('high-score'));
   assert.ok(run.progress.has('high-score'));
 });
 

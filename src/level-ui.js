@@ -92,16 +92,28 @@ export class LevelUI {
     }
   }
   launch(mode) {
+    if (mode === 'goals' && !this.focusUnfinished()) mode = 'free';
     this.lastMode = mode;
-    this.onStart?.(mode, this.selectedGoal);
+    this.onStart?.(mode, mode === 'goals' ? this.selectedGoal : null);
+  }
+  unfinishedGoals(progress = this.progress) {
+    const completed = new Set(progress.completed || []);
+    return this.goals.filter(goal => !completed.has(goal.id));
+  }
+  availableIds(state) {
+    if (state?.mode === 'free') return new Set();
+    if (Array.isArray(state?.availableGoals)) return new Set(state.availableGoals);
+    return new Set((state?.goals || this.goals).filter(goal => goal.available !== false).map(goal => goal.id));
   }
   focusUnfinished(progress = this.progress) {
     this.progress = progress;
-    const completed = new Set(progress.completed || []);
-    const current = this.goals.find(goal => goal.id === this.selectedGoal);
-    const next = current && !completed.has(current.id) ? current
-      : this.goals.find(goal => !completed.has(goal.id)) || current || this.goals[0];
+    const unfinished = this.unfinishedGoals(progress);
+    const next = unfinished.find(goal => goal.id === this.selectedGoal) || unfinished[0] || null;
     if (next) this.selectGoal(next.id);
+    else {
+      this.selectedGoal = null;
+      this.renderMission(null);
+    }
     return next;
   }
   hide() {
@@ -124,30 +136,60 @@ export class LevelUI {
     $('overlay-msg').focus({ preventScroll: true });
   }
   renderProgress(progress) {
-    const completed = new Set(progress.completed || []);
+    const completed = new Set(this.goals.filter(goal => (progress.completed || []).includes(goal.id)).map(goal => goal.id));
+    const remaining = this.goals.length - completed.size;
     $('board-completed').innerHTML = `${completed.size}<span>/ ${this.goals.length}</span>`;
     $('board-completion-fill').style.width = `${completed.size / this.goals.length * 100}%`;
     $('board-best-score').textContent = progress.bestScore ? fmt(progress.bestScore) : '—';
     $('board-best-combo').textContent = progress.bestCombo ? fmt(progress.bestCombo) : '—';
     for (const goal of this.goals) {
       const button = this.goalButtons.get(goal.id);
-      button.classList.toggle('complete', completed.has(goal.id));
-      button.querySelector('.goal-check').textContent = completed.has(goal.id) ? '✓' : '↗';
-      button.setAttribute('aria-label', `${goal.title}, ${targetLabel(goal)}, ${completed.has(goal.id) ? 'completed' : 'not completed'}`);
+      const done = completed.has(goal.id);
+      button.disabled = done;
+      button.classList.toggle('complete', done);
+      if (done) { button.classList.remove('selected'); button.setAttribute('aria-pressed', 'false'); }
+      button.querySelector('.goal-check').textContent = done ? '✓' : '↗';
+      button.setAttribute('aria-label', `${goal.title}, ${targetLabel(goal)}, ${done ? 'completed achievement' : 'unfinished goal'}`);
     }
+    $('goal-board-subtitle').textContent = remaining ? 'SELECT AN UNFINISHED GOAL' : 'YOUR ACHIEVEMENT RECORD';
+    $('goal-board-note').textContent = remaining ? 'Every unfinished goal is active in your next run. Completed goals stay on your record.' : 'All warehouse goals complete. Your achievements are saved.';
   }
   selectGoal(id) {
-    const goal = this.goals.find(entry => entry.id === id) || this.goals[0];
-    if (!goal) return;
+    const goal = this.goals.find(entry => entry.id === id);
+    if (!goal || (this.progress.completed || []).includes(goal.id)) return false;
     this.selectedGoal = goal.id;
+    this.renderMission(goal);
+    return true;
+  }
+  renderMission(goal) {
+    const remaining = this.unfinishedGoals().length;
     for (const [goalId, button] of this.goalButtons) {
-      button.classList.toggle('selected', goalId === goal.id);
-      button.setAttribute('aria-pressed', String(goalId === goal.id));
+      button.classList.toggle('selected', goalId === goal?.id && !button.disabled);
+      button.setAttribute('aria-pressed', String(goalId === goal?.id && !button.disabled));
+    }
+    document.querySelector('.mission-panel').classList.toggle('career-complete', !goal);
+    $('free-skate').hidden = !goal;
+    $('mission-status').classList.toggle('done', !goal);
+    $('mission-session-time').textContent = goal ? '02:00' : '∞';
+    $('mission-session-label').textContent = goal ? `ONE RUN. ${remaining} UNFINISHED ${remaining === 1 ? 'GOAL' : 'GOALS'}.` : 'FREE SKATE';
+    $('mission-session-note').textContent = goal ? 'Complete your remaining goals in any order.' : 'No timer. Skate at your own pace.';
+    $('overlay-msg').innerHTML = goal ? 'START GOAL RUN <span>START →</span>' : 'FREE SKATE <span>DROP IN →</span>';
+    $('mission-tip-label').textContent = goal ? 'FIND YOUR LINE' : 'KEEP ROLLING';
+    if (!goal) {
+      $('mission-category').textContent = 'WAREHOUSE COMPLETE';
+      $('mission-status').textContent = '✓ ALL GOALS LANDED';
+      $('mission-icon').innerHTML = icon({ type: 'score' });
+      $('mission-title').textContent = 'The warehouse is yours.';
+      $('mission-target').textContent = `${this.goals.length} / ${this.goals.length}`;
+      const unit = document.createElement('span');
+      unit.textContent = 'GOALS COMPLETE';
+      $('mission-target').append(' ', unit);
+      $('mission-description').textContent = 'Every Genesee goal is complete. Your place on the board is earned.';
+      $('mission-tip').textContent = 'Find a fresh line, practice your favorite tricks, and enjoy the warehouse in Free Skate.';
+      return;
     }
     $('mission-category').textContent = category(goal);
-    const complete = (this.progress.completed || []).includes(goal.id);
-    $('mission-status').textContent = complete ? '✓ COMPLETED' : 'TO DO';
-    $('mission-status').classList.toggle('done', complete);
+    $('mission-status').textContent = 'TO DO';
     $('mission-icon').innerHTML = icon(goal);
     $('mission-title').textContent = goal.title;
     $('mission-target').textContent = goal.type === 'score' || goal.type === 'combo' ? fmt(goal.target) : goal.id === 'skate' ? 'S K A T E' : goal.id === 'caps' ? '05' : '01';
@@ -159,25 +201,28 @@ export class LevelUI {
   }
   showResults(result, progress = this.progress) {
     this.progress = progress;
-    this.lastMode = result.mode || 'goals';
+    const free = result.mode === 'free';
     const previousFocus = this.selectedGoal;
-    const nextGoal = this.lastMode === 'goals' ? this.focusUnfinished(progress) : null;
-    const unfinished = nextGoal && !(progress.completed || []).includes(nextGoal.id);
+    const nextGoal = this.focusUnfinished(progress);
+    const remaining = this.unfinishedGoals(progress).length;
+    const careerComplete = !nextGoal;
+    this.lastMode = free || careerComplete ? 'free' : 'goals';
     this.display = 'results';
     this.clearNotifications();
     $('overlay').classList.remove('hidden');
     $('goal-board').classList.add('hidden');
     $('run-results').classList.remove('hidden');
     $('best-runs-details').open = false;
-    $('level-eyebrow').textContent = result.mode === 'free' ? 'A LITTLE TIME WELL SPENT.' : 'TWO MINUTES. YOUR MARK.';
-    $('level-title').innerHTML = 'SESSION <span>COMPLETE</span>';
+    $('level-eyebrow').textContent = free ? 'A LITTLE TIME WELL SPENT.' : careerComplete ? 'EVERY GOAL. ALL YOURS.' : 'TWO MINUTES. YOUR MARK.';
+    $('level-title').innerHTML = !free && careerComplete ? 'WAREHOUSE <span>COMPLETE</span>' : 'SESSION <span>COMPLETE</span>';
     $('results-score').textContent = fmt(result.score);
     $('results-combo').textContent = fmt(result.bestCombo);
-    $('results-goals').innerHTML = `${result.completed?.length || 0} <small>/ ${this.goals.length}</small>`;
-    const newlyCompleted = new Set(result.newlyCompleted || []);
-    const completed = new Set(result.completed || []);
-    const results = this.goals.filter(goal => newlyCompleted.has(goal.id) || completed.has(goal.id));
-    $('results-goal-heading').textContent = newlyCompleted.size ? 'FRESH INK ON THE BOARD' : results.length ? 'GOALS LANDED' : 'THE NEXT LINE IS WAITING';
+    const available = this.availableIds(result);
+    const newlyCompleted = new Set((result.newlyCompleted || []).filter(id => available.has(id)));
+    const results = this.goals.filter(goal => newlyCompleted.has(goal.id));
+    $('results-goals-label').textContent = free ? 'FREE SKATE' : 'GOALS THIS RUN';
+    $('results-goals').innerHTML = free ? '—' : `${results.length} <small>/ ${available.size}</small>`;
+    $('results-goal-heading').textContent = newlyCompleted.size ? 'FRESH INK ON THE BOARD' : careerComplete ? 'YOUR WAREHOUSE. YOUR LINES.' : free ? 'THE WAREHOUSE IS OPEN' : 'THE NEXT LINE IS WAITING';
     $('results-new-count').textContent = newlyCompleted.size ? `${newlyCompleted.size} NEW` : '';
     $('results-list').replaceChildren();
     for (const goal of results) {
@@ -185,39 +230,50 @@ export class LevelUI {
       row.className = 'result-goal';
       row.innerHTML = `<span class="result-check">✓</span><b></b><span class="result-badge"></span>`;
       row.querySelector('b').textContent = goal.title;
-      row.querySelector('.result-badge').textContent = newlyCompleted.has(goal.id) ? 'NEW' : 'COMPLETE';
+      row.querySelector('.result-badge').textContent = 'NEW';
       $('results-list').append(row);
     }
     const nextPanel = document.querySelector('.results-next');
-    nextPanel.querySelector('.level-eyebrow').textContent = unfinished ? 'UP NEXT · UNFINISHED GOAL' : this.lastMode === 'goals' ? 'ALL SEVEN GOALS COMPLETE' : 'KEEP THE SESSION GOING';
-    nextPanel.querySelector('h2').textContent = unfinished ? nextGoal.title : 'ONE MORE GOOD LINE.';
-    nextPanel.querySelector('p').textContent = unfinished ? nextGoal.description : this.lastMode === 'goals' ? 'The warehouse is yours. Replay a favorite goal or chase a new best score.' : 'Keep exploring the warehouse at your own pace.';
-    $('retry-run').innerHTML = unfinished && previousFocus !== nextGoal.id ? 'START NEXT RUN <span>START →</span>' : 'RUN IT BACK <span>RETRY →</span>';
-    $('results-note').textContent = this.lastMode === 'free' ? 'Free skate is for exploring. Start a goal run when you’re ready to put your name on the board.'
-      : unfinished ? newlyCompleted.size ? 'Your completed goals are saved. The next run is focused on an unfinished goal.' : 'Keep working on your focus, or choose another unfinished goal from the board.'
-      : 'All seven career goals are complete. Every goal is still available to replay.';
+    nextPanel.classList.toggle('career-complete', careerComplete);
+    nextPanel.querySelector('.level-eyebrow').textContent = careerComplete ? 'EVERY GOAL COMPLETE' : free ? 'NEXT GOAL RUN · UNFINISHED' : 'UP NEXT · UNFINISHED GOAL';
+    nextPanel.querySelector('h2').textContent = nextGoal ? nextGoal.title : 'THE WAREHOUSE IS YOURS.';
+    nextPanel.querySelector('p').textContent = nextGoal ? nextGoal.description : 'You earned every goal. Keep rolling, find new lines, and enjoy Free Skate.';
+    $('retry-run').innerHTML = careerComplete ? 'FREE SKATE <span>DROP IN →</span>' : free ? 'KEEP FREE SKATING <span>DROP IN →</span>' : previousFocus !== nextGoal.id ? 'START NEXT RUN <span>START →</span>' : 'TRY AGAIN <span>RETRY →</span>';
+    $('results-board').innerHTML = careerComplete ? 'GOAL BOARD <span>VIEW YOUR ACHIEVEMENTS →</span>' : 'GOAL BOARD <span>CHOOSE YOUR NEXT GOAL →</span>';
+    $('results-note').textContent = careerComplete ? 'All warehouse goals are complete and saved. Free Skate is yours whenever you want another session.'
+      : free ? `${remaining} ${remaining === 1 ? 'goal remains' : 'goals remain'} on your board. Start a goal run whenever you’re ready; Free Skate stays untimed.`
+      : newlyCompleted.size ? `Your new achievements are saved. ${remaining} ${remaining === 1 ? 'goal remains' : 'goals remain'} for your next run.`
+      : 'No new goals this time. Keep working on your focus, or choose another unfinished goal from the board.';
     this.renderProgress(progress);
     $('retry-run').focus({ preventScroll: true });
   }
   update(state) {
-    const showTracker = state?.mode === 'goals' && state.active !== false;
+    const available = this.availableIds(state);
+    const showTracker = state?.mode === 'goals' && state.active !== false && available.size > 0;
     $('goal-tracker').classList.toggle('hidden', !showTracker);
     if (!showTracker) return;
-    const id = state.focusGoal || this.selectedGoal;
+    const requested = state.focusGoal || this.selectedGoal;
+    const id = available.has(requested) ? requested : available.values().next().value;
     const goal = state.goals?.find(entry => entry.id === id) || this.goals.find(entry => entry.id === id);
     if (!goal) return;
     const letters = new Set(state.letters || []);
     const current = goal.current ?? (goal.type === 'score' ? state.score : goal.type === 'combo' ? state.bestCombo : goal.id === 'skate' ? letters.size : goal.id === 'caps' ? state.caps : state.tape ? 1 : 0) ?? 0;
     const complete = goal.complete || (state.completed || []).includes(id);
-    const key = [id, current, complete, (state.completed || []).length, [...letters].join(''), state.caps, state.tape, state.overtime].join('|');
+    const completedCount = (state.completed || []).filter(goalId => available.has(goalId)).length;
+    const key = [id, current, complete, completedCount, [...available].join(','), [...letters].join(''), state.caps, state.tape, state.overtime].join('|');
     if (key === this.lastTrackerKey) return;
     this.lastTrackerKey = key;
     $('tracker-name').textContent = goal.title;
     $('tracker-count').textContent = complete ? '✓ COMPLETE' : `${fmt(current)} / ${fmt(goal.target)}`;
-    $('tracker-completed').textContent = `${(state.completed || []).length} / ${this.goals.length} GOALS`;
+    $('tracker-completed').textContent = `${completedCount} / ${available.size} GOALS`;
     $('tracker-fill').style.width = `${Math.min(1, current / goal.target) * 100}%`;
     $('goal-tracker').classList.toggle('complete', complete);
-    $('tracker-hint').textContent = state.overtime ? 'LAST CHANCE — LAND YOUR COMBO' : complete ? 'Focus complete. Every other goal is still active.' : goal.id === 'tape' ? 'Ride the bank to the raised loading deck.' : goal.id === 'caps' ? 'Follow the teal bottle caps.' : goal.id === 'skate' ? 'Five gold letters. Any order.' : goal.type === 'combo' ? 'Link your tricks. Land the whole combo.' : 'Land tricks to bank your points.';
+    const remaining = available.size - completedCount;
+    $('tracker-hint').textContent = state.overtime ? 'LAST CHANCE — LAND YOUR COMBO' : complete ? remaining ? `Focus complete. ${remaining} ${remaining === 1 ? 'goal' : 'goals'} still to go.` : 'Every goal in this run is complete. Keep skating!' : goal.id === 'tape' ? 'Ride the bank to the raised loading deck.' : goal.id === 'caps' ? 'Follow the teal bottle caps.' : goal.id === 'skate' ? 'Five gold letters. Any order.' : goal.type === 'combo' ? 'Link your tricks. Land the whole combo.' : 'Land tricks to bank your points.';
+    $('skate-tracker').classList.toggle('hidden', !available.has('skate'));
+    $('caps-tracker').classList.toggle('hidden', !available.has('caps'));
+    $('tape-tracker').classList.toggle('hidden', !available.has('tape'));
+    document.querySelector('.pickup-tracker').classList.toggle('hidden', !['skate', 'caps', 'tape'].some(goalId => available.has(goalId)));
     [...$('skate-tracker').children].forEach(letter => {
       letter.classList.toggle('collected', letters.has(letter.textContent));
       letter.setAttribute('aria-label', `${letter.textContent}: ${letters.has(letter.textContent) ? 'collected' : 'missing'}`);

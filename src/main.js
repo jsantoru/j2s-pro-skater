@@ -177,7 +177,7 @@ function handleGoalEvents(events) {
       input.rumble(0.08, 0.3, 65);
     }
   }
-  if (events.length) collectibles.sync(goals.collected);
+  if (events.length) collectibles.sync(goals.collected, goals.availableGoals);
 }
 
 function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
@@ -189,12 +189,15 @@ function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
   for (const k of EDGES) pending[k] = false;
   skater.reset();
   fx.clear();
-  runMode = selectedMode === 'free' ? 'free' : 'goals';
-  focusGoal = GOALS.some(goal => goal.id === selectedGoal) ? selectedGoal : GOALS[0].id;
+  const remaining = GOALS.filter(goal => !progress.has(goal.id));
+  runMode = selectedMode === 'free' || !remaining.length ? 'free' : 'goals';
+  const requestedGoal = selectedGoal ?? levelUI.selectedGoal;
+  focusGoal = (remaining.find(goal => goal.id === requestedGoal) || remaining[0])?.id || null;
+  levelUI.focusUnfinished(progress.snapshot());
   levelUI.selectGoal(focusGoal);
   goals.start({ mode: runMode, skater });
   sessionClock.start(runMode);
-  collectibles.sync(goals.collected);
+  collectibles.sync(goals.collected, goals.availableGoals);
   mode = 'playing';
   document.body.dataset.mode = mode;
   hud.setMode(mode);

@@ -121,20 +121,32 @@ export class Collectibles {
       mat.userData.restOpacity = mat.opacity;
       mat.userData.restTransparent = mat.transparent;
     }
-    return { definition, root, face, ring, materials, texture, index, collected: false, burst: 0 };
+    return { definition, root, face, ring, materials, texture, index, enabled: true, collected: false, burst: 0 };
   }
 
-  sync(collected = new Set()) {
+  sync(collected = new Set(), availableGoals = null) {
     for (const item of this.items) {
+      const enabled = availableGoals === null || availableGoals.has(item.definition.goalId);
+      const wasEnabled = item.enabled;
+      item.enabled = enabled;
+      if (!enabled) {
+        // Career-complete categories disappear together, including their floor
+        // rings. Disabling a pickup never plays its collection animation.
+        item.root.visible = false; item.ring.visible = false;
+        item.collected = false; item.burst = 0;
+        continue;
+      }
       const next = collected.has(item.definition.id);
-      if (next === item.collected) continue;
+      if (next && next === item.collected && wasEnabled) continue;
       item.collected = next; item.burst = 0;
       // A fresh run restores every mesh/material, including a pickup mid-animation.
       item.root.visible = true; item.ring.visible = !next;
+      item.root.position.fromArray(item.definition.position);
       item.root.scale.setScalar(1);
+      item.ring.scale.setScalar(1);
       for (const mat of item.materials) {
         mat.opacity = mat.userData.restOpacity;
-        if (!next) mat.transparent = mat.userData.restTransparent;
+        mat.transparent = mat.userData.restTransparent;
       }
     }
   }
@@ -145,6 +157,10 @@ export class Collectibles {
     this.elapsed += Math.max(0, dt);
     if (camera) camera.getWorldQuaternion(this._cameraQuaternion);
     for (const item of this.items) {
+      if (!item.enabled) {
+        item.root.visible = false; item.ring.visible = false;
+        continue;
+      }
       if (!item.root.visible) continue;
       const phase = this.elapsed * 2.15 + item.index * 0.71;
       item.root.position.y = item.definition.position[1] + Math.sin(phase) * 0.075;

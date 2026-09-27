@@ -69,11 +69,61 @@ for (const pickup of PICKUPS) {
   assert(visuals.items[0].root.visible && !visuals.items[0].ring.visible);
   visuals.sync(new Set());
   assert(visuals.items[0].root.visible && visuals.items[0].ring.visible);
+  assert.deepEqual(visuals.items[0].root.position.toArray(), visuals.items[0].definition.position);
   assert(visuals.items[0].materials.every(mat => mat.opacity === mat.userData.restOpacity));
   visuals.sync(new Set(['letter-s'])); visuals.update(0.4, true);
   assert.equal(visuals.items[0].root.visible, false);
   visuals.update(DT, false); assert.equal(visuals.group.visible, false);
   visuals.dispose(); assert.equal(parent.children.length, 0);
+}
+
+// Career availability filters complete categories, not just individual tokens.
+{
+  const visuals = new Collectibles(new THREE.Group());
+  const capsAndTape = new Set(['caps', 'tape']);
+  visuals.sync(new Set(), capsAndTape);
+  visuals.update(DT, true);
+  for (const item of visuals.items) {
+    const enabled = item.definition.goalId !== 'skate';
+    assert.equal(item.enabled, enabled);
+    assert.equal(item.root.visible, enabled);
+    assert.equal(item.ring.visible, enabled);
+  }
+  const cap = visuals.items.find(item => item.definition.id === 'cap-1');
+  const collected = new Set(['cap-1']);
+  visuals.sync(collected, capsAndTape); visuals.update(0.12, true);
+  assert(cap.root.visible && !cap.ring.visible && cap.burst > 0);
+  const burst = cap.burst;
+  visuals.sync(collected, capsAndTape);
+  assert.equal(cap.burst, burst, 'syncing the current run cannot restart a collection animation');
+
+  visuals.sync(collected, new Set(['tape']));
+  assert.equal(cap.root.visible, false, 'disabling a category hides even a mid-burst token immediately');
+  assert.equal(cap.ring.visible, false); assert.equal(cap.burst, 0);
+  visuals.update(0.2, true);
+  assert(visuals.items.filter(item => item.definition.goalId !== 'tape').every(item => !item.root.visible && !item.ring.visible));
+
+  visuals.sync(new Set(), new Set());
+  visuals.update(1, true);
+  assert(visuals.items.every(item => !item.enabled && !item.root.visible && !item.ring.visible), 'all complete/free skate leaves no token or floor ring');
+
+  // Re-enabling or starting over must undo both geometry expansion and material fade.
+  visuals.sync(new Set(), capsAndTape);
+  for (const item of visuals.items.filter(item => item.enabled)) {
+    assert(item.root.visible && item.ring.visible);
+    assert.deepEqual(item.root.position.toArray(), item.definition.position);
+    assert.deepEqual(item.root.scale.toArray(), [1, 1, 1]);
+    assert.equal(item.burst, 0);
+    assert(item.materials.every(mat => mat.opacity === mat.userData.restOpacity && mat.transparent === mat.userData.restTransparent));
+  }
+  assert(visuals.items.filter(item => item.definition.goalId === 'skate').every(item => !item.root.visible && !item.ring.visible));
+
+  // Null/default keeps the old all-pickups API and unfinished partial sets respawn.
+  visuals.sync(new Set(['letter-s', 'cap-1'])); visuals.update(0.12, true);
+  visuals.sync(new Set());
+  assert(visuals.items.every(item => item.enabled && !item.collected && item.root.visible && item.ring.visible));
+  assert(visuals.items.every(item => item.materials.every(mat => mat.opacity === mat.userData.restOpacity)));
+  visuals.dispose();
 }
 
 console.log('All collectible reachability and rendering lifecycle checks passed.');
