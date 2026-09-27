@@ -81,6 +81,24 @@ async function board() { await evaluate('__game.showGoalBoard()'); await step();
 async function fixtureCombo(points = 3000) {
   return evaluate(`(() => { const s=__game.skater; s.combo.reset(); s.combo.add('QA banked combo',${points}); return s.bankCombo(false); })()`);
 }
+async function fixtureCareer(completed, selected = 'high-score') {
+  // Each focus scenario starts from a specified saved career, independently of
+  // earlier browser checks. Real board buttons and run-end paths exercise policy.
+  await evaluate(`(() => {
+    __qa.pad=null;
+    __game.progress.completed=new Set(${JSON.stringify(completed)});
+    __game.progress.bestScore=${completed.includes('sick-score') ? 25000 : completed.length ? 3000 : 0};
+    __game.progress.bestCombo=${completed.length ? 3000 : 0};
+    localStorage.setItem('j2s-pro-skater.genesee.goals.v1',JSON.stringify(__game.progress.snapshot()));
+    __game.levelUI.selectGoal(${JSON.stringify(selected)});
+    __game.showGoalBoard();
+  })()`);
+  await step();
+}
+async function finishTimedRun() {
+  await evaluate('__game.sessionClock.remaining=1/120'); await step(2);
+  assert.equal(await evaluate('__game.session.mode'),'over');
+}
 
 const driver = `(() => {
   const q=window.__qa={now:1000,next:1,frames:new Map(),pad:null};
@@ -221,6 +239,9 @@ try {
     await send('Page.reload', { ignoreCache: true }); await sleep(200); await boot();
     assert.deepEqual(await evaluate('__game.progress.snapshot()'), { completed: ['high-score', 'combo'], bestScore: 3000, bestCombo: 3000 });
     assert.equal(await evaluate('document.querySelectorAll(".goal-row.complete").length'), 2);
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'), 'pro-score', 'saved completion should skip the finished High Score goal');
+    assert.equal(await evaluate('document.querySelector(".goal-row.selected").dataset.goal'), 'pro-score');
+    assert.equal(await evaluate('document.getElementById("mission-title").textContent'), 'Pro Score');
   });
 
   await check('free skate is untimed with no pickups, tracker or career writes', async () => {
@@ -300,6 +321,116 @@ try {
     await evaluate('__qa.button(0,false)'); await step(2);
     assert.equal(await evaluate('__game.skater.state'), 'air');
     await evaluate('__qa.pad=null'); await step();
+  });
+
+  await check('manual completed-goal replay is respected, then results advance using earlier career completion', async () => {
+    await fixtureCareer(['high-score','combo']);
+    // Let the preceding controller-connection toast expire on the idle board so
+    // the focus screenshots show only the user-facing next-goal state.
+    await step(165);
+    await click('[data-goal="high-score"]'); await click('#overlay-msg'); await step();
+    assert.equal(await evaluate('__game.session.focusGoal'),'high-score');
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'high-score');
+    await fixtureCombo(100); await step(3);
+    assert.equal(await evaluate('__game.session.focusGoal'),'high-score','focus must not move midrun');
+    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'High Score');
+    assert.deepEqual(await evaluate('__game.goals.snapshot().completed'),[]);
+    await finishTimedRun();
+    assert.deepEqual(await evaluate('__game.goals.snapshot().newlyCompleted'),[]);
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'pro-score','career completion matters even when no goal was completed this run');
+    assert.match(await evaluate('document.querySelector(".results-next .level-eyebrow").textContent'),/UP NEXT/);
+    assert.match(await evaluate('document.querySelector(".results-next h2").textContent'),/Pro Score/i);
+    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/START NEXT RUN/);
+    await shot('focus-next-results');
+    await resize(390,844);
+    await evaluate('document.querySelector(".results-next").scrollIntoView({block:"center"})');
+    assert.ok(await evaluate('(() => {const r=document.querySelector(".results-next").getBoundingClientRect();return r.left>=0&&r.right<=innerWidth;})()'));
+    await shot('focus-next-results-phone');
+    await resize(1440,900);
+    await click('#retry-run'); await step();
+    assert.equal(await evaluate('__game.session.focusGoal'),'pro-score');
+    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'Pro Score');
+    assert.equal(await evaluate('__game.skater.score'),0);
+    await tap('Escape'); await click('#goals-menu'); await step();
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'pro-score');
+    assert.equal(await evaluate('document.getElementById("mission-status").textContent'),'TO DO');
+    await shot('focus-next-board');
+  });
+
+  await check('an unfinished chosen collectible remains focused through score completion, results and the board', async () => {
+    await fixtureCareer(['high-score','combo']);
+    await click('[data-goal="caps"]'); await click('#overlay-msg'); await step();
+    await fixtureCombo(10000); await step();
+    assert.equal(await evaluate('__game.progress.has("pro-score")'),true);
+    assert.equal(await evaluate('__game.session.focusGoal'),'caps');
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'caps');
+    await finishTimedRun();
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'caps');
+    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/RUN IT BACK/);
+    await click('#retry-run'); await step();
+    assert.equal(await evaluate('__game.session.focusGoal'),'caps');
+    await finishTimedRun(); await click('#results-board'); await step();
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'caps');
+    assert.equal(await evaluate('document.getElementById("mission-title").textContent'),'Bottle Cap Hunt');
+  });
+
+  await check('pause restart advances a newly completed focus without changing it during the current run', async () => {
+    await fixtureCareer([]);
+    await click('#overlay-msg'); await step(); await fixtureCombo(2500); await step(3);
+    assert.equal(await evaluate('__game.progress.has("high-score")'),true);
+    assert.equal(await evaluate('__game.session.focusGoal'),'high-score');
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'high-score');
+    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'High Score');
+    await tap('Escape'); await click('#restart-run'); await step();
+    assert.equal(await evaluate('__game.session.focusGoal'),'pro-score');
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'pro-score');
+    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'Pro Score');
+    assert.equal(await evaluate('__game.skater.score'),0);
+    assert.ok(await evaluate('__game.session.timeLeft > 119.9'));
+  });
+
+  await check('finished focus skips multiple completed goals and picks the first unfinished board entry', async () => {
+    await fixtureCareer(['high-score','pro-score','sick-score','combo','caps'],'caps');
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'skate');
+    await click('[data-goal="caps"]'); await click('#overlay-msg'); await step();
+    assert.equal(await evaluate('__game.session.focusGoal'),'caps');
+    await finishTimedRun();
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'skate');
+    await click('#retry-run'); await step();
+    assert.equal(await evaluate('__game.session.focusGoal'),'skate');
+  });
+
+  await check('all-complete careers keep a valid chosen focus for results, retry and board', async () => {
+    await fixtureCareer(['high-score','pro-score','sick-score','combo','skate','caps','tape'],'tape');
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'tape');
+    await click('#overlay-msg'); await step();
+    assert.equal(await evaluate('__game.session.focusGoal'),'tape');
+    await finishTimedRun();
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'tape');
+    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/RUN IT BACK/);
+    await click('#retry-run'); await step();
+    assert.equal(await evaluate('__game.session.focusGoal'),'tape');
+    await finishTimedRun(); await click('#results-board'); await step();
+    assert.equal(await evaluate('__game.levelUI.selectedGoal'),'tape');
+    assert.equal(await evaluate('document.querySelector(".goal-row.selected").dataset.goal'),'tape');
+  });
+
+  await check('next-focus policy leaves free-skate restart and replay untimed without career writes', async () => {
+    await fixtureCareer(['high-score','combo']);
+    await click('[data-goal="high-score"]');
+    const before=await evaluate('localStorage.getItem("j2s-pro-skater.genesee.goals.v1")');
+    await click('#free-skate'); await step(); await fixtureCombo(25000); await step();
+    assert.equal(await evaluate('__game.session.runMode'),'free');
+    assert.equal(await evaluate('__game.session.timeLeft === Infinity'),true);
+    await tap('Escape'); await click('#restart-run'); await step();
+    assert.equal(await evaluate('__game.session.runMode'),'free');
+    assert.equal(await evaluate('__game.session.timeLeft === Infinity'),true);
+    await evaluate('__game.endRun()'); await step();
+    assert.match(await evaluate('document.getElementById("retry-run").textContent'),/RUN IT BACK/);
+    await click('#retry-run'); await step();
+    assert.equal(await evaluate('__game.session.runMode'),'free');
+    assert.equal(await evaluate('__game.session.timeLeft === Infinity'),true);
+    assert.equal(await evaluate('localStorage.getItem("j2s-pro-skater.genesee.goals.v1")'),before);
   });
 
   await check('normal browser run has no JavaScript, console or network errors', async () => {

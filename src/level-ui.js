@@ -95,6 +95,15 @@ export class LevelUI {
     this.lastMode = mode;
     this.onStart?.(mode, this.selectedGoal);
   }
+  focusUnfinished(progress = this.progress) {
+    this.progress = progress;
+    const completed = new Set(progress.completed || []);
+    const current = this.goals.find(goal => goal.id === this.selectedGoal);
+    const next = current && !completed.has(current.id) ? current
+      : this.goals.find(goal => !completed.has(goal.id)) || current || this.goals[0];
+    if (next) this.selectGoal(next.id);
+    return next;
+  }
   hide() {
     this.display = null;
     $('overlay').classList.add('hidden');
@@ -111,7 +120,7 @@ export class LevelUI {
     $('level-eyebrow').textContent = progress.completed?.length === this.goals.length ? 'THE WAREHOUSE IS YOURS.' : 'CLOCK IN. DROP IN.';
     $('level-title').innerHTML = 'GENESEE <span>WAREHOUSE</span>';
     this.renderProgress(progress);
-    this.selectGoal(this.selectedGoal);
+    this.focusUnfinished(progress);
     $('overlay-msg').focus({ preventScroll: true });
   }
   renderProgress(progress) {
@@ -151,6 +160,9 @@ export class LevelUI {
   showResults(result, progress = this.progress) {
     this.progress = progress;
     this.lastMode = result.mode || 'goals';
+    const previousFocus = this.selectedGoal;
+    const nextGoal = this.lastMode === 'goals' ? this.focusUnfinished(progress) : null;
+    const unfinished = nextGoal && !(progress.completed || []).includes(nextGoal.id);
     this.display = 'results';
     this.clearNotifications();
     $('overlay').classList.remove('hidden');
@@ -176,7 +188,14 @@ export class LevelUI {
       row.querySelector('.result-badge').textContent = newlyCompleted.has(goal.id) ? 'NEW' : 'COMPLETE';
       $('results-list').append(row);
     }
-    $('results-note').textContent = result.mode === 'free' ? 'Free skate is for exploring. Start a goal run when you’re ready to put your name on the board.' : !results.length ? 'No goals this time. Try the High Score goal or follow the glowing collectibles to learn the warehouse.' : newlyCompleted.size ? 'Your completed goals are saved. Pick another focus and keep building your warehouse record.' : 'You landed these again. Choose an unfinished goal to add something new to the board.';
+    const nextPanel = document.querySelector('.results-next');
+    nextPanel.querySelector('.level-eyebrow').textContent = unfinished ? 'UP NEXT · UNFINISHED GOAL' : this.lastMode === 'goals' ? 'ALL SEVEN GOALS COMPLETE' : 'KEEP THE SESSION GOING';
+    nextPanel.querySelector('h2').textContent = unfinished ? nextGoal.title : 'ONE MORE GOOD LINE.';
+    nextPanel.querySelector('p').textContent = unfinished ? nextGoal.description : this.lastMode === 'goals' ? 'The warehouse is yours. Replay a favorite goal or chase a new best score.' : 'Keep exploring the warehouse at your own pace.';
+    $('retry-run').innerHTML = unfinished && previousFocus !== nextGoal.id ? 'START NEXT RUN <span>START →</span>' : 'RUN IT BACK <span>RETRY →</span>';
+    $('results-note').textContent = this.lastMode === 'free' ? 'Free skate is for exploring. Start a goal run when you’re ready to put your name on the board.'
+      : unfinished ? newlyCompleted.size ? 'Your completed goals are saved. The next run is focused on an unfinished goal.' : 'Keep working on your focus, or choose another unfinished goal from the board.'
+      : 'All seven career goals are complete. Every goal is still available to replay.';
     this.renderProgress(progress);
     $('retry-run').focus({ preventScroll: true });
   }

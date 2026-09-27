@@ -161,7 +161,10 @@ function syncPause() {
 }
 hud.onPauseChange = syncPause;
 hud.onControlsChange = syncPause;
-hud.onRestart = () => startRun(runMode, focusGoal);
+hud.onRestart = () => {
+  if (runMode === 'goals') levelUI.focusUnfinished(progress.snapshot());
+  startRun(runMode, levelUI.selectedGoal);
+};
 hud.onBoard = () => showGoalBoard();
 
 function handleGoalEvents(events) {
@@ -188,6 +191,7 @@ function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
   fx.clear();
   runMode = selectedMode === 'free' ? 'free' : 'goals';
   focusGoal = GOALS.some(goal => goal.id === selectedGoal) ? selectedGoal : GOALS[0].id;
+  levelUI.selectGoal(focusGoal);
   goals.start({ mode: runMode, skater });
   sessionClock.start(runMode);
   collectibles.sync(goals.collected);

@@ -27,6 +27,11 @@ Choose a focus on the goal board and **Start Goal Run** for a two-minute session
 are active together; the selected goal gets a live tracker. Use the arrow keys or controller D-pad
 to navigate, Enter / A to select, and Start to drop in.
 
+Between runs, the focus stays on your selected goal while it is unfinished. Once earned, the
+next run highlights the first unfinished career goal on the board, including after a restart
+or reload. Results show that next focus before you drop in. You can still select a completed
+goal manually to replay it; after all seven are done, your selected goal stays available.
+
 | Goal | Target |
 |---|---|
 | High Score | 2,500 banked points |

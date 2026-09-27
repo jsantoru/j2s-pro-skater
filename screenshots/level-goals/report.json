@@ -126,6 +126,30 @@
       "passed": true
     },
     {
+      "name": "manual completed-goal replay is respected, then results advance using earlier career completion",
+      "passed": true
+    },
+    {
+      "name": "an unfinished chosen collectible remains focused through score completion, results and the board",
+      "passed": true
+    },
+    {
+      "name": "pause restart advances a newly completed focus without changing it during the current run",
+      "passed": true
+    },
+    {
+      "name": "finished focus skips multiple completed goals and picks the first unfinished board entry",
+      "passed": true
+    },
+    {
+      "name": "all-complete careers keep a valid chosen focus for results, retry and board",
+      "passed": true
+    },
+    {
+      "name": "next-focus policy leaves free-skate restart and replay untimed without career writes",
+      "passed": true
+    },
+    {
       "name": "normal browser run has no JavaScript, console or network errors",
       "passed": true
     },
@@ -156,7 +180,10 @@
     "free-skate.png",
     "results-desktop.png",
     "results-phone.png",
-    "results-landscape.png"
+    "results-landscape.png",
+    "focus-next-results.png",
+    "focus-next-results-phone.png",
+    "focus-next-board.png"
   ],
   "passed": true,
   "browserErrors": []
