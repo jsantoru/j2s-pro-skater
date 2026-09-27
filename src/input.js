@@ -51,6 +51,8 @@ export class Input {
     this.menuOpen = false;
     this.blockedKeys = new Set(); this.blockedButtons = new Set(); this.blockedAxes = new Set();
     this._menuPrev = {};
+    this.touchSource = null; this.onTouchCancel = null;
+    this._touchPrevious = {}; this._touchEdges = {};
     this._hapticStrong = 0; this._hapticWeak = 0;
     this._pulseStrong = 0; this._pulseWeak = 0; this._pulseT = 0;
     this._hapticEmitT = 0; this._hapticPulseFresh = false;
@@ -92,8 +94,30 @@ export class Input {
 
   get hasGamepad() { return this.gamepadIndex >= 0; }
 
+  setTouchSource(source) {
+    this.touchSource?.reset();
+    this._unsubscribeTouch?.();
+    this.touchSource = source || null;
+    this._touchPrevious = {}; this._touchEdges = {};
+    this._unsubscribeTouch = source?.onReset(({ active, ollie }) => {
+      const previous = this._touchPrevious;
+      const touchOllie = ollie || previous.ollie || this._touchEdges.ollie;
+      const hadTouch = active || Object.values(previous).some(Boolean) || Object.values(this._touchEdges).some(Boolean);
+      if (previous.ollie || this._touchEdges.ollie) {
+        this.state.ollie = false; this.state.olliePressed = false; this.state.ollieReleased = false;
+      }
+      if (previous.grab) { this.state.grab = false; this.state.grabPressed = false; }
+      if (previous.grind) { this.state.grind = false; this.state.grindPressed = false; }
+      this._touchPrevious = {}; this._touchEdges = {};
+      if (hadTouch) this.onTouchCancel?.({ ollie: !!touchOllie });
+    });
+    source?.setEnabled(!this.menuOpen);
+  }
+
   setMenuOpen(open) {
     this.menuOpen = open;
+    this.touchSource?.setEnabled(!open);
+    this.touchSource?.reset();
     this.latched.clear(); this.kbSteer = this.kbY = 0;
     // A held menu button/stick must return to neutral before it can skate again.
     if (!open) {
@@ -234,18 +258,34 @@ export class Input {
       this._gpFlip = flip;
     }
 
+    // Touch only takes ownership of the axis while a thumb owns the joystick.
+    // An idle overlay never suppresses a connected controller or keyboard.
+    const touch = !this.menuOpen ? this.touchSource?.consume() : null;
+    const externalOllie = ollie;
+    if (touch) {
+      if (touch.stick.active) {
+        const [tx, ty] = radialDeadzone(touch.stick.x, touch.stick.y);
+        steer = tx; sy = ty; dirX = tx; dirY = ty;
+        push = ty > 0.3 ? Math.min(1, (ty - 0.3) / 0.6) : 0;
+        brake = ty < -0.4 ? Math.min(1, (-ty - 0.4) / 0.5) : 0;
+      }
+      ollie ||= touch.held.has('ollie');
+      grab ||= touch.held.has('grab');
+      grind ||= touch.held.has('grind');
+    }
+
     // edges
     const e = this._prevKeys;
-    s.olliePressed = ollie && !prev.ollie;
-    s.ollieReleased = !ollie && prev.ollie;
-    s.flipPressed = flip && !e.flip;
-    s.grabPressed = grab && !prev.grab;
-    s.grindPressed = grind && !prev.grind;
+    s.olliePressed = (ollie && !prev.ollie) || (!externalOllie && !!touch?.pressed.has('ollie'));
+    s.ollieReleased = (!ollie && prev.ollie) || (!ollie && !!touch?.released.has('ollie'));
+    s.flipPressed = (flip && !e.flip) || !!touch?.pressed.has('flip');
+    s.grabPressed = (grab && !prev.grab) || !!touch?.pressed.has('grab');
+    s.grindPressed = (grind && !prev.grind) || !!touch?.pressed.has('grind');
     s.startPressed = start && !e.start;
     s.selectPressed = select && !e.select;
     s.pausePressed = pause && !e.pause;
     s.revertLeftPressed = revertL && !e.revertL;
-    s.revertRightPressed = revertR && !e.revertR;
+    s.revertRightPressed = (revertR && !e.revertR) || !!touch?.pressed.has('revert');
     e.revertL = revertL; e.revertR = revertR;
     e.flip = flip; e.start = start; e.select = select; e.pause = pause;
 
@@ -253,6 +293,13 @@ export class Input {
     s.ollie = ollie; s.grab = grab; s.grind = grind;
     s.spinLeft = spinL; s.spinRight = spinR; s.camX = camX;
     s.dir8 = dir8FromStick(dirX, dirY);
+    this._touchPrevious = touch ? {
+      ollie: touch.held.has('ollie'), grab: touch.held.has('grab'), grind: touch.held.has('grind'), stick: touch.stick.active,
+    } : {};
+    this._touchEdges = touch ? {
+      ollie: touch.pressed.has('ollie') || touch.released.has('ollie'),
+      action: touch.pressed.size > 0 || touch.released.size > 0,
+    } : {};
     L.clear();
     s.anyPressed = s.olliePressed || s.flipPressed || s.grabPressed || s.grindPressed || s.startPressed || s.revertLeftPressed || s.revertRightPressed;
     return s;

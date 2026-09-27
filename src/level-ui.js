@@ -3,7 +3,7 @@
 const $ = (id) => document.getElementById(id);
 const fmt = (value) => Math.round(Number(value) || 0).toLocaleString('en-US');
 const TIPS = {
-  'high-score': 'Start with a ramp. Hold Space / A to crouch, release to ollie, then add a flip or grab.',
+  'high-score': 'Start with a ramp. Hold Ollie to crouch, release to jump, then add a flip or grab.',
   'pro-score': 'Mix flips and grabs with grinds. Link landings with manuals to grow your multiplier.',
   'sick-score': 'Build a line across the warehouse. Variety, spins, and switch landings make every trick count.',
   combo: 'Link tricks with grinds and manuals. The goal counts only when you land the whole combo.',

@@ -76,6 +76,31 @@ and attainable score/combo targets using actual skating physics. With the dev se
 
 Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin), Z/C (revert), Enter (start / pause), Escape (pause / resume), Tab (controls).
 
+## Controls (phone / tablet)
+
+Touch controls appear automatically on devices with a coarse primary pointer. Landscape gives
+your thumbs the most room; portrait also works. Tap a goal and **Start Goal Run**, or use **Free
+Skate** to learn the controls without a timer.
+
+- Left thumb: drag the stick to steer or spin; up pushes, down brakes. Flick down then up for a
+  manual, or up then down for a nose manual. The skater also pushes automatically at low speed.
+- Right thumb: hold **Ollie** to build speed and charge a jump; release to pop. Tap **Flip** while
+  charging or airborne, hold **Grab**, and tap or hold **Grind** near a rail. Stick direction picks
+  the trick. **Revert** turns your stance on the ground and can link ramp landings.
+- Tap **Pause** for music, restart, or the goal board; the board's **Controls** button shows the full
+  control map. Pausing, switching apps, rotating
+  the screen, or an interrupted touch clears held controls without releasing a surprise ollie.
+
+Phones use lighter rendering by default (1× pixels, no dynamic shadows or floor reflections).
+Add `?highfx` to compare full effects, or `?touch` to try the controls with a mouse on desktop.
+Keyboard and gamepad inputs remain available. Progress belongs to each browser and site origin;
+the ChatGPT Site and the PR preview keep separate records.
+
+`npm run sim:touch` checks input ownership, short taps, cancellation, and keyboard/gamepad
+coexistence. With the dev server running, `npm run qa:mobile` checks actual browser multitouch
+events and captures landscape/portrait screenshots. These checks emulate a phone in Edge;
+physical-device comfort and performance still need hands-on testing.
+
 Start, Enter or the on-screen Pause button opens the pause/settings menu during a run. Resume keeps
 your position, score and remaining time; Restart Run explicitly resets the session. Navigate with
 Up/Down, Tab/Shift+Tab, the D-pad or left stick; select with Enter/Space or controller A. Escape,

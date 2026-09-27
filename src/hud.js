@@ -28,6 +28,7 @@ export class HUD {
   }
   // One pause/settings dialog for mouse, keyboard and controller.
   bindSettings() {
+    this.bindSecondaryTouchMenus();
     const { settings, startBtn, resume, restart, musicToggle } = this.el;
     startBtn.addEventListener('click', () => this.toggleSettings());
     resume.addEventListener('click', () => this.toggleSettings(false));
@@ -44,6 +45,38 @@ export class HUD {
         this.moveMenuFocus(e.code === 'ArrowUp' || (e.code === 'Tab' && e.shiftKey) ? -1 : 1);
       }
     });
+  }
+  bindSecondaryTouchMenus() {
+    // A held gameplay thumb is the primary pointer. Browsers may omit the
+    // compatibility click when another finger taps Pause or a menu action.
+    const touches = new Map();
+    let activated = null;
+    const target = event => event.target.closest?.('button, summary');
+    document.addEventListener('pointerdown', event => {
+      activated = null;
+      if (event.pointerType !== 'touch' || event.isPrimary) return;
+      const button = target(event);
+      if (!button || button.disabled || button.closest('#touch-controls, [inert]')) return;
+      touches.set(event.pointerId, { button, x: event.clientX, y: event.clientY });
+    });
+    document.addEventListener('pointerup', event => {
+      const touch = touches.get(event.pointerId);
+      touches.delete(event.pointerId);
+      if (!touch || target(event) !== touch.button || touch.button.disabled || touch.button.closest('[inert]')) return;
+      if (Math.hypot(event.clientX - touch.x, event.clientY - touch.y) > 12) return;
+      event.preventDefault();
+      activated = touch.button;
+      touch.button.click();
+    }, { passive: false });
+    document.addEventListener('click', event => {
+      // Some engines also emit a trusted click. Keyboard activation (detail=0)
+      // and the explicit click above remain native; a fresh pointerdown resets it.
+      if (event.isTrusted && event.detail > 0 && target(event) === activated) {
+        activated = null; event.preventDefault(); event.stopImmediatePropagation();
+      }
+    }, true);
+    document.addEventListener('pointercancel', event => touches.delete(event.pointerId));
+    window.addEventListener('blur', () => { touches.clear(); activated = null; });
   }
   menuButtons() { return [...this.el.settings.querySelectorAll('button')].filter(b => !b.hidden && !b.disabled); }
   moveMenuFocus(direction) {

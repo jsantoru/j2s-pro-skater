@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>J2S Pro Skater</title>
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="/src/style.css" />
+  <link rel="stylesheet" href="/src/touch.css" />
 </head>
 <body data-mode="title">
   <canvas id="game"></canvas>
@@ -58,12 +59,44 @@
       </svg>
     </div>
   </div>
+  <div id="touch-controls" role="group" aria-label="Touch skate controls" hidden>
+    <div class="touch-steering">
+      <div id="touch-stick" role="group" aria-label="Steering stick: left and right steer or balance, up pushes, down brakes" aria-describedby="touch-stick-description">
+        <span class="touch-stick-axis horizontal" aria-hidden="true"></span><span class="touch-stick-axis vertical" aria-hidden="true"></span>
+        <span class="touch-stick-direction north" aria-hidden="true">↑</span><span class="touch-stick-direction south" aria-hidden="true">↓</span><span class="touch-stick-direction west" aria-hidden="true">‹</span><span class="touch-stick-direction east" aria-hidden="true">›</span>
+        <span id="touch-stick-knob" aria-hidden="true"></span>
+      </div>
+      <span class="touch-control-caption" aria-hidden="true">STEER / BALANCE</span>
+      <span id="touch-stick-description" class="touch-sr-only">Drag to steer. Push up to accelerate and down to brake. Flick down then up for a manual, or up then down for a nose manual. Move left or right to spin in the air and balance on a grind.</span>
+    </div>
+    <div id="touch-actions" role="group" aria-label="Tricks">
+      <button id="touch-revert" data-touch-action="revert" class="touch-action touch-revert" type="button" aria-label="Revert: switch stance"><span aria-hidden="true">↶</span><b>REVERT</b></button>
+      <button id="touch-grind" data-touch-action="grind" class="touch-action" type="button" aria-label="Grind: tap near a rail"><b>GRIND</b><small>TAP</small></button>
+      <button id="touch-flip" data-touch-action="flip" class="touch-action" type="button" aria-label="Flip trick: tap with a stick direction"><b>FLIP</b><small>TAP</small></button>
+      <button id="touch-grab" data-touch-action="grab" class="touch-action" type="button" aria-label="Grab trick: hold with a stick direction"><b>GRAB</b><small>HOLD</small></button>
+      <button id="touch-ollie" data-touch-action="ollie" class="touch-action touch-ollie" type="button" aria-label="Ollie: hold to crouch, release to jump"><b>OLLIE</b><small>HOLD / RELEASE</small></button>
+    </div>
+  </div>
   <div id="toast"></div>
   <div id="goal-notification" class="hidden" role="status" aria-live="polite"><div class="goal-notice-mark">✓</div><div><span>GOAL COMPLETE</span><b id="goal-notification-title"></b></div></div>
   <button id="start-btn" type="button" aria-haspopup="dialog" aria-controls="settings-panel" aria-expanded="false">MENU <span>ESC</span></button>
   <div id="controls-panel" class="hidden">
     <button id="controls-close" type="button">BACK <span>ESC / B</span></button>
     <h2>CONTROLS</h2>
+    <section class="touch-only touch-howto" aria-label="Touch controls">
+      <h3>TWO THUMBS. YOUR LINE.</h3>
+      <p>Use the left stick to steer and the buttons on the right for tricks. Keep both thumbs on the screen.</p>
+      <table>
+        <tr><td>Stick ← →</td><td>Steer, spin in the air, or balance a grind.</td></tr>
+        <tr><td>Stick ↑ / ↓</td><td>Push for speed / brake. In a manual, balance the pitch.</td></tr>
+        <tr><td>OLLIE</td><td>Hold to crouch and build speed. Release to jump; hold longer to jump higher.</td></tr>
+        <tr><td>FLIP / GRAB</td><td>Tap FLIP or hold GRAB with a stick direction to choose your trick.</td></tr>
+        <tr><td>GRIND</td><td>Tap while airborne near a rail. Balance with the stick.</td></tr>
+        <tr><td>Stick ↓↑ flick</td><td>Manual. Flick ↑↓ for a Nose Manual.</td></tr>
+        <tr><td>REVERT</td><td>Switch stance. Revert on a ramp landing, then manual, to keep your combo.</td></tr>
+      </table>
+      <p class="touch-orientation-tip">Landscape gives your thumbs more room. Portrait works too.</p>
+    </section>
     <div class="cols">
       <div>
         <h3>🎮 Gamepad (Xbox / XInput)</h3>
@@ -149,6 +182,7 @@
     <main class="level-shell">
       <header class="level-header"><div class="level-wordmark" aria-label="J2S Pro Skater">J2S<span>PRO SKATER</span></div><div class="level-location">ROCHESTER, NEW YORK<span>GENESEE BREWING CO. / EST. 1878</span></div><span class="level-number">LEVEL <b>01</b></span></header>
       <section class="level-heading"><div><div class="level-eyebrow" id="level-eyebrow">CLOCK IN. DROP IN.</div><h1 id="level-title">GENESEE <span>WAREHOUSE</span></h1></div><div class="level-completion"><b id="board-completed">0<span>/ 7</span></b><span>GOALS COMPLETE</span><div class="completion-rail"><div id="board-completion-fill"></div></div></div></section>
+      <p class="touch-only touch-board-tip"><b>TOUCH TO SKATE</b><span>Left thumb steers. Hold OLLIE, release to jump.</span><small>Landscape gives your thumbs more room.</small></p>
       <div id="goal-board" class="level-columns">
         <section class="goal-list-panel" aria-label="Choose a goal"><div class="panel-heading"><h2>THE GOAL BOARD</h2><span>SELECT YOUR FOCUS</span></div><div id="goal-list"></div><p class="goal-board-note">Every goal is active in every run. Progress saves as you go.</p></section>
         <section class="mission-panel" aria-labelledby="mission-title"><div class="mission-topline"><span id="mission-category">SCORE CHALLENGE</span><span id="mission-status">NOT YET COMPLETE</span></div><div id="mission-icon" aria-hidden="true"></div><h2 id="mission-title">High Score</h2><div id="mission-target">2,500 <span>POINTS</span></div><p id="mission-description">Bank 2,500 points in one run.</p><div class="mission-tip"><span>FIND YOUR LINE</span><p id="mission-tip"></p></div><div class="mission-session"><b>02:00</b><span>ONE RUN. ALL SEVEN GOALS.<small>Land your tricks to bank the points.</small></span></div><button id="overlay-msg" type="button">START GOAL RUN <span>START →</span></button><button id="free-skate" class="level-secondary" type="button">FREE SKATE <span>NO CLOCK. JUST SKATE. →</span></button></section>

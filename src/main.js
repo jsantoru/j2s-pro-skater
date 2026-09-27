@@ -4,6 +4,7 @@ import { Skater } from './skater.js';
 import { Character } from './character.js';
 import { FollowCamera } from './camera.js';
 import { Input } from './input.js';
+import { TouchControls } from './touch-controls.js';
 import { HUD } from './hud.js';
 import { HighScores } from './highscores.js';
 import { Settings } from './settings.js';
@@ -20,10 +21,14 @@ import { SessionClock } from './session.js';
 const RUN_TIME = 120;
 const FIXED_DT = 1 / 120;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const touchEnabled = TouchControls.available();
+document.body.classList.toggle('touch-enabled', touchEnabled);
 
 const canvas = document.getElementById('game');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-const LOWFX = new URLSearchParams(location.search).has('lowfx'); // ?lowfx for weak GPUs: no shadows, 1x pixels
+const renderOptions = new URLSearchParams(location.search);
+// Touch devices start with the lighter renderer. ?highfx restores desktop effects.
+const LOWFX = renderOptions.has('lowfx') || (touchEnabled && !renderOptions.has('highfx'));
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: !LOWFX, powerPreference: 'high-performance' });
 renderer.setPixelRatio(LOWFX ? 1 : Math.min(window.devicePixelRatio, 1.5));
 renderer.shadowMap.enabled = !LOWFX;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -51,6 +56,8 @@ const character = new Character();
 scene.add(character.root);
 const followCam = new FollowCamera(camera, level);
 const input = new Input();
+const touchControls = new TouchControls({ root: document.getElementById('touch-controls') });
+input.setTouchSource(touchControls.source);
 const hud = new HUD();
 const highScores = new HighScores();
 const audio = new Audio();
@@ -72,6 +79,13 @@ let bankedThisStep = false;
 let accumulator = 0, last = performance.now(), visualTime = 0;
 const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed', 'revertLeftPressed', 'revertRightPressed'];
 const pending = {};
+input.onTouchCancel = ({ ollie }) => {
+  for (const key of EDGES) pending[key] = false;
+  if (ollie) {
+    skater.crouching = false; skater.crouchTime = 0;
+    skater.queued = null; skater.bufferedOllie = false;
+  }
+};
 hud.setMode(mode);
 
 skater.events.ollie = (charge) => { audio.pop(charge); fx.ollie(skater, charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
@@ -112,9 +126,11 @@ function refreshCombo() {
 
 input.onGamepadChange = (connected, id) => {
   hud.setPad(connected, id);
-  hud.toast(connected ? 'CONTROLLER CONNECTED: ' + id.slice(0, 40) : 'CONTROLLER DISCONNECTED — keyboard active');
+  if (!connected && touchEnabled) hud.el.pad.textContent = 'TOUCH CONTROLS';
+  hud.toast(connected ? 'CONTROLLER CONNECTED: ' + id.slice(0, 40) : `CONTROLLER DISCONNECTED — ${touchEnabled ? 'touch controls' : 'keyboard'} active`);
 };
 hud.setPad(false);
+if (touchEnabled) hud.el.pad.textContent = 'TOUCH CONTROLS';
 hud.highScores(highScores.list, 0);
 
 // Settings. The score is off unless the player has switched it on, and switching it on is itself a
@@ -131,6 +147,7 @@ function syncPause() {
   const open = hud.settingsOpen || hud.controlsOpen;
   document.body.dataset.paused = String(open);
   input.setMenuOpen(open || mode !== 'playing');
+  touchControls.setActive(touchEnabled && mode === 'playing' && !open);
   input.stopHaptics();
   audio.setPaused(open || mode !== 'playing');
   accumulator = 0; last = performance.now();
@@ -186,6 +203,7 @@ function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
   document.getElementById('top-center').dataset.session = runMode === 'free' ? 'FREE SKATE' : 'GOAL RUN';
   followCam.snap(skater);
   audio.setPaused(false);
+  touchControls.setActive(touchEnabled);
 }
 function endRun() {
   if (mode !== 'playing') return;
@@ -193,6 +211,7 @@ function endRun() {
   sessionClock.finish();
   const result = goals.finish();
   input.setMenuOpen(true);
+  touchControls.setActive(false);
   input.stopHaptics();
   audio.setPaused(true);
   hud.toggleSettings(false);
@@ -214,6 +233,7 @@ function showGoalBoard() {
   hud.setMode(mode);
   document.body.dataset.mode = mode;
   input.setMenuOpen(true);
+  touchControls.setActive(false);
   input.stopHaptics();
   hud.toggleControls(false);
   hud.combo('', 0, 0);
@@ -352,5 +372,5 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun, endRun, showGoalBoard, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx, goals, progress, collectibles, levelUI, sessionClock,
+window.__game = { skater, level, input, touchControls, character, followCam, startRun, endRun, showGoalBoard, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx, goals, progress, collectibles, levelUI, sessionClock,
   get session() { return { mode, runMode, focusGoal, paused: hud.settingsOpen || hud.controlsOpen, timeLeft: sessionClock.remaining, overtime: sessionClock.overtime, visualTime }; } };
