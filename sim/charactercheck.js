@@ -70,7 +70,16 @@ try {
     await check('Joe boots by default and mouse previews do not commit until confirmation', async () => {
       assert.equal((await selected()).model, 'joe'); await mode('home');
       await click('#fe-skater'); await mode('characters');
-      const images = await evaluate('[...document.querySelectorAll(".fe-character-portrait img")].map(i=>({ready:i.complete,w:i.naturalWidth,h:i.naturalHeight}))');
+      const images = await evaluate(`(async()=>{
+        const portraits=[...document.querySelectorAll('.fe-character-portrait img')];
+        if(portraits.length!==2)throw new Error('Expected both character portraits');
+        return Promise.all(portraits.map(async image=>{
+          let timer;
+          try{await Promise.race([image.decode(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Portrait load timed out: '+image.src)),15000);})]);}
+          finally{clearTimeout(timer);}
+          return{ready:image.complete,w:image.naturalWidth,h:image.naturalHeight};
+        }));
+      })()`);
       for (const img of images) assert(img.ready && img.w === 800 && img.h === 1000, 'Actual model portrait missing');
       const before = await saved(); await shot('selector-joe-desktop');
       await click('#fe-character-aaron');
