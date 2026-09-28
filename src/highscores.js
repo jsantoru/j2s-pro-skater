@@ -2,7 +2,7 @@
 // Storage can be unavailable (private mode, blocked cookies, a file:// open) — every access is
 // guarded and the table simply falls back to living in memory for the session.
 
-const KEY = 'j2s-pro-skater.highscores.v1';
+export const HIGH_SCORE_STORAGE_KEY = 'j2s-pro-skater.highscores.v1';
 export const MAX_ENTRIES = 10;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -23,18 +23,20 @@ function sanitise(list) {
 }
 
 export class HighScores {
-  constructor(storage) {
-    this.storage = storage !== undefined ? storage : globalThis.localStorage;
+  constructor(storage, { key = HIGH_SCORE_STORAGE_KEY } = {}) {
+    this.key = key;
+    try { this.storage = storage !== undefined ? storage : globalThis.localStorage; }
+    catch { this.storage = null; }
     this.list = this.load();
   }
   load() {
     try {
-      const raw = this.storage && this.storage.getItem(KEY);
+      const raw = this.storage && this.storage.getItem(this.key);
       return raw ? sanitise(JSON.parse(raw)) : [];
     } catch { return []; }
   }
   save() {
-    try { if (this.storage) this.storage.setItem(KEY, JSON.stringify(this.list)); } catch { /* full or blocked */ }
+    try { if (this.storage) this.storage.setItem(this.key, JSON.stringify(this.list)); } catch { /* full or blocked */ }
   }
   get best() { return this.list.length ? this.list[0].score : 0; }
   // Records a finished run. Returns its 1-based place on the table, or 0 if it did not make it.
@@ -47,5 +49,5 @@ export class HighScores {
     this.save();
     return this.list.indexOf(entry) + 1;
   }
-  clear() { this.list = []; try { if (this.storage) this.storage.removeItem(KEY); } catch { /* ignore */ } }
+  clear() { this.list = []; try { if (this.storage) this.storage.removeItem(this.key); } catch { /* ignore */ } }
 }

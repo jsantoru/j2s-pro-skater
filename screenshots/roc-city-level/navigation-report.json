@@ -1,0 +1,66 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "home boots with PLAY focused and a completely idle session",
+      "passed": true
+    },
+    {
+      "name": "home keyboard controls stay in the visible screen and held Enter or Space never skips a screen",
+      "passed": true
+    },
+    {
+      "name": "controls and settings make menus inert, keep focus in the modal and restore it on close",
+      "passed": true
+    },
+    {
+      "name": "level selection is explicit, future levels cannot launch, and board navigation works both ways",
+      "passed": true
+    },
+    {
+      "name": "gamepad Start, A, B and D-pad navigate without carrying held skating inputs",
+      "passed": true
+    },
+    {
+      "name": "returning home abandons only the current run and retains earned career progress",
+      "passed": true
+    },
+    {
+      "name": "touch home and level screens fit portrait, landscape and a compact phone",
+      "passed": true
+    },
+    {
+      "name": "a held touch is cleared when pausing to home and cannot pop on the next run",
+      "passed": true
+    },
+    {
+      "name": "cleared careers remain visible in level selection and enter untimed Free Skate",
+      "passed": true
+    },
+    {
+      "name": "all navigation completes without JavaScript, console, network or WebGL errors",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "browserErrors": [],
+  "screenshotsCaptured": [
+    "home-desktop.png",
+    "levels-desktop.png",
+    "home-portrait.png",
+    "levels-portrait.png",
+    "home-landscape.png",
+    "levels-landscape.png",
+    "home-compact-landscape.png",
+    "levels-compact-landscape.png",
+    "home-compact-portrait.png",
+    "levels-compact-portrait.png"
+  ],
+  "artifactNote": "Compact regression report. Full layout diagnostics and captures were inspected locally; the ROC City report includes current screenshots."
+}

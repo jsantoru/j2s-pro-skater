@@ -15,7 +15,8 @@ export class HUD {
       overlay: $('overlay'), overlayMsg: $('overlay-msg'), finalScore: $('final-score'),
       bottom: $('bottom'), balance: $('balance'), balanceNeedle: $('balance-needle'),
       settings: $('settings-panel'), startBtn: $('start-btn'), settingsTitle: $('settings-title'),
-      resume: $('resume-run'), restart: $('restart-run'), menuStatus: $('menu-status'),
+      resume: $('resume-run'), restart: $('restart-run'), board: $('goals-menu'), menuStatus: $('menu-status'),
+      levels: $('settings-levels'), home: $('settings-home'), menuLocation: $('settings-location'),
       musicToggle: $('music-toggle'), musicState: document.querySelector('#music-toggle .switch-state'),
     };
     this.onMusicToggle = null; // main wires this to the persisted setting + the audio bus
@@ -28,13 +29,23 @@ export class HUD {
   }
   // One pause/settings dialog for mouse, keyboard and controller.
   bindSettings() {
+    this.bindSecondaryTouchMenus();
     const { settings, startBtn, resume, restart, musicToggle } = this.el;
     startBtn.addEventListener('click', () => this.toggleSettings());
     resume.addEventListener('click', () => this.toggleSettings(false));
     restart.addEventListener('click', () => this.onRestart?.());
+    this.el.board.addEventListener('click', () => this.onBoard?.());
+    this.el.levels.addEventListener('click', () => this.onLevels?.());
+    this.el.home.addEventListener('click', () => this.onHome?.());
     musicToggle.addEventListener('click', () => this.onMusicToggle?.());
+    $('controls-close').addEventListener('click', () => this.toggleControls(false));
     settings.addEventListener('click', (e) => { if (e.target === settings) this.toggleSettings(false); });
     window.addEventListener('keydown', (e) => {
+      // A held Enter must not activate the newly focused button on the next
+      // screen. Each menu transition requires a fresh press.
+      if (e.repeat && ['Enter', 'Space'].includes(e.code) && e.target?.closest?.('button, summary')) {
+        e.preventDefault(); return;
+      }
       if (!this.settingsOpen) return;
       if (e.code === 'Escape') e.preventDefault();
       if (['Tab', 'ArrowUp', 'ArrowDown'].includes(e.code)) {
@@ -42,6 +53,38 @@ export class HUD {
         this.moveMenuFocus(e.code === 'ArrowUp' || (e.code === 'Tab' && e.shiftKey) ? -1 : 1);
       }
     });
+  }
+  bindSecondaryTouchMenus() {
+    // A held gameplay thumb is the primary pointer. Browsers may omit the
+    // compatibility click when another finger taps Pause or a menu action.
+    const touches = new Map();
+    let activated = null;
+    const target = event => event.target.closest?.('button, summary');
+    document.addEventListener('pointerdown', event => {
+      activated = null;
+      if (event.pointerType !== 'touch' || event.isPrimary) return;
+      const button = target(event);
+      if (!button || button.disabled || button.closest('#touch-controls, [inert]')) return;
+      touches.set(event.pointerId, { button, x: event.clientX, y: event.clientY });
+    });
+    document.addEventListener('pointerup', event => {
+      const touch = touches.get(event.pointerId);
+      touches.delete(event.pointerId);
+      if (!touch || target(event) !== touch.button || touch.button.disabled || touch.button.closest('[inert]')) return;
+      if (Math.hypot(event.clientX - touch.x, event.clientY - touch.y) > 12) return;
+      event.preventDefault();
+      activated = touch.button;
+      touch.button.click();
+    }, { passive: false });
+    document.addEventListener('click', event => {
+      // Some engines also emit a trusted click. Keyboard activation (detail=0)
+      // and the explicit click above remain native; a fresh pointerdown resets it.
+      if (event.isTrusted && event.detail > 0 && target(event) === activated) {
+        activated = null; event.preventDefault(); event.stopImmediatePropagation();
+      }
+    }, true);
+    document.addEventListener('pointercancel', event => touches.delete(event.pointerId));
+    window.addEventListener('blur', () => { touches.clear(); activated = null; });
   }
   menuButtons() { return [...this.el.settings.querySelectorAll('button')].filter(b => !b.hidden && !b.disabled); }
   moveMenuFocus(direction) {
@@ -57,9 +100,20 @@ export class HUD {
   }
   setMode(mode) {
     this.mode = mode;
-    this.el.startBtn.innerHTML = mode === 'playing' ? 'Ⅱ PAUSE <span>START / ESC</span>' : 'MENU <span>ESC</span>';
+    this.el.startBtn.innerHTML = mode === 'playing' ? 'Ⅱ PAUSE <span>START / ESC</span>' : 'SETTINGS';
   }
   get settingsOpen() { return this.el.settings && !this.el.settings.classList.contains('hidden'); }
+  syncModalInert() {
+    const modal = this.settingsOpen || this.controlsOpen;
+    for (const el of [this.el.overlay, $('front-end'), this.el.startBtn]) if (el) el.inert = modal;
+    this.el.controls.inert = this.settingsOpen;
+  }
+  restoreFocus(target) {
+    if (this.mode !== 'playing' && target?.isConnected && target !== document.body
+      && !target.closest('.hidden, [hidden], [inert]') && target.getClientRects().length) {
+      target.focus({ preventScroll: true });
+    }
+  }
   toggleSettings(force) {
     const open = force === undefined ? !this.settingsOpen : !!force;
     if (open === this.settingsOpen) return open;
@@ -69,16 +123,21 @@ export class HUD {
       this.el.settingsTitle.textContent = playing ? 'SESSION PAUSED' : 'SETTINGS';
       this.el.resume.textContent = playing ? 'RESUME SESSION' : 'BACK TO MENU';
       this.el.restart.hidden = !playing;
+      this.el.board.hidden = !playing;
+      this.el.levels.hidden = this.mode === 'home' || this.mode === 'levels';
+      this.el.home.hidden = this.mode === 'home';
+      this.el.menuLocation.innerHTML = this.mode === 'home' || this.mode === 'levels'
+        ? 'J2S PRO SKATER <span>GAME SETTINGS</span>' : 'GENESEE WAREHOUSE <span>LEVEL / 01</span>';
       this.el.menuStatus.textContent = playing ? 'Your run is on hold. Pick up where you left off.' : 'Set the soundtrack before you drop in.';
     }
     this.el.settings.classList.toggle('hidden', !open);
     this.el.startBtn.setAttribute('aria-expanded', String(open));
-    for (const el of [this.el.overlay, this.el.controls, this.el.startBtn]) el.inert = open;
+    this.syncModalInert();
     this.onPauseChange?.(open);
     if (open) this.el.resume.focus();
     else {
       document.activeElement?.blur();
-      if (this.mode !== 'playing' && this.returnFocus?.isConnected && this.returnFocus !== document.body) this.returnFocus.focus();
+      this.restoreFocus(this.returnFocus);
     }
     return open;
   }
@@ -93,7 +152,19 @@ export class HUD {
     this.el.pad.classList.toggle('connected', connected);
   }
   toast(msg) { this.el.toast.textContent = msg; this.el.toast.classList.add('show'); this.toastTimer = 2.6; }
-  toggleControls(force) { this.el.controls.classList.toggle('hidden', force === undefined ? undefined : !force); }
+  toggleControls(force) {
+    const open = force === undefined ? !this.controlsOpen : !!force;
+    if (open === this.controlsOpen) return;
+    if (open) this.controlsReturnFocus = document.activeElement;
+    this.el.controls.classList.toggle('hidden', !open);
+    this.syncModalInert();
+    this.onControlsChange?.(open);
+    if (open) $('controls-close').focus({ preventScroll: true });
+    else {
+      document.activeElement?.blur();
+      this.restoreFocus(this.controlsReturnFocus);
+    }
+  }
   get controlsOpen() { return !this.el.controls.classList.contains('hidden'); }
   overlay(show, msg, score) {
     this.el.overlay.classList.toggle('hidden', !show);
@@ -205,8 +276,8 @@ export class HUD {
     this.shownScore += (score - this.shownScore) * Math.min(1, dt * 6);
     if (Math.abs(score - this.shownScore) < 1) this.shownScore = score;
     this.el.score.textContent = fmt(Math.round(this.shownScore));
-    const t = Math.max(0, timeLeft), m = Math.floor(t / 60), s = Math.floor(t % 60);
-    this.el.timer.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    const t = Math.max(0, timeLeft), seconds = Math.ceil(t), m = Math.floor(seconds / 60), s = seconds % 60;
+    this.el.timer.textContent = Number.isFinite(t) ? m + ':' + (s < 10 ? '0' : '') + s : '∞';
     this.el.timer.classList.toggle('low', t < 15);
     if (this.toastTimer > 0) { this.toastTimer -= dt; if (this.toastTimer <= 0) this.el.toast.classList.remove('show'); }
     if (this.holdTimer > 0) {

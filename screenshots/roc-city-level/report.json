@@ -1,0 +1,301 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "both real levels have independent cards and ROC opens its own goal board",
+      "passed": true
+    },
+    {
+      "name": "controller Start launches the focused second card and selection stays visible when returning",
+      "passed": true
+    },
+    {
+      "name": "ROC starts on its actual north entry, exposes every map feature and binds all systems",
+      "passed": true,
+      "detail": {
+        "position": [
+          2,
+          0,
+          -43.995013946843
+        ],
+        "features": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F",
+          "G",
+          "H",
+          "I",
+          "J",
+          "K",
+          "L"
+        ],
+        "camera": true,
+        "effects": true,
+        "skater": true,
+        "pickups": 11,
+        "activeRoots": 1
+      }
+    },
+    {
+      "name": "rendered park reference views show connected bowl, street and bridge geometry",
+      "passed": true
+    },
+    {
+      "name": "earning a ROC collection retires it on later runs without affecting Warehouse",
+      "passed": true
+    },
+    {
+      "name": "level switching is bounded and never retains old lights, collision targets or held inputs",
+      "passed": true,
+      "detail": {
+        "before": {
+          "memory": {
+            "geometries": 610,
+            "textures": 110
+          },
+          "roots": 1,
+          "loaded": 2,
+          "shadows": true
+        },
+        "after": {
+          "memory": {
+            "geometries": 610,
+            "textures": 110
+          },
+          "roots": 1,
+          "loaded": 2,
+          "shadows": true
+        }
+      }
+    },
+    {
+      "name": "ROC and warehouse careers persist independently after page reload",
+      "passed": true
+    },
+    {
+      "name": "phone layouts fit both level cards and ROC touch skating remains usable",
+      "passed": true,
+      "detail": [
+        {
+          "width": 390,
+          "height": 844,
+          "rootWidth": 380,
+          "rootScroll": 380,
+          "shellWidth": 340,
+          "bodyWidth": 390,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 203.171875,
+              "right": 281.265625,
+              "top": 20,
+              "bottom": 64,
+              "width": 78.09375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 286.265625,
+              "right": 360,
+              "top": 20,
+              "bottom": 64,
+              "width": 73.734375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-back",
+              "left": 20,
+              "right": 92.1875,
+              "top": 79,
+              "bottom": 123,
+              "width": 72.1875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-genesee",
+              "left": 20,
+              "right": 360,
+              "top": 235.5,
+              "bottom": 592.5,
+              "width": 340,
+              "height": 357,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-roc-city-skatepark",
+              "left": 20,
+              "right": 360,
+              "top": 243.5,
+              "bottom": 600.5,
+              "width": 340,
+              "height": 357,
+              "hit": true
+            }
+          ]
+        },
+        {
+          "width": 844,
+          "height": 390,
+          "rootWidth": 844,
+          "rootScroll": 844,
+          "shellWidth": 769.75,
+          "bodyWidth": 844,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 600.640625,
+              "right": 701.9375,
+              "top": 13,
+              "bottom": 57,
+              "width": 101.296875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 709.9375,
+              "right": 806.875,
+              "top": 13,
+              "bottom": 57,
+              "width": 96.9375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-back",
+              "left": 37.125,
+              "right": 109.3125,
+              "top": 61,
+              "bottom": 105,
+              "width": 72.1875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-genesee",
+              "left": 37.125,
+              "right": 413,
+              "top": 122,
+              "bottom": 318,
+              "width": 375.875,
+              "height": 196,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-roc-city-skatepark",
+              "left": 431,
+              "right": 806.875,
+              "top": 122,
+              "bottom": 318,
+              "width": 375.875,
+              "height": 196,
+              "hit": true
+            }
+          ]
+        },
+        {
+          "width": 320,
+          "height": 568,
+          "rootWidth": 310,
+          "rootScroll": 310,
+          "shellWidth": 270,
+          "bodyWidth": 320,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 133.171875,
+              "right": 211.265625,
+              "top": 20,
+              "bottom": 64,
+              "width": 78.09375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 216.265625,
+              "right": 290,
+              "top": 20,
+              "bottom": 64,
+              "width": 73.734375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-back",
+              "left": 20,
+              "right": 92.1875,
+              "top": 79,
+              "bottom": 123,
+              "width": 72.1875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-genesee",
+              "left": 20,
+              "right": 290,
+              "top": 78.5,
+              "bottom": 488.5,
+              "width": 270,
+              "height": 410,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-roc-city-skatepark",
+              "left": 20,
+              "right": 290,
+              "top": 78.5,
+              "bottom": 488.5,
+              "width": 270,
+              "height": 410,
+              "hit": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "no JavaScript, console, network or WebGL errors",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "level-select-desktop.png",
+    "roc-goal-board.png",
+    "roc-gameplay-entry.png",
+    "roc-overview.png",
+    "roc-bowl.png",
+    "roc-street.png",
+    "roc-under-bridge.png",
+    "separate-level-careers.png",
+    "level-select-portrait.png",
+    "level-select-landscape.png",
+    "level-select-small-portrait.png",
+    "roc-mobile-gameplay.png"
+  ],
+  "rendering": {
+    "mode": "genesee-warehouse",
+    "lowfx": true,
+    "drawCalls": 250,
+    "triangles": 248234,
+    "memory": {
+      "geometries": 600,
+      "textures": 98
+    }
+  },
+  "passed": true,
+  "browserErrors": []
+}

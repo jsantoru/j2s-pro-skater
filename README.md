@@ -1,6 +1,7 @@
 # J2S Pro Skater
 
-A single-level, gamepad-first 3D skateboarding prototype in the spirit of Tony Hawk's Pro Skater 1.
+A gamepad-first 3D skateboarding game in the spirit of Tony Hawk's Pro Skater 1,
+with Genesee Warehouse and ROC City Skatepark in Rochester, New York.
 The point of this build is **game feel**: the skater controller, camera and animation are one
 hand-tuned kinematic system (no rigid-body physics), and every number in it was play-tested.
 
@@ -17,10 +18,98 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
-Plug in an Xbox-style (XInput / "standard mapping") USB controller, press any button, skate.
+Plug in an Xbox-style (XInput / "standard mapping") USB controller, press a button to connect it,
+then choose **Play**, select a level, and choose a goal to start your run.
 Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the full control map in game.
 
+## Home and level select
+
+The home screen opens on a live view of the warehouse. **Play** opens the level selector,
+where each playable spot shows its saved goal progress. Genesee Warehouse is Level 01;
+ROC City Skatepark is Level 02. Each has an independent career and score table.
+The home screen returns to the last selected spot during the session.
+
+Use **Home** or **Level Select** from the goal board, results, or pause menu to leave the current
+session. Earned goals and banked career records stay saved; a new run starts with a fresh timer
+and partial collectible sets reset. Escape or controller B steps back through the menus.
+Arrow keys / D-pad navigate, Enter / A selects, and the menus also support touch.
+
+## Genesee Warehouse goals
+
+Choose a focus on the goal board and **Start Goal Run** for a two-minute session. Only unfinished
+career goals are active; a compact Run Focus checklist tracks all of them, with your selected goal
+highlighted. Use the arrow keys or controller D-pad
+to navigate, Enter / A to select, and Start to drop in.
+
+Between runs, the focus stays on your selected goal while it is unfinished. Once earned, the
+next run highlights the first unfinished career goal on the board, including after a restart
+or reload. Results show that next focus before you drop in. Completed goals stay checked off on
+the board as achievements, and cannot be selected again. After all seven are done, drop into Free Skate.
+
+| Goal | Target |
+|---|---|
+| High Score | 2,500 banked points |
+| Pro Score | 10,000 banked points |
+| Sick Score | 25,000 banked points |
+| Big Combo | One landed 3,000-point combo |
+| Collect S-K-A-T-E | All five gold letters in one run, any order |
+| Bottle Cap Hunt | All five vintage Genesee caps in one run |
+| Secret Tape | The pink tape on the raised loading deck |
+
+Completed goals and best records save immediately in this browser. Partial letter/cap collections
+reset on every run; a bail does not take away pickups already collected. Pickups do not add score.
+Once a collectible goal is complete, its pickups and HUD indicator disappear from later runs:
+all five caps after Bottle Cap Hunt, all five letters only after the complete S-K-A-T-E goal,
+and the tape after Secret Tape. Partial sets respawn in full until the goal is earned. Completed
+score/combo goals also retire, so later runs cannot award them again. Each run keeps the goal set
+it started with until the next restart or session.
+Each checklist row shows its own live progress and checks off when earned. Completed rows stay
+visible for the rest of that run, then retire from the checklist on your next run.
+Score goals count only landed combos. When the buzzer catches a combo, **LAND IT!** gives you up
+to 20 seconds to finish that line; pickups close at the buzzer, and a bail loses the unbanked points.
+The results screen shows goals earned, new completions, the run score, and the best landed combo.
+
+The five bottle caps feature distinct vintage Genesee Beer, 12 Horse Ale, Cream Ale, Genny Light,
+and Light Ale labels. Their domed metal faces, crimped skirts and recessed undersides slowly turn
+in the warehouse light. Teal halos and floor rings mark each collectible's position.
+
+**Free Skate** has no timer or career goals. Pause to restart or return to the goal board, level selector, or home. Pausing
+freezes the level and goal notifications; switching tabs automatically pauses the session. Existing
+high scores remain available under **Best Runs** on the results screen. If browser storage is
+unavailable, the game still works and retains progress in memory until reload.
+
+![Genesee Warehouse goal board](screenshots/level-goals/board-desktop.png)
+
+`npm run sim:level` checks progression, timing, all pickup approaches, a complete S-K-A-T-E route,
+and attainable score/combo targets using actual skating physics. With the dev server running,
+`npm run qa:level` checks the integrated browser flow in an isolated Edge profile and captures the UI.
+`npm run qa:checklist` checks every live goal row, completion and restart behavior, and desktop/phone layouts.
+`npm run qa:navigation` checks the home/level/run flow, menu input, saved progress, and responsive layouts.
+`npm run sim:roccity` checks the outdoor park's actual surfaces, transitions, collection routes,
+separate progression, and below-grade bail recovery. `npm run qa:roccity` checks both parks in the
+browser, repeated switching, saved careers, and phone layouts.
+`npm run sim:bottlecaps` checks the caps' physical geometry, rotation and collectible lifecycle;
+`npm run qa:bottlecaps` renders all five designs and checks them in desktop and touch-mode play.
+
 `npm run build` produces a static bundle in `dist/`; `npm run preview` serves it.
+
+## ROC City Skatepark
+
+The second level follows the Phase 1 feature map and photographs: a connected multi-depth
+bowl with pool coping, seven- and nine-stair sets, blue hubbas, yellow rails, an A-frame,
+and the street promenade beneath I-490 with its manual pad and extended quarter pipe.
+The blue Rochester flower marks the upper street deck beside the Riverway Trail.
+Concrete shares the warehouse's photographed surface maps, with outdoor lighting and slab joints.
+
+ROC has its own High Score (5,000), Pro Score (15,000), Sick Score (35,000), Big Combo (5,000),
+S-K-A-T-E, five bottle caps, and secret tape. Completion in one park never retires another
+park's pickups. Keyboard, controller and mobile touch controls work in both.
+
+See [the reference and implementation notes](ROC-CITY-LEVEL.md) for source links and
+feature correspondence. Dimensions are estimates from the supplied map and public photos;
+this is a playable recreation rather than a surveyed model.
+
+![ROC City Skatepark](screenshots/roc-city-level/roc-overview.png)
 
 ## Controls (gamepad)
 
@@ -37,10 +126,35 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 | L2 / R2 (ZL / ZR, LT / RT) | Revert left / right anywhere on the ground to toggle regular/switch. On ramp landings, flick into a manual to keep the combo. Triggers no longer push or brake |
 | LB / RB | Spin left / right (digital, handy with the d-pad) |
 | Right stick | Nudge the camera |
-| Start | Start the 2-minute free skate; pause / resume during play |
+| Start | Start a goal run; pause / resume during play |
 | Back | Toggle the controls panel |
 
 Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin), Z/C (revert), Enter (start / pause), Escape (pause / resume), Tab (controls).
+
+## Controls (phone / tablet)
+
+Touch controls appear automatically on devices with a coarse primary pointer. Landscape gives
+your thumbs the most room; portrait also works. Tap a goal and **Start Goal Run**, or use **Free
+Skate** to learn the controls without a timer.
+
+- Left thumb: drag the stick to steer or spin; up pushes, down brakes. Flick down then up for a
+  manual, or up then down for a nose manual. The skater also pushes automatically at low speed.
+- Right thumb: hold **Ollie** to build speed and charge a jump; release to pop. Tap **Flip** while
+  charging or airborne, hold **Grab**, and tap or hold **Grind** near a rail. Stick direction picks
+  the trick. **Revert** turns your stance on the ground and can link ramp landings.
+- Tap **Pause** for music, restart, the goal board, level select, or home; the board's **Controls** button shows the full
+  control map. Pausing, switching apps, rotating
+  the screen, or an interrupted touch clears held controls without releasing a surprise ollie.
+
+Phones use lighter rendering by default (1× pixels, no dynamic shadows or floor reflections).
+Add `?highfx` to compare full effects, or `?touch` to try the controls with a mouse on desktop.
+Keyboard and gamepad inputs remain available. Progress belongs to each browser and site origin;
+the ChatGPT Site and the PR preview keep separate records.
+
+`npm run sim:touch` checks input ownership, short taps, cancellation, and keyboard/gamepad
+coexistence. With the dev server running, `npm run qa:mobile` checks actual browser multitouch
+events and captures landscape/portrait screenshots. These checks emulate a phone in Edge;
+physical-device comfort and performance still need hands-on testing.
 
 Start, Enter or the on-screen Pause button opens the pause/settings menu during a run. Resume keeps
 your position, score and remaining time; Restart Run explicitly resets the session. Navigate with
@@ -48,10 +162,14 @@ Up/Down, Tab/Shift+Tab, the D-pad or left stick; select with Enter/Space or cont
 Start, controller B/Back, Resume or the backdrop closes it. Music remains adjustable while the
 simulation, animations, effects, timer and skating audio/haptics pause. Held menu inputs must be
 released before skating again; an interrupted ollie charge cancels to avoid an accidental pop.
-Before a run, use Escape or Menu for settings. See [pause verification](PAUSE-MENU.md).
+Outside a run, use **Settings** for music; Escape steps back through the menus and opens settings
+from home. See [pause verification](PAUSE-MENU.md).
 
 ## What is in the box
 
+- `src/front-end.js` / `src/front-end.css` – responsive home and level selection, with
+  keyboard, controller and touch navigation. `src/levels.js` holds the level catalog;
+  Genesee Warehouse is the first playable entry.
 - `src/skater.js` – the controller. States: ride, air, grind, bail. Surface following via raycasts with
   a 3-D travel vector that stays tangent to banks, transitions and vert; ramp-assisted uphill gravity;
   crouch "pump" in transitions; late-release ollie forgiveness at lips; vert airs auto-turn 180;
@@ -72,8 +190,8 @@ Before a run, use Escape or Menu for settings. See [pause verification](PAUSE-ME
   two ledges, flat rails, a down bar. Also builds the raycast colliders and grind segments.
 - `src/tricks.js` – trick tables, spin naming and the combo maths, priced from
   [`THPS-SCORING-SYSTEM.md`](THPS-SCORING-SYSTEM.md). See [Scoring](#scoring).
-- `src/highscores.js` – the best-runs table, persisted to `localStorage` and rendered on the title and
-  end-of-run overlays. Stored data is re-validated on load, and every access is guarded so a browser
+- `src/highscores.js` – the best-runs table, persisted to `localStorage` and available from the
+  end-of-run record display. Stored data is re-validated on load, and every access is guarded so a browser
   with storage blocked simply keeps the table in memory for the session.
 - `src/settings.js` – player preferences, persisted to `localStorage` with the same guarded access as
   the high-score table. Music is off by default; the pause/settings menu controls it, and switching
@@ -124,7 +242,7 @@ Final Score = Σ(base × stance × degradation) × combo multiplier
 Finished runs go into a ten-deep table in `localStorage`, newest ranking applied at the moment the clock
 hits zero. The best of them shows under the live score as `SCORE TO BEAT`, in small type so it never
 competes with the number you are watching; pass it and the line turns green and reads `NEW RECORD`. The
-full table appears on the title screen and after a run, with the run you just finished highlighted.
+full table appears under Best Runs after a run, with the run you just finished highlighted.
 Restarting mid-run abandons it without recording anything.
 
 ## Tuning notes (the numbers that matter)
@@ -268,9 +386,9 @@ performance guarantee for other devices. Existing gameplay checks remain availab
 
 ### Title Screen
 
-![Title screen](screenshots/title.png)
+![Goal board](screenshots/level-goals/board-desktop.png)
 
-The home page—press START or ENTER to begin a 2-minute free-skate session.
+The goal board—choose a focus and start a two-minute goal run, or choose untimed Free Skate.
 
 ### Kickflip
 

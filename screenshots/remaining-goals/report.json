@@ -1,0 +1,207 @@
+{
+  "checks": [
+    {
+      "name": "board renders seven goals and fits desktop, portrait and landscape",
+      "passed": true,
+      "detail": [
+        {
+          "width": 1440,
+          "height": 900,
+          "bounds": {
+            "left": 180,
+            "right": 1260,
+            "scrollWidth": 1440,
+            "width": 1440,
+            "scrollHeight": 900,
+            "height": 900
+          }
+        },
+        {
+          "width": 390,
+          "height": 844,
+          "bounds": {
+            "left": 20,
+            "right": 355,
+            "scrollWidth": 375,
+            "width": 375,
+            "scrollHeight": 1146,
+            "height": 844
+          }
+        },
+        {
+          "width": 844,
+          "height": 390,
+          "bounds": {
+            "left": 26,
+            "right": 803,
+            "scrollWidth": 829,
+            "width": 829,
+            "scrollHeight": 690,
+            "height": 390
+          }
+        }
+      ]
+    },
+    {
+      "name": "mouse/keyboard goal selection changes focus without launching a run",
+      "passed": true
+    },
+    {
+      "name": "starting the focused SKATE run collects S through actual keyboard skating",
+      "passed": true,
+      "detail": {
+        "position": [
+          2.6569635664223448,
+          -3.1086244689504383e-15,
+          14
+        ],
+        "state": "ride",
+        "collected": [
+          "letter-s"
+        ],
+        "visible": true,
+        "tracker": "1 / 5"
+      }
+    },
+    {
+      "name": "controls pause the run and Escape closes them without losing position",
+      "passed": true
+    },
+    {
+      "name": "a real bank event awards both 3,000-point goals and saves immediately",
+      "passed": true,
+      "detail": {
+        "completed": [
+          "high-score",
+          "combo"
+        ],
+        "bestScore": 3000,
+        "bestCombo": 3000
+      }
+    },
+    {
+      "name": "pause freezes clock, skater and goal notification exactly",
+      "passed": true,
+      "detail": {
+        "time": 118.65833333333227,
+        "pos": [
+          3.2125239777209993,
+          -3.1086244689504383e-15,
+          14
+        ],
+        "notice": 2.4833333333333334,
+        "queue": 1
+      }
+    },
+    {
+      "name": "restart resets partial collections and score while career completion remains",
+      "passed": true
+    },
+    {
+      "name": "saved goal completion and records survive a full reload",
+      "passed": true
+    },
+    {
+      "name": "free skate is untimed with no pickups, tracker or career writes",
+      "passed": true
+    },
+    {
+      "name": "overtime hides pickups, banks the final combo and records results exactly once",
+      "passed": true,
+      "detail": {
+        "finalScore": 3000,
+        "recordsAdded": 1
+      }
+    },
+    {
+      "name": "BEST RUNS keyboard disclosure does not restart the finished session",
+      "passed": true
+    },
+    {
+      "name": "bailing the last combo ends overtime without awarding its score",
+      "passed": true
+    },
+    {
+      "name": "gamepad D-pad/A selects and Start launches without carrying held skating inputs",
+      "passed": true
+    },
+    {
+      "name": "completed goals stay disabled and cannot be selected or awarded again",
+      "passed": true
+    },
+    {
+      "name": "an unfinished chosen collectible remains focused through score completion, results and the board",
+      "passed": true
+    },
+    {
+      "name": "pause restart advances a newly completed focus without changing it during the current run",
+      "passed": true
+    },
+    {
+      "name": "finished focus skips multiple completed goals and picks the first unfinished board entry",
+      "passed": true
+    },
+    {
+      "name": "completed caps vanish while unfinished letters and tape remain collectible",
+      "passed": true
+    },
+    {
+      "name": "partial letter and cap sets return in full on restart until their entire goal is earned",
+      "passed": true
+    },
+    {
+      "name": "completed collectible goals stay absent after reload and leave no HUD counters or pickup effects",
+      "passed": true
+    },
+    {
+      "name": "earning the final remaining goal offers Free Skate with no stale goal selection",
+      "passed": true
+    },
+    {
+      "name": "next-focus policy leaves free-skate restart and replay untimed without career writes",
+      "passed": true
+    },
+    {
+      "name": "normal browser run has no JavaScript, console or network errors",
+      "passed": true
+    },
+    {
+      "name": "lowfx mode renders goal runs and pickups without shadows or GL errors",
+      "passed": true,
+      "detail": {
+        "calls": 227,
+        "triangles": 242200,
+        "textures": 79
+      }
+    },
+    {
+      "name": "blocked localStorage getter still boots and retains in-memory goals",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "board-desktop.png",
+    "board-phone.png",
+    "board-landscape.png",
+    "playing-start.png",
+    "playing-letter-collected.png",
+    "playing-phone.png",
+    "playing-landscape.png",
+    "paused.png",
+    "board-progress.png",
+    "free-skate.png",
+    "results-desktop.png",
+    "results-phone.png",
+    "results-landscape.png",
+    "unfinished-results.png",
+    "unfinished-results-phone.png",
+    "unfinished-board.png",
+    "retired-caps-run.png",
+    "retired-collectibles-run.png",
+    "retired-collectibles-phone.png",
+    "warehouse-cleared-results.png",
+    "warehouse-cleared-board.png"
+  ],
+  "passed": true,
+  "browserErrors": []
+}

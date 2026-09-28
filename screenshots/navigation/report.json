@@ -1,0 +1,535 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test",
+    "build": {
+      "javascript": "main-BEHGtCv8.js",
+      "stylesheet": "main-Cw4Jjhua.css"
+    }
+  },
+  "checks": [
+    {
+      "name": "home boots with PLAY focused and a completely idle session",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "height": 900,
+        "rootWidth": 1440,
+        "rootScroll": 1440,
+        "shellWidth": 1313.28125,
+        "bodyWidth": 1440,
+        "targets": [
+          {
+            "selector": "#fe-controls",
+            "left": 1170.40625,
+            "right": 1271.703125,
+            "top": 32,
+            "bottom": 76,
+            "width": 101.296875,
+            "height": 44,
+            "hit": true
+          },
+          {
+            "selector": "#fe-settings",
+            "left": 1279.703125,
+            "right": 1376.640625,
+            "top": 32,
+            "bottom": 76,
+            "width": 96.9375,
+            "height": 44,
+            "hit": true
+          },
+          {
+            "selector": "#fe-play",
+            "left": 63.359375,
+            "right": 408.359375,
+            "top": 595.984375,
+            "bottom": 670.78125,
+            "width": 345,
+            "height": 74.796875,
+            "hit": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "home keyboard controls stay in the visible screen and a held Enter never skips a screen",
+      "passed": true
+    },
+    {
+      "name": "controls and settings make menus inert, keep focus in the modal and restore it on close",
+      "passed": true
+    },
+    {
+      "name": "level selection is explicit, future levels cannot launch, and board navigation works both ways",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "height": 900,
+        "rootWidth": 1440,
+        "rootScroll": 1440,
+        "shellWidth": 1313.28125,
+        "bodyWidth": 1440,
+        "targets": [
+          {
+            "selector": "#fe-controls",
+            "left": 1170.40625,
+            "right": 1271.703125,
+            "top": 32,
+            "bottom": 76,
+            "width": 101.296875,
+            "height": 44,
+            "hit": true
+          },
+          {
+            "selector": "#fe-settings",
+            "left": 1279.703125,
+            "right": 1376.640625,
+            "top": 32,
+            "bottom": 76,
+            "width": 96.9375,
+            "height": 44,
+            "hit": true
+          },
+          {
+            "selector": "#fe-back",
+            "left": 63.359375,
+            "right": 135.546875,
+            "top": 98,
+            "bottom": 142,
+            "width": 72.1875,
+            "height": 44,
+            "hit": true
+          },
+          {
+            "selector": "#fe-level-genesee",
+            "left": 63.359375,
+            "right": 741.5625,
+            "top": 245.296875,
+            "bottom": 646.296875,
+            "width": 678.203125,
+            "height": 401,
+            "hit": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "gamepad Start, A, B and D-pad navigate without carrying held skating inputs",
+      "passed": true
+    },
+    {
+      "name": "returning home abandons only the current run and retains earned career progress",
+      "passed": true
+    },
+    {
+      "name": "touch home and level screens fit portrait, landscape and a compact phone",
+      "passed": true,
+      "detail": [
+        {
+          "screen": "home",
+          "width": 390,
+          "height": 844,
+          "rootWidth": 390,
+          "rootScroll": 390,
+          "shellWidth": 350,
+          "bodyWidth": 390,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 213.171875,
+              "right": 291.265625,
+              "top": 20,
+              "bottom": 64,
+              "width": 78.09375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 296.265625,
+              "right": 370,
+              "top": 20,
+              "bottom": 64,
+              "width": 73.734375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-play",
+              "left": 20,
+              "right": 370,
+              "top": 527.1875,
+              "bottom": 602.984375,
+              "width": 350,
+              "height": 75.796875,
+              "hit": true
+            }
+          ]
+        },
+        {
+          "screen": "levels",
+          "width": 390,
+          "height": 844,
+          "rootWidth": 380,
+          "rootScroll": 380,
+          "shellWidth": 340,
+          "bodyWidth": 390,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 203.171875,
+              "right": 281.265625,
+              "top": 20,
+              "bottom": 64,
+              "width": 78.09375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 286.265625,
+              "right": 360,
+              "top": 20,
+              "bottom": 64,
+              "width": 73.734375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-back",
+              "left": 20,
+              "right": 92.1875,
+              "top": 79,
+              "bottom": 123,
+              "width": 72.1875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-genesee",
+              "left": 20,
+              "right": 360,
+              "top": 235.5,
+              "bottom": 592.5,
+              "width": 340,
+              "height": 357,
+              "hit": true
+            }
+          ]
+        },
+        {
+          "screen": "home",
+          "width": 844,
+          "height": 390,
+          "rootWidth": 844,
+          "rootScroll": 844,
+          "shellWidth": 769.75,
+          "bodyWidth": 844,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 600.640625,
+              "right": 701.9375,
+              "top": 13,
+              "bottom": 57,
+              "width": 101.296875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 709.9375,
+              "right": 806.875,
+              "top": 13,
+              "bottom": 57,
+              "width": 96.9375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-play",
+              "left": 439.5,
+              "right": 784.5,
+              "top": 166.953125,
+              "bottom": 234.046875,
+              "width": 345,
+              "height": 67.09375,
+              "hit": true
+            }
+          ]
+        },
+        {
+          "screen": "levels",
+          "width": 844,
+          "height": 390,
+          "rootWidth": 844,
+          "rootScroll": 844,
+          "shellWidth": 769.75,
+          "bodyWidth": 844,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 600.640625,
+              "right": 701.9375,
+              "top": 13,
+              "bottom": 57,
+              "width": 101.296875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 709.9375,
+              "right": 806.875,
+              "top": 13,
+              "bottom": 57,
+              "width": 96.9375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-back",
+              "left": 37.125,
+              "right": 109.3125,
+              "top": 61,
+              "bottom": 105,
+              "width": 72.1875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-genesee",
+              "left": 37.125,
+              "right": 525.09375,
+              "top": 122,
+              "bottom": 325.375,
+              "width": 487.96875,
+              "height": 203.375,
+              "hit": true
+            }
+          ]
+        },
+        {
+          "screen": "home",
+          "width": 568,
+          "height": 320,
+          "rootWidth": 568,
+          "rootScroll": 568,
+          "shellWidth": 532,
+          "bodyWidth": 568,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 393.171875,
+              "right": 471.265625,
+              "top": 13,
+              "bottom": 57,
+              "width": 78.09375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 476.265625,
+              "right": 550,
+              "top": 13,
+              "bottom": 57,
+              "width": 73.734375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-play",
+              "left": 296.5,
+              "right": 550,
+              "top": 130.203125,
+              "bottom": 197.296875,
+              "width": 253.5,
+              "height": 67.09375,
+              "hit": true
+            }
+          ]
+        },
+        {
+          "screen": "levels",
+          "width": 568,
+          "height": 320,
+          "rootWidth": 568,
+          "rootScroll": 568,
+          "shellWidth": 532,
+          "bodyWidth": 568,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 393.171875,
+              "right": 471.265625,
+              "top": 13,
+              "bottom": 57,
+              "width": 78.09375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 476.265625,
+              "right": 550,
+              "top": 13,
+              "bottom": 57,
+              "width": 73.734375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-back",
+              "left": 18,
+              "right": 90.1875,
+              "top": 61,
+              "bottom": 105,
+              "width": 72.1875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-genesee",
+              "left": 18,
+              "right": 550,
+              "top": 115,
+              "bottom": 290,
+              "width": 532,
+              "height": 175,
+              "hit": true
+            }
+          ]
+        },
+        {
+          "screen": "home",
+          "width": 320,
+          "height": 568,
+          "rootWidth": 310,
+          "rootScroll": 310,
+          "shellWidth": 270,
+          "bodyWidth": 320,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 133.171875,
+              "right": 211.265625,
+              "top": 20,
+              "bottom": 64,
+              "width": 78.09375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 216.265625,
+              "right": 290,
+              "top": 20,
+              "bottom": 64,
+              "width": 73.734375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-play",
+              "left": 20,
+              "right": 290,
+              "top": 321.125,
+              "bottom": 396.921875,
+              "width": 270,
+              "height": 75.796875,
+              "hit": true
+            }
+          ]
+        },
+        {
+          "screen": "levels",
+          "width": 320,
+          "height": 568,
+          "rootWidth": 310,
+          "rootScroll": 310,
+          "shellWidth": 270,
+          "bodyWidth": 320,
+          "targets": [
+            {
+              "selector": "#fe-controls",
+              "left": 133.171875,
+              "right": 211.265625,
+              "top": 20,
+              "bottom": 64,
+              "width": 78.09375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-settings",
+              "left": 216.265625,
+              "right": 290,
+              "top": 20,
+              "bottom": 64,
+              "width": 73.734375,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-back",
+              "left": 20,
+              "right": 92.1875,
+              "top": 79,
+              "bottom": 123,
+              "width": 72.1875,
+              "height": 44,
+              "hit": true
+            },
+            {
+              "selector": "#fe-level-genesee",
+              "left": 20,
+              "right": 290,
+              "top": 78.5,
+              "bottom": 488.5,
+              "width": 270,
+              "height": 410,
+              "hit": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "a held touch is cleared when pausing to home and cannot pop on the next run",
+      "passed": true
+    },
+    {
+      "name": "cleared careers remain visible in level selection and enter untimed Free Skate",
+      "passed": true
+    },
+    {
+      "name": "all navigation completes without JavaScript, console, network or WebGL errors",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "home-desktop.png",
+    "levels-desktop.png",
+    "home-portrait.png",
+    "levels-portrait.png",
+    "home-landscape.png",
+    "levels-landscape.png",
+    "home-compact-landscape.png",
+    "levels-compact-landscape.png",
+    "home-compact-portrait.png",
+    "levels-compact-portrait.png"
+  ],
+  "passed": true,
+  "browserErrors": [],
+  "supplementalChecks": [
+    {
+      "name": "home keyboard controls stay in the visible screen and held Enter or Space never skips a screen",
+      "passed": true
+    }
+  ]
+}

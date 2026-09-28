@@ -54,3 +54,18 @@ press(0, false); assert.equal(input.poll(1 / 60).ollieReleased, true, 'Fresh A p
 input.rumble(1, 1, 500); input.stopHaptics();
 assert.equal(resets, 1); assert.equal(input._pulseT, 0, 'Pausing stops hardware feedback and queued impacts');
 console.log('PASS: pause edges, keyboard/controller menu isolation, held-input release and haptic cancellation.');
+
+input.setMenuOpen(true);
+for (const [button, direction] of [[14,-1],[15,1]]) {
+  press(button,true);
+  assert.equal(input.poll(1/60).menuMove,direction,'Horizontal D-pad reaches adjacent level cards');
+  assert.equal(input.poll(1/60).menuMove,0,'Holding a direction does not skip cards');
+  assert.equal(input.state.steer,0,'Menu navigation never steers the skater');
+  press(button,false);input.poll(1/60);
+}
+for(const direction of [-1,1]) {
+  pad.axes[0]=direction;
+  assert.equal(input.poll(1/60).menuMove,direction,'Horizontal analog stick navigates level cards');
+  pad.axes[0]=0;input.poll(1/60);
+}
+console.log('PASS: horizontal controller navigation works on the two-level selector.');

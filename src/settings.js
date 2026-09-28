@@ -7,7 +7,8 @@ const KEY = 'j2s-pro-skater.settings.v1';
 
 export class Settings {
   constructor(storage) {
-    this.storage = storage !== undefined ? storage : globalThis.localStorage;
+    try { this.storage = storage !== undefined ? storage : globalThis.localStorage; }
+    catch { this.storage = null; }
     this.music = this.load().music;
     this.onChange = null;
   }

@@ -1,9 +1,14 @@
 import * as THREE from 'three';
 import { Level } from './level.js';
+import { RocCityLevel } from './roc-city-level.js';
+import { ROC_PICKUPS } from './roc-city-layout.js';
+import { createRocCityArt } from './roc-city-art.js';
+import { upgradeRocCityConcrete } from './roc-city-concrete.js';
 import { Skater } from './skater.js';
 import { Character } from './character.js';
 import { FollowCamera } from './camera.js';
 import { Input } from './input.js';
+import { TouchControls } from './touch-controls.js';
 import { HUD } from './hud.js';
 import { HighScores } from './highscores.js';
 import { Settings } from './settings.js';
@@ -12,14 +17,25 @@ import { Effects } from './fx.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { ConcreteFloor } from './concrete-floor.js';
 import { lightWarehouse } from './atmosphere.js';
+import { PICKUPS, GoalProgress, GoalRun } from './goals.js';
+import { LEVEL_GOAL_CONFIGS } from './level-goals.js';
+import { LEVELS } from './levels.js';
+import { Collectibles } from './collectibles.js';
+import { LevelUI } from './level-ui.js';
+import { FrontEnd } from './front-end.js';
+import { SessionClock } from './session.js';
 
 const RUN_TIME = 120;
 const FIXED_DT = 1 / 120;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const touchEnabled = TouchControls.available();
+document.body.classList.toggle('touch-enabled', touchEnabled);
 
 const canvas = document.getElementById('game');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-const LOWFX = new URLSearchParams(location.search).has('lowfx'); // ?lowfx for weak GPUs: no shadows, 1x pixels
+const renderOptions = new URLSearchParams(location.search);
+// Touch devices start with the lighter renderer. ?highfx restores desktop effects.
+const LOWFX = renderOptions.has('lowfx') || (touchEnabled && !renderOptions.has('highfx'));
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: !LOWFX, powerPreference: 'high-performance' });
 renderer.setPixelRatio(LOWFX ? 1 : Math.min(window.devicePixelRatio, 1.5));
 renderer.shadowMap.enabled = !LOWFX;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -38,32 +54,90 @@ scene.fog = new THREE.Fog(0x35405a, 50, 120);
 }
 
 const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
-const level = new Level();
-scene.add(level.group);
-const atmosphere = lightWarehouse(scene, level, { lowfx: LOWFX });
-const floorSurface = new ConcreteFloor(level.floor, { lowfx: LOWFX, level });
+const careers = new Map(LEVELS.map(metadata => {
+  const config = { ...metadata, ...LEVEL_GOAL_CONFIGS[metadata.id], pickups: metadata.id === 'genesee-warehouse' ? PICKUPS : ROC_PICKUPS };
+  const progress = new GoalProgress(undefined, { key: config.progressKey, goals: config.goals });
+  const highScores = new HighScores(undefined, { key: config.highScoresKey });
+  // Preserve the original recorded warehouse best without awarding new goals.
+  progress.record({ score: highScores.best });
+  return [metadata.id, { config, progress, highScores, goals: new GoalRun(progress, config), focusGoal: config.goals[0].id }];
+}));
+// Each park is built once. Inactive roots, including their lights and pickups,
+// are detached entirely; switching never accumulates resources or colliders.
+const levelRuntimes = new Map();
+function runtimeFor(id) {
+  if (levelRuntimes.has(id)) return levelRuntimes.get(id);
+  const root = new THREE.Group(); root.name = `Level: ${id}`;
+  const warehouse = id === 'genesee-warehouse';
+  const level = warehouse ? new Level() : new RocCityLevel();
+  root.add(level.group);
+  const atmosphere = warehouse ? lightWarehouse(root, level, { lowfx: LOWFX }) : createRocCityArt(root, level, { lowfx: LOWFX });
+  const floorSurface = warehouse ? new ConcreteFloor(level.floor, { lowfx: LOWFX, level })
+    : upgradeRocCityConcrete(level, levelRuntimes.get('genesee-warehouse').floorSurface);
+  const config = careers.get(id).config;
+  const collectibles = new Collectibles(root, { pickups: config.pickups, name: `${config.title} goal pickups` });
+  const runtime = { root, level, atmosphere, floorSurface, collectibles,
+    background: atmosphere.background ?? root.background,
+    fog: atmosphere.fog ?? root.fog,
+    environmentIntensity: atmosphere.environmentIntensity ?? root.environmentIntensity ?? 0.32,
+    toneMappingExposure: atmosphere.toneMappingExposure ?? 0.9,
+  };
+  levelRuntimes.set(id, runtime);
+  return runtime;
+}
+function applyEnvironment(runtime) {
+  scene.background = runtime.background;
+  scene.fog = runtime.fog;
+  scene.environmentIntensity = runtime.environmentIntensity;
+  renderer.toneMappingExposure = runtime.toneMappingExposure;
+}
+let activeLevelId = 'genesee-warehouse';
+let activeCareer = careers.get(activeLevelId), activeRuntime = runtimeFor(activeLevelId);
+let { config: activeConfig, progress, goals, highScores } = activeCareer;
+let { level, atmosphere, floorSurface, collectibles } = activeRuntime;
+scene.add(activeRuntime.root);
+applyEnvironment(activeRuntime);
 const skater = new Skater(level);
 const character = new Character();
 scene.add(character.root);
 const followCam = new FollowCamera(camera, level);
 const input = new Input();
+const touchControls = new TouchControls({ root: document.getElementById('touch-controls') });
+input.setTouchSource(touchControls.source);
 const hud = new HUD();
-const highScores = new HighScores();
 const audio = new Audio();
 const settings = new Settings();
 const fx = new Effects(scene, { level, lowfx: LOWFX });
+const sessionClock = new SessionClock(RUN_TIME);
+const levelUI = new LevelUI(activeConfig.goals, { onStart: startRun, onBoard: showGoalBoard, onLevels: showLevelSelect, onHome: showHome });
+levelUI.setLevel(activeConfig, progress.snapshot());
+const frontEnd = new FrontEnd({
+  onLevels: showLevelSelect, onHome: showHome,
+  onLevel: selectLevel,
+  onControls: () => hud.toggleControls(true), onSettings: () => hud.toggleSettings(true),
+});
 
 // ---- game state ----
-let mode = 'title'; // title | playing | over
-let timeLeft = RUN_TIME;
+let mode = 'home'; // home | levels | title (goal board) | playing | over
+let runMode = 'goals', focusGoal = activeConfig.goals[0].id;
+let bankedThisStep = false;
 let accumulator = 0, last = performance.now(), visualTime = 0;
 const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed', 'revertLeftPressed', 'revertRightPressed'];
 const pending = {};
+input.onTouchCancel = ({ ollie }) => {
+  for (const key of EDGES) pending[key] = false;
+  if (ollie) {
+    skater.crouching = false; skater.crouchTime = 0;
+    skater.queued = null; skater.bufferedOllie = false;
+  }
+};
 hud.setMode(mode);
 
 skater.events.ollie = (charge) => { audio.pop(charge); fx.ollie(skater, charge); input.rumble(0.15 + charge * 0.25, 0.3, 60); };
 skater.events.trickStart = (name) => { audio.trickStart(name); const c = skater.combo; hud.combo((c.text ? c.text + ' + ' : '') + name + '…', c.points, c.multiplier); };
 skater.events.land = (points, text, mult, impactHandled = false) => {
+  if (points > 0) bankedThisStep = true;
+  if (mode === 'playing') handleGoalEvents(goals.bankCombo(points));
   if (!impactHandled) {
     audio.land(skater.landSquash);
     input.rumble(Math.min(1, 0.3 + skater.landSquash * 0.7), 0.2, 90 + skater.landSquash * 120);
@@ -97,10 +171,12 @@ function refreshCombo() {
 
 input.onGamepadChange = (connected, id) => {
   hud.setPad(connected, id);
-  hud.toast(connected ? 'CONTROLLER CONNECTED: ' + id.slice(0, 40) : 'CONTROLLER DISCONNECTED — keyboard active');
+  if (!connected && touchEnabled) hud.el.pad.textContent = 'TOUCH CONTROLS';
+  hud.toast(connected ? 'CONTROLLER CONNECTED: ' + id.slice(0, 40) : `CONTROLLER DISCONNECTED — ${touchEnabled ? 'touch controls' : 'keyboard'} active`);
 };
 hud.setPad(false);
-hud.highScores(highScores.list, 0); // the title screen opens on the table
+if (touchEnabled) hud.el.pad.textContent = 'TOUCH CONTROLS';
+hud.highScores(highScores.list, 0);
 
 // Settings. The score is off unless the player has switched it on, and switching it on is itself a
 // gesture, so it doubles as the permission the browser needs to start the audio context.
@@ -112,11 +188,13 @@ hud.onMusicToggle = () => {
   audio.setMusic(on);
   hud.musicSetting(on);
 };
-hud.onPauseChange = (open) => {
+function syncPause() {
+  const open = hud.settingsOpen || hud.controlsOpen;
   document.body.dataset.paused = String(open);
-  input.setMenuOpen(open);
+  input.setMenuOpen(open || mode !== 'playing');
+  touchControls.setActive(touchEnabled && mode === 'playing' && !open);
   input.stopHaptics();
-  audio.setPaused(open);
+  audio.setPaused(open || mode !== 'playing');
   accumulator = 0; last = performance.now();
   for (const k of EDGES) pending[k] = false;
   if (!open) {
@@ -125,39 +203,160 @@ hud.onPauseChange = (open) => {
     if (skater.crouching) { skater.crouching = false; skater.crouchTime = 0; skater.queued = null; }
     skater.bufferedOllie = false;
   }
+}
+hud.onPauseChange = syncPause;
+hud.onControlsChange = syncPause;
+hud.onRestart = () => {
+  if (runMode === 'goals') levelUI.focusUnfinished(progress.snapshot());
+  startRun(runMode, levelUI.selectedGoal);
 };
-hud.onRestart = () => startRun();
+hud.onBoard = () => showGoalBoard();
+hud.onLevels = () => showLevelSelect();
+hud.onHome = () => showHome();
 
-function startRun() {
+function handleGoalEvents(events) {
+  for (const event of events) {
+    if (event.type === 'goal') {
+      levelUI.notifyGoal(event.goal);
+      input.rumble(0.25, 0.5, 160);
+    } else if (event.type === 'pickup') {
+      audio.score();
+      input.rumble(0.08, 0.3, 65);
+    }
+  }
+  if (events.length) collectibles.sync(goals.collected, goals.availableGoals);
+}
+
+function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
+  frontEnd.hide();
   hud.toggleSettings(false);
+  if (!audio.enabled) audio.init();
   input.stopHaptics();
+  input.setMenuOpen(false);
   accumulator = 0; last = performance.now();
   for (const k of EDGES) pending[k] = false;
   skater.reset();
   fx.clear();
-  timeLeft = RUN_TIME; mode = 'playing';
+  const remaining = activeConfig.goals.filter(goal => !progress.has(goal.id));
+  runMode = selectedMode === 'free' || !remaining.length ? 'free' : 'goals';
+  const requestedGoal = selectedGoal ?? levelUI.selectedGoal;
+  focusGoal = (remaining.find(goal => goal.id === requestedGoal) || remaining[0])?.id || null;
+  levelUI.focusUnfinished(progress.snapshot());
+  levelUI.selectGoal(focusGoal);
+  goals.start({ mode: runMode, skater });
+  sessionClock.start(runMode);
+  collectibles.sync(goals.collected, goals.availableGoals);
+  mode = 'playing';
   document.body.dataset.mode = mode;
   hud.setMode(mode);
   hud.toggleControls(false);
-  hud.overlay(false);
+  levelUI.hide();
   hud.combo('', 0, 0);
+  hud.shownScore = 0;
+  hud.el.timer.classList.remove('overtime');
+  document.querySelector('#venue > span:last-child').textContent = `${String(activeConfig.order).padStart(2, '0')} / ${runMode === 'free' ? 'FREE SKATE' : 'GOAL RUN'}`;
+  document.getElementById('top-center').dataset.session = runMode === 'free' ? 'FREE SKATE' : 'GOAL RUN';
   followCam.snap(skater);
+  audio.setPaused(false);
+  touchControls.setActive(touchEnabled);
 }
 function endRun() {
+  if (mode !== 'playing') return;
   mode = 'over';
+  frontEnd.hide();
+  sessionClock.finish();
+  const result = goals.finish();
+  input.setMenuOpen(true);
+  touchControls.setActive(false);
+  input.stopHaptics();
+  audio.setPaused(true);
+  hud.toggleSettings(false);
   document.body.dataset.mode = mode;
   hud.setMode(mode);
   // Bank the run before the overlay draws, so the table shows where it landed. The score to beat
   // only moves now — during a run it stays the target you started with.
-  const rank = highScores.submit(skater.score);
-  hud.overlay(true, 'Press START / ENTER to skate again', skater.score);
+  const rank = runMode === 'goals' ? highScores.submit(skater.score) : 0;
+  levelUI.showResults(result, progress.snapshot());
   hud.highScores(highScores.list, rank);
+  collectibles.update(0, false, camera);
 }
 
-document.getElementById('overlay-msg').addEventListener('click', (event) => {
-  if (!audio.enabled) audio.init();
-  startRun(); event.currentTarget.blur();
-});
+// Every route out of a session uses the same cleanup. Completed career goals are
+// already saved at the moment they are earned; an unfinished combo is discarded.
+function enterMenu(nextMode) {
+  mode = nextMode;
+  sessionClock.finish();
+  goals.finish();
+  hud.setMode(mode);
+  document.body.dataset.mode = mode;
+  hud.toggleSettings(false);
+  hud.toggleControls(false);
+  input.setMenuOpen(true);
+  touchControls.setActive(false);
+  input.stopHaptics();
+  for (const k of EDGES) pending[k] = false;
+  hud.combo('', 0, 0);
+  hud.balance(false, 0, false);
+  hud.toastTimer = 0;
+  hud.el.toast.classList.remove('show');
+  fx.clear();
+  skater.reset();
+  followCam.snap(skater);
+  collectibles.update(0, false, camera);
+  levelUI.hide();
+  frontEnd.hide();
+  audio.setPaused(true);
+  document.body.dataset.paused = 'false';
+  accumulator = 0; last = performance.now();
+}
+function showHome() {
+  enterMenu('home');
+  frontEnd.showHome(progressByLevel(), activeLevelId);
+  document.getElementById('boot-screen').hidden = true;
+}
+function showLevelSelect() {
+  enterMenu('levels');
+  frontEnd.showLevels(progressByLevel(), activeLevelId);
+}
+function progressByLevel() {
+  return Object.fromEntries([...careers].map(([id, career]) => [id, career.progress.snapshot()]));
+}
+function selectLevel(id) {
+  if (!careers.has(id) || !careers.get(id).config.playable) return false;
+  if (id !== activeLevelId) {
+    // Finish and cancel the old session before any object references change.
+    enterMenu('levels');
+    activeCareer.focusGoal = levelUI.selectedGoal;
+    const nextRuntime = runtimeFor(id);
+    activeRuntime.root.removeFromParent();
+    activeLevelId = id;
+    activeCareer = careers.get(id); activeRuntime = nextRuntime;
+    ({ config: activeConfig, progress, goals, highScores } = activeCareer);
+    ({ level, atmosphere, floorSurface, collectibles } = activeRuntime);
+    scene.add(activeRuntime.root); activeRuntime.root.updateMatrixWorld(true);
+    applyEnvironment(activeRuntime);
+    skater.level = level; followCam.level = level; fx.level = level;
+    skater.reset(); fx.clear();
+    followCam.dirAngle = Math.atan2(skater.heading.x, skater.heading.z);
+    followCam.nudge = 0; followCam.smoothSpeed = 0;
+    followCam.snap(skater);
+    levelUI.setLevel(activeConfig, progress.snapshot());
+    levelUI.selectGoal(activeCareer.focusGoal);
+    focusGoal = levelUI.selectedGoal; runMode = 'goals';
+    hud.highScores(highScores.list, 0);
+  }
+  showGoalBoard();
+  return true;
+}
+function showGoalBoard() {
+  enterMenu('title');
+  levelUI.showBoard(progress.snapshot());
+}
+function navigateBack() {
+  if (mode === 'over') showGoalBoard();
+  else if (mode === 'title') showLevelSelect();
+  else if (mode === 'levels') showHome();
+}
 document.getElementById('overlay-controls').addEventListener('click', (event) => {
   hud.toggleControls(); event.currentTarget.blur();
 });
@@ -170,6 +369,13 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 followCam.snap(skater);
+showHome();
+
+// Losing the tab must never burn a run or leave a held direction skating unattended.
+window.addEventListener('blur', () => { if (mode === 'playing') hud.toggleSettings(true); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && mode === 'playing') hud.toggleSettings(true);
+});
 
 // idle demo input on the title screen: nothing pressed
 const idle = { steer: 0, stickY: 0, push: 0, brake: 0, ollie: false, olliePressed: false, ollieReleased: false, flipPressed: false, grab: false, grabPressed: false, grind: false, grindPressed: false, spinLeft: false, spinRight: false, camX: 0, dir8: 'C', autoPush: false };
@@ -181,37 +387,49 @@ function frame(now) {
   let dt = Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
   const inp = input.poll(dt);
   if (inp.anyPressed && !audio.enabled) audio.init();
+  if (hud.controlsOpen && !hud.settingsOpen) {
+    if (inp.selectPressed || inp.pausePressed || inp.menuCancel || inp.startPressed) hud.toggleControls(false);
+    audio.update(skater);
+    renderer.render(scene, camera);
+    return;
+  }
   if (hud.settingsOpen) {
     hud.updateMenuInput(inp);
     audio.update(skater);
     renderer.render(scene, camera);
     return;
   }
-  if (inp.pausePressed || (inp.startPressed && mode === 'playing')) {
-    hud.toggleSettings(true);
+  if (inp.pausePressed || (inp.startPressed && mode === 'playing') || (inp.menuCancel && mode !== 'playing')) {
+    if (mode === 'playing' || (mode === 'home' && inp.pausePressed)) hud.toggleSettings(true);
+    else navigateBack();
     renderer.render(scene, camera);
     return;
   }
   input.hapticsBegin();
-  if (inp.selectPressed) hud.toggleControls();
-  if (inp.startPressed && (mode === 'title' || mode === 'over')) startRun();
-  if (mode === 'title' && inp.anyPressed && !inp.selectPressed) startRun();
+  if (inp.selectPressed && !frontEnd.isOpen) {
+    hud.toggleControls(true);
+    renderer.render(scene, camera);
+    return;
+  }
+  if (mode === 'home' || mode === 'levels') frontEnd.updateMenuInput(inp);
+  else if (mode !== 'playing') levelUI.updateMenuInput(inp);
   visualTime += dt;
+  levelUI.tick?.(dt);
 
   // fixed-step simulation. Edge inputs are latched until a substep consumes them, so a press is never
   // dropped on frames that run zero substeps (high-refresh displays) and never fires twice.
   const simInput = mode === 'playing' ? inp : idle;
   for (const k of EDGES) pending[k] = pending[k] || inp[k];
-  accumulator += dt;
+  accumulator += mode === 'playing' ? dt : 0;
   let steps = 0;
-  while (accumulator >= FIXED_DT && steps < 8) {
+  while (mode === 'playing' && accumulator >= FIXED_DT && steps < 12) {
     if (mode === 'playing') for (const k of EDGES) { simInput[k] = pending[k]; pending[k] = false; }
+    bankedThisStep = false;
     skater.update(FIXED_DT, simInput);
+    const ended = sessionClock.advance(FIXED_DT, skater, { banked: bankedThisStep });
+    handleGoalEvents(goals.update(skater, { collect: !ended && !sessionClock.overtime && sessionClock.remaining > 0 }));
     accumulator -= FIXED_DT; steps++;
-  }
-  if (mode === 'playing') {
-    timeLeft -= dt;
-    if (timeLeft <= 0) { timeLeft = 0; endRun(); }
+    if (ended) endRun();
   }
   // visuals
   character.root.position.copy(skater.pos);
@@ -220,13 +438,30 @@ function frame(now) {
   followCam.update(dt, skater, inp.camX);
   audio.update(skater);
   fx.update(dt, skater);
+  collectibles.update(dt, mode === 'playing' && runMode === 'goals' && !sessionClock.overtime, camera);
   atmosphere.update(visualTime);
-  if (mode === 'title') {
+  if (mode === 'home' || mode === 'levels' || mode === 'title') {
     // A slow establishing shot gives the title the same rendered park as gameplay.
     const t = reducedMotion.matches ? 0 : visualTime * 0.035;
-    camera.position.set(-16 + Math.sin(t) * 3, 4.1, 18 + Math.cos(t) * 2);
-    camera.lookAt(5, 1.4, -4);
-    camera.fov = 56; camera.updateProjectionMatrix();
+    if (activeLevelId === 'roc-city-skatepark') {
+      if (mode === 'home') {
+        camera.position.set(-28 + Math.sin(t) * 2, 16, -38 + Math.cos(t));
+        camera.lookAt(-2, 0, 8);
+      } else {
+        camera.position.set(-35 + Math.sin(t) * 2, 24, 35 + Math.cos(t) * 2);
+        camera.lookAt(-1, 0, -5);
+      }
+      camera.fov = 60;
+    } else if (mode === 'home') {
+      camera.position.set(-9 + Math.sin(t) * 1.6, 3.1, 23 + Math.cos(t) * 0.7);
+      camera.lookAt(4.5, 1.25, 2);
+      camera.fov = 58;
+    } else {
+      camera.position.set(-16 + Math.sin(t) * 3, 4.1, 18 + Math.cos(t) * 2);
+      camera.lookAt(5, 1.4, -4);
+      camera.fov = 56;
+    }
+    camera.updateProjectionMatrix();
   }
   // Crouching loads the low motor progressively so ollie charge can be felt before the pop.
   // It mixes with grind texture when charging an ollie off a rail.
@@ -256,12 +491,18 @@ function frame(now) {
   const onManual = mode === 'playing' && !!skater.manual && skater.manualBalance.active;
   if (onManual) hud.balance(true, skater.manualBalance.x, true, character, camera);
   else hud.balance(onRail, skater.balance.x, false, character, camera);
-  hud.update(dt, skater.score, timeLeft, highScores.best);
+  hud.update(dt, skater.score, sessionClock.remaining, highScores.best);
+  hud.el.timer.classList.toggle('overtime', sessionClock.overtime);
+  if (sessionClock.overtime) hud.el.timer.textContent = 'LAND IT!';
+  levelUI.update({ ...goals.snapshot(), focusGoal, overtime: sessionClock.overtime });
   if (skater.combo.tricks.length && (skater.state === 'grind' || skater.manual)) refreshCombo();
   input.hapticsCommit(dt);
   renderer.render(scene, camera);
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, character, followCam, startRun, endRun, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx,
-  get session() { return { mode, paused: hud.settingsOpen, timeLeft, visualTime }; } };
+window.__game = { skater, input, touchControls, character, followCam, startRun, endRun, showHome, showLevelSelect, showGoalBoard, selectLevel, settings, audio, renderer, scene, camera, fx, levelUI, frontEnd, sessionClock,
+  get level() { return level; }, get highScores() { return highScores; }, get floorSurface() { return floorSurface; }, get atmosphere() { return atmosphere; },
+  get goals() { return goals; }, get progress() { return progress; }, get collectibles() { return collectibles; }, get levelConfig() { return activeConfig; },
+  get loadedLevels() { return [...levelRuntimes.keys()]; }, get careers() { return progressByLevel(); },
+  get session() { return { levelId: activeLevelId, mode, runMode, focusGoal, paused: hud.settingsOpen || hud.controlsOpen, timeLeft: sessionClock.remaining, overtime: sessionClock.overtime, visualTime }; } };
