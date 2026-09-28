@@ -224,8 +224,8 @@ export class Input {
 
     // --- gamepad (standard mapping) ---
     const rawButton = (i) => !!gp?.buttons[i]?.pressed;
-    const menuDir = rawButton(12) || (gp?.axes[1] || 0) < -.55 ? -1
-      : rawButton(13) || (gp?.axes[1] || 0) > .55 ? 1 : 0;
+    const menuDir = rawButton(12) || rawButton(14) || (gp?.axes[1] || 0) < -.55 || (gp?.axes[0] || 0) < -.55 ? -1
+      : rawButton(13) || rawButton(15) || (gp?.axes[1] || 0) > .55 || (gp?.axes[0] || 0) > .55 ? 1 : 0;
     const confirm = rawButton(0), cancel = rawButton(1) || rawButton(8);
     s.menuMove = menuDir && menuDir !== this._menuPrev.dir ? menuDir : 0;
     s.menuConfirm = confirm && !this._menuPrev.confirm;

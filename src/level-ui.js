@@ -1,13 +1,14 @@
-// The warehouse goal board, run focus, and results. Gameplay owns progression;
+// Level goal boards, run focus, and results. Gameplay owns progression;
 // this view renders snapshots and sends explicit launch/navigation callbacks.
+import { LEVELS } from './levels.js';
 const $ = (id) => document.getElementById(id);
 const fmt = (value) => Math.round(Number(value) || 0).toLocaleString('en-US');
 const TIPS = {
   'high-score': 'Start with a ramp. Hold Ollie to crouch, release to jump, then add a flip or grab.',
   'pro-score': 'Mix flips and grabs with grinds. Link landings with manuals to grow your multiplier.',
-  'sick-score': 'Build a line across the warehouse. Variety, spins, and switch landings make every trick count.',
+  'sick-score': 'Build a line across the spot. Variety, spins, and switch landings make every trick count.',
   combo: 'Link tricks with grinds and manuals. The goal counts only when you land the whole combo.',
-  skate: 'Follow the amber letters through the warehouse. Collect all five in a single run, in any order.',
+  skate: 'Follow the amber letters. Collect all five in a single run, in any order.',
   caps: 'Find five vintage Genesee bottle caps. Look for the teal halos and collect every design in one run.',
   tape: 'Take the bank to the raised loading deck. Look for the pink tape above the platform.',
 };
@@ -19,13 +20,15 @@ const ICONS = {
   tape: '<rect x="4" y="10" width="40" height="29" rx="3"/><rect x="10" y="15" width="28" height="13" rx="5"/><circle cx="16" cy="21.5" r="2.5"/><circle cx="32" cy="21.5" r="2.5"/><path d="m14 39 3-7h14l3 7"/>',
 };
 const icon = (goal) => `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[goal.type] || ICONS[goal.id] || ICONS.score}</svg>`;
-const category = (goal) => goal.type === 'score' ? 'SCORE CHALLENGE' : goal.type === 'combo' ? 'COMBO CHALLENGE' : 'WAREHOUSE COLLECTIBLE';
+const category = (goal, noun) => goal.type === 'score' ? 'SCORE CHALLENGE' : goal.type === 'combo' ? 'COMBO CHALLENGE' : `${noun.toUpperCase()} COLLECTIBLE`;
 const targetLabel = (goal) => goal.type === 'score' || goal.type === 'combo' ? fmt(goal.target) : goal.id === 'skate' ? 'S K A T E' : goal.id === 'caps' ? '5 CAPS' : 'SECRET TAPE';
 const RUN_NAMES = { 'high-score': 'High Score', 'pro-score': 'Pro Score', 'sick-score': 'Sick Score', combo: 'Big Combo', skate: 'SKATE', caps: 'Bottle Caps', tape: 'Secret Tape' };
 
 export class LevelUI {
   constructor(goals, { onStart, onBoard, onLevels, onHome } = {}) {
     this.goals = goals;
+    this.config = LEVELS[0];
+    this.selectedByLevel = new Map();
     this.onStart = onStart;
     this.onBoard = onBoard;
     this.onLevels = onLevels;
@@ -41,7 +44,50 @@ export class LevelUI {
     this.tracker = { panel: $('goal-tracker'), list: $('run-goal-list'), completed: $('tracker-completed'), overtime: $('tracker-overtime') };
     this.lastTrackerKey = '';
 
-    for (const [index, goal] of goals.entries()) {
+    this.buildGoalRows();
+    $('overlay-msg').addEventListener('click', () => this.launch('goals'));
+    $('free-skate').addEventListener('click', () => this.launch('free'));
+    $('retry-run').addEventListener('click', () => this.launch(this.lastMode));
+    $('results-board').addEventListener('click', () => {
+      if (this.onBoard) this.onBoard();
+      else this.showBoard(this.progress);
+    });
+    $('level-select-nav').addEventListener('click', () => this.onLevels?.());
+    $('home-nav').addEventListener('click', () => this.onHome?.());
+    window.addEventListener('keydown', (event) => {
+      if (!this.acceptsInput) return;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) {
+        event.preventDefault();
+        this.moveFocus(event.code === 'ArrowUp' || event.code === 'ArrowLeft' ? -1 : 1);
+      }
+    });
+  }
+
+  setLevel(config, progress = { completed: [], bestScore: 0, bestCombo: 0 }) {
+    this.selectedByLevel.set(this.config.id, this.selectedGoal);
+    this.config = { ...LEVELS[0], ...config };
+    this.goals = config.goals || this.goals;
+    this.progress = progress;
+    this.selectedGoal = this.selectedByLevel.get(config.id) || this.goals[0]?.id || null;
+    this.buildGoalRows();
+    this.clearNotifications();
+    this.lastTrackerKey = '';
+    this.tracker.panel.classList.add('hidden');
+    $('overlay').setAttribute('aria-label', `${this.config.title} goal board`);
+    document.querySelector('.level-location').innerHTML = `${this.config.location.toUpperCase()}<span>${this.config.locationDetail}</span>`;
+    document.querySelector('.level-number b').textContent = String(this.config.order).padStart(2, '0');
+    const venueName = [...$('venue').childNodes].find(node => node.nodeType === 3 && node.textContent.trim());
+    if (venueName) venueName.textContent = ` ${this.config.title.toUpperCase()} `;
+    this.focusUnfinished(progress);
+    if (this.display === 'board') this.showBoard(progress);
+  }
+
+  buildGoalRows() {
+    $('goal-list').replaceChildren();
+    this.tracker.list.replaceChildren();
+    this.goalButtons.clear();
+    this.runRows.clear();
+    for (const [index, goal] of this.goals.entries()) {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'goal-row';
@@ -74,22 +120,6 @@ export class LevelUI {
       this.tracker.list.append(row);
       this.runRows.set(goal.id, { element: row, check: row.querySelector('.run-goal-check'), count: row.querySelector('.run-goal-count'), letters: letterNodes, key: null });
     }
-    $('overlay-msg').addEventListener('click', () => this.launch('goals'));
-    $('free-skate').addEventListener('click', () => this.launch('free'));
-    $('retry-run').addEventListener('click', () => this.launch(this.lastMode));
-    $('results-board').addEventListener('click', () => {
-      if (this.onBoard) this.onBoard();
-      else this.showBoard(this.progress);
-    });
-    $('level-select-nav').addEventListener('click', () => this.onLevels?.());
-    $('home-nav').addEventListener('click', () => this.onHome?.());
-    window.addEventListener('keydown', (event) => {
-      if (!this.acceptsInput) return;
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) {
-        event.preventDefault();
-        this.moveFocus(event.code === 'ArrowUp' || event.code === 'ArrowLeft' ? -1 : 1);
-      }
-    });
   }
 
   get isOpen() { return this.display !== null && !$('overlay').classList.contains('hidden'); }
@@ -157,8 +187,8 @@ export class LevelUI {
     $('overlay').classList.remove('hidden');
     $('goal-board').classList.remove('hidden');
     $('run-results').classList.add('hidden');
-    $('level-eyebrow').textContent = progress.completed?.length === this.goals.length ? 'THE WAREHOUSE IS YOURS.' : 'CLOCK IN. DROP IN.';
-    $('level-title').innerHTML = 'GENESEE <span>WAREHOUSE</span>';
+    $('level-eyebrow').textContent = progress.completed?.length === this.goals.length ? `THE ${this.config.noun.toUpperCase()} IS YOURS.` : this.config.eyebrow;
+    $('level-title').innerHTML = `${this.config.titleLines[0]} <span>${this.config.titleLines[1]}</span>`;
     this.renderProgress(progress);
     this.focusUnfinished(progress);
     $('overlay-msg').focus({ preventScroll: true });
@@ -180,7 +210,7 @@ export class LevelUI {
       button.setAttribute('aria-label', `${goal.title}, ${targetLabel(goal)}, ${done ? 'completed achievement' : 'unfinished goal'}`);
     }
     $('goal-board-subtitle').textContent = remaining ? 'SELECT AN UNFINISHED GOAL' : 'YOUR ACHIEVEMENT RECORD';
-    $('goal-board-note').textContent = remaining ? 'Every unfinished goal is active in your next run. Completed goals stay on your record.' : 'All warehouse goals complete. Your achievements are saved.';
+    $('goal-board-note').textContent = remaining ? 'Every unfinished goal is active in your next run. Completed goals stay on your record.' : `All ${this.config.title} goals complete. Your achievements are saved.`;
   }
   selectGoal(id) {
     const goal = this.goals.find(entry => entry.id === id);
@@ -204,19 +234,19 @@ export class LevelUI {
     $('overlay-msg').innerHTML = goal ? 'START GOAL RUN <span>START →</span>' : 'FREE SKATE <span>DROP IN →</span>';
     $('mission-tip-label').textContent = goal ? 'FIND YOUR LINE' : 'KEEP ROLLING';
     if (!goal) {
-      $('mission-category').textContent = 'WAREHOUSE COMPLETE';
+      $('mission-category').textContent = `${this.config.noun.toUpperCase()} COMPLETE`;
       $('mission-status').textContent = '✓ ALL GOALS LANDED';
       $('mission-icon').innerHTML = icon({ type: 'score' });
-      $('mission-title').textContent = 'The warehouse is yours.';
+      $('mission-title').textContent = `The ${this.config.noun} is yours.`;
       $('mission-target').textContent = `${this.goals.length} / ${this.goals.length}`;
       const unit = document.createElement('span');
       unit.textContent = 'GOALS COMPLETE';
       $('mission-target').append(' ', unit);
-      $('mission-description').textContent = 'Every Genesee goal is complete. Your place on the board is earned.';
-      $('mission-tip').textContent = 'Find a fresh line, practice your favorite tricks, and enjoy the warehouse in Free Skate.';
+      $('mission-description').textContent = `Every ${this.config.title} goal is complete. Your place on the board is earned.`;
+      $('mission-tip').textContent = `Find a fresh line, practice your favorite tricks, and enjoy the ${this.config.noun} in Free Skate.`;
       return;
     }
-    $('mission-category').textContent = category(goal);
+    $('mission-category').textContent = category(goal, this.config.noun);
     $('mission-status').textContent = 'TO DO';
     $('mission-icon').innerHTML = icon(goal);
     $('mission-title').textContent = goal.title;
@@ -225,7 +255,7 @@ export class LevelUI {
     unit.textContent = goal.type === 'score' ? 'POINTS' : goal.type === 'combo' ? 'SINGLE COMBO' : goal.id === 'skate' ? 'FIVE LETTERS' : goal.id === 'caps' ? 'BOTTLE CAPS' : 'HIDDEN TAPE';
     $('mission-target').append(' ', unit);
     $('mission-description').textContent = goal.description;
-    $('mission-tip').textContent = TIPS[goal.id] || 'Explore the warehouse and make every line count.';
+    $('mission-tip').textContent = this.config.tips?.[goal.id] || TIPS[goal.id] || `Explore the ${this.config.noun} and make every line count.`;
   }
   showResults(result, progress = this.progress) {
     this.progress = progress;
@@ -242,7 +272,7 @@ export class LevelUI {
     $('run-results').classList.remove('hidden');
     $('best-runs-details').open = false;
     $('level-eyebrow').textContent = free ? 'A LITTLE TIME WELL SPENT.' : careerComplete ? 'EVERY GOAL. ALL YOURS.' : 'TWO MINUTES. YOUR MARK.';
-    $('level-title').innerHTML = !free && careerComplete ? 'WAREHOUSE <span>COMPLETE</span>' : 'SESSION <span>COMPLETE</span>';
+    $('level-title').innerHTML = !free && careerComplete ? `${this.config.noun.toUpperCase()} <span>COMPLETE</span>` : 'SESSION <span>COMPLETE</span>';
     $('results-score').textContent = fmt(result.score);
     $('results-combo').textContent = fmt(result.bestCombo);
     const available = this.availableIds(result);
@@ -250,7 +280,7 @@ export class LevelUI {
     const results = this.goals.filter(goal => newlyCompleted.has(goal.id));
     $('results-goals-label').textContent = free ? 'FREE SKATE' : 'GOALS THIS RUN';
     $('results-goals').innerHTML = free ? '—' : `${results.length} <small>/ ${available.size}</small>`;
-    $('results-goal-heading').textContent = newlyCompleted.size ? 'FRESH INK ON THE BOARD' : careerComplete ? 'YOUR WAREHOUSE. YOUR LINES.' : free ? 'THE WAREHOUSE IS OPEN' : 'THE NEXT LINE IS WAITING';
+    $('results-goal-heading').textContent = newlyCompleted.size ? 'FRESH INK ON THE BOARD' : careerComplete ? `YOUR ${this.config.noun.toUpperCase()}. YOUR LINES.` : free ? `THE ${this.config.noun.toUpperCase()} IS OPEN` : 'THE NEXT LINE IS WAITING';
     $('results-new-count').textContent = newlyCompleted.size ? `${newlyCompleted.size} NEW` : '';
     $('results-list').replaceChildren();
     for (const goal of results) {
@@ -264,11 +294,11 @@ export class LevelUI {
     const nextPanel = document.querySelector('.results-next');
     nextPanel.classList.toggle('career-complete', careerComplete);
     nextPanel.querySelector('.level-eyebrow').textContent = careerComplete ? 'EVERY GOAL COMPLETE' : free ? 'NEXT GOAL RUN · UNFINISHED' : 'UP NEXT · UNFINISHED GOAL';
-    nextPanel.querySelector('h2').textContent = nextGoal ? nextGoal.title : 'THE WAREHOUSE IS YOURS.';
+    nextPanel.querySelector('h2').textContent = nextGoal ? nextGoal.title : `THE ${this.config.noun.toUpperCase()} IS YOURS.`;
     nextPanel.querySelector('p').textContent = nextGoal ? nextGoal.description : 'You earned every goal. Keep rolling, find new lines, and enjoy Free Skate.';
     $('retry-run').innerHTML = careerComplete ? 'FREE SKATE <span>DROP IN →</span>' : free ? 'KEEP FREE SKATING <span>DROP IN →</span>' : previousFocus !== nextGoal.id ? 'START NEXT RUN <span>START →</span>' : 'TRY AGAIN <span>RETRY →</span>';
     $('results-board').innerHTML = careerComplete ? 'GOAL BOARD <span>VIEW YOUR ACHIEVEMENTS →</span>' : 'GOAL BOARD <span>CHOOSE YOUR NEXT GOAL →</span>';
-    $('results-note').textContent = careerComplete ? 'All warehouse goals are complete and saved. Free Skate is yours whenever you want another session.'
+    $('results-note').textContent = careerComplete ? `All ${this.config.title} goals are complete and saved. Free Skate is yours whenever you want another session.`
       : free ? `${remaining} ${remaining === 1 ? 'goal remains' : 'goals remain'} on your board. Start a goal run whenever you’re ready; Free Skate stays untimed.`
       : newlyCompleted.size ? `Your new achievements are saved. ${remaining} ${remaining === 1 ? 'goal remains' : 'goals remain'} for your next run.`
       : 'No new goals this time. Keep working on your focus, or choose another unfinished goal from the board.';

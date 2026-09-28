@@ -57,7 +57,7 @@ body[data-mode="home"] :is(#toast, #goal-notification), body[data-mode="levels"]
 .fe-level-heading h1 span { color: var(--fe-acid); }
 .fe-level-count { display: flex; align-items: center; gap: 14px; margin: 0 0 5px; font: 700 33px/1 var(--font-display); color: var(--fe-acid); }
 .fe-level-count > span { max-width: 70px; font: 700 9px/1.5 var(--font-ui); letter-spacing: 1.5px; color: #9db194; }
-.fe-spots { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(230px, 1fr); gap: 25px; max-width: 1080px; }
+.fe-spots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 25px; }
 .fe-level-card { min-width: 0; border: 1px solid #c7d6b550; border-radius: 3px; background: #111f1eea; padding: 0; text-align: left; color: var(--fe-paper); overflow: hidden; box-shadow: 0 16px 50px #0002; transition: border-color .18s, transform .18s; }
 .fe-level-card:hover { border-color: var(--fe-acid); transform: translateY(-3px); }
 .fe-card-image { height: clamp(170px, 24vh, 230px); position: relative; overflow: hidden; background: #273d33; }
@@ -79,12 +79,12 @@ body[data-mode="home"] :is(#toast, #goal-notification), body[data-mode="levels"]
 .fe-progress-track i.complete { background: var(--fe-acid); }
 .fe-card-enter { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 1.2px; color: var(--fe-acid); font-weight: 700; white-space: nowrap; }
 .fe-card-enter svg { width: 23px; height: 23px; }
-.fe-future { border: 1px dashed #becfaf35; border-radius: 3px; background: #0c1a1742; padding: 32px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
-.fe-future-line { display: block; width: 44px; height: 3px; background: #6e8763; margin-bottom: 38px; }
-.fe-future .fe-overline { color: #83987b; font-size: 9px; letter-spacing: 1.4px; margin-bottom: 14px; }
-.fe-future h2 { font: 700 40px/.98 var(--font-display); color: #9bab91; letter-spacing: -.5px; margin: 0 0 16px; }
+.fe-future { grid-column: 1 / -1; border: 1px dashed #becfaf35; border-radius: 3px; background: #0c1a1742; padding: 18px 24px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 24px; }
+.fe-future-line { display: block; width: 44px; height: 3px; background: #6e8763; }
+.fe-future .fe-overline { color: #83987b; font-size: 9px; letter-spacing: 1.4px; margin: 0; }
+.fe-future h2 { font: 700 28px/.98 var(--font-display); color: #9bab91; letter-spacing: -.5px; margin: 0; }
 .fe-future p { font-size: 12px; color: #7e9377; line-height: 1.7; margin: 0; }
-.fe-future-note { display: block; font-size: 8px; letter-spacing: 1.4px; color: #617c59; margin-top: 27px; }
+.fe-future-note { display: block; font-size: 8px; letter-spacing: 1.4px; color: #617c59; }
 .level-navigation { display: flex; gap: 10px; flex-wrap: wrap; }
 .level-navigation .level-secondary { min-height: 44px; width: auto; margin: 0; padding: 8px 12px; border: 1px solid #bdc9ae30; font-size: 10px; }
 .level-footer:has(.level-navigation) { flex-wrap: wrap; }
@@ -96,7 +96,7 @@ body[data-mode="home"] :is(#toast, #goal-notification), body[data-mode="levels"]
   .fe-live-caption h2 { font-size: 32px; }
   .fe-input-note { display: none; }
   .fe-footer { justify-content: space-between; gap: 22px; }
-  .fe-spots { gap: 18px; grid-template-columns: minmax(0, 1.8fr) minmax(210px, 1fr); }
+  .fe-spots { gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .fe-future { padding: 25px; }
   .fe-future h2 { font-size: 34px; }
   .fe-card-body { padding: 21px; }
@@ -180,20 +180,20 @@ body[data-mode="home"] :is(#toast, #goal-notification), body[data-mode="levels"]
   .fe-level-heading h1 { font-size: 40px; margin: 0; }
   .fe-back { min-height: 44px; }
   #front-end[data-screen="levels"] .fe-footer { display: none; }
-  .fe-spots { grid-template-columns: minmax(0, 1.85fr) minmax(170px, 1fr); gap: 18px; }
+  .fe-spots { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
   .fe-level-card { display: grid; grid-template-columns: .8fr 1fr; }
   .fe-card-image { height: 100%; min-height: 194px; }
   .fe-card-number { font-size: 35px; top: 12px; left: 12px; }
   .fe-card-status { font-size: 10px; left: 10px; bottom: 12px; padding: 6px; letter-spacing: .3px; }
   .fe-card-body { padding: 19px 15px; }
   .fe-card-location { font-size: 10px; letter-spacing: .4px; }
-  .fe-card-body h2 { font-size: 30px; line-height: .95; margin-top: 8px; }
-  .fe-card-description { font-size: 11px; }
+  .fe-card-body h2 { font-size: 27px; line-height: .95; margin-top: 8px; }
+  .fe-card-description { display: none; }
   .fe-card-bottom { display: block; margin-top: 14px; }
   .fe-card-career { max-width: none; }
   .fe-card-career-label { font-size: 10px; }
   .fe-card-enter { font-size: 11px; margin-top: 13px; }
-  .fe-future { display: flex; padding: 20px; }
+  .fe-future { display: none; }
   .fe-future-line { display: none; }
   .fe-future .fe-overline { font-size: 8px; letter-spacing: .8px; margin-bottom: 12px; }
   .fe-future h2 { font-size: 29px; }

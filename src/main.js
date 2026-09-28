@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 import { Level } from './level.js';
+import { RocCityLevel } from './roc-city-level.js';
+import { ROC_PICKUPS } from './roc-city-layout.js';
+import { createRocCityArt } from './roc-city-art.js';
+import { upgradeRocCityConcrete } from './roc-city-concrete.js';
 import { Skater } from './skater.js';
 import { Character } from './character.js';
 import { FollowCamera } from './camera.js';
@@ -13,7 +17,9 @@ import { Effects } from './fx.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { ConcreteFloor } from './concrete-floor.js';
 import { lightWarehouse } from './atmosphere.js';
-import { GOALS, GoalProgress, GoalRun } from './goals.js';
+import { PICKUPS, GoalProgress, GoalRun } from './goals.js';
+import { LEVEL_GOAL_CONFIGS } from './level-goals.js';
+import { LEVELS } from './levels.js';
 import { Collectibles } from './collectibles.js';
 import { LevelUI } from './level-ui.js';
 import { FrontEnd } from './front-end.js';
@@ -48,10 +54,49 @@ scene.fog = new THREE.Fog(0x35405a, 50, 120);
 }
 
 const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
-const level = new Level();
-scene.add(level.group);
-const atmosphere = lightWarehouse(scene, level, { lowfx: LOWFX });
-const floorSurface = new ConcreteFloor(level.floor, { lowfx: LOWFX, level });
+const careers = new Map(LEVELS.map(metadata => {
+  const config = { ...metadata, ...LEVEL_GOAL_CONFIGS[metadata.id], pickups: metadata.id === 'genesee-warehouse' ? PICKUPS : ROC_PICKUPS };
+  const progress = new GoalProgress(undefined, { key: config.progressKey, goals: config.goals });
+  const highScores = new HighScores(undefined, { key: config.highScoresKey });
+  // Preserve the original recorded warehouse best without awarding new goals.
+  progress.record({ score: highScores.best });
+  return [metadata.id, { config, progress, highScores, goals: new GoalRun(progress, config), focusGoal: config.goals[0].id }];
+}));
+// Each park is built once. Inactive roots, including their lights and pickups,
+// are detached entirely; switching never accumulates resources or colliders.
+const levelRuntimes = new Map();
+function runtimeFor(id) {
+  if (levelRuntimes.has(id)) return levelRuntimes.get(id);
+  const root = new THREE.Group(); root.name = `Level: ${id}`;
+  const warehouse = id === 'genesee-warehouse';
+  const level = warehouse ? new Level() : new RocCityLevel();
+  root.add(level.group);
+  const atmosphere = warehouse ? lightWarehouse(root, level, { lowfx: LOWFX }) : createRocCityArt(root, level, { lowfx: LOWFX });
+  const floorSurface = warehouse ? new ConcreteFloor(level.floor, { lowfx: LOWFX, level })
+    : upgradeRocCityConcrete(level, levelRuntimes.get('genesee-warehouse').floorSurface);
+  const config = careers.get(id).config;
+  const collectibles = new Collectibles(root, { pickups: config.pickups, name: `${config.title} goal pickups` });
+  const runtime = { root, level, atmosphere, floorSurface, collectibles,
+    background: atmosphere.background ?? root.background,
+    fog: atmosphere.fog ?? root.fog,
+    environmentIntensity: atmosphere.environmentIntensity ?? root.environmentIntensity ?? 0.32,
+    toneMappingExposure: atmosphere.toneMappingExposure ?? 0.9,
+  };
+  levelRuntimes.set(id, runtime);
+  return runtime;
+}
+function applyEnvironment(runtime) {
+  scene.background = runtime.background;
+  scene.fog = runtime.fog;
+  scene.environmentIntensity = runtime.environmentIntensity;
+  renderer.toneMappingExposure = runtime.toneMappingExposure;
+}
+let activeLevelId = 'genesee-warehouse';
+let activeCareer = careers.get(activeLevelId), activeRuntime = runtimeFor(activeLevelId);
+let { config: activeConfig, progress, goals, highScores } = activeCareer;
+let { level, atmosphere, floorSurface, collectibles } = activeRuntime;
+scene.add(activeRuntime.root);
+applyEnvironment(activeRuntime);
 const skater = new Skater(level);
 const character = new Character();
 scene.add(character.root);
@@ -60,27 +105,21 @@ const input = new Input();
 const touchControls = new TouchControls({ root: document.getElementById('touch-controls') });
 input.setTouchSource(touchControls.source);
 const hud = new HUD();
-const highScores = new HighScores();
 const audio = new Audio();
 const settings = new Settings();
 const fx = new Effects(scene, { level, lowfx: LOWFX });
-const progress = new GoalProgress();
-// Earlier versions already recorded two-minute runs. Keep that record visible on
-// the new board without awarding any of the new goals retroactively.
-progress.record({ score: highScores.best });
-const goals = new GoalRun(progress);
-const collectibles = new Collectibles(scene);
 const sessionClock = new SessionClock(RUN_TIME);
-const levelUI = new LevelUI(GOALS, { onStart: startRun, onBoard: showGoalBoard, onLevels: showLevelSelect, onHome: showHome });
+const levelUI = new LevelUI(activeConfig.goals, { onStart: startRun, onBoard: showGoalBoard, onLevels: showLevelSelect, onHome: showHome });
+levelUI.setLevel(activeConfig, progress.snapshot());
 const frontEnd = new FrontEnd({
   onLevels: showLevelSelect, onHome: showHome,
-  onLevel: id => { if (id === 'genesee-warehouse') showGoalBoard(); },
+  onLevel: selectLevel,
   onControls: () => hud.toggleControls(true), onSettings: () => hud.toggleSettings(true),
 });
 
 // ---- game state ----
 let mode = 'home'; // home | levels | title (goal board) | playing | over
-let runMode = 'goals', focusGoal = GOALS[0].id;
+let runMode = 'goals', focusGoal = activeConfig.goals[0].id;
 let bankedThisStep = false;
 let accumulator = 0, last = performance.now(), visualTime = 0;
 const EDGES = ['olliePressed', 'ollieReleased', 'flipPressed', 'grabPressed', 'grindPressed', 'revertLeftPressed', 'revertRightPressed'];
@@ -198,7 +237,7 @@ function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
   for (const k of EDGES) pending[k] = false;
   skater.reset();
   fx.clear();
-  const remaining = GOALS.filter(goal => !progress.has(goal.id));
+  const remaining = activeConfig.goals.filter(goal => !progress.has(goal.id));
   runMode = selectedMode === 'free' || !remaining.length ? 'free' : 'goals';
   const requestedGoal = selectedGoal ?? levelUI.selectedGoal;
   focusGoal = (remaining.find(goal => goal.id === requestedGoal) || remaining[0])?.id || null;
@@ -215,7 +254,7 @@ function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
   hud.combo('', 0, 0);
   hud.shownScore = 0;
   hud.el.timer.classList.remove('overtime');
-  document.querySelector('#venue > span:last-child').textContent = runMode === 'free' ? '01 / FREE SKATE' : '01 / GOAL RUN';
+  document.querySelector('#venue > span:last-child').textContent = `${String(activeConfig.order).padStart(2, '0')} / ${runMode === 'free' ? 'FREE SKATE' : 'GOAL RUN'}`;
   document.getElementById('top-center').dataset.session = runMode === 'free' ? 'FREE SKATE' : 'GOAL RUN';
   followCam.snap(skater);
   audio.setPaused(false);
@@ -272,12 +311,42 @@ function enterMenu(nextMode) {
 }
 function showHome() {
   enterMenu('home');
-  frontEnd.showHome(progress.snapshot());
+  frontEnd.showHome(progressByLevel(), activeLevelId);
   document.getElementById('boot-screen').hidden = true;
 }
 function showLevelSelect() {
   enterMenu('levels');
-  frontEnd.showLevels(progress.snapshot());
+  frontEnd.showLevels(progressByLevel(), activeLevelId);
+}
+function progressByLevel() {
+  return Object.fromEntries([...careers].map(([id, career]) => [id, career.progress.snapshot()]));
+}
+function selectLevel(id) {
+  if (!careers.has(id) || !careers.get(id).config.playable) return false;
+  if (id !== activeLevelId) {
+    // Finish and cancel the old session before any object references change.
+    enterMenu('levels');
+    activeCareer.focusGoal = levelUI.selectedGoal;
+    const nextRuntime = runtimeFor(id);
+    activeRuntime.root.removeFromParent();
+    activeLevelId = id;
+    activeCareer = careers.get(id); activeRuntime = nextRuntime;
+    ({ config: activeConfig, progress, goals, highScores } = activeCareer);
+    ({ level, atmosphere, floorSurface, collectibles } = activeRuntime);
+    scene.add(activeRuntime.root); activeRuntime.root.updateMatrixWorld(true);
+    applyEnvironment(activeRuntime);
+    skater.level = level; followCam.level = level; fx.level = level;
+    skater.reset(); fx.clear();
+    followCam.dirAngle = Math.atan2(skater.heading.x, skater.heading.z);
+    followCam.nudge = 0; followCam.smoothSpeed = 0;
+    followCam.snap(skater);
+    levelUI.setLevel(activeConfig, progress.snapshot());
+    levelUI.selectGoal(activeCareer.focusGoal);
+    focusGoal = levelUI.selectedGoal; runMode = 'goals';
+    hud.highScores(highScores.list, 0);
+  }
+  showGoalBoard();
+  return true;
 }
 function showGoalBoard() {
   enterMenu('title');
@@ -374,7 +443,16 @@ function frame(now) {
   if (mode === 'home' || mode === 'levels' || mode === 'title') {
     // A slow establishing shot gives the title the same rendered park as gameplay.
     const t = reducedMotion.matches ? 0 : visualTime * 0.035;
-    if (mode === 'home') {
+    if (activeLevelId === 'roc-city-skatepark') {
+      if (mode === 'home') {
+        camera.position.set(-28 + Math.sin(t) * 2, 16, -38 + Math.cos(t));
+        camera.lookAt(-2, 0, 8);
+      } else {
+        camera.position.set(-35 + Math.sin(t) * 2, 24, 35 + Math.cos(t) * 2);
+        camera.lookAt(-1, 0, -5);
+      }
+      camera.fov = 60;
+    } else if (mode === 'home') {
       camera.position.set(-9 + Math.sin(t) * 1.6, 3.1, 23 + Math.cos(t) * 0.7);
       camera.lookAt(4.5, 1.25, 2);
       camera.fov = 58;
@@ -423,5 +501,8 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, touchControls, character, followCam, startRun, endRun, showHome, showLevelSelect, showGoalBoard, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx, goals, progress, collectibles, levelUI, frontEnd, sessionClock,
-  get session() { return { mode, runMode, focusGoal, paused: hud.settingsOpen || hud.controlsOpen, timeLeft: sessionClock.remaining, overtime: sessionClock.overtime, visualTime }; } };
+window.__game = { skater, input, touchControls, character, followCam, startRun, endRun, showHome, showLevelSelect, showGoalBoard, selectLevel, settings, audio, renderer, scene, camera, fx, levelUI, frontEnd, sessionClock,
+  get level() { return level; }, get highScores() { return highScores; }, get floorSurface() { return floorSurface; }, get atmosphere() { return atmosphere; },
+  get goals() { return goals; }, get progress() { return progress; }, get collectibles() { return collectibles; }, get levelConfig() { return activeConfig; },
+  get loadedLevels() { return [...levelRuntimes.keys()]; }, get careers() { return progressByLevel(); },
+  get session() { return { levelId: activeLevelId, mode, runMode, focusGoal, paused: hud.settingsOpen || hud.controlsOpen, timeLeft: sessionClock.remaining, overtime: sessionClock.overtime, visualTime }; } };

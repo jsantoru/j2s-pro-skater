@@ -28,7 +28,6 @@ export const PICKUPS = Object.freeze([
 ].map(pickup => Object.freeze({ ...pickup, position: Object.freeze(pickup.position), radius: 1.05 })));
 
 export const GOAL_STORAGE_KEY = 'j2s-pro-skater.genesee.goals.v1';
-const GOAL_IDS = new Set(GOALS.map(goal => goal.id));
 const BODY_HEIGHT = 0.85;
 const MAX_SWEEP = 4;
 
@@ -61,16 +60,19 @@ function touchesSegment(start, end, pickup) {
 }
 
 export class GoalProgress {
-  constructor(storage) {
+  constructor(storage, { key = GOAL_STORAGE_KEY, goals = GOALS } = {}) {
     this.storage = storage === undefined ? defaultStorage() : storage;
+    this.key = key;
+    this.goals = goals;
+    this.goalIds = new Set(goals.map(goal => goal.id));
     this.completed = new Set();
     this.bestScore = 0;
     this.bestCombo = 0;
     try {
-      const data = JSON.parse(this.storage?.getItem(GOAL_STORAGE_KEY) || 'null');
+      const data = JSON.parse(this.storage?.getItem(this.key) || 'null');
       if (data && typeof data === 'object' && !Array.isArray(data)) {
         if (Array.isArray(data.completed)) {
-          for (const id of data.completed) if (GOAL_IDS.has(id)) this.completed.add(id);
+          for (const id of data.completed) if (this.goalIds.has(id)) this.completed.add(id);
         }
         this.bestScore = points(data.bestScore);
         this.bestCombo = points(data.bestCombo);
@@ -82,7 +84,7 @@ export class GoalProgress {
 
   snapshot() {
     return {
-      completed: GOALS.filter(goal => this.has(goal.id)).map(goal => goal.id),
+      completed: this.goals.filter(goal => this.has(goal.id)).map(goal => goal.id),
       bestScore: this.bestScore,
       bestCombo: this.bestCombo,
     };
@@ -92,7 +94,7 @@ export class GoalProgress {
   record({ completed = [], score = 0, bestCombo = 0 } = {}) {
     let changed = false;
     for (const id of completed) {
-      if (GOAL_IDS.has(id) && !this.has(id)) { this.completed.add(id); changed = true; }
+      if (this.goalIds.has(id) && !this.has(id)) { this.completed.add(id); changed = true; }
     }
     const nextScore = Math.max(this.bestScore, points(score));
     const nextCombo = Math.max(this.bestCombo, points(bestCombo));
@@ -100,16 +102,18 @@ export class GoalProgress {
     this.bestScore = nextScore;
     this.bestCombo = nextCombo;
     if (changed) {
-      try { this.storage?.setItem(GOAL_STORAGE_KEY, JSON.stringify(this.snapshot())); } catch { /* memory fallback */ }
+      try { this.storage?.setItem(this.key, JSON.stringify(this.snapshot())); } catch { /* memory fallback */ }
     }
     return this.snapshot();
   }
 }
 
 export class GoalRun {
-  constructor(progress = new GoalProgress(), pickups = PICKUPS) {
+  constructor(progress = new GoalProgress(), configuration = PICKUPS) {
     this.progress = progress;
-    this.pickups = pickups;
+    // The pickup-array form remains compatible with the warehouse simulations.
+    this.pickups = Array.isArray(configuration) ? configuration : configuration.pickups ?? PICKUPS;
+    this.definitions = Array.isArray(configuration) ? progress.goals : configuration.goals ?? progress.goals;
     this.reset();
   }
 
@@ -130,7 +134,7 @@ export class GoalRun {
     this.reset();
     this.mode = mode === 'free' ? 'free' : 'goals';
     if (this.mode === 'goals') {
-      this.availableGoals = new Set(GOALS.filter(goal => !this.progress.has(goal.id)).map(goal => goal.id));
+      this.availableGoals = new Set(this.definitions.filter(goal => !this.progress.has(goal.id)).map(goal => goal.id));
     }
     this.active = true;
     this.previousPosition = skater?.state === 'bail' ? null : bodyPosition(skater);
@@ -150,7 +154,7 @@ export class GoalRun {
   evaluate() {
     if (!this.active || this.mode !== 'goals') return [];
     const events = [];
-    for (const goal of GOALS) {
+    for (const goal of this.definitions) {
       if (this.availableGoals.has(goal.id) && !this.completed.has(goal.id) && this.current(goal) >= goal.target) {
         this.completed.add(goal.id);
         const newCareer = !this.progress.has(goal.id);
@@ -216,7 +220,7 @@ export class GoalRun {
       letters: this.pickups.filter(pickup => pickup.goalId === 'skate' && this.collected.has(pickup.id)).map(pickup => pickup.label),
       caps: this.count('caps'),
       tape: this.count('tape') > 0,
-      goals: GOALS.map(goal => ({ ...goal, current: this.current(goal), available: this.availableGoals.has(goal.id), complete: this.completed.has(goal.id), careerComplete: this.progress.has(goal.id) })),
+      goals: this.definitions.map(goal => ({ ...goal, current: this.current(goal), available: this.availableGoals.has(goal.id), complete: this.completed.has(goal.id), careerComplete: this.progress.has(goal.id) })),
     };
   }
 }

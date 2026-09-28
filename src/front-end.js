@@ -14,6 +14,7 @@ export class FrontEnd {
     this.progress = {};
     this.playableLevels = LEVELS.filter(level => level.playable);
     this.level = this.playableLevels[0];
+    this.activeLevelId = this.level.id;
     this.root = document.createElement('div');
     this.root.id = 'front-end';
     this.root.className = 'hidden';
@@ -21,14 +22,14 @@ export class FrontEnd {
       <header class="fe-header"><div class="fe-mark" aria-label="J2S Pro Skater">J2S<span>PRO SKATER</span></div><nav class="fe-utility" aria-label="Game menus"><button id="fe-controls" type="button">CONTROLS</button><button id="fe-settings" type="button">SETTINGS</button></nav></header>
       <section id="fe-home" class="fe-home" aria-label="J2S Pro Skater home">
         <div class="fe-home-main"><div class="fe-home-brand"><p class="fe-overline">FIND YOUR LINE.</p><h1 class="fe-title"><span class="fe-title-main">J2S</span><span class="fe-title-sub">PRO SKATER</span></h1></div><div class="fe-home-start"><p class="fe-home-description">Your board. Your spot.<br/>Make every run count.</p><button id="fe-play" class="fe-primary" type="button"><span><b>PLAY</b><small>CHOOSE A LEVEL</small></span><span class="fe-button-arrow">${arrow}</span></button><p class="fe-play-note">Score big. Find everything. Keep rolling.</p></div></div>
-        <aside class="fe-live-caption"><span class="fe-scene-line"></span><p>FIRST SPOT <span>${ordinal(this.level.order)}</span></p><h2>${this.level.title.toUpperCase().replace(' ', '<br/>')}</h2><span class="fe-location">${this.level.location.toUpperCase()}</span></aside>
+        <aside class="fe-live-caption"><span class="fe-scene-line"></span><p>YOUR SPOT <span>${ordinal(this.level.order)}</span></p><h2>${this.level.title.toUpperCase().replace(' ', '<br/>')}</h2><span class="fe-location">${this.level.location.toUpperCase()}</span></aside>
       </section>
       <section id="fe-levels" class="fe-levels hidden" aria-label="Choose a level">
         <div class="fe-level-heading"><div><button id="fe-back" class="fe-back" type="button"><span aria-hidden="true">←</span> HOME</button><h1>PICK YOUR <span>SPOT.</span></h1></div><p class="fe-level-count">${ordinal(this.playableLevels.length)} <span>${this.playableLevels.length === 1 ? 'SPOT' : 'SPOTS'} TO SKATE</span></p></div>
         <div class="fe-spots">${this.playableLevels.map(levelCard).join('')}
-          <aside id="fe-future-level" class="fe-future"><span class="fe-future-line" aria-hidden="true"></span><span class="fe-overline">BEYOND THE WAREHOUSE</span><h2>MORE ROOM<br/>TO ROLL.</h2><p>The next spot is<br/>still taking shape.</p><span class="fe-future-note">TO BE CONTINUED</span></aside></div>
+          <aside id="fe-future-level" class="fe-future"><span class="fe-future-line" aria-hidden="true"></span><span class="fe-overline">KEEP EXPLORING</span><h2>MORE ROOM<br/>TO ROLL.</h2><p>The next spot is<br/>still taking shape.</p><span class="fe-future-note">TO BE CONTINUED</span></aside></div>
       </section>
-      <footer class="fe-footer"><div class="fe-career-label"><span class="fe-save-dot"></span><span>GENESEE CAREER<small>Saved on this device</small></span></div><div class="fe-records"><div><span>GOALS</span><b id="fe-career-goals">0 <small>/ 7</small></b></div><div><span>BEST RUN</span><b id="fe-best-score">—</b></div><div><span>BEST COMBO</span><b id="fe-best-combo">—</b></div></div><span class="fe-input-note">KEYBOARD / CONTROLLER / TOUCH</span></footer>
+      <footer class="fe-footer"><div class="fe-career-label"><span class="fe-save-dot"></span><span><b id="fe-career-name">GENESEE CAREER</b><small>Saved on this device</small></span></div><div class="fe-records"><div><span>GOALS</span><b id="fe-career-goals">0 <small>/ 7</small></b></div><div><span>BEST RUN</span><b id="fe-best-score">—</b></div><div><span>BEST COMBO</span><b id="fe-best-combo">—</b></div></div><span class="fe-input-note">KEYBOARD / CONTROLLER / TOUCH</span></footer>
     </div>`;
     document.body.append(this.root);
     this.home = this.root.querySelector('#fe-home');
@@ -78,7 +79,11 @@ export class FrontEnd {
       if (this.display === 'levels') this.back.click();
       return;
     }
-    if (input.startPressed) { (this.display === 'home' ? this.play : this.levelButton).click(); return; }
+    if (input.startPressed) {
+      const focused = document.activeElement;
+      const selectedCard = [...this.levelButtons.values()].includes(focused) ? focused : this.levelButton;
+      (this.display === 'home' ? this.play : selectedCard).click(); return;
+    }
     if (input.menuMove) this.moveFocus(input.menuMove);
     if (input.menuConfirm) {
       const focused = document.activeElement;
@@ -88,23 +93,34 @@ export class FrontEnd {
   }
   renderProgress(progress = {}) {
     this.progress = progress;
-    const count = Math.min(this.level.goalCount, new Set(progress.completed || []).size);
+    const byLevel = Array.isArray(progress.completed) ? { [this.activeLevelId]: progress } : progress;
+    const current = byLevel[this.activeLevelId] || {};
+    const count = Math.min(this.level.goalCount, new Set(current.completed || []).size);
+    this.root.querySelector('#fe-career-name').textContent = `${this.level.title.toUpperCase()} CAREER`;
     this.root.querySelector('#fe-career-goals').innerHTML = `${count} <small>/ ${this.level.goalCount}</small>`;
-    this.root.querySelector('#fe-best-score').textContent = progress.bestScore ? format(progress.bestScore) : '—';
-    this.root.querySelector('#fe-best-combo').textContent = progress.bestCombo ? format(progress.bestCombo) : '—';
+    this.root.querySelector('#fe-best-score').textContent = current.bestScore ? format(current.bestScore) : '—';
+    this.root.querySelector('#fe-best-combo').textContent = current.bestCombo ? format(current.bestCombo) : '—';
+    const caption = this.root.querySelector('.fe-live-caption');
+    caption.querySelector('p span').textContent = ordinal(this.level.order);
+    caption.querySelector('h2').innerHTML = this.level.titleLines.join('<br/>');
+    caption.querySelector('.fe-location').textContent = this.level.location.toUpperCase();
     for (const level of this.playableLevels) {
-      const saved = level.id === this.level.id ? progress : progress.levels?.[level.id] || {};
+      const saved = byLevel[level.id] || {};
       const earned = Math.min(level.goalCount, new Set(saved.completed || []).size);
       const card = this.levelButtons.get(level.id);
+      card.classList.toggle('current', level.id === this.activeLevelId);
       card.querySelector('.fe-level-progress').textContent = `${earned} / ${level.goalCount}`;
       card.querySelector('.fe-card-status').textContent = earned === level.goalCount ? 'SPOT CLEARED' : earned ? 'KEEP IT GOING' : 'READY TO SKATE';
       [...card.querySelectorAll('.fe-progress-track i')].forEach((segment, index) => segment.classList.toggle('complete', index < earned));
       card.setAttribute('aria-label', `${level.title}, level ${level.order}, ${level.location}. ${earned} of ${level.goalCount} goals complete. Enter spot.`);
     }
   }
-  showHome(progress) { this.show('home', progress); }
-  showLevels(progress) { this.show('levels', progress); }
-  show(screen, progress = this.progress) {
+  showHome(progress, activeLevelId) { this.show('home', progress, activeLevelId); }
+  showLevels(progress, activeLevelId) { this.show('levels', progress, activeLevelId); }
+  show(screen, progress = this.progress, activeLevelId = this.activeLevelId) {
+    this.level = this.playableLevels.find(level => level.id === activeLevelId) || this.playableLevels[0];
+    this.activeLevelId = this.level.id;
+    this.levelButton = this.levelButtons.get(this.level.id);
     this.renderProgress(progress);
     this.display = screen;
     this.root.dataset.screen = screen;
@@ -113,6 +129,7 @@ export class FrontEnd {
     this.levels.classList.toggle('hidden', screen !== 'levels');
     this.root.scrollTop = 0;
     (screen === 'home' ? this.play : this.levelButton).focus({ preventScroll: true });
+    if (screen === 'levels') this.levelButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
   hide() {
     this.display = null;

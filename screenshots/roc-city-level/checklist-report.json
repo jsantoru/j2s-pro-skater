@@ -1,0 +1,53 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "fresh goal run shows all seven active goals with zero progress and selected focus",
+      "passed": true
+    },
+    {
+      "name": "every nonfocused counter updates from banked score, best combo and real pickup collisions",
+      "passed": true
+    },
+    {
+      "name": "pause freezes checklist values and restart retires only full career goals",
+      "passed": true
+    },
+    {
+      "name": "overtime keeps score checklist legible, then results, board and Free Skate hide it",
+      "passed": true
+    },
+    {
+      "name": "all seven rows fit actual touch mode across portrait and short landscape sizes",
+      "passed": true
+    },
+    {
+      "name": "maximum useful counters and all seven completed rows remain readable on a small phone",
+      "passed": true
+    },
+    {
+      "name": "checklist renders with no JavaScript, console, network or WebGL errors",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "browserErrors": [],
+  "screenshotsCaptured": [
+    "fresh-desktop.png",
+    "partial-checked-desktop.png",
+    "returning-career.png",
+    "phone-portrait.png",
+    "phone-landscape.png",
+    "phone-landscape-small.png",
+    "phone-portrait-compact.png",
+    "phone-landscape-compact.png",
+    "all-complete-phone.png"
+  ],
+  "artifactNote": "Compact regression report. Full layout diagnostics and captures were inspected locally; the ROC City report includes current screenshots."
+}

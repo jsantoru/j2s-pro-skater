@@ -114,6 +114,7 @@ export class Skater {
     this.revertT = 0; this.revertDir = 1; this.revertManualIntent = null;
     this.landingPending = false;
     this.queued = null;                       // trick pressed on the ground, fired on the next takeoff
+    this.bufferedOllie = false;               // a held/released button must not survive a new session or park
     this.grindIntent = 0; this.grindIntentDir = 'C'; // "I want to grind" window armed by a tap of Y
     this._inp = null;
     this.combo.newRun();
@@ -710,7 +711,8 @@ export class Skater {
   }
 
   updateGrind(dt, inp) {
-    const T = this.T, g = this.grind, r = g.rail;
+    const T = this.T, g = this.grind;
+    let r = g.rail;
     g.time += dt;
     this.handleCrouch(dt, inp);
     if (this.state !== 'grind') return;
@@ -723,6 +725,25 @@ export class Skater {
     // accrue grind points
     const tick = Math.floor(g.time * 10) - Math.floor((g.time - dt) * 10);
     if (tick > 0) this.combo.addToLast(HOLD.grind * tick);
+    const oldYaw = Math.atan2(r.dir.x * g.dir, r.dir.z * g.dir);
+    let linked = false;
+    // Only explicitly connected endpoints continue a grind. Carry metres of
+    // overshoot onto the next segment without starting another trick or meter.
+    for (let hops = 0; hops < 64 && (g.t < 0 || g.t > 1); hops++) {
+      const link = g.t > 1 ? r.bLink : r.aLink;
+      if (!link || !Number.isFinite(link.rail?.len) || link.rail.len <= 0 || (link.dir !== 1 && link.dir !== -1)) break;
+      const overshoot = (g.t > 1 ? g.t - 1 : -g.t) * r.len;
+      r = link.rail; g.rail = r; g.dir = link.dir;
+      g.t = link.dir === 1 ? overshoot / r.len : 1 - overshoot / r.len;
+      linked = true;
+    }
+    if (linked) {
+      // Preserve a slide's side and regular/fakie stance as the rail turns.
+      const yaw = Math.atan2(r.dir.x * g.dir, r.dir.z * g.dir);
+      this.facing.applyAxisAngle(UP, yaw - oldYaw).normalize();
+      this.heading.copy(r.dir).multiplyScalar(g.dir);
+      this.vel.copy(this.heading).multiplyScalar(g.speed);
+    }
     if (g.t < 0 || g.t > 1) {
       this.pos.copy(r.a).addScaledVector(r.dir, Math.max(0, Math.min(1, g.t)) * r.len); this.pos.y += 0.02;
       this.vel.copy(r.dir).multiplyScalar(g.dir * g.speed);
@@ -774,7 +795,14 @@ export class Skater {
     if (hitF && hitF.normal.y < 0.5) { project(this.vel, hitF.normal, this.vel); this.vel.multiplyScalar(0.5); }
     else this.pos.add(step);
     const hit = this.raycast(_v2.copy(this.pos).add(_v3.set(0, 0.5, 0)), _v3.set(0, -1, 0), 0.6 + Math.max(0, -this.vel.y * dt));
-    if (!hit && this.pos.y < 0) { this.pos.y = 0; this.vel.y = 0; this.normal.set(0, 1, 0); }
+    if (!hit && this.pos.y < (this.level.bailFloorY ?? 0)) {
+      if (Number.isFinite(this.level.bailFloorY)) {
+        // Outdoor bowls can sit below street level. Keep falling until their
+        // surface is reached; crossing the park's void limit uses its safe entry.
+        this.pos.copy(this.level.spawn.pos); this.vel.set(0, 0, 0);
+      } else { this.pos.y = 0; this.vel.y = 0; }
+      this.normal.set(0, 1, 0);
+    }
     if (hit) {
       this.pos.copy(hit.point); this.normal.copy(hit.normal);
       if (this.vel.y < 0) this.vel.y = 0;

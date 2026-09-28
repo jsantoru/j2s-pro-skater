@@ -1,7 +1,7 @@
 # J2S Pro Skater
 
 A gamepad-first 3D skateboarding game in the spirit of Tony Hawk's Pro Skater 1,
-starting with Genesee Warehouse in Rochester, New York.
+with Genesee Warehouse and ROC City Skatepark in Rochester, New York.
 The point of this build is **game feel**: the skater controller, camera and animation are one
 hand-tuned kinematic system (no rigid-body physics), and every number in it was play-tested.
 
@@ -19,14 +19,15 @@ npm run dev        # http://localhost:5173
 ```
 
 Plug in an Xbox-style (XInput / "standard mapping") USB controller, press a button to connect it,
-then choose **Play**, select **Genesee Warehouse**, and choose a goal to start your run.
+then choose **Play**, select a level, and choose a goal to start your run.
 Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the full control map in game.
 
 ## Home and level select
 
 The home screen opens on a live view of the warehouse. **Play** opens the level selector,
-where each playable spot shows its saved goal progress and best score. Genesee Warehouse is
-Level 01; future spots are a preview of the game's direction, not selectable levels.
+where each playable spot shows its saved goal progress. Genesee Warehouse is Level 01;
+ROC City Skatepark is Level 02. Each has an independent career and score table.
+The home screen returns to the last selected spot during the session.
 
 Use **Home** or **Level Select** from the goal board, results, or pause menu to leave the current
 session. Earned goals and banked career records stay saved; a new run starts with a fresh timer
@@ -84,10 +85,31 @@ and attainable score/combo targets using actual skating physics. With the dev se
 `npm run qa:level` checks the integrated browser flow in an isolated Edge profile and captures the UI.
 `npm run qa:checklist` checks every live goal row, completion and restart behavior, and desktop/phone layouts.
 `npm run qa:navigation` checks the home/level/run flow, menu input, saved progress, and responsive layouts.
+`npm run sim:roccity` checks the outdoor park's actual surfaces, transitions, collection routes,
+separate progression, and below-grade bail recovery. `npm run qa:roccity` checks both parks in the
+browser, repeated switching, saved careers, and phone layouts.
 `npm run sim:bottlecaps` checks the caps' physical geometry, rotation and collectible lifecycle;
 `npm run qa:bottlecaps` renders all five designs and checks them in desktop and touch-mode play.
 
 `npm run build` produces a static bundle in `dist/`; `npm run preview` serves it.
+
+## ROC City Skatepark
+
+The second level follows the Phase 1 feature map and photographs: a connected multi-depth
+bowl with pool coping, seven- and nine-stair sets, blue hubbas, yellow rails, an A-frame,
+and the street promenade beneath I-490 with its manual pad and extended quarter pipe.
+The blue Rochester flower marks the upper street deck beside the Riverway Trail.
+Concrete shares the warehouse's photographed surface maps, with outdoor lighting and slab joints.
+
+ROC has its own High Score (5,000), Pro Score (15,000), Sick Score (35,000), Big Combo (5,000),
+S-K-A-T-E, five bottle caps, and secret tape. Completion in one park never retires another
+park's pickups. Keyboard, controller and mobile touch controls work in both.
+
+See [the reference and implementation notes](ROC-CITY-LEVEL.md) for source links and
+feature correspondence. Dimensions are estimates from the supplied map and public photos;
+this is a playable recreation rather than a surveyed model.
+
+![ROC City Skatepark](screenshots/roc-city-level/roc-overview.png)
 
 ## Controls (gamepad)
 

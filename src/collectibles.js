@@ -38,9 +38,9 @@ function material(color, options = {}) {
 // Shared geometry keeps pickups inexpensive. Letters and tape face the camera;
 // vintage crown caps are lit physical objects with their own slow rotation.
 export class Collectibles {
-  constructor(parent) {
+  constructor(parent, { pickups = PICKUPS, name = 'Warehouse goal pickups' } = {}) {
     this.group = new THREE.Group();
-    this.group.name = 'Warehouse goal pickups';
+    this.group.name = name;
     this.group.visible = false;
     parent?.add(this.group);
     this.elapsed = 0;
@@ -61,7 +61,7 @@ export class Collectibles {
       label: new THREE.PlaneGeometry(0.64, 0.10),
     };
     this.capGeometries = createBottlecapGeometries();
-    this.items = PICKUPS.map((definition, index) => this.create(definition, index));
+    this.items = pickups.map((definition, index) => this.create(definition, index));
     this.ready = Promise.all(this.items.map(item => item.ready));
   }
 

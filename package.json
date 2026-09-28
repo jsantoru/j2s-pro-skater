@@ -19,6 +19,8 @@
     "qa:level": "node sim/levelcheck.js",
     "qa:checklist": "node sim/checklistcheck.js",
     "qa:navigation": "node sim/navigationcheck.js",
+    "sim:roccity": "node sim/roccitytest.js && node sim/levelprogresstest.js && node sim/levelbailtest.js && node sim/linkedrailtest.js && node sim/rocarttest.js",
+    "qa:roccity": "node sim/roccitycheck.js",
     "sim:touch": "node sim/touchtest.js",
     "qa:mobile": "node sim/mobilecheck.js",
     "sim:bottlecaps": "node sim/bottlecaptest.js",
