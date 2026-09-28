@@ -24,7 +24,7 @@ function attach(level,r,{t=.1,dir=1,speed=7,trick='C',facing=null}={}){
 function expectClose(actual,expected,message){assert.ok(Math.abs(actual-expected)<1e-6,`${message}: ${actual} versus ${expected}`);}
 
 check('ROC bowl coping sustains one continuous grind for more than a second in both directions',()=>{
-  const coping=roc.rails.filter(r=>r.kind==='coping'&&r.aLink&&r.bLink);
+  const coping=roc.rails.filter(r=>r.feature==='D'&&r.kind==='coping'&&r.aLink&&r.bLink);
   assert.equal(coping.length,144);
   for(const dir of [1,-1]){
     const first=dir===1?coping.at(-1):coping[0];

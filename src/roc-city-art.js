@@ -6,6 +6,7 @@ import { canvasMap, randomSeed, surfaceUV } from './materials.js';
 import { paintMark } from './warehouse-identity.js';
 import { displayFont, labelFont } from './typography.js';
 import { ROC_CITY_LAYOUT } from './roc-city-layout.js';
+import { createTrailGeometry, createTrailFoundationGeometry } from './roc-city-surroundings.js';
 
 const UP = new THREE.Vector3(0, 1, 0);
 const layouts = new WeakMap();
@@ -28,17 +29,6 @@ function flatShape(points, y, holes = []) {
   const p = geometry.attributes.position, uv = geometry.attributes.uv;
   for (let i=0;i<p.count;i++) uv.setXY(i,p.getX(i)/5,p.getZ(i)/5);
   return geometry;
-}
-
-function ribbon(points, width, y) {
-  const left = [], right = [];
-  for (let i=0;i<points.length;i++) {
-    const prev=points[Math.max(0,i-1)], next=points[Math.min(points.length-1,i+1)];
-    const dx=next[0]-prev[0], dz=next[1]-prev[1], l=Math.hypot(dx,dz);
-    left.push([points[i][0]-dz/l*width/2, points[i][1]+dx/l*width/2]);
-    right.push([points[i][0]+dz/l*width/2, points[i][1]-dx/l*width/2]);
-  }
-  return flatShape([...left,...right.reverse()],y);
 }
 
 /** Build once, attach to the level, and return the owned decorative group. */
@@ -105,7 +95,8 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   plane(1000,1000,0,-3.7,0,grass);
   add(flatShape([[-41,-110],[88,-110],[88,105],[-41,105]],-.035,[landscapeOpening]),grass);
   const trailCurve=new THREE.CatmullRomCurve3(L.trail.map(([x,z])=>new THREE.Vector3(x,0,z)));
-  add(ribbon(trailCurve.getPoints(120).map(p=>[p.x,p.z]),3.2,.005),asphalt);
+  add(createTrailGeometry(L),asphalt);
+  add(createTrailFoundationGeometry(L),soil);
   const trailLength=trailCurve.getLength();
   for(let distance=2;distance<trailLength;distance+=6){const t=distance/trailLength,p=trailCurve.getPointAt(t),direction=trailCurve.getTangentAt(t);box(.07,.012,1.1,p.x,.018,p.z,line,Math.atan2(direction.x,direction.z));}
   // South Avenue frames the east side instead of boxing the park in.
@@ -147,13 +138,17 @@ export function dressRocCity(level, { lowfx = false } = {}) {
     for(const y of [6.57,7.53])box(113,.13,.51,0,y,z,darkSteel);
     for(let x=-53;x<57;x+=4.8)box(.065,.83,.55,x,7.05,z,steel);
   }
-  for(const z of [bridge.minZ+4,bridge.maxZ-4]) {
-    box(92,1.05,1.85,-4,5.95,z,concrete);
-    for(const x of [-34,-16,1.5,20,38]) {
-      box(1.45,6.1,1.7,x,2.15,z,concrete);
-      box(2.0,.5,2.1,x,-.85,z,concrete);
+  // Photo 06 shows the bent caps running along both sides of the promenade;
+  // transverse steel girders span between those longitudinal concrete rows.
+  const pierBounds=[];
+  for(const x of bridge.pierRows) {
+    box(1.85,1.05,depth+1,x,5.95,zc,concrete);
+    for(const z of bridge.pierStations) {
+      box(...bridge.pierSize,x,bridge.pierCenterY,z,concrete);
+      pierBounds.push({x,y:bridge.pierCenterY,z,width:bridge.pierSize[0],height:bridge.pierSize[1],depth:bridge.pierSize[2]});
+      box(...bridge.pierFootingSize,x,bridge.pierFootingY,z,concrete);
       const shoulder=new THREE.Shape([new THREE.Vector2(-.73,0),new THREE.Vector2(-1.65,1.05),new THREE.Vector2(1.65,1.05),new THREE.Vector2(.73,0)]);
-      const g=new THREE.ExtrudeGeometry(shoulder,{depth:1.7,bevelEnabled:false});add(g,concrete,[x,4.92,z-.85]);
+      const g=new THREE.ExtrudeGeometry(shoulder,{depth:1.7,bevelEnabled:false});g.translate(0,0,-.85);g.rotateY(Math.PI/2);add(g,concrete,[x,4.92,z]);
       box(1.47,.045,1.72,x,1.1,z,coping);
     }
   }
@@ -204,8 +199,9 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   const transform=new THREE.Object3D(), tint=new THREE.Color();
   for(let i=0;i<stones.count;i++) {
     const east=i%2===0,x=east?16+rng()*12:-8+rng()*11;
-    transform.position.set(x,bridge.floorY-.01+rng()*.09,bridge.minZ+rng()*depth);
-    transform.scale.set(.2+rng()*.42,.15+rng()*.24,.23+rng()*.45);transform.rotation.set(rng(),rng()*6,rng());transform.updateMatrix();stones.setMatrixAt(i,transform.matrix);
+    // Riprap is embedded beside the flush promenade, not piled into a wall.
+    transform.position.set(x,bridge.floorY-.08+rng()*.04,bridge.minZ+rng()*depth);
+    transform.scale.set(.2+rng()*.42,.11+rng()*.14,.23+rng()*.45);transform.rotation.set((rng()-.5)*.2,rng()*6,(rng()-.5)*.2);transform.updateMatrix();stones.setMatrixAt(i,transform.matrix);
     tint.setHSL(.13+rng()*.04,.025+rng()*.05,.39+rng()*.22);stones.setColorAt(i,tint);
   }
   group.add(stones);
@@ -235,7 +231,7 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   for(let x=-47;x<50;x+=26)lamp(x,bridge.minZ-.66,9.26,5.4,0);
 
   // Benches and a simple park sign sit beyond the entrances, never in a line.
-  for(const [x,z,ry] of [[2,-47,0],[-13,12,-.55]]) {
+  for(const [x,z,ry] of [[7.9,-44.3,0],[-13,12,-.55]]) {
     for(const xx of [-.82,.82]) {box(.09,.5,.7,x+xx,.25,z,black,ry);}
     for(const dz of [-.28,-.08,.12,.32])box(2.15,.07,.13,x,.49,z+dz,rail,ry);
     for(const yy of [.86,1.05])box(2.15,.1,.05,x,yy,z+.42,rail,ry);
@@ -306,6 +302,7 @@ export function dressRocCity(level, { lowfx = false } = {}) {
     group.add(mesh);geometries.forEach(g=>g.dispose());
   }
   group.userData.materials=ownedMaterials;
+  group.userData.pierBounds=pierBounds;
   group.userData.water=waterMap;
   group.userData.decorativeOnly=true;
   return group;
@@ -333,7 +330,7 @@ export function createRocCityArt(root, level, { lowfx = false } = {}) {
   if(!lowfx)for(const z of [30,40,50]){const lamp=new THREE.PointLight(0xe3eddb,3.5,10,2);lamp.position.set(10,4.8,z);lights.add(lamp);}
   let disposed=false;
   return {
-    sun, background:new THREE.Color(0xb4c6cb),fog:new THREE.Fog(0xb4c6cb,76,185),environmentIntensity:.45,toneMappingExposure:.93,
+    sun, pierBounds:dressing.userData.pierBounds, background:new THREE.Color(0xb4c6cb),fog:new THREE.Fog(0xb4c6cb,76,185),environmentIntensity:.45,toneMappingExposure:.93,
     update(time) { const water=dressing.userData.water;if(water)water.offset.x=time*.002; },
     dispose() {
       if(disposed)return;disposed=true;lights.removeFromParent();sun.shadow.map?.dispose();sky.geometry.dispose();skyMaterial.dispose();

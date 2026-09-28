@@ -41,7 +41,7 @@ test('Bowl is a continuous upward-wound surface with a genuinely open deck and f
     const c=new THREE.Vector3().fromBufferAttribute(p,idx.getX(i+2));
     assert([...a,...b,...c].every(Number.isFinite));
     const normal=b.sub(a).cross(c.sub(a));
-    assert(normal.y>0,'Every triangle faces the rider, including the center fan and seam');
+    assert(normal.y>0,'Every triangle faces the rider, including the clipped rim cells');
     assert(normal.length()>1e-6,'No degenerate collision triangles');
   }
   const [cx,cz]=g.userData.center;
@@ -51,7 +51,15 @@ test('Bowl is a continuous upward-wound surface with a genuinely open deck and f
   }
   assert(support(cx,cz)[0].point.y<-.9,'Deep pocket is below main plaza grade');
   assert(support(-5,-3)[0].point.y>support(cx,cz)[0].point.y+.5,'Square tail is a shallower pocket');
-  const coping=level.rails.filter(r=>r.kind==='coping'&&Math.abs(r.a.y-1.655)<.001);
+  for(const [xs,zs,height] of [[[-11,-10],[-17,-16],-1.03],[[-5,-4],[-4,-3],-.05]]){
+    for(const x of xs)for(const z of zs){
+      const hit=support(x,z)[0];
+      assert(Math.abs(hit.point.y-height)<.002&&hit.face.normal.y>.999,'Each pocket has a broad flat floor, not a central cone');
+    }
+  }
+  const band=level.poolBand.geometry.attributes.position;
+  for(let i=0;i<band.count;i++)assert(band.getY(i)>1.38&&band.getY(i)<1.627,'Tile band stays within a consistent strip below the rim');
+  const coping=level.rails.filter(r=>r.feature==='D');
   assert.equal(coping.length,level.bowlOutline.length);
   for(let i=0;i<coping.length;i++)assert(coping[i].b.distanceTo(coping[(i+1)%coping.length].a)<1e-8,'Closed, grindable pool coping');
   const sideNormals=level.deckSkirt.geometry.attributes.normal;
@@ -90,7 +98,6 @@ test('Ordinary push input enters the pool, traverses its curved bottom and exits
 
 test('Both stair-side banks and the promenade grade transition are safely ridable',()=>{
   for(const [from,dir,time,label] of [
-    [[2,0,-44],[0,0,1],2,'straight north-entry bank'],
     [[6.5,1.26,-23],[0,0,1],1.7,'seven-stair bank'],
     [[-8.8,1.62,5.8],[-.206,0,.979],1.5,'nine-stair bank'],
     [[8,0,17],[0,0,1],2,'mellow bank into bridge'],
@@ -100,6 +107,74 @@ test('Both stair-side banks and the promenade grade transition are safely ridabl
     for(let t=0;t<time;t+=dt)skater.update(dt,inp);
     assert.equal(bails,0,label);assert.equal(skater.state,'ride',label);
     assert(skater.pos.z>from[2]+8,`${label} makes forward progress`);
+  }
+});
+
+test('The mini-ramp has a clear flat bottom and supports repeated passes in both directions',()=>{
+  const {center,axis,flatHalf,width}=ROC_CITY_LAYOUT.mini;
+  const point=(u,w)=>[center[0]+axis[0]*u-axis[1]*w,center[1]+axis[1]*u+axis[0]*w];
+  for(const u of [-flatHalf+.2,0,flatHalf-.2])for(const w of [-width*.3,0,width*.3]){
+    const [x,z]=point(u,w),hit=support(x,z)[0];
+    assert(hit&&Math.abs(hit.point.y)<.001,'An entry ramp must never cross the mini flat bottom');
+    assert(hit.face.normal.y>.999,'The mini flat bottom is level across its usable width');
+  }
+  for(const sign of [-1,1]){
+    const skater=rider([center[0],0,center[1]],[axis[0]*sign,0,axis[1]*sign]);
+    let bails=0,landings=0,min=Infinity,max=-Infinity;
+    skater.events.bail=()=>bails++;skater.events.land=()=>landings++;
+    const inp=makeState();inp.push=1;
+    for(let time=0;time<8;time+=dt){
+      skater.update(dt,inp);
+      const u=(skater.pos.x-center[0])*axis[0]+(skater.pos.z-center[1])*axis[1];
+      min=Math.min(min,u);max=Math.max(max,u);
+    }
+    assert(min<-flatHalf+.05&&max>flatHalf-.05,'Both opposing transitions are reached');
+    assert(landings>=4,'The mini supports repeated return passes');assert.equal(bails,0);
+  }
+});
+
+test('The bowl deck is accessible from the north entry around the mini-ramp',()=>{
+  const skater=new Skater(level,()=>.5),route=[[2,-41],[-4,-40],[-7,-38],[-7,-30]];
+  let index=0,time=0,bails=0;skater.events.bail=()=>bails++;
+  while(time<30&&index<route.length){
+    const [x,z]=route[index],dx=x-skater.pos.x,dz=z-skater.pos.z;
+    const angle=Math.atan2(skater.heading.x*dz-skater.heading.z*dx,skater.heading.x*dx+skater.heading.z*dz);
+    const desired=index<2?3.2:5,inp=makeState();
+    inp.steer=skater.state==='ride'?THREE.MathUtils.clamp(angle*1.8,-1,1):0;
+    inp.push=skater.speed<desired?1:0;inp.brake=skater.speed>desired+.2?.5:0;
+    skater.update(dt,inp);time+=dt;if(Math.hypot(dx,dz)<.65)index++;
+  }
+  assert.equal(index,route.length,'The route reaches the outside bowl deck');
+  assert(Math.abs(skater.pos.y-ROC_CITY_LAYOUT.westDeckY)<.01);assert.equal(bails,0);
+});
+
+test('The trail connects to the raised north entrance in both directions without crossing the mini',()=>{
+  for(const [from,to,height] of [[[-7,.005,-45],[0,-45],1.62],[[0,1.62,-45],[-7,-45],.005]]){
+    const skater=rider(from,[to[0]>from[0]?1:-1,0,0],3);
+    let bails=0,time=0;skater.events.bail=()=>bails++;
+    while(time<7){
+      const dx=to[0]-skater.pos.x,dz=to[1]-skater.pos.z;
+      if(Math.hypot(dx,dz)<.5)break;
+      const angle=Math.atan2(skater.heading.x*dz-skater.heading.z*dx,skater.heading.x*dx+skater.heading.z*dz),inp=makeState();
+      inp.steer=skater.state==='ride'?THREE.MathUtils.clamp(angle*2,-1,1):0;
+      inp.push=skater.speed<3?1:0;inp.brake=skater.speed>3.3?.6:0;
+      skater.update(dt,inp);time+=dt;
+    }
+    assert(time<4,'Ordinary steering reaches the opposite end of the access apron');
+    assert.equal(bails,0);assert.equal(skater.state,'ride');assert(Math.abs(skater.pos.y-height)<.01);
+  }
+});
+
+test('The nine-stair landing is paved and the west side of the mellow bank has no unsupported wedge',()=>{
+  for(const [x,z] of [[-7,14],[-10,14],[-12,14]]){
+    assert(support(x,z).some(hit=>hit.object===level.floor),'Stair and bank runout continues onto connected concrete, meeting the Riverway trail');
+  }
+  for(const x of [3.7,4,4.5,4.8])for(const z of [18,20,22,23.9])assert(support(x,z)[0],`No ground gap alongside the I bank at ${x},${z}`);
+  const skater=rider([4.5,0,16],[0,0,1],5);let bails=0;skater.events.bail=()=>bails++;
+  for(let t=0;t<2.5;t+=dt)skater.update(dt,{...makeState(),push:1});
+  assert.equal(bails,0);assert(skater.pos.z>35&&Math.abs(skater.pos.y+.9)<.01);
+  for(const edge of level.colliders.filter(mesh=>mesh.name==='Promenade flush concrete edge')){
+    assert(Math.abs(new THREE.Box3().setFromObject(edge).max.y+.9)<.001,'Promenade edge is flush with the paving');
   }
 });
 
@@ -160,7 +235,7 @@ test('All S-K-A-T-E letters are collected from spawn within one ordinary 120-sec
   const skater=new Skater(level,()=>.5),goals=new GoalRun(new GoalProgress(null),ROC_PICKUPS);
   goals.start({skater});let bails=0,index=0,time=0;skater.events.bail=()=>bails++;
   const route=[
-    [2,-40,'letter-s'],[8,-40],[10,-37],[10,-31],[10,-25,'letter-k'],
+    [2,-40,'letter-s'],[6.1,-39.5],[9.5,-36.5],[10,-31],[10,-25,'letter-k'],
     [9,-15],[9,-10,'letter-a'],[7,0],[4,0],[1,1,'letter-t'],
     [3,2.5],[7,3],[7,13],[8,27],[8,43,'letter-e'],
   ];
@@ -192,7 +267,7 @@ test('A charged quarter-pipe ollie reaches the secret tape through real airborne
 
 test('Every bottle cap has a clean local route, including an ollie onto the manual pad',()=>{
   for(const [id,from,release] of [
-    ['cap-1',[-7,0,-38],null],['cap-2',[-16.3,1.62,-11],null],
+    ['cap-1',[-7,1.62,-38],null],['cap-2',[-16.3,1.62,-11],null],
     ['cap-3',[7,0,0],null],['cap-4',[13,-.9,23],28.8],['cap-5',[8,-.9,40],null],
   ]){
     const skater=rider(from,[0,0,1]),goals=new GoalRun(new GoalProgress(null),ROC_PICKUPS);

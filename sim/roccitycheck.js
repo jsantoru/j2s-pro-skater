@@ -173,7 +173,7 @@ try {
     await evaluate('__qa.pad=null;__game.selectLevel("roc-city-skatepark")');await step();
     await click('#overlay-msg');await step(2);await mode('playing');
     const result=await evaluate('({position:__game.skater.pos.toArray(),features:Object.keys(__game.level.features),camera:__game.followCam.level===__game.level,effects:__game.fx.level===__game.level,skater:__game.skater.level===__game.level,pickups:__game.collectibles.items.length,activeRoots:__game.scene.children.filter(o=>o.name.startsWith("Level:")).length})');
-    assert.ok(Math.abs(result.position[0]-2)<.1&&Math.abs(result.position[2]+44)<.1&&Math.abs(result.position[1])<.1);
+    assert.ok(Math.abs(result.position[0]-2)<.1&&Math.abs(result.position[2]+44)<.1&&Math.abs(result.position[1]-1.62)<.1);
     assert.equal(result.features.join(''),'ABCDEFGHIJKL');assert.ok(result.camera&&result.effects&&result.skater);assert.equal(result.pickups,11);assert.equal(result.activeRoots,1);
     await step(25);await shot('roc-gameplay-entry');return result;
   });

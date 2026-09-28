@@ -33,3 +33,28 @@ The west trail and river edge needed visible/physical boundary agreement.
 
 Baseline screenshots are in `screenshots/roc-accuracy/before/`. Corrections and
 the results of the three passes are recorded below as each pass is completed.
+
+Unchanged-system checks during layout work: 25 goal checks, 16 session checks,
+16 scoring checks, all 11 warehouse pickup approaches, the warehouse SKATE and
+score/combo routes, 10 touch-input checks, and 3 menu-input checks passed. These
+exercise the existing behavior that this park-specific correction must preserve.
+
+The first corrected visual checkpoint was inspected from all eleven cameras.
+It confirmed the angled mini, connected deck, squared shallow bowl pocket,
+continuous H hip, and longitudinal bridge supports. The comparison also exposed
+an unfilled mini-extension trim outline, an uneven pool tile strip, overly tall
+promenade sidewalls, and a stair-bank landing extending into the lawn. These
+findings must be corrected and rechecked before final delivery.
+
+Pass 1 completed: the extension is solid, the tile strip follows the actual wall,
+G has a paved landing connected to the southwest entrance, and the promenade
+edges meet the surrounding rock bed. Fresh screenshots in
+`screenshots/roc-accuracy/pass1-checkpoint/` were checked after these corrections.
+The remaining texture projection seams, tile appearance and painted trim are
+assigned to the final visual pass.
+
+Validation: production build, 13 geometry/gameplay checks, 5 surroundings checks,
+6 linked-rail checks, 8 independent-career checks, 5 below-grade recovery checks,
+and desktop/mobile bridge-clearance checks passed. The new SKATE route takes
+18.39 seconds with no bails. The deterministic score route banks 42,250 in 42.82
+seconds with two recoverable bails and a 9,000-point best combo.
