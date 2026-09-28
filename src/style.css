@@ -332,24 +332,25 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
 #best-runs-details .hs-score { font-size: 16px; }
 #best-runs-details .hs-date { font-size: 10px; }
 #best-runs-details #high-scores:empty::before { content: 'Finish a goal run to set your first record.'; font-size: 10px; line-height: 1.6; letter-spacing: 0; }
-#goal-tracker { top: 148px; left: 22px; width: 285px; padding: 13px 14px 12px; border: 1px solid #c5d2c629; border-radius: 2px; background: linear-gradient(120deg, #0f191ce8, #0f191ca8); }
-.tracker-top { display: flex; justify-content: space-between; gap: 10px; color: #a4baad; font-size: 7px; letter-spacing: 1.3px; }
-#tracker-completed { color: #7b9787; }
-.tracker-title { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 8px; }
-#tracker-name { font: 700 22px/1 var(--font-display); color: #f0eada; }
-#tracker-count { font: 700 13px var(--font-display); color: #edb66b; white-space: nowrap; letter-spacing: .5px; }
-.tracker-rail { margin-top: 9px; height: 3px; background: #d5c4a329; }
-#tracker-fill { height: 100%; width: 0; background: #edb66b; transition: width .3s; }
-#goal-tracker.complete #tracker-fill { background: #b8d4aa; }
-#goal-tracker.complete #tracker-count { color: #b8d4aa; }
-#tracker-hint { color: #9db2a4; font-size: 9px; margin-top: 8px; line-height: 1.45; }
-.pickup-tracker { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 11px; padding-top: 10px; border-top: 1px solid #bbc7b31c; }
-#skate-tracker { display: flex; gap: 3px; }
-#skate-tracker > span { width: 17px; height: 22px; border: 1px solid #d0c09435; color: #8f947a; text-align: center; font: 700 15px/20px var(--font-display); }
-#skate-tracker > span.collected { background: #edb66b; border-color: #edb66b; color: #1c2822; }
-#caps-tracker, #tape-tracker { color: #829b88; font-size: 7px; letter-spacing: 1px; }
-#caps-tracker b, #tape-tracker b { display: block; font: 700 15px var(--font-display); color: #d2dccc; text-align: center; }
-#caps-tracker.collected b, #tape-tracker.collected b { color: #b8d4aa; }
+#goal-tracker { top: 148px; left: 22px; width: 285px; padding: 12px 13px 10px; border: 1px solid #c5d2c629; border-radius: 2px; background: linear-gradient(120deg, #0f191ce8, #0f191cca); }
+.tracker-top { display: flex; align-items: center; gap: 10px; color: #b2c3b4; font-size: 7px; line-height: 10px; letter-spacing: 1.3px; }
+#tracker-completed { margin-left: auto; color: #91ab96; white-space: nowrap; }
+#tracker-overtime { color: #edb66b; font-size: 7px; letter-spacing: .6px; white-space: nowrap; }
+#run-goal-list { display: grid; margin: 8px 0 0; padding: 0; list-style: none; }
+.run-goal-row { display: flex; align-items: center; min-width: 0; min-height: 25px; gap: 8px; padding: 0 0 0 4px; border-left: 2px solid transparent; font-size: 11px; line-height: 16px; color: #c7d1c1; }
+.run-goal-row + .run-goal-row { border-top: 1px solid #b8c8ae0d; }
+.run-goal-check { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 11px; height: 11px; border: 1px solid #86998072; border-radius: 2px; color: #17271f; font-size: 10px; font-weight: 700; line-height: 1; }
+.run-goal-name { white-space: nowrap; font-weight: 700; letter-spacing: .1px; }
+.run-goal-progress { display: flex; align-items: center; gap: 9px; margin-left: auto; white-space: nowrap; }
+.run-goal-count { font: 700 12px/1 var(--font-display); letter-spacing: .35px; color: #9daf96; font-variant-numeric: tabular-nums; }
+.run-goal-row.focused { border-left-color: #edb66b; background: #edb66b09; }
+.run-goal-row.focused .run-goal-name { color: #edc38a; }
+.run-goal-row.complete .run-goal-check { border-color: #b8d4aa; background: #b8d4aa; }
+.run-goal-row.complete .run-goal-name { color: #a3bd9b; }
+.run-goal-row.complete .run-goal-count { color: #8da685; }
+.run-goal-letters { display: flex; gap: 3px; font: 700 12px/1 var(--font-display); }
+.run-goal-letter { color: #657460; border-bottom: 1px solid #71836b4d; }
+.run-goal-letter.collected { color: #edc38a; border-bottom-color: #edc38a; }
 #goal-notification { display: flex; align-items: center; gap: 14px; position: fixed; z-index: 4; top: 112px; left: 50%; transform: translateX(-50%); padding: 14px 23px 14px 16px; border: 1px solid #b8d4aa88; border-left: 3px solid #b8d4aa; border-radius: 2px; background: #15281eee; box-shadow: 0 8px 30px #0003; pointer-events: none; }
 .goal-notice-mark { color: #b8d4aa; font-size: 25px; }
 #goal-notification span { display: block; color: #9cb790; font-size: 7px; letter-spacing: 2px; }
@@ -384,7 +385,6 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
   .board-input-hint { display: none; }
   .level-footer { gap: 15px; }
   #goal-tracker { left: 14px; top: 127px; width: 259px; padding: 11px 12px; }
-  #tracker-name { font-size: 20px; }
   #goal-notification { top: 95px; }
 }
 @media (max-width: 650px) {
@@ -428,13 +428,6 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
   .results-next h2 br { display: none; }
   #goal-tracker { top: 123px; width: 210px; padding: 10px; }
   .tracker-top { font-size: 6px; letter-spacing: .8px; }
-  #tracker-count { font-size: 11px; }
-  #tracker-name { font-size: 18px; }
-  #tracker-hint { font-size: 8px; }
-  .pickup-tracker { gap: 6px; }
-  #skate-tracker { gap: 2px; }
-  #skate-tracker > span { width: 15px; height: 20px; font-size: 13px; line-height: 18px; }
-  #caps-tracker, #tape-tracker { font-size: 6px; }
   #goal-notification { top: auto; bottom: 197px; padding: 10px 17px 10px 12px; }
   #goal-notification b { font-size: 23px; }
 }
@@ -444,6 +437,5 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
   #level-title { font-size: 39px; }
   .level-completion > b { font-size: 32px; }
   #goal-tracker { top: 125px; width: 233px; }
-  #tracker-hint { display: none; }
   #goal-notification { top: 95px; }
 }

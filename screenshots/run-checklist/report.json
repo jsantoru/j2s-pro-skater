@@ -1,0 +1,2234 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "fresh goal run shows all seven active goals with zero progress and selected focus",
+      "passed": true,
+      "detail": [
+        {
+          "id": "high-score",
+          "count": "0/2,500",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "High Score: 0 of 2,500 points, in progress."
+        },
+        {
+          "id": "pro-score",
+          "count": "0/10,000",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Pro Score: 0 of 10,000 points, in progress."
+        },
+        {
+          "id": "sick-score",
+          "count": "0/25,000",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Sick Score: 0 of 25,000 points, in progress."
+        },
+        {
+          "id": "combo",
+          "count": "0/3,000",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Big Combo: 0 of 3,000 points, in progress."
+        },
+        {
+          "id": "skate",
+          "count": "0/5",
+          "complete": false,
+          "focused": true,
+          "check": "",
+          "accessible": "Collect S-K-A-T-E: 0 of 5 letters, in progress. Collected letters: none. Selected focus."
+        },
+        {
+          "id": "caps",
+          "count": "0/5",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Bottle Cap Hunt: 0 of 5 bottle caps, in progress."
+        },
+        {
+          "id": "tape",
+          "count": "0/1",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Secret Tape: 0 of 1 tape, in progress."
+        }
+      ]
+    },
+    {
+      "name": "every nonfocused counter updates from banked score, best combo and real pickup collisions",
+      "passed": true,
+      "detail": [
+        {
+          "id": "high-score",
+          "count": "2,500/2,500",
+          "complete": true,
+          "focused": false,
+          "check": "✓",
+          "accessible": "High Score: 2,500 of 2,500 points, complete."
+        },
+        {
+          "id": "pro-score",
+          "count": "4,000/10,000",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Pro Score: 4,000 of 10,000 points, in progress."
+        },
+        {
+          "id": "sick-score",
+          "count": "4,000/25,000",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Sick Score: 4,000 of 25,000 points, in progress."
+        },
+        {
+          "id": "combo",
+          "count": "3,000/3,000",
+          "complete": true,
+          "focused": false,
+          "check": "✓",
+          "accessible": "Big Combo: 3,000 of 3,000 points, complete."
+        },
+        {
+          "id": "skate",
+          "count": "1/5",
+          "complete": false,
+          "focused": true,
+          "check": "",
+          "accessible": "Collect S-K-A-T-E: 1 of 5 letters, in progress. Collected letters: S. Selected focus."
+        },
+        {
+          "id": "caps",
+          "count": "1/5",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Bottle Cap Hunt: 1 of 5 bottle caps, in progress."
+        },
+        {
+          "id": "tape",
+          "count": "1/1",
+          "complete": true,
+          "focused": false,
+          "check": "✓",
+          "accessible": "Secret Tape: 1 of 1 tape, complete."
+        }
+      ]
+    },
+    {
+      "name": "pause freezes checklist values and restart retires only full career goals",
+      "passed": true,
+      "detail": [
+        {
+          "id": "pro-score",
+          "count": "0/10,000",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Pro Score: 0 of 10,000 points, in progress."
+        },
+        {
+          "id": "sick-score",
+          "count": "0/25,000",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Sick Score: 0 of 25,000 points, in progress."
+        },
+        {
+          "id": "skate",
+          "count": "0/5",
+          "complete": false,
+          "focused": true,
+          "check": "",
+          "accessible": "Collect S-K-A-T-E: 0 of 5 letters, in progress. Collected letters: none. Selected focus."
+        },
+        {
+          "id": "caps",
+          "count": "0/5",
+          "complete": false,
+          "focused": false,
+          "check": "",
+          "accessible": "Bottle Cap Hunt: 0 of 5 bottle caps, in progress."
+        }
+      ]
+    },
+    {
+      "name": "overtime keeps score checklist legible, then results, board and Free Skate hide it",
+      "passed": true
+    },
+    {
+      "name": "all seven rows fit actual touch mode across portrait and short landscape sizes",
+      "passed": true,
+      "detail": [
+        {
+          "width": 390,
+          "height": 844,
+          "panel": {
+            "left": 12,
+            "right": 242,
+            "top": 90,
+            "bottom": 279,
+            "width": 230,
+            "height": 189
+          },
+          "obstacles": [
+            {
+              "id": "top-left",
+              "left": 12,
+              "right": 132.5625,
+              "top": 10,
+              "bottom": 81.1875,
+              "width": 120.5625,
+              "height": 71.1875
+            },
+            {
+              "id": "top-center",
+              "left": 156.34375,
+              "right": 233.65625,
+              "top": 10,
+              "bottom": 64.34375,
+              "width": 77.3125,
+              "height": 54.34375
+            },
+            {
+              "id": "start-btn",
+              "left": 305.75,
+              "right": 378,
+              "top": 10,
+              "bottom": 54,
+              "width": 72.25,
+              "height": 44
+            },
+            {
+              "id": "touch-stick",
+              "left": 20,
+              "right": 140,
+              "top": 685,
+              "bottom": 805,
+              "width": 120,
+              "height": 120
+            },
+            {
+              "id": "touch-actions",
+              "left": 222,
+              "right": 372,
+              "top": 652,
+              "bottom": 826,
+              "width": 150,
+              "height": 174
+            },
+            {
+              "id": "goal-notification",
+              "left": 118.2421875,
+              "right": 271.7578125,
+              "top": 330,
+              "bottom": 387,
+              "width": 153.515625,
+              "height": 57
+            }
+          ],
+          "parts": [
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓High Score2,500 / 2,500",
+              "left": 23,
+              "right": 231,
+              "top": 115,
+              "bottom": 137,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "High Score",
+              "left": 45,
+              "right": 93.859375,
+              "top": 119,
+              "bottom": 133,
+              "width": 48.859375,
+              "height": 14,
+              "scrollWidth": 49,
+              "clientWidth": 49
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "2,500 / 2,500",
+              "left": 170.3125,
+              "right": 231,
+              "top": 120.5,
+              "bottom": 131.5,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "2,500 / 2,500",
+              "left": 170.3125,
+              "right": 231,
+              "top": 120.5,
+              "bottom": 131.5,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Pro Score4,000 / 10,000",
+              "left": 23,
+              "right": 231,
+              "top": 137,
+              "bottom": 159,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Pro Score",
+              "left": 45,
+              "right": 89.140625,
+              "top": 141.5,
+              "bottom": 155.5,
+              "width": 44.140625,
+              "height": 14,
+              "scrollWidth": 44,
+              "clientWidth": 44
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 10,000",
+              "left": 164.578125,
+              "right": 231,
+              "top": 143,
+              "bottom": 154,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 10,000",
+              "left": 164.578125,
+              "right": 231,
+              "top": 143,
+              "bottom": 154,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Sick Score4,000 / 25,000",
+              "left": 23,
+              "right": 231,
+              "top": 159,
+              "bottom": 181,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Sick Score",
+              "left": 45,
+              "right": 93.203125,
+              "top": 163.5,
+              "bottom": 177.5,
+              "width": 48.203125,
+              "height": 14,
+              "scrollWidth": 48,
+              "clientWidth": 48
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 25,000",
+              "left": 164.578125,
+              "right": 231,
+              "top": 165,
+              "bottom": 176,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 25,000",
+              "left": 164.578125,
+              "right": 231,
+              "top": 165,
+              "bottom": 176,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓Big Combo3,000 / 3,000",
+              "left": 23,
+              "right": 231,
+              "top": 181,
+              "bottom": 203,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Big Combo",
+              "left": 45,
+              "right": 93.390625,
+              "top": 185.5,
+              "bottom": 199.5,
+              "width": 48.390625,
+              "height": 14,
+              "scrollWidth": 48,
+              "clientWidth": 48
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "3,000 / 3,000",
+              "left": 170.3125,
+              "right": 231,
+              "top": 187,
+              "bottom": 198,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "3,000 / 3,000",
+              "left": 170.3125,
+              "right": 231,
+              "top": 187,
+              "bottom": 198,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-row focused",
+              "text": "SKATESKATE1 / 5",
+              "left": 23,
+              "right": 231,
+              "top": 203,
+              "bottom": 225,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "SKATE",
+              "left": 45,
+              "right": 75.375,
+              "top": 207.5,
+              "bottom": 221.5,
+              "width": 30.375,
+              "height": 14,
+              "scrollWidth": 30,
+              "clientWidth": 30
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "SKATE1 / 5",
+              "left": 169.234375,
+              "right": 231,
+              "top": 208.5,
+              "bottom": 220.5,
+              "width": 61.765625,
+              "height": 12,
+              "scrollWidth": 62,
+              "clientWidth": 62
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 209.828125,
+              "right": 231,
+              "top": 209,
+              "bottom": 220,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Bottle Caps1 / 5",
+              "left": 23,
+              "right": 231,
+              "top": 225,
+              "bottom": 247,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Bottle Caps",
+              "left": 45,
+              "right": 97.265625,
+              "top": 229.5,
+              "bottom": 243.5,
+              "width": 52.265625,
+              "height": 14,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "1 / 5",
+              "left": 209.828125,
+              "right": 231,
+              "top": 231,
+              "bottom": 242,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 209.828125,
+              "right": 231,
+              "top": 231,
+              "bottom": 242,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Secret Tape0 / 1",
+              "left": 23,
+              "right": 231,
+              "top": 247,
+              "bottom": 269,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Secret Tape",
+              "left": 45,
+              "right": 99.609375,
+              "top": 251.5,
+              "bottom": 265.5,
+              "width": 54.609375,
+              "height": 14,
+              "scrollWidth": 55,
+              "clientWidth": 55
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "0 / 1",
+              "left": 209.828125,
+              "right": 231,
+              "top": 253,
+              "bottom": 264,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "0 / 1",
+              "left": 209.828125,
+              "right": 231,
+              "top": 253,
+              "bottom": 264,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            }
+          ]
+        },
+        {
+          "width": 844,
+          "height": 390,
+          "panel": {
+            "left": 12,
+            "right": 234,
+            "top": 74,
+            "bottom": 221,
+            "width": 222,
+            "height": 147
+          },
+          "obstacles": [
+            {
+              "id": "top-left",
+              "left": 12,
+              "right": 130.5625,
+              "top": 8,
+              "bottom": 72.890625,
+              "width": 118.5625,
+              "height": 64.890625
+            },
+            {
+              "id": "top-center",
+              "left": 383.34375,
+              "right": 460.65625,
+              "top": 10,
+              "bottom": 64.34375,
+              "width": 77.3125,
+              "height": 54.34375
+            },
+            {
+              "id": "start-btn",
+              "left": 759.75,
+              "right": 832,
+              "top": 10,
+              "bottom": 54,
+              "width": 72.25,
+              "height": 44
+            },
+            {
+              "id": "touch-stick",
+              "left": 20,
+              "right": 140,
+              "top": 243,
+              "bottom": 363,
+              "width": 120,
+              "height": 120
+            },
+            {
+              "id": "touch-actions",
+              "left": 676,
+              "right": 826,
+              "top": 198,
+              "bottom": 372,
+              "width": 150,
+              "height": 174
+            },
+            {
+              "id": "goal-notification",
+              "left": 351.03125,
+              "right": 492.96875,
+              "top": 74,
+              "bottom": 125,
+              "width": 141.9375,
+              "height": 51
+            }
+          ],
+          "parts": [
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓High Score2,500 / 2,500",
+              "left": 21,
+              "right": 225,
+              "top": 95,
+              "bottom": 112,
+              "width": 204,
+              "height": 17,
+              "scrollWidth": 202,
+              "clientWidth": 202
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "High Score",
+              "left": 41,
+              "right": 89.859375,
+              "top": 97,
+              "bottom": 110,
+              "width": 48.859375,
+              "height": 13,
+              "scrollWidth": 49,
+              "clientWidth": 49
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "2,500 / 2,500",
+              "left": 164.3125,
+              "right": 225,
+              "top": 98,
+              "bottom": 109,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "2,500 / 2,500",
+              "left": 164.3125,
+              "right": 225,
+              "top": 98,
+              "bottom": 109,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Pro Score4,000 / 10,000",
+              "left": 21,
+              "right": 225,
+              "top": 112,
+              "bottom": 129,
+              "width": 204,
+              "height": 17,
+              "scrollWidth": 202,
+              "clientWidth": 202
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Pro Score",
+              "left": 41,
+              "right": 85.140625,
+              "top": 114,
+              "bottom": 127,
+              "width": 44.140625,
+              "height": 13,
+              "scrollWidth": 44,
+              "clientWidth": 44
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 10,000",
+              "left": 158.578125,
+              "right": 225,
+              "top": 115,
+              "bottom": 126,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 10,000",
+              "left": 158.578125,
+              "right": 225,
+              "top": 115,
+              "bottom": 126,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Sick Score4,000 / 25,000",
+              "left": 21,
+              "right": 225,
+              "top": 129,
+              "bottom": 146,
+              "width": 204,
+              "height": 17,
+              "scrollWidth": 202,
+              "clientWidth": 202
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Sick Score",
+              "left": 41,
+              "right": 89.203125,
+              "top": 131,
+              "bottom": 144,
+              "width": 48.203125,
+              "height": 13,
+              "scrollWidth": 48,
+              "clientWidth": 48
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 25,000",
+              "left": 158.578125,
+              "right": 225,
+              "top": 132,
+              "bottom": 143,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 25,000",
+              "left": 158.578125,
+              "right": 225,
+              "top": 132,
+              "bottom": 143,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓Big Combo3,000 / 3,000",
+              "left": 21,
+              "right": 225,
+              "top": 146,
+              "bottom": 163,
+              "width": 204,
+              "height": 17,
+              "scrollWidth": 202,
+              "clientWidth": 202
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Big Combo",
+              "left": 41,
+              "right": 89.390625,
+              "top": 148,
+              "bottom": 161,
+              "width": 48.390625,
+              "height": 13,
+              "scrollWidth": 48,
+              "clientWidth": 48
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "3,000 / 3,000",
+              "left": 164.3125,
+              "right": 225,
+              "top": 149,
+              "bottom": 160,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "3,000 / 3,000",
+              "left": 164.3125,
+              "right": 225,
+              "top": 149,
+              "bottom": 160,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-row focused",
+              "text": "SKATESKATE1 / 5",
+              "left": 21,
+              "right": 225,
+              "top": 163,
+              "bottom": 180,
+              "width": 204,
+              "height": 17,
+              "scrollWidth": 202,
+              "clientWidth": 202
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "SKATE",
+              "left": 41,
+              "right": 71.375,
+              "top": 165,
+              "bottom": 178,
+              "width": 30.375,
+              "height": 13,
+              "scrollWidth": 30,
+              "clientWidth": 30
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "SKATE1 / 5",
+              "left": 165.546875,
+              "right": 225,
+              "top": 166,
+              "bottom": 177,
+              "width": 59.453125,
+              "height": 11,
+              "scrollWidth": 59,
+              "clientWidth": 59
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 203.828125,
+              "right": 225,
+              "top": 166,
+              "bottom": 177,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Bottle Caps1 / 5",
+              "left": 21,
+              "right": 225,
+              "top": 180,
+              "bottom": 197,
+              "width": 204,
+              "height": 17,
+              "scrollWidth": 202,
+              "clientWidth": 202
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Bottle Caps",
+              "left": 41,
+              "right": 93.265625,
+              "top": 182,
+              "bottom": 195,
+              "width": 52.265625,
+              "height": 13,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "1 / 5",
+              "left": 203.828125,
+              "right": 225,
+              "top": 183,
+              "bottom": 194,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 203.828125,
+              "right": 225,
+              "top": 183,
+              "bottom": 194,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Secret Tape0 / 1",
+              "left": 21,
+              "right": 225,
+              "top": 197,
+              "bottom": 214,
+              "width": 204,
+              "height": 17,
+              "scrollWidth": 202,
+              "clientWidth": 202
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Secret Tape",
+              "left": 41,
+              "right": 95.609375,
+              "top": 199,
+              "bottom": 212,
+              "width": 54.609375,
+              "height": 13,
+              "scrollWidth": 55,
+              "clientWidth": 55
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "0 / 1",
+              "left": 203.828125,
+              "right": 225,
+              "top": 200,
+              "bottom": 211,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "0 / 1",
+              "left": 203.828125,
+              "right": 225,
+              "top": 200,
+              "bottom": 211,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            }
+          ]
+        },
+        {
+          "width": 667,
+          "height": 375,
+          "panel": {
+            "left": 12,
+            "right": 346,
+            "top": 74,
+            "bottom": 182,
+            "width": 334,
+            "height": 108
+          },
+          "obstacles": [
+            {
+              "id": "top-left",
+              "left": 12,
+              "right": 130.5625,
+              "top": 8,
+              "bottom": 72.890625,
+              "width": 118.5625,
+              "height": 64.890625
+            },
+            {
+              "id": "top-center",
+              "left": 294.84375,
+              "right": 372.15625,
+              "top": 10,
+              "bottom": 64.34375,
+              "width": 77.3125,
+              "height": 54.34375
+            },
+            {
+              "id": "start-btn",
+              "left": 582.75,
+              "right": 655,
+              "top": 10,
+              "bottom": 54,
+              "width": 72.25,
+              "height": 44
+            },
+            {
+              "id": "touch-stick",
+              "left": 20,
+              "right": 140,
+              "top": 228,
+              "bottom": 348,
+              "width": 120,
+              "height": 120
+            },
+            {
+              "id": "touch-actions",
+              "left": 499,
+              "right": 649,
+              "top": 183,
+              "bottom": 357,
+              "width": 150,
+              "height": 174
+            },
+            {
+              "id": "goal-notification",
+              "left": 527.3125,
+              "right": 655,
+              "top": 74,
+              "bottom": 125,
+              "width": 127.6875,
+              "height": 51
+            }
+          ],
+          "parts": [
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓High Score2,500 / 2,500",
+              "left": 21,
+              "right": 173,
+              "top": 95,
+              "bottom": 115,
+              "width": 152,
+              "height": 20,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "High Score",
+              "left": 40,
+              "right": 84.078125,
+              "top": 98.5,
+              "bottom": 111.5,
+              "width": 44.078125,
+              "height": 13,
+              "scrollWidth": 44,
+              "clientWidth": 44
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "2,500 / 2,500",
+              "left": 120.78125,
+              "right": 173,
+              "top": 100,
+              "bottom": 110,
+              "width": 52.21875,
+              "height": 10,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "2,500 / 2,500",
+              "left": 120.78125,
+              "right": 173,
+              "top": 100,
+              "bottom": 110,
+              "width": 52.21875,
+              "height": 10,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Pro Score4,000 / 10,000",
+              "left": 185,
+              "right": 337,
+              "top": 95,
+              "bottom": 115,
+              "width": 152,
+              "height": 20,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Pro Score",
+              "left": 204,
+              "right": 243.8125,
+              "top": 98.5,
+              "bottom": 111.5,
+              "width": 39.8125,
+              "height": 13,
+              "scrollWidth": 40,
+              "clientWidth": 40
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 10,000",
+              "left": 279.796875,
+              "right": 337,
+              "top": 100,
+              "bottom": 110,
+              "width": 57.203125,
+              "height": 10,
+              "scrollWidth": 57,
+              "clientWidth": 57
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 10,000",
+              "left": 279.796875,
+              "right": 337,
+              "top": 100,
+              "bottom": 110,
+              "width": 57.203125,
+              "height": 10,
+              "scrollWidth": 57,
+              "clientWidth": 57
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Sick Score4,000 / 25,000",
+              "left": 21,
+              "right": 173,
+              "top": 115,
+              "bottom": 135,
+              "width": 152,
+              "height": 20,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Sick Score",
+              "left": 40,
+              "right": 83.484375,
+              "top": 118.5,
+              "bottom": 131.5,
+              "width": 43.484375,
+              "height": 13,
+              "scrollWidth": 43,
+              "clientWidth": 43
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 25,000",
+              "left": 115.796875,
+              "right": 173,
+              "top": 120,
+              "bottom": 130,
+              "width": 57.203125,
+              "height": 10,
+              "scrollWidth": 57,
+              "clientWidth": 57
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 25,000",
+              "left": 115.796875,
+              "right": 173,
+              "top": 120,
+              "bottom": 130,
+              "width": 57.203125,
+              "height": 10,
+              "scrollWidth": 57,
+              "clientWidth": 57
+            },
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓Big Combo3,000 / 3,000",
+              "left": 185,
+              "right": 337,
+              "top": 115,
+              "bottom": 135,
+              "width": 152,
+              "height": 20,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Big Combo",
+              "left": 204,
+              "right": 247.65625,
+              "top": 118.5,
+              "bottom": 131.5,
+              "width": 43.65625,
+              "height": 13,
+              "scrollWidth": 44,
+              "clientWidth": 44
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "3,000 / 3,000",
+              "left": 284.78125,
+              "right": 337,
+              "top": 120,
+              "bottom": 130,
+              "width": 52.21875,
+              "height": 10,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "3,000 / 3,000",
+              "left": 284.78125,
+              "right": 337,
+              "top": 120,
+              "bottom": 130,
+              "width": 52.21875,
+              "height": 10,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-row focused",
+              "text": "SKATESKATE1 / 5",
+              "left": 21,
+              "right": 173,
+              "top": 135,
+              "bottom": 155,
+              "width": 152,
+              "height": 20,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "SKATE",
+              "left": 40,
+              "right": 67.375,
+              "top": 138.5,
+              "bottom": 151.5,
+              "width": 27.375,
+              "height": 13,
+              "scrollWidth": 27,
+              "clientWidth": 27
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "SKATE1 / 5",
+              "left": 124.9375,
+              "right": 173,
+              "top": 140,
+              "bottom": 150,
+              "width": 48.0625,
+              "height": 10,
+              "scrollWidth": 48,
+              "clientWidth": 48
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 154.875,
+              "right": 173,
+              "top": 140,
+              "bottom": 150,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Bottle Caps1 / 5",
+              "left": 185,
+              "right": 337,
+              "top": 135,
+              "bottom": 155,
+              "width": 152,
+              "height": 20,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Bottle Caps",
+              "left": 204,
+              "right": 251.15625,
+              "top": 138.5,
+              "bottom": 151.5,
+              "width": 47.15625,
+              "height": 13,
+              "scrollWidth": 47,
+              "clientWidth": 47
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "1 / 5",
+              "left": 318.875,
+              "right": 337,
+              "top": 140,
+              "bottom": 150,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 318.875,
+              "right": 337,
+              "top": 140,
+              "bottom": 150,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Secret Tape0 / 1",
+              "left": 21,
+              "right": 173,
+              "top": 155,
+              "bottom": 175,
+              "width": 152,
+              "height": 20,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Secret Tape",
+              "left": 40,
+              "right": 89.25,
+              "top": 158.5,
+              "bottom": 171.5,
+              "width": 49.25,
+              "height": 13,
+              "scrollWidth": 49,
+              "clientWidth": 49
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "0 / 1",
+              "left": 154.875,
+              "right": 173,
+              "top": 160,
+              "bottom": 170,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "0 / 1",
+              "left": 154.875,
+              "right": 173,
+              "top": 160,
+              "bottom": 170,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            }
+          ]
+        },
+        {
+          "width": 320,
+          "height": 568,
+          "panel": {
+            "left": 12,
+            "right": 242,
+            "top": 90,
+            "bottom": 279,
+            "width": 230,
+            "height": 189
+          },
+          "obstacles": [
+            {
+              "id": "top-left",
+              "left": 12,
+              "right": 115,
+              "top": 10,
+              "bottom": 81.1875,
+              "width": 103,
+              "height": 71.1875
+            },
+            {
+              "id": "top-center",
+              "left": 125.34375,
+              "right": 194.65625,
+              "top": 10,
+              "bottom": 64.34375,
+              "width": 69.3125,
+              "height": 54.34375
+            },
+            {
+              "id": "start-btn",
+              "left": 241.75,
+              "right": 308,
+              "top": 10,
+              "bottom": 54,
+              "width": 66.25,
+              "height": 44
+            },
+            {
+              "id": "touch-stick",
+              "left": 12,
+              "right": 132,
+              "top": 409,
+              "bottom": 529,
+              "width": 120,
+              "height": 120
+            },
+            {
+              "id": "touch-actions",
+              "left": 158,
+              "right": 308,
+              "top": 376,
+              "bottom": 550,
+              "width": 150,
+              "height": 174
+            },
+            {
+              "id": "goal-notification",
+              "left": 90.40625,
+              "right": 229.59375,
+              "top": 290,
+              "bottom": 341,
+              "width": 139.1875,
+              "height": 51
+            }
+          ],
+          "parts": [
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓High Score2,500 / 2,500",
+              "left": 23,
+              "right": 231,
+              "top": 115,
+              "bottom": 137,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "High Score",
+              "left": 45,
+              "right": 93.859375,
+              "top": 119,
+              "bottom": 133,
+              "width": 48.859375,
+              "height": 14,
+              "scrollWidth": 49,
+              "clientWidth": 49
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "2,500 / 2,500",
+              "left": 170.3125,
+              "right": 231,
+              "top": 120.5,
+              "bottom": 131.5,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "2,500 / 2,500",
+              "left": 170.3125,
+              "right": 231,
+              "top": 120.5,
+              "bottom": 131.5,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Pro Score4,000 / 10,000",
+              "left": 23,
+              "right": 231,
+              "top": 137,
+              "bottom": 159,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Pro Score",
+              "left": 45,
+              "right": 89.140625,
+              "top": 141.5,
+              "bottom": 155.5,
+              "width": 44.140625,
+              "height": 14,
+              "scrollWidth": 44,
+              "clientWidth": 44
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 10,000",
+              "left": 164.578125,
+              "right": 231,
+              "top": 143,
+              "bottom": 154,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 10,000",
+              "left": 164.578125,
+              "right": 231,
+              "top": 143,
+              "bottom": 154,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Sick Score4,000 / 25,000",
+              "left": 23,
+              "right": 231,
+              "top": 159,
+              "bottom": 181,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Sick Score",
+              "left": 45,
+              "right": 93.203125,
+              "top": 163.5,
+              "bottom": 177.5,
+              "width": 48.203125,
+              "height": 14,
+              "scrollWidth": 48,
+              "clientWidth": 48
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 25,000",
+              "left": 164.578125,
+              "right": 231,
+              "top": 165,
+              "bottom": 176,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 25,000",
+              "left": 164.578125,
+              "right": 231,
+              "top": 165,
+              "bottom": 176,
+              "width": 66.421875,
+              "height": 11,
+              "scrollWidth": 66,
+              "clientWidth": 66
+            },
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓Big Combo3,000 / 3,000",
+              "left": 23,
+              "right": 231,
+              "top": 181,
+              "bottom": 203,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Big Combo",
+              "left": 45,
+              "right": 93.390625,
+              "top": 185.5,
+              "bottom": 199.5,
+              "width": 48.390625,
+              "height": 14,
+              "scrollWidth": 48,
+              "clientWidth": 48
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "3,000 / 3,000",
+              "left": 170.3125,
+              "right": 231,
+              "top": 187,
+              "bottom": 198,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "3,000 / 3,000",
+              "left": 170.3125,
+              "right": 231,
+              "top": 187,
+              "bottom": 198,
+              "width": 60.6875,
+              "height": 11,
+              "scrollWidth": 61,
+              "clientWidth": 61
+            },
+            {
+              "kind": "run-goal-row focused",
+              "text": "SKATESKATE1 / 5",
+              "left": 23,
+              "right": 231,
+              "top": 203,
+              "bottom": 225,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "SKATE",
+              "left": 45,
+              "right": 75.375,
+              "top": 207.5,
+              "bottom": 221.5,
+              "width": 30.375,
+              "height": 14,
+              "scrollWidth": 30,
+              "clientWidth": 30
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "SKATE1 / 5",
+              "left": 169.234375,
+              "right": 231,
+              "top": 208.5,
+              "bottom": 220.5,
+              "width": 61.765625,
+              "height": 12,
+              "scrollWidth": 62,
+              "clientWidth": 62
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 209.828125,
+              "right": 231,
+              "top": 209,
+              "bottom": 220,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Bottle Caps1 / 5",
+              "left": 23,
+              "right": 231,
+              "top": 225,
+              "bottom": 247,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Bottle Caps",
+              "left": 45,
+              "right": 97.265625,
+              "top": 229.5,
+              "bottom": 243.5,
+              "width": 52.265625,
+              "height": 14,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "1 / 5",
+              "left": 209.828125,
+              "right": 231,
+              "top": 231,
+              "bottom": 242,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 209.828125,
+              "right": 231,
+              "top": 231,
+              "bottom": 242,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Secret Tape0 / 1",
+              "left": 23,
+              "right": 231,
+              "top": 247,
+              "bottom": 269,
+              "width": 208,
+              "height": 22,
+              "scrollWidth": 206,
+              "clientWidth": 206
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Secret Tape",
+              "left": 45,
+              "right": 99.609375,
+              "top": 251.5,
+              "bottom": 265.5,
+              "width": 54.609375,
+              "height": 14,
+              "scrollWidth": 55,
+              "clientWidth": 55
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "0 / 1",
+              "left": 209.828125,
+              "right": 231,
+              "top": 253,
+              "bottom": 264,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "0 / 1",
+              "left": 209.828125,
+              "right": 231,
+              "top": 253,
+              "bottom": 264,
+              "width": 21.171875,
+              "height": 11,
+              "scrollWidth": 21,
+              "clientWidth": 21
+            }
+          ]
+        },
+        {
+          "width": 568,
+          "height": 320,
+          "panel": {
+            "left": 12,
+            "right": 346,
+            "top": 74,
+            "bottom": 170,
+            "width": 334,
+            "height": 96
+          },
+          "obstacles": [
+            {
+              "id": "top-left",
+              "left": 12,
+              "right": 130.5625,
+              "top": 8,
+              "bottom": 72.890625,
+              "width": 118.5625,
+              "height": 64.890625
+            },
+            {
+              "id": "top-center",
+              "left": 245.34375,
+              "right": 322.65625,
+              "top": 10,
+              "bottom": 64.34375,
+              "width": 77.3125,
+              "height": 54.34375
+            },
+            {
+              "id": "start-btn",
+              "left": 483.75,
+              "right": 556,
+              "top": 10,
+              "bottom": 54,
+              "width": 72.25,
+              "height": 44
+            },
+            {
+              "id": "touch-stick",
+              "left": 20,
+              "right": 140,
+              "top": 174,
+              "bottom": 294,
+              "width": 120,
+              "height": 120
+            },
+            {
+              "id": "touch-actions",
+              "left": 400,
+              "right": 550,
+              "top": 136,
+              "bottom": 310,
+              "width": 150,
+              "height": 174
+            },
+            {
+              "id": "goal-notification",
+              "left": 428.3125,
+              "right": 556,
+              "top": 70,
+              "bottom": 121,
+              "width": 127.6875,
+              "height": 51
+            }
+          ],
+          "parts": [
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓High Score2,500 / 2,500",
+              "left": 21,
+              "right": 173,
+              "top": 95,
+              "bottom": 112,
+              "width": 152,
+              "height": 17,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "High Score",
+              "left": 40,
+              "right": 84.078125,
+              "top": 97,
+              "bottom": 110,
+              "width": 44.078125,
+              "height": 13,
+              "scrollWidth": 44,
+              "clientWidth": 44
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "2,500 / 2,500",
+              "left": 120.78125,
+              "right": 173,
+              "top": 98.5,
+              "bottom": 108.5,
+              "width": 52.21875,
+              "height": 10,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "2,500 / 2,500",
+              "left": 120.78125,
+              "right": 173,
+              "top": 98.5,
+              "bottom": 108.5,
+              "width": 52.21875,
+              "height": 10,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Pro Score4,000 / 10,000",
+              "left": 185,
+              "right": 337,
+              "top": 95,
+              "bottom": 112,
+              "width": 152,
+              "height": 17,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Pro Score",
+              "left": 204,
+              "right": 243.8125,
+              "top": 97,
+              "bottom": 110,
+              "width": 39.8125,
+              "height": 13,
+              "scrollWidth": 40,
+              "clientWidth": 40
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 10,000",
+              "left": 279.796875,
+              "right": 337,
+              "top": 98.5,
+              "bottom": 108.5,
+              "width": 57.203125,
+              "height": 10,
+              "scrollWidth": 57,
+              "clientWidth": 57
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 10,000",
+              "left": 279.796875,
+              "right": 337,
+              "top": 98.5,
+              "bottom": 108.5,
+              "width": 57.203125,
+              "height": 10,
+              "scrollWidth": 57,
+              "clientWidth": 57
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Sick Score4,000 / 25,000",
+              "left": 21,
+              "right": 173,
+              "top": 112,
+              "bottom": 129,
+              "width": 152,
+              "height": 17,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Sick Score",
+              "left": 40,
+              "right": 83.484375,
+              "top": 114,
+              "bottom": 127,
+              "width": 43.484375,
+              "height": 13,
+              "scrollWidth": 43,
+              "clientWidth": 43
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "4,000 / 25,000",
+              "left": 115.796875,
+              "right": 173,
+              "top": 115.5,
+              "bottom": 125.5,
+              "width": 57.203125,
+              "height": 10,
+              "scrollWidth": 57,
+              "clientWidth": 57
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "4,000 / 25,000",
+              "left": 115.796875,
+              "right": 173,
+              "top": 115.5,
+              "bottom": 125.5,
+              "width": 57.203125,
+              "height": 10,
+              "scrollWidth": 57,
+              "clientWidth": 57
+            },
+            {
+              "kind": "run-goal-row complete",
+              "text": "✓Big Combo3,000 / 3,000",
+              "left": 185,
+              "right": 337,
+              "top": 112,
+              "bottom": 129,
+              "width": 152,
+              "height": 17,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Big Combo",
+              "left": 204,
+              "right": 247.65625,
+              "top": 114,
+              "bottom": 127,
+              "width": 43.65625,
+              "height": 13,
+              "scrollWidth": 44,
+              "clientWidth": 44
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "3,000 / 3,000",
+              "left": 284.78125,
+              "right": 337,
+              "top": 115.5,
+              "bottom": 125.5,
+              "width": 52.21875,
+              "height": 10,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "3,000 / 3,000",
+              "left": 284.78125,
+              "right": 337,
+              "top": 115.5,
+              "bottom": 125.5,
+              "width": 52.21875,
+              "height": 10,
+              "scrollWidth": 52,
+              "clientWidth": 52
+            },
+            {
+              "kind": "run-goal-row focused",
+              "text": "SKATESKATE1 / 5",
+              "left": 21,
+              "right": 173,
+              "top": 129,
+              "bottom": 146,
+              "width": 152,
+              "height": 17,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "SKATE",
+              "left": 40,
+              "right": 67.375,
+              "top": 131,
+              "bottom": 144,
+              "width": 27.375,
+              "height": 13,
+              "scrollWidth": 27,
+              "clientWidth": 27
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "SKATE1 / 5",
+              "left": 124.9375,
+              "right": 173,
+              "top": 132.5,
+              "bottom": 142.5,
+              "width": 48.0625,
+              "height": 10,
+              "scrollWidth": 48,
+              "clientWidth": 48
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 154.875,
+              "right": 173,
+              "top": 132.5,
+              "bottom": 142.5,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Bottle Caps1 / 5",
+              "left": 185,
+              "right": 337,
+              "top": 129,
+              "bottom": 146,
+              "width": 152,
+              "height": 17,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Bottle Caps",
+              "left": 204,
+              "right": 251.15625,
+              "top": 131,
+              "bottom": 144,
+              "width": 47.15625,
+              "height": 13,
+              "scrollWidth": 47,
+              "clientWidth": 47
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "1 / 5",
+              "left": 318.875,
+              "right": 337,
+              "top": 132.5,
+              "bottom": 142.5,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "1 / 5",
+              "left": 318.875,
+              "right": 337,
+              "top": 132.5,
+              "bottom": 142.5,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            },
+            {
+              "kind": "run-goal-row",
+              "text": "Secret Tape0 / 1",
+              "left": 21,
+              "right": 173,
+              "top": 146,
+              "bottom": 163,
+              "width": 152,
+              "height": 17,
+              "scrollWidth": 150,
+              "clientWidth": 150
+            },
+            {
+              "kind": "run-goal-name",
+              "text": "Secret Tape",
+              "left": 40,
+              "right": 89.25,
+              "top": 148,
+              "bottom": 161,
+              "width": 49.25,
+              "height": 13,
+              "scrollWidth": 49,
+              "clientWidth": 49
+            },
+            {
+              "kind": "run-goal-progress",
+              "text": "0 / 1",
+              "left": 154.875,
+              "right": 173,
+              "top": 149.5,
+              "bottom": 159.5,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            },
+            {
+              "kind": "run-goal-count",
+              "text": "0 / 1",
+              "left": 154.875,
+              "right": 173,
+              "top": 149.5,
+              "bottom": 159.5,
+              "width": 18.125,
+              "height": 10,
+              "scrollWidth": 18,
+              "clientWidth": 18
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "maximum useful counters and all seven completed rows remain readable on a small phone",
+      "passed": true
+    },
+    {
+      "name": "checklist renders with no JavaScript, console, network or WebGL errors",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "fresh-desktop.png",
+    "partial-checked-desktop.png",
+    "returning-career.png",
+    "phone-portrait.png",
+    "phone-landscape.png",
+    "phone-landscape-small.png",
+    "phone-portrait-compact.png",
+    "phone-landscape-compact.png",
+    "all-complete-phone.png"
+  ],
+  "passed": true,
+  "browserErrors": []
+}

@@ -114,6 +114,15 @@ async function fixturePickup(id) {
 async function visiblePickupCounts() {
   return evaluate(`Object.fromEntries(['skate','caps','tape'].map(id=>[id,__game.collectibles.items.filter(p=>p.definition.goalId===id&&(p.root.visible||p.ring.visible)).length]))`);
 }
+async function visibleRunGoals() {
+  return evaluate(`Array.from(document.querySelectorAll('[data-run-goal]')).filter(row=>!row.hidden&&!row.classList.contains('hidden')).map(row=>row.dataset.runGoal)`);
+}
+async function focusedRunGoal() {
+  return evaluate(`document.querySelector('[data-run-goal].focused:not(.hidden):not([hidden])')?.dataset.runGoal`);
+}
+async function runProgress(id) {
+  return evaluate(`document.querySelector('[data-run-goal="${id}"] .run-goal-count').textContent.replace(/\\s+/g,'')`);
+}
 
 const driver = `(() => {
   const q=window.__qa={now:1000,next:1,frames:new Map(),pad:null};
@@ -184,14 +193,15 @@ try {
     await click('#overlay-msg'); await step();
     assert.equal(await evaluate('__game.session.mode'), 'playing');
     assert.equal(await evaluate('__game.session.focusGoal'), 'skate');
-    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'), 'Collect S-K-A-T-E');
+    assert.equal(await focusedRunGoal(), 'skate');
+    assert.deepEqual(await visibleRunGoals(), ['high-score','pro-score','sick-score','combo','skate','caps','tape']);
     await shot('playing-start');
     await key('KeyW', true); await step(75); await key('KeyW', false); await step();
-    const result = await evaluate(`({position:__game.skater.pos.toArray(),state:__game.skater.state,collected:[...__game.goals.collected],visible:__game.collectibles.group.visible,tracker:document.getElementById('tracker-count').textContent})`);
+    const result = await evaluate(`({position:__game.skater.pos.toArray(),state:__game.skater.state,collected:[...__game.goals.collected],visible:__game.collectibles.group.visible})`);
     assert.ok(result.collected.includes('letter-s'), JSON.stringify(result));
     assert.notEqual(result.state, 'bail');
     assert.equal(result.visible, true);
-    assert.equal(result.tracker, '1 / 5');
+    assert.equal(await runProgress('skate'), '1/5');
     await shot('playing-letter-collected');
     for (const [width,height,name] of [[390,844,'phone'],[844,390,'landscape']]) {
       await resize(width,height); await shot('playing-' + name);
@@ -349,7 +359,8 @@ try {
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'pro-score');
     await fixtureCombo(100); await step(3);
     assert.equal(await evaluate('__game.session.focusGoal'),'pro-score','focus must not move midrun');
-    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'Pro Score');
+    assert.equal(await focusedRunGoal(),'pro-score');
+    assert.deepEqual(await visibleRunGoals(),['pro-score','sick-score','skate','caps','tape']);
     assert.deepEqual(await evaluate('__game.goals.snapshot().completed'),[]);
     await finishTimedRun();
     assert.deepEqual(await evaluate('__game.goals.snapshot().newlyCompleted'),[]);
@@ -365,7 +376,7 @@ try {
     await resize(1440,900);
     await click('#retry-run'); await step();
     assert.equal(await evaluate('__game.session.focusGoal'),'pro-score');
-    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'Pro Score');
+    assert.equal(await focusedRunGoal(),'pro-score');
     assert.equal(await evaluate('__game.skater.score'),0);
     await tap('Escape'); await click('#goals-menu'); await step();
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'pro-score');
@@ -399,11 +410,13 @@ try {
     assert.equal(await evaluate('__game.progress.has("high-score")'),true);
     assert.equal(await evaluate('__game.session.focusGoal'),'high-score');
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'high-score');
-    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'High Score');
+    assert.equal(await focusedRunGoal(),'high-score');
+    assert.equal(await evaluate('document.querySelector("[data-run-goal=high-score]").classList.contains("complete")'),true);
     await tap('Escape'); await click('#restart-run'); await step();
     assert.equal(await evaluate('__game.session.focusGoal'),'pro-score');
     assert.equal(await evaluate('__game.levelUI.selectedGoal'),'pro-score');
-    assert.equal(await evaluate('document.getElementById("tracker-name").textContent'),'Pro Score');
+    assert.equal(await focusedRunGoal(),'pro-score');
+    assert.equal((await visibleRunGoals()).includes('high-score'),false);
     assert.equal(await evaluate('__game.skater.score'),0);
     assert.ok(await evaluate('__game.session.timeLeft > 119.9'));
   });
@@ -422,8 +435,8 @@ try {
   await check('completed caps vanish while unfinished letters and tape remain collectible', async () => {
     await fixtureCareer(['caps'],'skate'); await click('#overlay-msg'); await step();
     assert.deepEqual(await visiblePickupCounts(),{skate:5,caps:0,tape:1});
-    assert.equal(await evaluate('document.getElementById("caps-tracker").classList.contains("hidden")'),true);
-    assert.equal(await evaluate('document.getElementById("skate-tracker").classList.contains("hidden")'),false);
+    assert.equal((await visibleRunGoals()).includes('caps'),false);
+    assert.equal((await visibleRunGoals()).includes('skate'),true);
     await shot('retired-caps-run');
     await fixturePickup('cap-1');
     assert.equal(await evaluate('__game.goals.count("caps")'),0);
@@ -438,13 +451,14 @@ try {
     await tap('Escape'); await click('#restart-run'); await step();
     assert.equal(await evaluate('__game.goals.collected.size'),0);
     assert.deepEqual(await visiblePickupCounts(),{skate:5,caps:5,tape:1});
-    assert.equal(await evaluate('document.querySelectorAll("#skate-tracker .collected").length'),0);
+    assert.equal(await runProgress('skate'),'0/5');
+    assert.equal(await runProgress('caps'),'0/5');
     for (const id of ['letter-s','letter-k','letter-a','letter-t','letter-e']) await fixturePickup(id);
     assert.equal(await evaluate('__game.progress.has("skate")'),true);
     await tap('Escape'); await click('#restart-run'); await step();
     assert.deepEqual(await visiblePickupCounts(),{skate:0,caps:5,tape:1});
-    assert.equal(await evaluate('document.getElementById("skate-tracker").classList.contains("hidden")'),true);
-    assert.equal(await evaluate('document.getElementById("caps-tracker").classList.contains("hidden")'),false);
+    assert.equal((await visibleRunGoals()).includes('skate'),false);
+    assert.equal((await visibleRunGoals()).includes('caps'),true);
   });
 
   await check('completed collectible goals stay absent after reload and leave no HUD counters or pickup effects', async () => {
@@ -452,7 +466,7 @@ try {
     await send('Page.reload',{ignoreCache:true}); await sleep(200); await boot();
     await click('#overlay-msg'); await step();
     assert.deepEqual(await visiblePickupCounts(),{skate:0,caps:0,tape:0});
-    assert.equal(await evaluate('document.querySelector(".pickup-tracker").classList.contains("hidden")'),true);
+    assert.deepEqual(await visibleRunGoals(),['high-score','pro-score','sick-score','combo']);
     assert.equal(await evaluate('__game.goals.availableGoals.size'),4);
     await shot('retired-collectibles-run');
     const touchUrl=new URL(url); touchUrl.searchParams.set('touch','1');
@@ -462,7 +476,7 @@ try {
     assert.equal(await evaluate('document.getElementById("touch-controls").hidden'),false);
     assert.equal(await evaluate('__game.renderer.shadowMap.enabled'),false);
     assert.deepEqual(await visiblePickupCounts(),{skate:0,caps:0,tape:0});
-    assert.equal(await evaluate('document.querySelector(".pickup-tracker").classList.contains("hidden")'),true);
+    assert.deepEqual(await visibleRunGoals(),['high-score','pro-score','sick-score','combo']);
     await shot('retired-collectibles-phone');
     await send('Page.navigate',{url}); await sleep(200); await boot();
     await resize(1440,900); await click('#overlay-msg'); await step();

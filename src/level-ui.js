@@ -21,6 +21,7 @@ const ICONS = {
 const icon = (goal) => `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[goal.type] || ICONS[goal.id] || ICONS.score}</svg>`;
 const category = (goal) => goal.type === 'score' ? 'SCORE CHALLENGE' : goal.type === 'combo' ? 'COMBO CHALLENGE' : 'WAREHOUSE COLLECTIBLE';
 const targetLabel = (goal) => goal.type === 'score' || goal.type === 'combo' ? fmt(goal.target) : goal.id === 'skate' ? 'S K A T E' : goal.id === 'caps' ? '5 CAPS' : 'SECRET TAPE';
+const RUN_NAMES = { 'high-score': 'High Score', 'pro-score': 'Pro Score', 'sick-score': 'Sick Score', combo: 'Big Combo', skate: 'SKATE', caps: 'Bottle Caps', tape: 'Secret Tape' };
 
 export class LevelUI {
   constructor(goals, { onStart, onBoard } = {}) {
@@ -34,6 +35,8 @@ export class LevelUI {
     this.noticeQueue = [];
     this.noticeRemaining = 0;
     this.goalButtons = new Map();
+    this.runRows = new Map();
+    this.tracker = { panel: $('goal-tracker'), list: $('run-goal-list'), completed: $('tracker-completed'), overtime: $('tracker-overtime') };
     this.lastTrackerKey = '';
 
     for (const [index, goal] of goals.entries()) {
@@ -47,6 +50,27 @@ export class LevelUI {
       button.addEventListener('click', () => this.selectGoal(goal.id));
       $('goal-list').append(button);
       this.goalButtons.set(goal.id, button);
+
+      // Create checklist rows once; animation frames only update these nodes.
+      const row = document.createElement('li');
+      row.className = 'run-goal-row hidden';
+      row.dataset.runGoal = goal.id;
+      row.innerHTML = '<span class="run-goal-check" aria-hidden="true"></span><span class="run-goal-name" aria-hidden="true"></span><span class="run-goal-progress" aria-hidden="true"><span class="run-goal-count"></span></span>';
+      row.querySelector('.run-goal-name').textContent = RUN_NAMES[goal.id] || goal.title;
+      const progress = row.querySelector('.run-goal-progress');
+      const letterNodes = [];
+      if (goal.id === 'skate') {
+        const letters = document.createElement('span');
+        letters.className = 'run-goal-letters';
+        for (const letter of 'SKATE') {
+          const node = document.createElement('span');
+          node.className = 'run-goal-letter'; node.textContent = letter;
+          letters.append(node); letterNodes.push(node);
+        }
+        progress.prepend(letters);
+      }
+      this.tracker.list.append(row);
+      this.runRows.set(goal.id, { element: row, check: row.querySelector('.run-goal-check'), count: row.querySelector('.run-goal-count'), letters: letterNodes, key: null });
     }
     $('overlay-msg').addEventListener('click', () => this.launch('goals'));
     $('free-skate').addEventListener('click', () => this.launch('free'));
@@ -248,40 +272,46 @@ export class LevelUI {
     $('retry-run').focus({ preventScroll: true });
   }
   update(state) {
-    const available = this.availableIds(state);
+    const requestedIds = this.availableIds(state);
+    const available = new Set(this.goals.filter(goal => requestedIds.has(goal.id)).map(goal => goal.id));
     const showTracker = state?.mode === 'goals' && state.active !== false && available.size > 0;
-    $('goal-tracker').classList.toggle('hidden', !showTracker);
+    this.tracker.panel.classList.toggle('hidden', !showTracker);
     if (!showTracker) return;
-    const requested = state.focusGoal || this.selectedGoal;
-    const id = available.has(requested) ? requested : available.values().next().value;
-    const goal = state.goals?.find(entry => entry.id === id) || this.goals.find(entry => entry.id === id);
-    if (!goal) return;
+    const focus = state.focusGoal || this.selectedGoal;
+    const snapshots = new Map((state.goals || []).map(goal => [goal.id, goal]));
+    const completed = new Set(state.completed || []);
     const letters = new Set(state.letters || []);
-    const current = goal.current ?? (goal.type === 'score' ? state.score : goal.type === 'combo' ? state.bestCombo : goal.id === 'skate' ? letters.size : goal.id === 'caps' ? state.caps : state.tape ? 1 : 0) ?? 0;
-    const complete = goal.complete || (state.completed || []).includes(id);
-    const completedCount = (state.completed || []).filter(goalId => available.has(goalId)).length;
-    const key = [id, current, complete, completedCount, [...available].join(','), [...letters].join(''), state.caps, state.tape, state.overtime].join('|');
-    if (key === this.lastTrackerKey) return;
-    this.lastTrackerKey = key;
-    $('tracker-name').textContent = goal.title;
-    $('tracker-count').textContent = complete ? '✓ COMPLETE' : `${fmt(current)} / ${fmt(goal.target)}`;
-    $('tracker-completed').textContent = `${completedCount} / ${available.size} GOALS`;
-    $('tracker-fill').style.width = `${Math.min(1, current / goal.target) * 100}%`;
-    $('goal-tracker').classList.toggle('complete', complete);
-    const remaining = available.size - completedCount;
-    $('tracker-hint').textContent = state.overtime ? 'LAST CHANCE — LAND YOUR COMBO' : complete ? remaining ? `Focus complete. ${remaining} ${remaining === 1 ? 'goal' : 'goals'} still to go.` : 'Every goal in this run is complete. Keep skating!' : goal.id === 'tape' ? 'Ride the bank to the raised loading deck.' : goal.id === 'caps' ? 'Five vintage caps. Look for teal halos.' : goal.id === 'skate' ? 'Five gold letters. Any order.' : goal.type === 'combo' ? 'Link your tricks. Land the whole combo.' : 'Land tricks to bank your points.';
-    $('skate-tracker').classList.toggle('hidden', !available.has('skate'));
-    $('caps-tracker').classList.toggle('hidden', !available.has('caps'));
-    $('tape-tracker').classList.toggle('hidden', !available.has('tape'));
-    document.querySelector('.pickup-tracker').classList.toggle('hidden', !['skate', 'caps', 'tape'].some(goalId => available.has(goalId)));
-    [...$('skate-tracker').children].forEach(letter => {
-      letter.classList.toggle('collected', letters.has(letter.textContent));
-      letter.setAttribute('aria-label', `${letter.textContent}: ${letters.has(letter.textContent) ? 'collected' : 'missing'}`);
-    });
-    $('caps-tracker').querySelector('b').textContent = `${state.caps || 0}/5`;
-    $('tape-tracker').querySelector('b').textContent = `${state.tape ? 1 : 0}/1`;
-    $('caps-tracker').classList.toggle('collected', state.caps >= 5);
-    $('tape-tracker').classList.toggle('collected', !!state.tape);
+    let completedCount = 0;
+    for (const goal of this.goals) {
+      const row = this.runRows.get(goal.id);
+      const visible = available.has(goal.id);
+      row.element.classList.toggle('hidden', !visible);
+      if (!visible) continue;
+      const snapshot = snapshots.get(goal.id);
+      const raw = snapshot?.current ?? (goal.type === 'score' ? state.score : goal.type === 'combo' ? state.bestCombo : goal.id === 'skate' ? letters.size : goal.id === 'caps' ? state.caps : state.tape ? 1 : 0) ?? 0;
+      const current = Math.min(goal.target, Math.max(0, Math.round(Number(raw) || 0)));
+      const complete = !!snapshot?.complete || completed.has(goal.id);
+      const focused = goal.id === focus;
+      if (complete) completedCount++;
+      const key = [current, complete, focused, goal.id === 'skate' ? [...letters].join('') : ''].join('|');
+      if (key === row.key) continue;
+      row.key = key;
+      row.check.textContent = complete ? '✓' : '';
+      row.count.textContent = `${fmt(current)} / ${fmt(goal.target)}`;
+      row.element.classList.toggle('complete', complete);
+      row.element.classList.toggle('focused', focused);
+      for (const letter of row.letters) letter.classList.toggle('collected', letters.has(letter.textContent));
+      const unit = goal.type === 'score' || goal.type === 'combo' ? ' points' : goal.id === 'skate' ? ' letters' : goal.id === 'caps' ? ' bottle caps' : ' tape';
+      const letterStatus = goal.id === 'skate' ? ` Collected letters: ${[...'SKATE'].filter(letter => letters.has(letter)).join(', ') || 'none'}.` : '';
+      row.element.setAttribute('aria-label', `${goal.title}: ${fmt(current)} of ${fmt(goal.target)}${unit}, ${complete ? 'complete' : 'in progress'}.${letterStatus}${focused ? ' Selected focus.' : ''}`);
+    }
+    const headerKey = `${completedCount}|${available.size}|${!!state.overtime}`;
+    if (headerKey !== this.lastTrackerKey) {
+      this.lastTrackerKey = headerKey;
+      this.tracker.completed.textContent = `${completedCount} / ${available.size} GOALS`;
+      this.tracker.overtime.classList.toggle('hidden', !state.overtime);
+      this.tracker.panel.classList.toggle('overtime', !!state.overtime);
+    }
   }
   notifyGoal(goal) {
     const entry = typeof goal === 'string' ? this.goals.find(item => item.id === goal) : goal;

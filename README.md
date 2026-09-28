@@ -24,7 +24,8 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 ## Genesee Warehouse goals
 
 Choose a focus on the goal board and **Start Goal Run** for a two-minute session. Only unfinished
-career goals are active; the selected goal gets a live tracker. Use the arrow keys or controller D-pad
+career goals are active; a compact Run Focus checklist tracks all of them, with your selected goal
+highlighted. Use the arrow keys or controller D-pad
 to navigate, Enter / A to select, and Start to drop in.
 
 Between runs, the focus stays on your selected goal while it is unfinished. Once earned, the
@@ -49,6 +50,8 @@ all five caps after Bottle Cap Hunt, all five letters only after the complete S-
 and the tape after Secret Tape. Partial sets respawn in full until the goal is earned. Completed
 score/combo goals also retire, so later runs cannot award them again. Each run keeps the goal set
 it started with until the next restart or session.
+Each checklist row shows its own live progress and checks off when earned. Completed rows stay
+visible for the rest of that run, then retire from the checklist on your next run.
 Score goals count only landed combos. When the buzzer catches a combo, **LAND IT!** gives you up
 to 20 seconds to finish that line; pickups close at the buzzer, and a bail loses the unbanked points.
 The results screen shows goals earned, new completions, the run score, and the best landed combo.
@@ -67,6 +70,7 @@ unavailable, the game still works and retains progress in memory until reload.
 `npm run sim:level` checks progression, timing, all pickup approaches, a complete S-K-A-T-E route,
 and attainable score/combo targets using actual skating physics. With the dev server running,
 `npm run qa:level` checks the integrated browser flow in an isolated Edge profile and captures the UI.
+`npm run qa:checklist` checks every live goal row, completion and restart behavior, and desktop/phone layouts.
 `npm run sim:bottlecaps` checks the caps' physical geometry, rotation and collectible lifecycle;
 `npm run qa:bottlecaps` renders all five designs and checks them in desktop and touch-mode play.
 

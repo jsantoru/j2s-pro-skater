@@ -74,17 +74,8 @@ body.touch-enabled[data-mode="playing"]:not([data-paused="true"]) #touch-control
 .touch-enabled #timer { font-size: 29px; line-height: 1.15; }
 .touch-enabled #timer.overtime { font-size: 24px; }
 .touch-enabled #top-right, .touch-enabled #venue { display: none; }
-.touch-enabled #goal-tracker { top: calc(90px + env(safe-area-inset-top, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); width: 215px; padding: 9px 10px; }
-.touch-enabled .tracker-top { font-size: 6px; letter-spacing: .9px; }
-.touch-enabled .tracker-title { margin-top: 7px; }
-.touch-enabled #tracker-name { font-size: 18px; }
-.touch-enabled #tracker-count { font-size: 11px; }
-.touch-enabled .tracker-rail { margin-top: 6px; }
-.touch-enabled #tracker-hint { display: none; }
-.touch-enabled .pickup-tracker { margin-top: 8px; padding-top: 8px; }
-.touch-enabled #skate-tracker > span { width: 16px; height: 20px; font-size: 13px; line-height: 18px; }
-.touch-enabled #caps-tracker, .touch-enabled #tape-tracker { font-size: 6px; }
-.touch-enabled #caps-tracker b, .touch-enabled #tape-tracker b { font-size: 13px; }
+.touch-enabled #goal-tracker { top: calc(90px + env(safe-area-inset-top, 0px)); left: calc(12px + env(safe-area-inset-left, 0px)); width: 230px; padding: 9px 10px; }
+.touch-enabled .tracker-top { font-size: 6px; line-height: 9px; gap: 7px; letter-spacing: .8px; }
 .touch-enabled #bottom { bottom: calc(204px + env(safe-area-inset-bottom, 0px)); }
 .touch-enabled #combo-line { font-size: 25px; min-height: 29px; }
 .touch-enabled #trick-text { font-size: 15px; min-height: 20px; padding: 0 18px; }
@@ -93,18 +84,14 @@ body.touch-enabled[data-mode="playing"]:not([data-paused="true"]) #touch-control
 .touch-enabled #goal-notification b { font-size: 23px; }
 .touch-enabled #toast { top: calc(72px + env(safe-area-inset-top, 0px)); max-width: 65%; padding: 7px 10px; font-size: 11px; text-align: center; }
 @media (orientation: portrait) {
-  .touch-enabled #goal-notification { top: calc(219px + env(safe-area-inset-top, 0px)); max-width: calc(100% - 40px); }
+  .touch-enabled #goal-notification { top: calc(330px + env(safe-area-inset-top, 0px)); max-width: calc(100% - 40px); }
   .touch-enabled #goal-notification b { white-space: normal; }
-  .touch-enabled #toast { top: calc(191px + env(safe-area-inset-top, 0px)); }
+  .touch-enabled #toast { top: calc(292px + env(safe-area-inset-top, 0px)); }
   .touch-board-tip b { display: block; margin-bottom: 3px; }
 }
 @media (orientation: landscape) and (max-height: 500px) {
   .touch-enabled #top-left { top: calc(8px + env(safe-area-inset-top, 0px)); padding: 6px 10px; }
   .touch-enabled #score { font-size: 26px; }
-  .touch-enabled #goal-tracker { top: calc(78px + env(safe-area-inset-top, 0px)); width: 218px; padding: 7px 9px; }
-  .touch-enabled .tracker-top { font-size: 5px; }
-  .touch-enabled #tracker-name { font-size: 17px; }
-  .touch-enabled .pickup-tracker { margin-top: 6px; padding-top: 6px; }
   .touch-enabled #bottom { left: calc(242px + env(safe-area-inset-left, 0px)); right: calc(183px + env(safe-area-inset-right, 0px)); bottom: calc(198px + env(safe-area-inset-bottom, 0px)); }
   .touch-enabled #combo-line { font-size: 23px; min-height: 25px; }
   .touch-enabled #trick-text { font-size: 12px; min-height: 16px; padding-inline: 0; }
@@ -128,8 +115,44 @@ body.touch-enabled[data-mode="playing"]:not([data-paused="true"]) #touch-control
   .touch-steering { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
   .touch-control-caption { margin-top: 6px; font-size: 6px; }
   #touch-actions { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
-  .touch-enabled #goal-tracker { width: 196px; }
   .touch-enabled #bottom { left: calc(221px + env(safe-area-inset-left, 0px)); right: calc(177px + env(safe-area-inset-right, 0px)); bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
   .touch-enabled #goal-notification { top: calc(70px + env(safe-area-inset-top, 0px)); padding: 7px 10px; }
   .touch-enabled #goal-notification b { font-size: 18px; }
+}
+
+/* All run goals share one compact list; keep the left thumb area clear. */
+.touch-enabled #run-goal-list { margin-top: 6px; }
+.touch-enabled .run-goal-row { min-height: 22px; font-size: 10px; line-height: 14px; gap: 7px; padding-left: 3px; }
+.touch-enabled .run-goal-count { font-size: 11px; letter-spacing: .25px; }
+.touch-enabled .run-goal-check { width: 10px; height: 10px; font-size: 9px; }
+.touch-enabled .run-goal-progress { gap: 7px; }
+.touch-enabled .run-goal-letters { font-size: 11px; gap: 2px; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .touch-enabled #goal-tracker { top: calc(74px + env(safe-area-inset-top, 0px)); width: 222px; padding: 6px 8px; }
+  .touch-enabled #run-goal-list { margin-top: 5px; }
+  .touch-enabled .run-goal-row { min-height: 17px; font-size: 10px; line-height: 13px; border-top: 0; gap: 6px; }
+  .touch-enabled .run-goal-count { font-size: 11px; }
+  .touch-enabled .run-goal-check { width: 9px; height: 9px; font-size: 8px; }
+  .touch-enabled .run-goal-letters { font-size: 10px; gap: 2px; }
+  .touch-steering { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .touch-control-caption { margin-top: 8px; }
+}
+@media (orientation: landscape) and (max-height: 375px) {
+  .touch-enabled #goal-tracker { width: 334px; }
+  .touch-enabled #run-goal-list { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 12px; }
+  .touch-enabled .run-goal-row { min-height: 20px; font-size: 9px; gap: 5px; }
+  .touch-enabled .run-goal-count { font-size: 10px; letter-spacing: 0; }
+  .touch-enabled .run-goal-progress { gap: 5px; }
+  .touch-enabled .run-goal-letters { font-size: 9px; gap: 1px; }
+  .touch-enabled #goal-notification { left: auto; right: calc(12px + env(safe-area-inset-right, 0px)); transform: none; max-width: calc(100% - 372px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); padding: 8px 10px; }
+  .touch-enabled #goal-notification b { font-size: 18px; white-space: normal; }
+  .touch-enabled #toast { left: auto; right: calc(12px + env(safe-area-inset-right, 0px)); transform: none; top: calc(140px + env(safe-area-inset-top, 0px)); max-width: calc(100% - 372px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); }
+}
+@media (orientation: portrait) and (max-height: 650px) {
+  .touch-enabled #goal-notification { top: calc(290px + env(safe-area-inset-top, 0px)); padding: 8px 12px; }
+  .touch-enabled #goal-notification b { font-size: 20px; }
+  .touch-enabled #toast { top: calc(346px + env(safe-area-inset-top, 0px)); max-width: calc(100% - 28px); font-size: 9px; line-height: 1.2; padding: 4px 8px; }
+}
+@media (orientation: landscape) and (max-height: 350px) {
+  .touch-enabled .run-goal-row { min-height: 17px; }
 }
