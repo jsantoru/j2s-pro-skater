@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { PICKUPS } from './goals.js';
+import { createBottlecapGeometries, createBottlecapModel, setBottlecapRotation } from './bottlecap-model.js';
 
 export { PICKUPS } from './goals.js';
 
@@ -34,8 +35,8 @@ function material(color, options = {}) {
   return new THREE.MeshBasicMaterial({ color, toneMapped: false, ...options });
 }
 
-// Small shared geometry, no lights or shadows. Physical medals sit behind readable,
-// camera-facing glyphs; a low floor ring makes the pickup's landing spot unambiguous.
+// Shared geometry keeps pickups inexpensive. Letters and tape face the camera;
+// vintage crown caps are lit physical objects with their own slow rotation.
 export class Collectibles {
   constructor(parent) {
     this.group = new THREE.Group();
@@ -53,36 +54,35 @@ export class Collectibles {
     });
     this.geometries = {
       rim: new THREE.TorusGeometry(0.46, 0.045, 6, 36),
-      cap: new THREE.CylinderGeometry(0.34, 0.34, 0.11, 20),
-      capRim: new THREE.TorusGeometry(0.34, 0.036, 4, 20),
       ring: new THREE.RingGeometry(0.43, 0.47, 36),
       tape: new THREE.BoxGeometry(0.88, 0.53, 0.16),
       reel: new THREE.CylinderGeometry(0.105, 0.105, 0.025, 16),
       reelHole: new THREE.CylinderGeometry(0.036, 0.036, 0.03, 12),
       label: new THREE.PlaneGeometry(0.64, 0.10),
     };
+    this.capGeometries = createBottlecapGeometries();
     this.items = PICKUPS.map((definition, index) => this.create(definition, index));
+    this.ready = Promise.all(this.items.map(item => item.ready));
   }
 
   create(definition, index) {
     const color = COLORS[definition.type];
     const root = new THREE.Group(); root.name = definition.id;
     root.position.fromArray(definition.position);
-    const face = new THREE.Group(); root.add(face);
+    const capIndex = definition.type === 'cap' ? Number(definition.id.slice(4)) - 1 : null;
+    const cap = capIndex === null ? null : createBottlecapModel(capIndex, this.capGeometries);
+    const face = cap?.group || new THREE.Group(); root.add(face);
     const materials = [];
+    const textures = cap?.textures || [];
+    if (cap) materials.push(...cap.materials);
     const own = (mat) => { materials.push(mat); return mat; };
-    const colored = own(material(color));
-    const dark = own(material(definition.type === 'cap' ? 0x154b49 : 0x332619));
+    const colored = cap ? null : own(material(color));
+    const dark = cap ? null : own(material(0x332619));
 
     if (definition.type === 'letter') {
       const rim = new THREE.Mesh(this.geometries.rim, colored);
       face.add(rim);
-    } else if (definition.type === 'cap') {
-      const cap = new THREE.Mesh(this.geometries.cap, dark);
-      cap.rotation.x = Math.PI / 2; face.add(cap);
-      const rim = new THREE.Mesh(this.geometries.capRim, colored);
-      rim.position.z = 0.07; face.add(rim);
-    } else {
+    } else if (definition.type === 'tape') {
       const body = new THREE.Mesh(this.geometries.tape, dark);
       face.add(body);
       const outline = new THREE.LineSegments(new THREE.EdgesGeometry(this.geometries.tape),
@@ -98,21 +98,21 @@ export class Collectibles {
       }
     }
 
-    const texture = definition.type === 'tape' ? null : glyphTexture(definition.type === 'letter' ? definition.label : 'G', definition.type);
+    const texture = definition.type === 'letter' ? glyphTexture(definition.label, definition.type) : null;
     if (texture) {
+      textures.push(texture);
       const glyph = new THREE.Sprite(own(new THREE.SpriteMaterial({ map: texture, toneMapped: false, depthWrite: false })));
-      const size = definition.type === 'letter' ? 0.90 : 0.54;
-      glyph.scale.set(size, size, 1); glyph.position.z = 0.09; face.add(glyph);
+      glyph.scale.set(0.90, 0.90, 1); glyph.position.z = 0.09; face.add(glyph);
     }
     if (this.haloTexture) {
       const halo = new THREE.Sprite(own(new THREE.SpriteMaterial({
-        map: this.haloTexture, color, transparent: true, opacity: 0.34,
+        map: this.haloTexture, color, transparent: true, opacity: cap ? 0.13 : 0.34,
         blending: THREE.AdditiveBlending, toneMapped: false, depthWrite: false,
       })));
-      halo.scale.set(1.9, 1.9, 1); root.add(halo);
+      halo.scale.setScalar(cap ? 1.65 : 1.9); root.add(halo);
     }
 
-    const ringMaterial = own(material(color, { transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthWrite: false }));
+    const ringMaterial = own(material(color, { transparent: true, opacity: cap ? 0.52 : 0.7, side: THREE.DoubleSide, depthWrite: false }));
     const ring = new THREE.Mesh(this.geometries.ring, ringMaterial);
     ring.rotation.x = -Math.PI / 2;
     ring.position.set(definition.position[0], definition.surfaceY + 0.025, definition.position[2]);
@@ -121,7 +121,7 @@ export class Collectibles {
       mat.userData.restOpacity = mat.opacity;
       mat.userData.restTransparent = mat.transparent;
     }
-    return { definition, root, face, ring, materials, texture, index, enabled: true, collected: false, burst: 0 };
+    return { definition, root, face, ring, materials, texture, textures, ready: cap?.ready, capIndex, index, enabled: true, collected: false, burst: 0 };
   }
 
   sync(collected = new Set(), availableGoals = null) {
@@ -164,9 +164,12 @@ export class Collectibles {
       if (!item.root.visible) continue;
       const phase = this.elapsed * 2.15 + item.index * 0.71;
       item.root.position.y = item.definition.position[1] + Math.sin(phase) * 0.075;
-      if (camera) item.face.quaternion.copy(this._cameraQuaternion);
-      else item.face.quaternion.setFromAxisAngle(UP, Math.sin(phase * 0.35) * 0.35);
-      item.face.rotateZ(Math.sin(phase * 0.7) * 0.045);
+      if (item.capIndex !== null) setBottlecapRotation(item.face, this.elapsed, item.capIndex);
+      else {
+        if (camera) item.face.quaternion.copy(this._cameraQuaternion);
+        else item.face.quaternion.setFromAxisAngle(UP, Math.sin(phase * 0.35) * 0.35);
+        item.face.rotateZ(Math.sin(phase * 0.7) * 0.045);
+      }
       item.ring.scale.setScalar(1 + Math.sin(phase) * 0.07);
       if (item.collected) {
         item.burst += dt;
@@ -185,12 +188,13 @@ export class Collectibles {
   dispose() {
     this.group.removeFromParent();
     for (const item of this.items) {
-      item.texture?.dispose();
+      for (const texture of item.textures) texture.dispose();
       for (const mat of item.materials) mat.dispose();
       // The tape outline is the only unshared mesh geometry.
       item.face.children.find(child => child.isLineSegments)?.geometry.dispose();
     }
     for (const geometry of Object.values(this.geometries)) geometry.dispose();
+    for (const geometry of Object.values(this.capGeometries)) geometry.dispose();
     this.haloTexture?.dispose();
   }
 }

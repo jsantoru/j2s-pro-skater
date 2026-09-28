@@ -19,6 +19,8 @@
     "qa:level": "node sim/levelcheck.js",
     "sim:touch": "node sim/touchtest.js",
     "qa:mobile": "node sim/mobilecheck.js",
+    "sim:bottlecaps": "node sim/bottlecaptest.js",
+    "qa:bottlecaps": "node sim/bottlecapcheck.js",
     "qa:visual": "node sim/graphicscheck.js"
   },
   "dependencies": {

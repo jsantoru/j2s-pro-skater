@@ -39,7 +39,7 @@ the board as achievements, and cannot be selected again. After all seven are don
 | Sick Score | 25,000 banked points |
 | Big Combo | One landed 3,000-point combo |
 | Collect S-K-A-T-E | All five gold letters in one run, any order |
-| Bottle Cap Hunt | All five teal caps in one run |
+| Bottle Cap Hunt | All five vintage Genesee caps in one run |
 | Secret Tape | The pink tape on the raised loading deck |
 
 Completed goals and best records save immediately in this browser. Partial letter/cap collections
@@ -53,6 +53,10 @@ Score goals count only landed combos. When the buzzer catches a combo, **LAND IT
 to 20 seconds to finish that line; pickups close at the buzzer, and a bail loses the unbanked points.
 The results screen shows goals earned, new completions, the run score, and the best landed combo.
 
+The five bottle caps feature distinct vintage Genesee Beer, 12 Horse Ale, Cream Ale, Genny Light,
+and Light Ale labels. Their domed metal faces, crimped skirts and recessed undersides slowly turn
+in the warehouse light. Teal halos and floor rings mark each collectible's position.
+
 **Free Skate** has no timer or career goals. Pause to restart or return to the goal board. Pausing
 freezes the level and goal notifications; switching tabs automatically pauses the session. Existing
 high scores remain available under **Best Runs** on the results screen. If browser storage is
@@ -63,6 +67,8 @@ unavailable, the game still works and retains progress in memory until reload.
 `npm run sim:level` checks progression, timing, all pickup approaches, a complete S-K-A-T-E route,
 and attainable score/combo targets using actual skating physics. With the dev server running,
 `npm run qa:level` checks the integrated browser flow in an isolated Edge profile and captures the UI.
+`npm run sim:bottlecaps` checks the caps' physical geometry, rotation and collectible lifecycle;
+`npm run qa:bottlecaps` renders all five designs and checks them in desktop and touch-mode play.
 
 `npm run build` produces a static bundle in `dist/`; `npm run preview` serves it.
 

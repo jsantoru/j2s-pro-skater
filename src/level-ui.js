@@ -8,7 +8,7 @@ const TIPS = {
   'sick-score': 'Build a line across the warehouse. Variety, spins, and switch landings make every trick count.',
   combo: 'Link tricks with grinds and manuals. The goal counts only when you land the whole combo.',
   skate: 'Follow the amber letters through the warehouse. Collect all five in a single run, in any order.',
-  caps: 'Look for teal bottle caps around the warehouse. Sweep the park and collect all five in one run.',
+  caps: 'Find five vintage Genesee bottle caps. Look for the teal halos and collect every design in one run.',
   tape: 'Take the bank to the raised loading deck. Look for the pink tape above the platform.',
 };
 const ICONS = {
@@ -269,7 +269,7 @@ export class LevelUI {
     $('tracker-fill').style.width = `${Math.min(1, current / goal.target) * 100}%`;
     $('goal-tracker').classList.toggle('complete', complete);
     const remaining = available.size - completedCount;
-    $('tracker-hint').textContent = state.overtime ? 'LAST CHANCE — LAND YOUR COMBO' : complete ? remaining ? `Focus complete. ${remaining} ${remaining === 1 ? 'goal' : 'goals'} still to go.` : 'Every goal in this run is complete. Keep skating!' : goal.id === 'tape' ? 'Ride the bank to the raised loading deck.' : goal.id === 'caps' ? 'Follow the teal bottle caps.' : goal.id === 'skate' ? 'Five gold letters. Any order.' : goal.type === 'combo' ? 'Link your tricks. Land the whole combo.' : 'Land tricks to bank your points.';
+    $('tracker-hint').textContent = state.overtime ? 'LAST CHANCE — LAND YOUR COMBO' : complete ? remaining ? `Focus complete. ${remaining} ${remaining === 1 ? 'goal' : 'goals'} still to go.` : 'Every goal in this run is complete. Keep skating!' : goal.id === 'tape' ? 'Ride the bank to the raised loading deck.' : goal.id === 'caps' ? 'Five vintage caps. Look for teal halos.' : goal.id === 'skate' ? 'Five gold letters. Any order.' : goal.type === 'combo' ? 'Link your tricks. Land the whole combo.' : 'Land tricks to bank your points.';
     $('skate-tracker').classList.toggle('hidden', !available.has('skate'));
     $('caps-tracker').classList.toggle('hidden', !available.has('caps'));
     $('tape-tracker').classList.toggle('hidden', !available.has('tape'));
