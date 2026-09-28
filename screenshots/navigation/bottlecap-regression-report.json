@@ -1,0 +1,285 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "all five bottle caps load their own printed face on physical mesh geometry",
+      "passed": true,
+      "detail": [
+        {
+          "id": "cap-1",
+          "metadata": {
+            "styleId": "genesee-beer",
+            "styleIndex": 0,
+            "flutes": 21,
+            "radius": 0.555
+          },
+          "sprites": 0,
+          "mapped": [
+            {
+              "name": "cap-face",
+              "uuid": "f0882f1b-27c6-4ef8-b088-d3754fafdd80",
+              "width": 512,
+              "height": 512,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "labelReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            },
+            {
+              "name": "cap-liner",
+              "uuid": "d67518ba-80b2-40fe-99d4-e3589b85f098",
+              "width": 256,
+              "height": 256,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "linerReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            }
+          ]
+        },
+        {
+          "id": "cap-2",
+          "metadata": {
+            "styleId": "12-horse-ale",
+            "styleIndex": 1,
+            "flutes": 21,
+            "radius": 0.555
+          },
+          "sprites": 0,
+          "mapped": [
+            {
+              "name": "cap-face",
+              "uuid": "8816dc05-2d15-4f7e-81c5-f2321d5aa647",
+              "width": 512,
+              "height": 512,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "labelReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            },
+            {
+              "name": "cap-liner",
+              "uuid": "29247419-6b71-4edd-b944-8bf8881d1875",
+              "width": 256,
+              "height": 256,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "linerReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            }
+          ]
+        },
+        {
+          "id": "cap-3",
+          "metadata": {
+            "styleId": "cream-ale",
+            "styleIndex": 2,
+            "flutes": 21,
+            "radius": 0.555
+          },
+          "sprites": 0,
+          "mapped": [
+            {
+              "name": "cap-face",
+              "uuid": "ee368f84-b0f3-4a41-992c-69444841481b",
+              "width": 512,
+              "height": 512,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "labelReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            },
+            {
+              "name": "cap-liner",
+              "uuid": "c02bbc35-e47e-4d2c-9be6-9fecbc6eab43",
+              "width": 256,
+              "height": 256,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "linerReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            }
+          ]
+        },
+        {
+          "id": "cap-4",
+          "metadata": {
+            "styleId": "genny-light",
+            "styleIndex": 3,
+            "flutes": 21,
+            "radius": 0.555
+          },
+          "sprites": 0,
+          "mapped": [
+            {
+              "name": "cap-face",
+              "uuid": "a33e1a86-36a1-43b1-8112-fa387ff552dc",
+              "width": 512,
+              "height": 512,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "labelReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            },
+            {
+              "name": "cap-liner",
+              "uuid": "2cfbd238-5469-4e0b-b70b-b43bde8160fd",
+              "width": 256,
+              "height": 256,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "linerReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            }
+          ]
+        },
+        {
+          "id": "cap-5",
+          "metadata": {
+            "styleId": "light-ale",
+            "styleIndex": 4,
+            "flutes": 21,
+            "radius": 0.555
+          },
+          "sprites": 0,
+          "mapped": [
+            {
+              "name": "cap-face",
+              "uuid": "eb833744-35b1-4496-82a3-744d958dc7d9",
+              "width": 512,
+              "height": 512,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "labelReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            },
+            {
+              "name": "cap-liner",
+              "uuid": "493f1258-83f0-4f77-a89b-d4caf185e39c",
+              "width": 256,
+              "height": 256,
+              "repeat": [
+                1,
+                1
+              ],
+              "offset": [
+                0,
+                0
+              ],
+              "linerReady": true,
+              "flipY": true,
+              "colorSpace": "srgb"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "five cap designs read from the front, at an angle, and from the back",
+      "passed": true
+    },
+    {
+      "name": "slow rotation advances in the real loop and freezes exactly while paused",
+      "passed": true,
+      "detail": {
+        "angleRadiansOverTwoSeconds": 0.4833219467061212
+      }
+    },
+    {
+      "name": "warehouse and phone views preserve the physical cap and its collection effects",
+      "passed": true
+    },
+    {
+      "name": "rendered cap materials produce no JavaScript, network, console or WebGL errors",
+      "passed": true,
+      "detail": {
+        "calls": 254,
+        "triangles": 245356,
+        "textures": 95
+      }
+    }
+  ],
+  "passed": true,
+  "browserErrors": [],
+  "screenshotsCaptured": [
+    "caps-five-front.png",
+    "caps-five-oblique.png",
+    "caps-five-back.png",
+    "caps-showcase.png",
+    "cap-detail-oblique.png",
+    "cap-detail-back.png",
+    "warehouse-caps-desktop.png",
+    "warehouse-caps-phone.png",
+    "warehouse-caps-landscape.png"
+  ],
+  "artifactsNote": "Regression captures were reviewed in a temporary directory. This folder retains the navigation screenshots and these regression results."
+}

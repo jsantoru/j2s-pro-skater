@@ -124,7 +124,7 @@ try {
 
   await check('five cap designs read from the front, at an angle, and from the back', async () => {
     await evaluate(`(()=>{const g=__game; window.qaCaps=g.collectibles.items.filter(i=>i.definition.type==='cap');
-      document.querySelectorAll('#hud,#overlay,#controls,#touch-controls,#start-btn').forEach(el=>el.style.display='none');
+      document.querySelectorAll('#hud,#overlay,#front-end,#controls,#touch-controls,#start-btn').forEach(el=>el.style.display='none');
       window.qaScene=new g.scene.constructor();qaScene.background=g.scene.background.clone().set('#242b31');qaScene.environment=g.scene.environment;qaScene.environmentIntensity=g.scene.environmentIntensity;
       g.scene.traverse(o=>{if(o.isLight){const light=o.clone();light.castShadow=false;qaScene.add(light);}});
       window.qaCamera=new g.camera.constructor(40,innerWidth/innerHeight,.01,50);qaCamera.position.set(0,0,5.5);qaCamera.lookAt(0,0,0);
@@ -144,7 +144,7 @@ try {
   });
 
   await check('slow rotation advances in the real loop and freezes exactly while paused', async () => {
-    await evaluate(`document.querySelectorAll('#hud,#overlay,#controls,#touch-controls,#start-btn').forEach(el=>el.style.removeProperty('display'));__game.startRun('goals','caps');`);
+    await evaluate(`document.querySelectorAll('#hud,#overlay,#front-end,#controls,#touch-controls,#start-btn').forEach(el=>el.style.removeProperty('display'));__game.startRun('goals','caps');`);
     await step(2);
     const before = await evaluate(`__game.collectibles.items.find(i=>i.definition.type==='cap').face.quaternion.toArray()`);
     await step(120);

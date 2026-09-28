@@ -7,8 +7,15 @@
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="/src/style.css" />
   <link rel="stylesheet" href="/src/touch.css" />
+  <style>
+    #boot-screen { position: fixed; inset: 0; z-index: 100; display: grid; place-content: center; gap: 12px; text-align: center; background: #101b21; color: #f2ecdf; }
+    #boot-screen b { font: italic 900 clamp(32px, 7vw, 60px)/1 Arial, sans-serif; letter-spacing: -2px; }
+    #boot-screen span { font: 700 10px/1.5 Arial, sans-serif; letter-spacing: 3px; color: #b8c5bc; }
+    #boot-screen[hidden] { display: none; }
+  </style>
 </head>
-<body data-mode="title">
+<body data-mode="home">
+  <div id="boot-screen" role="status" aria-live="polite"><b>J2S PRO SKATER</b><span>LOADING THE SPOT</span></div>
   <canvas id="game"></canvas>
   <div id="hud">
     <div id="top-left">
@@ -77,9 +84,9 @@
   <div id="toast"></div>
   <div id="goal-notification" class="hidden" role="status" aria-live="polite"><div class="goal-notice-mark">✓</div><div><span>GOAL COMPLETE</span><b id="goal-notification-title"></b></div></div>
   <button id="start-btn" type="button" aria-haspopup="dialog" aria-controls="settings-panel" aria-expanded="false">MENU <span>ESC</span></button>
-  <div id="controls-panel" class="hidden">
+  <div id="controls-panel" class="hidden" role="dialog" aria-modal="true" aria-labelledby="controls-title">
     <button id="controls-close" type="button">BACK <span>ESC / B</span></button>
-    <h2>CONTROLS</h2>
+    <h2 id="controls-title">CONTROLS</h2>
     <section class="touch-only touch-howto" aria-label="Touch controls">
       <h3>TWO THUMBS. YOUR LINE.</h3>
       <p>Use the left stick to steer and the buttons on the right for tricks. Keep both thumbs on the screen.</p>
@@ -153,7 +160,7 @@
   </div>
   <div id="settings-panel" class="hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-describedby="menu-status">
     <div class="card">
-      <div class="menu-eyebrow">GENESEE WAREHOUSE <span>LEVEL / 01</span></div>
+      <div id="settings-location" class="menu-eyebrow">J2S PRO SKATER <span>GAME SETTINGS</span></div>
       <h2 id="settings-title">SETTINGS</h2>
       <p id="menu-status">Set the soundtrack before you drop in.</p>
       <div class="rule"></div>
@@ -161,6 +168,8 @@
         <button id="resume-run" type="button">BACK TO MENU</button>
         <button id="restart-run" type="button" hidden>RESTART RUN <span>Start fresh · resets this session</span></button>
         <button id="goals-menu" type="button" hidden>RETURN TO GOAL BOARD <span>Completed goals are saved</span></button>
+        <button id="settings-levels" class="settings-secondary" type="button" hidden>LEVEL SELECT <span>Choose where to skate</span></button>
+        <button id="settings-home" class="settings-secondary" type="button" hidden>RETURN HOME <span>Completed goals are saved</span></button>
       </div>
       <div class="set-row">
         <div>
@@ -175,7 +184,7 @@
       <div class="set-foot"><span>↑ ↓ / D-PAD &nbsp; SELECT</span><span>ENTER / A &nbsp; CONFIRM</span><span>ESC / START / B / BACK &nbsp; CLOSE</span></div>
     </div>
   </div>
-  <div id="overlay" aria-label="Genesee Warehouse goal board">
+  <div id="overlay" class="hidden" aria-label="Genesee Warehouse goal board">
     <main class="level-shell">
       <header class="level-header"><div class="level-wordmark" aria-label="J2S Pro Skater">J2S<span>PRO SKATER</span></div><div class="level-location">ROCHESTER, NEW YORK<span>GENESEE BREWING CO. / EST. 1878</span></div><span class="level-number">LEVEL <b>01</b></span></header>
       <section class="level-heading"><div><div class="level-eyebrow" id="level-eyebrow">CLOCK IN. DROP IN.</div><h1 id="level-title">GENESEE <span>WAREHOUSE</span></h1></div><div class="level-completion"><b id="board-completed">0<span>/ 7</span></b><span>GOALS COMPLETE</span><div class="completion-rail"><div id="board-completion-fill"></div></div></div></section>
@@ -185,7 +194,7 @@
         <section class="mission-panel" aria-labelledby="mission-title"><div class="mission-topline"><span id="mission-category">SCORE CHALLENGE</span><span id="mission-status">NOT YET COMPLETE</span></div><div id="mission-icon" aria-hidden="true"></div><h2 id="mission-title">High Score</h2><div id="mission-target">2,500 <span>POINTS</span></div><p id="mission-description">Bank 2,500 points in one run.</p><div class="mission-tip"><span id="mission-tip-label">FIND YOUR LINE</span><p id="mission-tip"></p></div><div class="mission-session"><b id="mission-session-time">02:00</b><span><b id="mission-session-label">ONE RUN. SEVEN UNFINISHED GOALS.</b><small id="mission-session-note">Complete your remaining goals in any order.</small></span></div><button id="overlay-msg" type="button">START GOAL RUN <span>START →</span></button><button id="free-skate" class="level-secondary" type="button">FREE SKATE <span>NO CLOCK. JUST SKATE. →</span></button></section>
       </div>
       <section id="run-results" class="hidden" aria-label="Run results"><div class="results-stats"><div><span>RUN SCORE</span><b id="results-score">0</b></div><div><span>BEST COMBO</span><b id="results-combo">0</b></div><div><span id="results-goals-label">GOALS THIS RUN</span><b id="results-goals">0 <small>/ 7</small></b></div></div><div class="results-body"><div><div class="panel-heading"><h2 id="results-goal-heading">FRESH INK ON THE BOARD</h2><span id="results-new-count"></span></div><div id="results-list"></div><p id="results-note"></p></div><aside class="results-next"><span class="level-eyebrow">KEEP THE SESSION GOING</span><h2>ONE MORE <br/>GOOD LINE.</h2><p>Chase the next unfinished goal or find your flow in free skate.</p><button id="retry-run" class="level-primary" type="button">START NEXT RUN <span>START →</span></button><button id="results-board" class="level-secondary" type="button">GOAL BOARD <span>CHOOSE YOUR NEXT GOAL →</span></button></aside></div><details id="best-runs-details"><summary>BEST RUNS <span>SAVED ON THIS DEVICE</span></summary><div id="high-scores"></div></details></section>
-      <footer class="level-footer"><div class="career-records"><span>BEST RUN <b id="board-best-score">—</b></span><span>BEST COMBO <b id="board-best-combo">—</b></span></div><button id="overlay-controls" type="button">CONTROLS <span>TAB / BACK</span></button><span class="board-input-hint">↑ ↓ SELECT <i>·</i> ENTER / A CONFIRM</span></footer>
+      <footer class="level-footer"><div class="career-records"><span>BEST RUN <b id="board-best-score">—</b></span><span>BEST COMBO <b id="board-best-combo">—</b></span></div><nav class="level-navigation" aria-label="Level navigation"><button id="level-select-nav" class="level-secondary" type="button">LEVEL SELECT</button><button id="home-nav" class="level-secondary" type="button">HOME</button></nav><button id="overlay-controls" type="button">CONTROLS <span>TAB</span></button><span class="board-input-hint">↑ ↓ SELECT <i>·</i> ENTER / A CONFIRM</span></footer>
       <div id="final-score" hidden></div>
     </main>
   </div>

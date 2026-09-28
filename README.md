@@ -1,6 +1,7 @@
 # J2S Pro Skater
 
-A single-level, gamepad-first 3D skateboarding game in the spirit of Tony Hawk's Pro Skater 1.
+A gamepad-first 3D skateboarding game in the spirit of Tony Hawk's Pro Skater 1,
+starting with Genesee Warehouse in Rochester, New York.
 The point of this build is **game feel**: the skater controller, camera and animation are one
 hand-tuned kinematic system (no rigid-body physics), and every number in it was play-tested.
 
@@ -18,8 +19,19 @@ npm run dev        # http://localhost:5173
 ```
 
 Plug in an Xbox-style (XInput / "standard mapping") USB controller, press a button to connect it,
-then choose a goal and start your run.
+then choose **Play**, select **Genesee Warehouse**, and choose a goal to start your run.
 Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the full control map in game.
+
+## Home and level select
+
+The home screen opens on a live view of the warehouse. **Play** opens the level selector,
+where each playable spot shows its saved goal progress and best score. Genesee Warehouse is
+Level 01; future spots are a preview of the game's direction, not selectable levels.
+
+Use **Home** or **Level Select** from the goal board, results, or pause menu to leave the current
+session. Earned goals and banked career records stay saved; a new run starts with a fresh timer
+and partial collectible sets reset. Escape or controller B steps back through the menus.
+Arrow keys / D-pad navigate, Enter / A selects, and the menus also support touch.
 
 ## Genesee Warehouse goals
 
@@ -60,7 +72,7 @@ The five bottle caps feature distinct vintage Genesee Beer, 12 Horse Ale, Cream 
 and Light Ale labels. Their domed metal faces, crimped skirts and recessed undersides slowly turn
 in the warehouse light. Teal halos and floor rings mark each collectible's position.
 
-**Free Skate** has no timer or career goals. Pause to restart or return to the goal board. Pausing
+**Free Skate** has no timer or career goals. Pause to restart or return to the goal board, level selector, or home. Pausing
 freezes the level and goal notifications; switching tabs automatically pauses the session. Existing
 high scores remain available under **Best Runs** on the results screen. If browser storage is
 unavailable, the game still works and retains progress in memory until reload.
@@ -71,6 +83,7 @@ unavailable, the game still works and retains progress in memory until reload.
 and attainable score/combo targets using actual skating physics. With the dev server running,
 `npm run qa:level` checks the integrated browser flow in an isolated Edge profile and captures the UI.
 `npm run qa:checklist` checks every live goal row, completion and restart behavior, and desktop/phone layouts.
+`npm run qa:navigation` checks the home/level/run flow, menu input, saved progress, and responsive layouts.
 `npm run sim:bottlecaps` checks the caps' physical geometry, rotation and collectible lifecycle;
 `npm run qa:bottlecaps` renders all five designs and checks them in desktop and touch-mode play.
 
@@ -107,7 +120,7 @@ Skate** to learn the controls without a timer.
 - Right thumb: hold **Ollie** to build speed and charge a jump; release to pop. Tap **Flip** while
   charging or airborne, hold **Grab**, and tap or hold **Grind** near a rail. Stick direction picks
   the trick. **Revert** turns your stance on the ground and can link ramp landings.
-- Tap **Pause** for music, restart, or the goal board; the board's **Controls** button shows the full
+- Tap **Pause** for music, restart, the goal board, level select, or home; the board's **Controls** button shows the full
   control map. Pausing, switching apps, rotating
   the screen, or an interrupted touch clears held controls without releasing a surprise ollie.
 
@@ -127,10 +140,14 @@ Up/Down, Tab/Shift+Tab, the D-pad or left stick; select with Enter/Space or cont
 Start, controller B/Back, Resume or the backdrop closes it. Music remains adjustable while the
 simulation, animations, effects, timer and skating audio/haptics pause. Held menu inputs must be
 released before skating again; an interrupted ollie charge cancels to avoid an accidental pop.
-Before a run, use Escape or Menu for settings. See [pause verification](PAUSE-MENU.md).
+Outside a run, use **Settings** for music; Escape steps back through the menus and opens settings
+from home. See [pause verification](PAUSE-MENU.md).
 
 ## What is in the box
 
+- `src/front-end.js` / `src/front-end.css` – responsive home and level selection, with
+  keyboard, controller and touch navigation. `src/levels.js` holds the level catalog;
+  Genesee Warehouse is the first playable entry.
 - `src/skater.js` – the controller. States: ride, air, grind, bail. Surface following via raycasts with
   a 3-D travel vector that stays tangent to banks, transitions and vert; ramp-assisted uphill gravity;
   crouch "pump" in transitions; late-release ollie forgiveness at lips; vert airs auto-turn 180;

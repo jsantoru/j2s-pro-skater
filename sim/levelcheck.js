@@ -72,7 +72,14 @@ async function shot(name) {
 }
 async function boot() {
   for (let i = 0; i < 150; i++) {
-    if (await evaluate('Boolean(window.__game?.goals)')) { await step(2); return; }
+    if (await evaluate('Boolean(window.__game?.goals)')) {
+      await step(2);
+      // This suite exercises the goal board and level. Navigation itself has a
+      // dedicated regression, but enter through the real home/level buttons.
+      if (await evaluate('__game.session.mode === "home"')) { await click('#fe-play'); await step(); }
+      if (await evaluate('__game.session.mode === "levels"')) { await click('#fe-level-genesee'); await step(); }
+      return;
+    }
     await sleep(100);
   }
   throw new Error('The level did not initialize');

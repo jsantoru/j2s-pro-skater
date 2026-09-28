@@ -18,6 +18,7 @@
     "sim:level": "node sim/goaltest.js && node sim/sessiontest.js && node sim/collectibletest.js && node sim/levelroutetest.js",
     "qa:level": "node sim/levelcheck.js",
     "qa:checklist": "node sim/checklistcheck.js",
+    "qa:navigation": "node sim/navigationcheck.js",
     "sim:touch": "node sim/touchtest.js",
     "qa:mobile": "node sim/mobilecheck.js",
     "sim:bottlecaps": "node sim/bottlecaptest.js",

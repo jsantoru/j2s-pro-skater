@@ -16,6 +16,7 @@ import { lightWarehouse } from './atmosphere.js';
 import { GOALS, GoalProgress, GoalRun } from './goals.js';
 import { Collectibles } from './collectibles.js';
 import { LevelUI } from './level-ui.js';
+import { FrontEnd } from './front-end.js';
 import { SessionClock } from './session.js';
 
 const RUN_TIME = 120;
@@ -70,10 +71,15 @@ progress.record({ score: highScores.best });
 const goals = new GoalRun(progress);
 const collectibles = new Collectibles(scene);
 const sessionClock = new SessionClock(RUN_TIME);
-const levelUI = new LevelUI(GOALS, { onStart: startRun, onBoard: showGoalBoard });
+const levelUI = new LevelUI(GOALS, { onStart: startRun, onBoard: showGoalBoard, onLevels: showLevelSelect, onHome: showHome });
+const frontEnd = new FrontEnd({
+  onLevels: showLevelSelect, onHome: showHome,
+  onLevel: id => { if (id === 'genesee-warehouse') showGoalBoard(); },
+  onControls: () => hud.toggleControls(true), onSettings: () => hud.toggleSettings(true),
+});
 
 // ---- game state ----
-let mode = 'title'; // title | playing | over
+let mode = 'home'; // home | levels | title (goal board) | playing | over
 let runMode = 'goals', focusGoal = GOALS[0].id;
 let bankedThisStep = false;
 let accumulator = 0, last = performance.now(), visualTime = 0;
@@ -166,6 +172,8 @@ hud.onRestart = () => {
   startRun(runMode, levelUI.selectedGoal);
 };
 hud.onBoard = () => showGoalBoard();
+hud.onLevels = () => showLevelSelect();
+hud.onHome = () => showHome();
 
 function handleGoalEvents(events) {
   for (const event of events) {
@@ -181,6 +189,7 @@ function handleGoalEvents(events) {
 }
 
 function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
+  frontEnd.hide();
   hud.toggleSettings(false);
   if (!audio.enabled) audio.init();
   input.stopHaptics();
@@ -215,6 +224,7 @@ function startRun(selectedMode = 'goals', selectedGoal = levelUI.selectedGoal) {
 function endRun() {
   if (mode !== 'playing') return;
   mode = 'over';
+  frontEnd.hide();
   sessionClock.finish();
   const result = goals.finish();
   input.setMenuOpen(true);
@@ -232,26 +242,51 @@ function endRun() {
   collectibles.update(0, false, camera);
 }
 
-function showGoalBoard() {
-  mode = 'title';
+// Every route out of a session uses the same cleanup. Completed career goals are
+// already saved at the moment they are earned; an unfinished combo is discarded.
+function enterMenu(nextMode) {
+  mode = nextMode;
   sessionClock.finish();
   goals.finish();
-  hud.toggleSettings(false);
   hud.setMode(mode);
   document.body.dataset.mode = mode;
+  hud.toggleSettings(false);
+  hud.toggleControls(false);
   input.setMenuOpen(true);
   touchControls.setActive(false);
   input.stopHaptics();
-  hud.toggleControls(false);
+  for (const k of EDGES) pending[k] = false;
   hud.combo('', 0, 0);
   hud.balance(false, 0, false);
+  hud.toastTimer = 0;
+  hud.el.toast.classList.remove('show');
   fx.clear();
   skater.reset();
   followCam.snap(skater);
   collectibles.update(0, false, camera);
-  levelUI.showBoard(progress.snapshot());
+  levelUI.hide();
+  frontEnd.hide();
   audio.setPaused(true);
+  document.body.dataset.paused = 'false';
   accumulator = 0; last = performance.now();
+}
+function showHome() {
+  enterMenu('home');
+  frontEnd.showHome(progress.snapshot());
+  document.getElementById('boot-screen').hidden = true;
+}
+function showLevelSelect() {
+  enterMenu('levels');
+  frontEnd.showLevels(progress.snapshot());
+}
+function showGoalBoard() {
+  enterMenu('title');
+  levelUI.showBoard(progress.snapshot());
+}
+function navigateBack() {
+  if (mode === 'over') showGoalBoard();
+  else if (mode === 'title') showLevelSelect();
+  else if (mode === 'levels') showHome();
 }
 document.getElementById('overlay-controls').addEventListener('click', (event) => {
   hud.toggleControls(); event.currentTarget.blur();
@@ -265,7 +300,7 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 followCam.snap(skater);
-showGoalBoard();
+showHome();
 
 // Losing the tab must never burn a run or leave a held direction skating unattended.
 window.addEventListener('blur', () => { if (mode === 'playing') hud.toggleSettings(true); });
@@ -295,18 +330,20 @@ function frame(now) {
     renderer.render(scene, camera);
     return;
   }
-  if (inp.pausePressed || (inp.startPressed && mode === 'playing')) {
-    hud.toggleSettings(true);
+  if (inp.pausePressed || (inp.startPressed && mode === 'playing') || (inp.menuCancel && mode !== 'playing')) {
+    if (mode === 'playing' || (mode === 'home' && inp.pausePressed)) hud.toggleSettings(true);
+    else navigateBack();
     renderer.render(scene, camera);
     return;
   }
   input.hapticsBegin();
-  if (inp.selectPressed) {
+  if (inp.selectPressed && !frontEnd.isOpen) {
     hud.toggleControls(true);
     renderer.render(scene, camera);
     return;
   }
-  if (mode !== 'playing') levelUI.updateMenuInput(inp);
+  if (mode === 'home' || mode === 'levels') frontEnd.updateMenuInput(inp);
+  else if (mode !== 'playing') levelUI.updateMenuInput(inp);
   visualTime += dt;
   levelUI.tick?.(dt);
 
@@ -334,12 +371,19 @@ function frame(now) {
   fx.update(dt, skater);
   collectibles.update(dt, mode === 'playing' && runMode === 'goals' && !sessionClock.overtime, camera);
   atmosphere.update(visualTime);
-  if (mode === 'title') {
+  if (mode === 'home' || mode === 'levels' || mode === 'title') {
     // A slow establishing shot gives the title the same rendered park as gameplay.
     const t = reducedMotion.matches ? 0 : visualTime * 0.035;
-    camera.position.set(-16 + Math.sin(t) * 3, 4.1, 18 + Math.cos(t) * 2);
-    camera.lookAt(5, 1.4, -4);
-    camera.fov = 56; camera.updateProjectionMatrix();
+    if (mode === 'home') {
+      camera.position.set(-9 + Math.sin(t) * 1.6, 3.1, 23 + Math.cos(t) * 0.7);
+      camera.lookAt(4.5, 1.25, 2);
+      camera.fov = 58;
+    } else {
+      camera.position.set(-16 + Math.sin(t) * 3, 4.1, 18 + Math.cos(t) * 2);
+      camera.lookAt(5, 1.4, -4);
+      camera.fov = 56;
+    }
+    camera.updateProjectionMatrix();
   }
   // Crouching loads the low motor progressively so ollie charge can be felt before the pop.
   // It mixes with grind texture when charging an ollie off a rail.
@@ -379,5 +423,5 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, level, input, touchControls, character, followCam, startRun, endRun, showGoalBoard, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx, goals, progress, collectibles, levelUI, sessionClock,
+window.__game = { skater, level, input, touchControls, character, followCam, startRun, endRun, showHome, showLevelSelect, showGoalBoard, highScores, settings, audio, renderer, scene, camera, floorSurface, atmosphere, fx, goals, progress, collectibles, levelUI, frontEnd, sessionClock,
   get session() { return { mode, runMode, focusGoal, paused: hud.settingsOpen || hud.controlsOpen, timeLeft: sessionClock.remaining, overtime: sessionClock.overtime, visualTime }; } };

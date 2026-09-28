@@ -1,0 +1,510 @@
+{
+  "environment": "Headless Edge CDP mobile/touch emulation; no physical-device validation",
+  "checks": [
+    {
+      "name": "mobile browser advertises touch/coarse input and uses lighter rendering",
+      "passed": true,
+      "detail": {
+        "maxTouchPoints": 5,
+        "coarse": true,
+        "touch": true,
+        "shadows": false,
+        "pixelRatio": 1,
+        "mode": "title"
+      }
+    },
+    {
+      "name": "touch selects a goal without launching and starts the chosen run",
+      "passed": true,
+      "detail": {
+        "width": 844,
+        "height": 390,
+        "controls": [
+          {
+            "selector": "#touch-stick",
+            "left": 20,
+            "right": 140,
+            "top": 243,
+            "bottom": 363,
+            "width": 120,
+            "height": 120,
+            "hit": true
+          },
+          {
+            "selector": "#touch-ollie",
+            "left": 719,
+            "right": 783,
+            "top": 308,
+            "bottom": 372,
+            "width": 64,
+            "height": 64,
+            "hit": true
+          },
+          {
+            "selector": "#touch-flip",
+            "left": 676,
+            "right": 724,
+            "top": 253,
+            "bottom": 301,
+            "width": 48,
+            "height": 48,
+            "hit": true
+          },
+          {
+            "selector": "#touch-grab",
+            "left": 778,
+            "right": 826,
+            "top": 253,
+            "bottom": 301,
+            "width": 48,
+            "height": 48,
+            "hit": true
+          },
+          {
+            "selector": "#touch-grind",
+            "left": 726,
+            "right": 776,
+            "top": 198,
+            "bottom": 248,
+            "width": 50,
+            "height": 50,
+            "hit": true
+          },
+          {
+            "selector": "#touch-revert",
+            "left": 676,
+            "right": 720,
+            "top": 198,
+            "bottom": 242,
+            "width": 44,
+            "height": 44,
+            "hit": true
+          },
+          {
+            "selector": "#start-btn",
+            "left": 759.75,
+            "right": 832,
+            "top": 10,
+            "bottom": 54,
+            "width": 72.25,
+            "height": 44,
+            "hit": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "native touch joystick steers the actual skater and returns to neutral",
+      "passed": true,
+      "detail": {
+        "state": "ride",
+        "crouching": false,
+        "steer": 1,
+        "push": 0,
+        "ollie": false,
+        "grab": false,
+        "grind": false,
+        "trick": null,
+        "score": 0,
+        "pos": [
+          -3.8599932691086902,
+          -3.1186187916238753e-15,
+          14.045010427867911
+        ]
+      }
+    },
+    {
+      "name": "three-finger stick/ollie/flip releases into a real airborne trick and banked landing",
+      "passed": true,
+      "detail": {
+        "airborne": {
+          "state": "air",
+          "crouching": false,
+          "steer": 0,
+          "push": 0,
+          "ollie": false,
+          "grab": false,
+          "grind": false,
+          "trick": "Kickflip",
+          "score": 0,
+          "pos": [
+            -2.2508948105918813,
+            0.2079583333333303,
+            14
+          ]
+        },
+        "landed": {
+          "state": "ride",
+          "crouching": false,
+          "steer": 0,
+          "push": 0,
+          "ollie": false,
+          "grab": false,
+          "grind": false,
+          "trick": null,
+          "score": 100,
+          "pos": [
+            2.8847577798824675,
+            -3.1086244689504383e-15,
+            14
+          ]
+        }
+      }
+    },
+    {
+      "name": "grab can remain held as ollie is released and banks after a clean landing",
+      "passed": true,
+      "detail": {
+        "held": {
+          "state": "air",
+          "crouching": false,
+          "steer": 0,
+          "push": 0,
+          "ollie": false,
+          "grab": true,
+          "grind": false,
+          "trick": "Indy",
+          "score": 0,
+          "pos": [
+            -0.8360011138406076,
+            1.5706249999999964,
+            14
+          ]
+        },
+        "landed": {
+          "state": "ride",
+          "crouching": false,
+          "steer": 0,
+          "push": 0,
+          "ollie": false,
+          "grab": false,
+          "grind": false,
+          "trick": null,
+          "score": 300,
+          "pos": [
+            3.250052034950194,
+            -3.1086244689504383e-15,
+            14
+          ]
+        }
+      }
+    },
+    {
+      "name": "grind touch arms assistance and release leaves no held button",
+      "passed": true
+    },
+    {
+      "name": "revert touch toggles ground stance exactly once while held",
+      "passed": true
+    },
+    {
+      "name": "native touch cancellation clears all controls without a phantom ollie",
+      "passed": true,
+      "detail": {
+        "state": "ride",
+        "crouching": false,
+        "steer": 0,
+        "push": 0,
+        "ollie": false,
+        "grab": false,
+        "grind": false,
+        "trick": null,
+        "score": 0,
+        "pos": [
+          -3.322944767479473,
+          -3.2419008954441468e-15,
+          14.600223664694337
+        ]
+      }
+    },
+    {
+      "name": "single-finger menus activate once and dragging a secondary menu touch cancels it",
+      "passed": true
+    },
+    {
+      "name": "held finger through touch pause/resume stays canceled and paused simulation freezes",
+      "passed": true,
+      "detail": {
+        "state": "ride",
+        "crouching": false,
+        "steer": 0,
+        "push": 0,
+        "ollie": false,
+        "grab": false,
+        "grind": false,
+        "trick": null,
+        "score": 0,
+        "pos": [
+          -2.6958724427147187,
+          -3.1086244689504383e-15,
+          14
+        ]
+      }
+    },
+    {
+      "name": "touch restart restores a clean run and resets held touch state",
+      "passed": true
+    },
+    {
+      "name": "orientation change cancels the gesture and portrait controls fit without overlap",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "height": 844,
+        "controls": [
+          {
+            "selector": "#touch-stick",
+            "left": 20,
+            "right": 140,
+            "top": 685,
+            "bottom": 805,
+            "width": 120,
+            "height": 120,
+            "hit": true
+          },
+          {
+            "selector": "#touch-ollie",
+            "left": 265,
+            "right": 329,
+            "top": 762,
+            "bottom": 826,
+            "width": 64,
+            "height": 64,
+            "hit": true
+          },
+          {
+            "selector": "#touch-flip",
+            "left": 222,
+            "right": 270,
+            "top": 707,
+            "bottom": 755,
+            "width": 48,
+            "height": 48,
+            "hit": true
+          },
+          {
+            "selector": "#touch-grab",
+            "left": 324,
+            "right": 372,
+            "top": 707,
+            "bottom": 755,
+            "width": 48,
+            "height": 48,
+            "hit": true
+          },
+          {
+            "selector": "#touch-grind",
+            "left": 272,
+            "right": 322,
+            "top": 652,
+            "bottom": 702,
+            "width": 50,
+            "height": 50,
+            "hit": true
+          },
+          {
+            "selector": "#touch-revert",
+            "left": 222,
+            "right": 266,
+            "top": 652,
+            "bottom": 696,
+            "width": 44,
+            "height": 44,
+            "hit": true
+          },
+          {
+            "selector": "#start-btn",
+            "left": 305.75,
+            "right": 378,
+            "top": 10,
+            "bottom": 54,
+            "width": 72.25,
+            "height": 44,
+            "hit": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "portrait board starts via touch and free skate retains the touch controls",
+      "passed": true,
+      "detail": {
+        "width": 390,
+        "height": 844,
+        "controls": [
+          {
+            "selector": "#touch-stick",
+            "left": 20,
+            "right": 140,
+            "top": 685,
+            "bottom": 805,
+            "width": 120,
+            "height": 120,
+            "hit": true
+          },
+          {
+            "selector": "#touch-ollie",
+            "left": 265,
+            "right": 329,
+            "top": 762,
+            "bottom": 826,
+            "width": 64,
+            "height": 64,
+            "hit": true
+          },
+          {
+            "selector": "#touch-flip",
+            "left": 222,
+            "right": 270,
+            "top": 707,
+            "bottom": 755,
+            "width": 48,
+            "height": 48,
+            "hit": true
+          },
+          {
+            "selector": "#touch-grab",
+            "left": 324,
+            "right": 372,
+            "top": 707,
+            "bottom": 755,
+            "width": 48,
+            "height": 48,
+            "hit": true
+          },
+          {
+            "selector": "#touch-grind",
+            "left": 272,
+            "right": 322,
+            "top": 652,
+            "bottom": 702,
+            "width": 50,
+            "height": 50,
+            "hit": true
+          },
+          {
+            "selector": "#touch-revert",
+            "left": 222,
+            "right": 266,
+            "top": 652,
+            "bottom": 696,
+            "width": 44,
+            "height": 44,
+            "hit": true
+          },
+          {
+            "selector": "#start-btn",
+            "left": 305.75,
+            "right": 378,
+            "top": 10,
+            "bottom": 54,
+            "width": 72.25,
+            "height": 44,
+            "hit": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "desktop input keeps the touch overlay hidden by default",
+      "passed": true
+    },
+    {
+      "name": "explicit touch override displays the controls on desktop",
+      "passed": true,
+      "detail": {
+        "width": 1440,
+        "height": 900,
+        "controls": [
+          {
+            "selector": "#touch-stick",
+            "left": 20,
+            "right": 140,
+            "top": 741,
+            "bottom": 861,
+            "width": 120,
+            "height": 120,
+            "hit": true
+          },
+          {
+            "selector": "#touch-ollie",
+            "left": 1315,
+            "right": 1379,
+            "top": 818,
+            "bottom": 882,
+            "width": 64,
+            "height": 64,
+            "hit": true
+          },
+          {
+            "selector": "#touch-flip",
+            "left": 1272,
+            "right": 1320,
+            "top": 763,
+            "bottom": 811,
+            "width": 48,
+            "height": 48,
+            "hit": true
+          },
+          {
+            "selector": "#touch-grab",
+            "left": 1374,
+            "right": 1422,
+            "top": 763,
+            "bottom": 811,
+            "width": 48,
+            "height": 48,
+            "hit": true
+          },
+          {
+            "selector": "#touch-grind",
+            "left": 1322,
+            "right": 1372,
+            "top": 708,
+            "bottom": 758,
+            "width": 50,
+            "height": 50,
+            "hit": true
+          },
+          {
+            "selector": "#touch-revert",
+            "left": 1272,
+            "right": 1316,
+            "top": 708,
+            "bottom": 752,
+            "width": 44,
+            "height": 44,
+            "hit": true
+          },
+          {
+            "selector": "#start-btn",
+            "left": 1355.75,
+            "right": 1428,
+            "top": 10,
+            "bottom": 54,
+            "width": 72.25,
+            "height": 44,
+            "hit": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "touch flows complete without JavaScript, console, network or GL errors",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "browserErrors": [],
+  "screenshotsCaptured": [
+    "board-landscape.png",
+    "playing-landscape.png",
+    "touch-kickflip.png",
+    "touch-paused.png",
+    "playing-portrait.png",
+    "board-portrait.png",
+    "free-skate-portrait.png",
+    "desktop-default.png"
+  ],
+  "artifactsNote": "Regression captures were reviewed in a temporary directory. This folder retains the navigation screenshots and these regression results."
+}

@@ -95,7 +95,13 @@ async function shot(name) {
 }
 async function boot() {
   for (let i = 0; i < 150; i++) {
-    if (await evaluate('Boolean(window.__game?.goals)')) { await step(2); return; }
+    if (await evaluate('Boolean(window.__game?.goals)')) {
+      await step(2);
+      const activate=await evaluate("matchMedia('(pointer: coarse)').matches")?touchTap:mouseClick;
+      if (await evaluate('__game.session.mode === "home"')) await activate('#fe-play');
+      if (await evaluate('__game.session.mode === "levels"')) await activate('#fe-level-genesee');
+      return;
+    }
     await sleep(100);
   }
   throw Error('The mobile game did not initialize');

@@ -24,10 +24,12 @@ const targetLabel = (goal) => goal.type === 'score' || goal.type === 'combo' ? f
 const RUN_NAMES = { 'high-score': 'High Score', 'pro-score': 'Pro Score', 'sick-score': 'Sick Score', combo: 'Big Combo', skate: 'SKATE', caps: 'Bottle Caps', tape: 'Secret Tape' };
 
 export class LevelUI {
-  constructor(goals, { onStart, onBoard } = {}) {
+  constructor(goals, { onStart, onBoard, onLevels, onHome } = {}) {
     this.goals = goals;
     this.onStart = onStart;
     this.onBoard = onBoard;
+    this.onLevels = onLevels;
+    this.onHome = onHome;
     this.selectedGoal = goals[0]?.id || 'high-score';
     this.progress = { completed: [], bestScore: 0, bestCombo: 0 };
     this.display = null;
@@ -79,6 +81,8 @@ export class LevelUI {
       if (this.onBoard) this.onBoard();
       else this.showBoard(this.progress);
     });
+    $('level-select-nav').addEventListener('click', () => this.onLevels?.());
+    $('home-nav').addEventListener('click', () => this.onHome?.());
     window.addEventListener('keydown', (event) => {
       if (!this.acceptsInput) return;
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) {
@@ -90,7 +94,7 @@ export class LevelUI {
 
   get isOpen() { return this.display !== null && !$('overlay').classList.contains('hidden'); }
   get acceptsInput() {
-    return this.isOpen && $('settings-panel').classList.contains('hidden') && $('controls-panel').classList.contains('hidden');
+    return this.isOpen && !$('overlay').inert && $('settings-panel').classList.contains('hidden') && $('controls-panel').classList.contains('hidden');
   }
   buttons() {
     return [...$('overlay').querySelectorAll('button, summary')].filter(button => !button.disabled && !button.hidden && !button.closest('.hidden'));
