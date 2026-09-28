@@ -178,6 +178,39 @@ try {
     await step(25);await shot('roc-gameplay-entry');return result;
   });
 
+  await check('controller ollie captures the seven-stair rail downhill and banks the landing',async()=>{
+    // Place one fixture on the real approach; the controller, game loop, camera,
+    // character and score display handle the entire ollie/grind/landing.
+    await evaluate(`__game.selectLevel('roc-city-skatepark');__game.startRun('free');__qa.connectPad();
+      {const s=__game.skater;s.pos.set(10,1.26,-27.4);s.heading.set(0,0,1);s.facing.copy(s.heading);s.vel.set(0,0,7);s.speed=7;}`);
+    await step();
+    const capture=await evaluate(`(async()=>{
+      const s=__game.skater;__qa.button(0,true);__qa.button(3,true);
+      let released=false;const trace=[];
+      for(let frame=0;frame<180;frame++){
+        if(!released&&s.pos.z>=-25){__qa.button(0,false);released=true;}
+        await __qa.step();
+        if(frame%6===0)trace.push([frame,s.state,+s.pos.z.toFixed(2),+s.pos.y.toFixed(2),+s.speed.toFixed(2),__game.input.state.ollie,__game.input.state.grind]);
+        if(s.state==='bail')return{state:s.state,reason:s.bailReason};
+        if(s.state==='grind')return{state:s.state,dir:s.grind.dir,railX:s.grind.rail.a.x,railZ:s.grind.rail.a.z,position:s.pos.toArray(),trick:s.grind.name};
+      }
+      return{state:s.state,position:s.pos.toArray(),trace};
+    })()`);
+    assert.equal(capture.state,'grind',JSON.stringify(capture));assert.equal(capture.dir,1);
+    assert.equal(capture.railX,10);assert.ok(capture.railZ>-21&&capture.railZ<-20);
+    await shot('roc-seven-stair-grind');
+    const landing=await evaluate(`(async()=>{
+      __qa.button(0,false);__qa.button(3,false);
+      for(let frame=0;frame<180;frame++){
+        await __qa.step();const s=__game.skater;
+        if(s.state==='bail'||(s.state==='ride'&&s.score>0))return{state:s.state,score:s.score,position:s.pos.toArray()};
+      }
+      return{state:__game.skater.state,score:__game.skater.score};
+    })()`);
+    assert.equal(landing.state,'ride',JSON.stringify(landing));assert.ok(landing.score>0);
+    await evaluate('__qa.pad=null;__game.startRun("goals")');await step();return{capture,landing};
+  });
+
   await check('rendered park reference views show connected bowl, street and bridge geometry',async()=>{
     assert.equal(await evaluate('__game.session.levelId'),'roc-city-skatepark');
     await evaluate('window.__qaHidden=[]; for(const e of document.body.children){if(e.id!=="game"&&e.tagName!=="SCRIPT"){__qaHidden.push([e,e.style.display]);e.style.display="none";}} __game.character.root.visible=false;__game.collectibles.group.visible=false;');

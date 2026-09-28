@@ -58,3 +58,30 @@ Validation: production build, 13 geometry/gameplay checks, 5 surroundings checks
 and desktop/mobile bridge-clearance checks passed. The new SKATE route takes
 18.39 seconds with no bails. The deterministic score route banks 42,250 in 42.82
 seconds with two recoverable bails and a 9,000-point best combo.
+
+## Pass 2 — geometry and rideability
+
+Every A–L feature was checked from its ground-level view and with input-driven
+approach/transition/exit routes. The full footprint scan found no unsupported
+interior samples. Visible topography and physical support agree, including the
+trail, stair landing, bridge columns and lower promenade.
+
+Two defects were corrected. ROC's rail magnet now projects onto sloped rails
+using horizontal position, preventing a high ollie from being pulled backward
+uphill. The older Warehouse calculation remains unchanged. The mini coping's
+visual tube and grind center moved 2 cm onto the deck side of the lip (within its
+4.5 cm radius), so automatic exits land on the deck rather than the nearly
+vertical transition.
+
+All 15 input-driven geometry checks pass. Both directions were checked on the
+mini lips, bowl coping, curved F ledges, H front coping/back rail and both L
+quarters. See `screenshots/roc-accuracy/pass2-physics.json` for feature coverage
+and grind durations. The 13 route/goal, 5 surroundings and 6 linked-rail checks
+also pass. Warehouse routes/feel/reverts, touch and progression regressions pass.
+
+A production-browser controller run charges/releases an ollie, catches E's rail
+downhill and banks 130 on landing. Its actual game screenshot and result are in
+`screenshots/roc-accuracy/pass2-browser/`. Holding Ollie accelerates the skater;
+this route releases earlier than a speed-regulated simulation fixture. The full
+pass-1 browser suite also passed level switching, independent saves/reload,
+stable resource counts and phone controls.

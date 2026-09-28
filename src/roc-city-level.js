@@ -132,6 +132,7 @@ export class RocCityLevel {
     this.mats.poolTile=new THREE.MeshStandardMaterial({color:0x3d514e,roughness:.42});
     this.spawn={pos:new THREE.Vector3(2,1.62,-44),heading:new THREE.Vector3(0,0,1)};
     this.bailFloorY=-3;
+    this.horizontalRailCapture=true;
     this.layout=ROC_CITY_LAYOUT;this.features=ROC_CITY_LAYOUT.features;this.bounds=ROC_CITY_LAYOUT.bounds;
     this.menuCamera={position:[-38,28,38],target:[-1,0,-3],fov:61};
     this.build();this.group.updateMatrixWorld(true);
@@ -256,7 +257,10 @@ export class RocCityLevel {
     this.mini=this.add(new THREE.Mesh(geometry,this.mats.concrete),true,false);
     this.mini.name='B — Embedded diagonal mini-ramp with clear flat bottom';this.mini.userData.feature='B';
     for(const sign of [-1,1]){
-      const rail=this.addRail(v(point(sign*(m.flatHalf+H),-half,H+.035)),v(point(sign*(m.flatHalf+H),half,H+.035)),'coping',{color:this.mats.rocYellow,radius:.045});
+      // Seat the coping center on the deck side of the lip. Its 45 mm radius
+      // still covers the seam, while endpoint exits land on the flat apron.
+      const lip=sign*(m.flatHalf+H+.02);
+      const rail=this.addRail(v(point(lip,-half,H+.035)),v(point(lip,half,H+.035)),'coping',{color:this.mats.rocYellow,radius:.045});
       rail.feature='B';
     }
     // The short raised extension sits on the deck, outside the riding lane.

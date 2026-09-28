@@ -660,7 +660,13 @@ export class Skater {
       if (assist && this.vel.y > 3.5 && !(opts && opts.anyVy)) continue;
       if (r.kind === 'coping' && !assist) continue;
       _v.copy(this.pos).sub(r.a);
-      let t = _v.dot(r.dir) / r.len;
+      // ROC's long sloped handrails use the rider's horizontal position. A
+      // 3D projection of a high ollie shifts the target uphill and can make the
+      // magnet reverse travel before touchdown. Older parks retain their feel.
+      const horizontal = r.dir.x * r.dir.x + r.dir.z * r.dir.z;
+      let t = this.level.horizontalRailCapture && horizontal > 1e-8
+        ? (_v.x * r.dir.x + _v.z * r.dir.z) / (r.len * horizontal)
+        : _v.dot(r.dir) / r.len;
       if (t < -0.02 || t > 1.02) continue;
       t = Math.max(0, Math.min(1, t));
       const along = this.vel.x * r.dir.x + this.vel.z * r.dir.z;

@@ -19,7 +19,7 @@
     "qa:level": "node sim/levelcheck.js",
     "qa:checklist": "node sim/checklistcheck.js",
     "qa:navigation": "node sim/navigationcheck.js",
-    "sim:roccity": "node sim/roccitytest.js && node sim/levelprogresstest.js && node sim/levelbailtest.js && node sim/linkedrailtest.js && node sim/rocarttest.js",
+    "sim:roccity": "node sim/roccitytest.js && node sim/rocgeometrytest.js && node sim/rocsupporttest.js && node sim/levelprogresstest.js && node sim/levelbailtest.js && node sim/linkedrailtest.js && node sim/rocarttest.js",
     "qa:roccity": "node sim/roccitycheck.js",
     "qa:roc-accuracy": "node sim/rocaccuracycheck.js",
     "sim:roc-support": "node sim/rocsupporttest.js",
