@@ -5,6 +5,7 @@ import { handGeometry } from './hand-art.js';
 import { skaterMaterials } from './skater-materials.js';
 import { addBeard, addShaggyHair } from './groom-art.js';
 import { geneseeMarkPath } from './genesee-mark.js';
+import { buildAaronClothes, addAaronBeard, addAaronGlasses } from './aaron-art.js';
 
 const mat = (color, roughness = 0.85, metalness = 0) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
 function mesh(parent, geometry, material, x = 0, y = 0, z = 0) {
@@ -27,7 +28,7 @@ function smoothRingSeams(g, segments, rows, columnMajor = false) {
   }
 }
 // Elliptical rings give fabric a shaped silhouette and small folds without changing any rig pivots.
-function garment(parent, rings, material, zScale = 1, foldAmount = 0.023, segments = 24) {
+function garment(parent, rings, material, zScale = 1, foldAmount = 0.023, segments = 24, opening = 0) {
   // Interpolate the tailoring profiles so folds and shoulders shade as cloth,
   // rather than a stack of straight-sided cones.
   const profile = new THREE.CatmullRomCurve3(rings.map(r => new THREE.Vector3(r[0], r[1], r[2])), false, 'catmullrom', 0.25);
@@ -41,7 +42,8 @@ function garment(parent, rings, material, zScale = 1, foldAmount = 0.023, segmen
   for (let r = 0; r < rings.length; r++) {
     const [y, rx, rz, centerZ = 0, centerX = 0] = rings[r];
     for (let i = 0; i <= segments; i++) {
-      const a = i / segments * Math.PI * 2;
+      const gap=typeof opening==='function'?opening(y):opening;
+      const a = gap?Math.PI/2+gap+i/segments*(Math.PI*2-gap*2):i / segments * Math.PI * 2;
       const denim = material.name === 'Worn indigo denim';
       const fleece = material.name.includes('hoodie fleece');
       const gather = denim ? Math.exp(-(((y + 0.75) / 0.085) ** 2)) + 0.55 * Math.exp(-(((y + 0.42) / 0.07) ** 2))
@@ -60,7 +62,7 @@ function garment(parent, rings, material, zScale = 1, foldAmount = 0.023, segmen
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3));
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(indices); g.computeVertexNormals();
-  smoothRingSeams(g, segments, rings.length);
+  if(!opening)smoothRingSeams(g, segments, rings.length);
   return mesh(parent, g, material);
 }
 
@@ -198,7 +200,7 @@ export function buildDetailedBoard(parent) {
   return board;
 }
 
-function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
+function buildConnectedHead(rig, { skin, cap, hair, eye, cloth, aaron=false }) {
   // Both bones share the existing head pivot. The lower neck stays with the torso,
   // while the upper neck blends into the animated head: no separate cylinder or jaw seam.
   const anchor = new THREE.Bone(); anchor.position.y = 0.5; rig.torso.add(anchor);
@@ -269,7 +271,7 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   headSurface.frustumCulled = false; rig.torso.add(headSurface);
   rig.root.updateMatrixWorld(true);
   headSurface.bind(new THREE.Skeleton([anchor, rig.head]));
-  addBeard(rig, headSurface, rings);
+  if(aaron)addAaronBeard(rig,headSurface,rings);else addBeard(rig, headSurface, rings);
 
   // Brow, cheek planes and a shaped nose give the face adult proportions.
   // The bridge and tip now belong to the face mesh, not a separate pasted-on wedge.
@@ -334,9 +336,9 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
     const brow = rounded(rig.head, 0.027, 0.003, 0.003, hair, side * 0.033, 0.155, 0.075, 0.001); brow.rotation.z = side * 0.09;
   }
 
-  hair.roughness = 0.91; hair.color.setHex(0x785034);
+  hair.roughness = 0.91; hair.color.setHex(aaron?0x4f514b:0x785034);
   hair.map = canvasMap((c, s, rng) => {
-    c.fillStyle = '#cfbda8'; c.fillRect(0, 0, s, s);
+    c.fillStyle = aaron?'#b6b8b0':'#cfbda8'; c.fillRect(0, 0, s, s);
     for (let i = 0; i < 1500; i++) {
       const x = rng() * s, y = rng() * s;
       c.strokeStyle = rng() > 0.5 ? 'rgba(30,22,18,0.20)' : 'rgba(235,216,180,0.16)';
@@ -373,11 +375,11 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   }
   hairGeo.computeVertexNormals(); smoothRingSeams(hairGeo, 48, 17);
   mesh(rig.head, hairGeo, hair).name = 'Tailored hairline';
-  addShaggyHair(rig, skullAt, hair);
+  if(!aaron)addShaggyHair(rig, skullAt, hair);
 
   cap.roughness = 0.94; cap.bumpMap = cloth; cap.bumpScale = 0.0008;
   cap.map = canvasMap((c, s, rng) => {
-    c.fillStyle = '#c2b5aa'; c.fillRect(0, 0, s, s);
+    c.fillStyle = aaron?'#d0cfb6':'#c2b5aa'; c.fillRect(0, 0, s, s);
     for (let i = 0; i < 18000; i++) {
       c.fillStyle = `rgba(35,25,22,${rng() * 0.1})`; c.fillRect(rng() * s, rng() * s, 1, 1);
     }
@@ -421,7 +423,7 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   const bp = [], buv = [], bi = [], across = 24, along = 8, count = (across + 1) * (along + 1);
   for (let layer = 0; layer < 2; layer++) for (let j = 0; j <= along; j++) for (let i = 0; i <= across; i++) {
     const u = i / across * 2 - 1, t = j / along;
-    bp.push(u * (0.068 + t * 0.025), 0.173 - t * 0.011 - u * u * (0.005 + t * 0.010) - layer * 0.0022,
+    bp.push(u * (0.068 + t * 0.025), 0.173 - t * 0.011 - u * u * (0.005 + t * 0.010) - layer * 0.0022 - (aaron?.005:0),
       0.038 + t * (0.052 + 0.058 * Math.sqrt(Math.max(0, 1 - u * u))));
     buv.push(i / across, t);
   }
@@ -445,6 +447,7 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   brimGeo.addGroup(surfaceCount * 2, bi.length - surfaceCount * 2, 0); brimGeo.computeVertexNormals();
   mesh(hat, brimGeo, [cap, mat(0x191b1e, 0.98)]);
   oval(hat, 0.0055, 0.002, 0.0055, cap, 0, 0.2695, -0.008);
+  if(!aaron){
   const badge = mat(0xffffff, 0.98);
   badge.map = canvasMap((c, s) => {
     c.fillStyle = '#25282b'; c.fillRect(0, 0, s, s); c.strokeStyle = '#666b70'; c.lineWidth = 5; c.strokeRect(12, 12, s - 24, s - 24);
@@ -452,14 +455,16 @@ function buildConnectedHead(rig, { skin, cap, hair, eye, cloth }) {
   }, 256);
   const patch = mesh(hat, new THREE.PlaneGeometry(0.035, 0.018), badge, 0, 0.209, 0.085);
   patch.rotation.x = -0.30;
+  }else addAaronGlasses(rig.head);
   // Increase the adult head/body ratio after binding: the neck blends into the
   // larger head while the collar remains fixed to the torso.
   rig.head.scale.setScalar(1.10);
 }
 
-export function buildDetailedBody(rig) {
-  const { skin, shoe, shirt, pants, sole, sock, rib } = skaterMaterials();
-  const cap = mat(0x383736), hair = mat(0x392c24), eye = mat(0x302a27, .5);
+export function buildDetailedBody(rig,characterId='joe') {
+  const aaron=characterId==='aaron',materials=skaterMaterials(characterId);
+  const { skin, shoe, shirt, pants, sole, sock, rib } = materials;
+  const cap = mat(aaron?0x85895b:0x383736), hair = mat(0x392c24), eye = mat(0x302a27, .5);
   const cloth = shirt.normalMap;
   rig.hips = new THREE.Bone(); rig.body.add(rig.hips);
   rounded(rig.hips, .265, .16, .17, pants, 0, .02, 0, .065);
@@ -481,6 +486,8 @@ export function buildDetailedBody(rig) {
     cloth.bind(new THREE.Skeleton([rig.hips, rig.torso]));
     return cloth;
   };
+  if(aaron)buildAaronClothes(rig,materials,{garment,garmentUV,mesh,anchorHem});
+  else {
   const hoodie = garmentUV(garment(rig.torso, [
     [-.105,.180,.123],[-.06,.183,.125],[.035,.181,.123],[.13,.178,.120],
     [.25,.182,.115],[.35,.191,.111],[.40,.188,.103],[.443,.14,.082],[.47,.064,.058],
@@ -550,7 +557,8 @@ export function buildDetailedBody(rig) {
     mesh(rig.torso,new THREE.TubeGeometry(line,18,.0024,6,false),cord).name='Cotton hood drawstring';
     mesh(rig.torso,new THREE.CylinderGeometry(.0027,.0027,.013,8),aglet,side*.042,.294+side*.007,cordPoints[3].z).name='Drawstring aglet';
   }
-  buildConnectedHead(rig, { skin, cap, hair, eye, cloth });
+  }
+  buildConnectedHead(rig, { skin, cap, hair, eye, cloth, aaron });
   const arm = (side) => {
     const sh = new THREE.Bone(); sh.position.set(side * 0.177, 0.392, 0); rig.torso.add(sh);
     const el = new THREE.Bone(); el.position.y = -0.29; sh.add(el);
@@ -558,9 +566,9 @@ export function buildDetailedBody(rig) {
       [.023,0,0,0,-side*.023],[.012,.032,.033,0,-side*.013],[-.025,.062,.062],[-.08,.073,.068],[-.18,.065,.061],
       [-.26,.059,.056],[-.29,.057,.053],[-.33,.059,.055],[-.40,.052,.049],
       [-.47,.043,.042],[-.507,.035,.035],[-.52,.03,.031],[-.535,.027,.028],
-    ],shirt,.29,.018,rig.torso);garmentUV(sleeve,.023,-.535);sleeve.name='Continuous hoodie sleeve';
+    ],shirt,.29,.018,rig.torso);garmentUV(sleeve,.023,-.535);sleeve.name=aaron?'Continuous plaid sleeve':'Continuous hoodie sleeve';
     const cuff=garment(el,[[-.218,.032,.033],[-.226,.034,.034],[-.251,.030,.030],[-.26,.025,.027],[-.261,.021,.022],[-.248,.021,.022]],rib,1,.005,32);
-    cuff.name='Ribbed wrist cuff';
+    cuff.name=aaron?'Folded plaid wrist cuff':'Ribbed wrist cuff';
     // A relaxed hand rather than a paddle: a shaped palm with the thumb and little-finger
     // pads either side of it, fingers that curl over two joints, and a thumb folded alongside.
     const hand = new THREE.Group(); hand.position.set(0, -0.262, 0.002);

@@ -34,6 +34,26 @@ session. Earned goals and banked career records stay saved; a new run starts wit
 and partial collectible sets reset. Escape or controller B steps back through the menus.
 Arrow keys / D-pad navigate, Enter / A selects, and the menus also support touch.
 
+## Character selection
+
+Use **Skater → Change** from Home or Level Select, choose **Joe** or **Aaron**,
+then **Select Skater**. Back cancels the preview. Joe is the original character;
+Aaron is a stylized KRUDCO placeholder based on the supplied reference, with an
+olive cap, black glasses, salt-and-pepper beard and plaid overshirt over a red tee.
+
+Both use the same board, animation rig, tricks and handling in both parks.
+Character selection is cosmetic: careers and high scores stay with each level.
+The selected skater persists under `j2s-pro-skater.character.v1`; inaccessible or
+malformed storage falls back safely without touching existing progress.
+Keyboard, controller and touch input work throughout the selector.
+
+`npm run sim:characters` checks selection persistence, original-model parity,
+rig contacts and resource disposal. `npm run qa:characters -- <preview-url>`
+checks actual menu, skating and save/reload flows and captures screenshots.
+Portraits are rendered from the actual game models; they can be regenerated
+against a development server with
+`node sim/charactercheck.js <dev-url> screenshots/characters --export-portraits`.
+
 ## Genesee Warehouse goals
 
 Choose a focus on the goal board and **Start Goal Run** for a two-minute session. Only unfinished

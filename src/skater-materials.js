@@ -63,8 +63,9 @@ function fabric(color, twill = false) {
     roughness: 1, sheen: .3, sheenRoughness: .85, sheenColor: color });
 }
 
-export function skaterMaterials() {
-  const shirt = fabric('#333638'), pants = fabric('#465f76', true), sock = fabric('#b7b6a6');
+export function skaterMaterials(characterId='joe') {
+  const aaron=characterId==='aaron';
+  const shirt = fabric(aaron?'#526375':'#333638'), pants = fabric('#465f76', true), sock = fabric('#b7b6a6');
   shirt.name = 'Washed black hoodie fleece'; pants.name = 'Worn indigo denim'; sock.name = 'Ribbed skate socks';
   shirt.sheen = .42; shirt.sheenColor.set('#5a6265'); shirt.normalScale.set(.20,.20);
   const rib = shirt.clone(); rib.name = 'Ribbed black cotton';
@@ -74,7 +75,28 @@ export function skaterMaterials() {
     c.strokeStyle='#424549';c.lineWidth=2;c.setLineDash([3,3]);
     for(const y of [s*.18,s*.83]){c.beginPath();c.moveTo(0,y);c.lineTo(s,y);c.stroke();}
   },512);
+  let tee=null;
+  if(aaron){
+    shirt.map?.dispose();rib.map?.dispose();
+    shirt.map=canvasMap((c,s,rng)=>{
+      c.fillStyle='#405469';c.fillRect(0,0,s,s);
+      const cell=s/8;
+      for(let i=0;i<8;i++){
+        const x=i*cell;c.fillStyle='rgba(27,37,47,.5)';c.fillRect(x,0,cell*.35,s);c.fillRect(0,x,s,cell*.35);
+        c.fillStyle='rgba(145,65,58,.86)';c.fillRect(x+cell*.52,0,cell*.22,s);c.fillRect(0,x+cell*.52,s,cell*.22);
+        for(const offset of [.05,.14,.44,.83,.9]){
+          c.fillStyle=offset===.44?'#afafa0':'rgba(210,209,186,.62)';
+          c.fillRect(x+cell*offset,0,Math.max(1,cell*.017),s);c.fillRect(0,x+cell*offset,s,Math.max(1,cell*.017));
+        }
+      }
+      for(let i=0;i<30000;i++){c.fillStyle=rng()<.5?'rgba(225,219,197,.06)':'rgba(11,21,26,.08)';c.fillRect(rng()*s,rng()*s,1,2);}
+    },1024);
+    shirt.name='Blue red and cream plaid overshirt';shirt.side=THREE.DoubleSide;shirt.sheen=.2;shirt.sheenColor.set('#9eaaa9');
+    rib.map=shirt.map;rib.name='Plaid folded cuffs';rib.side=THREE.DoubleSide;
+    tee=fabric('#a74534');tee.name='Faded red cotton tee';tee.normalScale.set(.16,.16);
+  }
   const skin = new THREE.MeshStandardMaterial({ color: 0xc39880, roughness: .68 });
+  if(aaron)skin.color.setHex(0xc6a48e);
   skin.map = canvasMap((c, s, rng) => {
     const p = c.createImageData(s, s);
     for (let i = 0; i < p.data.length; i += 4) { const n = (rng() - .5) * 6; p.data[i] = 243 + n; p.data[i + 1] = 231 + n; p.data[i + 2] = 224 + n; p.data[i + 3] = 255; }
@@ -88,5 +110,5 @@ export function skaterMaterials() {
     for (let i = 0; i < 4000; i++) { c.fillStyle = `rgba(70,60,45,${rng() * .18})`; c.fillRect(rng() * s, rng() * s, 1 + rng() * 3, 1); }
     c.fillStyle = '#7d817d'; c.fillRect(0, s * .2, s, 3);
   }, 256);
-  return { shirt, pants, sock, skin, shoe, sole, rib };
+  return { shirt, pants, sock, skin, shoe, sole, rib, tee };
 }
