@@ -24,7 +24,7 @@ Source photographs are reference material, not copied game textures.
 | Map | Implemented feature |
 | --- | --- |
 | A | North roll-in and southwest entry |
-| B | Bowl entry banks and opposing mini-ramp transitions |
+| B | Angled, terrain-connected mini ramp with a clear floor and small extension |
 | C | Raised pool deck and flower-marked street deck |
 | D | Connected multi-depth bowl, pool tile band, grindable coping |
 | E | Seven stairs, central handrail, hubba ledges, adjoining banks |
@@ -56,16 +56,21 @@ the active scene.
 
 ## Verification
 
-Pure simulation checks: `sim/roccitytest.js`, `sim/levelprogresstest.js`,
+The three-pass layout, rideability and visual audit is recorded in
+[ROC-CITY-ACCURACY.md](ROC-CITY-ACCURACY.md), including verified details versus
+estimated dimensions and before/after camera views.
+
+Pure simulation checks: `sim/roccitytest.js`, `sim/rocgeometrytest.js`,
+`sim/rocsupporttest.js`, `sim/roctrimtest.js`, `sim/levelprogresstest.js`,
 `sim/levelbailtest.js`, `sim/linkedrailtest.js`, and `sim/rocarttest.js`. Browser integration and rendered evidence:
 `sim/roccitycheck.js`, with a production preview URL and an optional output folder.
 The existing warehouse, navigation, checklist and mobile checks remain available.
 Phone-sized touch emulation verifies layout and input; it is not a physical-phone
 performance benchmark.
 
-The physical route checks collect all S-K-A-T-E letters from spawn in 18.95 seconds
+The physical route checks collect all S-K-A-T-E letters from spawn in 18.39 seconds
 without a bail, reach every cap and the secret tape with skating inputs, and bank
-36,580 points in 49.16 seconds on a street line with two recoverable bails and a
+42,250 points in 42.82 seconds on a street line with two recoverable bails and a
 9,000-point best combo. The score line begins on the plaza, leaving ample time to
 travel there from spawn. These are deterministic simulation runs, not a guarantee
 of a particular player's score.

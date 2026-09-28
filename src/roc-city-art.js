@@ -57,15 +57,30 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   const yellow=material('South Avenue centreline',0xc8b055,.98);
   const trunk=material('Tree bark',0x645d48,1,0,surfaceMap('#8d8063',['#30282044','#d9c39725'],2));
   const leaves=material('Riverway tree foliage',0xe6eddb,.96,0,surfaceMap('#929778',['#2b481430','#c1c57930','#526b2330'],4));
-  const rock=material('Bridge riprap',0x929997,1);
+  const rock=material('Bridge riprap',0xc9cdc6,1);
+  const aggregateMap=canvasMap((c,s,r)=>{
+    c.fillStyle='#858e88';c.fillRect(0,0,s,s);
+    const colors=['#a7ada6','#c0c3b8','#929c95','#a4aba7','#b4b8ae'];
+    // Small, tightly packed angular stones fill the gaps between the 3D rocks.
+    // Wrap the drawing so the low-cost texture has no visible tile boundary.
+    for(let i=0;i<1600;i++){
+      const x=r()*s,z=r()*s,rx=4+r()*10,rz=3+r()*7;
+      const points=Array.from({length:6},(_,j)=>{const a=j*Math.PI/3;return [Math.cos(a)*rx*(.7+r()*.3),Math.sin(a)*rz*(.7+r()*.3)];});
+      c.fillStyle=colors[i%colors.length];c.strokeStyle='#727e75';c.lineWidth=.8;
+      for(const dx of [-s,0,s])for(const dz of [-s,0,s]){
+        c.beginPath();points.forEach(([px,pz],j)=>j?c.lineTo(x+dx+px,z+dz+pz):c.moveTo(x+dx+px,z+dz+pz));c.closePath();c.fill();c.stroke();
+      }
+    }
+  },512);
+  const aggregate=material('Pale riprap aggregate bed',0xffffff,1,0,aggregateMap);
   const soil=material('Park earth foundation',0x73756c,1);
   const emissive=new THREE.MeshStandardMaterial({color:0xe8efd6,emissive:0xdce6cf,emissiveIntensity:1.8,roughness:.8});
   emissive.name='Overpass strip diffusers'; ownedMaterials.add(emissive);
 
-  const tiledMaterials=new Set([grass,concrete,asphalt,road,steel,trunk,leaves]);
+  const tiledMaterials=new Set([grass,concrete,asphalt,road,steel,trunk,leaves,aggregate]);
   const add=(geometry,mat,pos) => {
     if (pos) geometry.translate(...pos);
-    if(tiledMaterials.has(mat))surfaceUV(geometry,mat===grass?2.4:3.4);
+    if(tiledMaterials.has(mat))surfaceUV(geometry,mat===grass?2.4:mat===aggregate?2:3.4);
     const g=geometry.index?geometry.toNonIndexed():geometry;
     if(g!==geometry)geometry.dispose();
     if(!batches.has(mat))batches.set(mat,[]); batches.get(mat).push(g);
@@ -192,17 +207,18 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   // Subtle baked shade also holds the underpass together on low-power devices.
   const shade=new THREE.MeshBasicMaterial({color:0x17212a,transparent:true,opacity:lowfx?.3:.12,depthWrite:false});ownedMaterials.add(shade);
   plane(10,depth+1,10,bridge.floorY+.013,zc,shade);
-  box(16,.12,depth+2,-3,bridge.floorY-.10,zc,asphalt);
-  box(23,.12,depth+2,26.5,bridge.floorY-.10,zc,asphalt);
-  const stones=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,0),rock,lowfx?210:360);
+  box(16,.12,depth+2,-3,bridge.floorY-.10,zc,aggregate);
+  box(23,.12,depth+2,26.5,bridge.floorY-.10,zc,aggregate);
+  const stones=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,0),rock,lowfx?420:680);
   stones.name='Gray bridge riprap beds';stones.receiveShadow=true;
   const transform=new THREE.Object3D(), tint=new THREE.Color();
   for(let i=0;i<stones.count;i++) {
-    const east=i%2===0,x=east?16+rng()*12:-8+rng()*11;
+    const east=i%2===0,nearEdge=i%4<2;
+    const x=east?(nearEdge?15.72+rng()*4.2:20.2+rng()*14.7):(nearEdge?4.28-rng()*4.2:-9.7+rng()*9);
     // Riprap is embedded beside the flush promenade, not piled into a wall.
     transform.position.set(x,bridge.floorY-.08+rng()*.04,bridge.minZ+rng()*depth);
     transform.scale.set(.2+rng()*.42,.11+rng()*.14,.23+rng()*.45);transform.rotation.set((rng()-.5)*.2,rng()*6,(rng()-.5)*.2);transform.updateMatrix();stones.setMatrixAt(i,transform.matrix);
-    tint.setHSL(.13+rng()*.04,.025+rng()*.05,.39+rng()*.22);stones.setColorAt(i,tint);
+    tint.setHSL(.13+rng()*.04,.025+rng()*.045,.57+rng()*.18);stones.setColorAt(i,tint);
   }
   group.add(stones);
   // The west chain-link screen is open, allowing the river and trail to read.
@@ -245,12 +261,12 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   const sg=new THREE.PlaneGeometry(2.7,1.35);add(sg,sign,[-4.5,1.45,-44.3]);
   for(const x of [-5.6,-3.4])bar([x,0,-44.34],[x,2.16,-44.34],.055,black);
   const flowerMap=canvasMap((c,s,r)=>{
-    c.strokeStyle='#4e80ab';c.lineWidth=s*.021;c.beginPath();c.arc(s/2,s/2,s*.438,0,Math.PI*2);c.stroke();
-    paintMark(c,'rochester',s/2,s/2,s*.73,'#4e80ab');
+    c.strokeStyle='#12669a';c.lineWidth=s*.026;c.beginPath();c.arc(s/2,s/2,s*.438,0,Math.PI*2);c.stroke();
+    paintMark(c,'rochester',s/2,s/2,s*.765,'#12669a');
     c.globalCompositeOperation='destination-out';for(let i=0;i<2400;i++)c.clearRect(r()*s,r()*s,r()*2.2,.4+r());
   },1024);
   if(flowerMap) {
-    const flower=new THREE.MeshStandardMaterial({map:flowerMap,transparent:true,depthWrite:false,roughness:1,polygonOffset:true,polygonOffsetFactor:-2});ownedMaterials.add(flower);
+    const flower=new THREE.MeshStandardMaterial({map:flowerMap,transparent:true,depthWrite:false,roughness:1,polygonOffset:true,polygonOffsetFactor:-2});flower.name='Blue Rochester flower deck paint';ownedMaterials.add(flower);
     plane(6.8,6.8,L.flower.x,L.flower.y+.018,L.flower.z,flower);
   }
 
@@ -271,6 +287,27 @@ export function dressRocCity(level, { lowfx = false } = {}) {
     }
   }
   group.add(crowns);
+  // The reference park has young planting as well as mature Riverway trees.
+  // These flat beds sit in grass beyond the park, trail and road boundaries.
+  const mulch=material('Young tree planting beds',0x625c4e,1,0,surfaceMap('#958774',['#342b2044','#c0ad8128'],1.5));
+  tiledMaterials.add(mulch);
+  const plantingBeds=[[16.7,-29,.65,1.35],[16.7,-10,.65,1.3],[16.7,11,.65,1.3],[-1.5,-52,1.15,.85],[7,-52,1.1,.85],[-26,-13,1.1,1.1],[-27,5,1.15,.9]];
+  const youngCrowns=new THREE.InstancedMesh(new THREE.SphereGeometry(1,8,6),leaves,plantingBeds.length*4);
+  youngCrowns.name='Young Riverway tree crowns';youngCrowns.castShadow=!lowfx;youngCrowns.receiveShadow=true;
+  let yi=0;
+  for(const [x,z,rx,rz] of plantingBeds){
+    const edge=Array.from({length:22},(_,j)=>{const a=j/22*Math.PI*2;return[x+Math.cos(a)*rx,z+Math.sin(a)*rz];});
+    add(flatShape(edge,-.024),mulch);
+    const h=3.2+rng()*.65;
+    bar([x,-.03,z],[x+.06,h,z],.037,trunk,7);
+    for(let j=0;j<4;j++){
+      const a=j*Math.PI/2+.4,px=x+Math.cos(a)*.24,pz=z+Math.sin(a)*.24,py=h-.25+j*.16;
+      bar([x,h*.62,z],[px,py,pz],.013,trunk,6);
+      transform.position.set(px,py,pz);transform.scale.set(.40+rng()*.10,.64+rng()*.18,.39+rng()*.10);transform.rotation.set(0,rng()*6,0);transform.updateMatrix();youngCrowns.setMatrixAt(yi,transform.matrix);
+      tint.setHSL(.21+rng()*.025,.28+rng()*.10,.43+rng()*.10);youngCrowns.setColorAt(yi++,tint);
+    }
+  }
+  group.add(youngCrowns);
   // A quiet city edge past the road and river: layered masonry silhouettes,
   // inset windows and rooftop equipment, at a distance from the actual park.
   const building=material('Riverway distant masonry',0x77736a,.97);
@@ -282,23 +319,43 @@ export function dressRocCity(level, { lowfx = false } = {}) {
     for(let y=3.25;y<h;y+=2.5)box(.16,.16,d,faceX,y,z,coping);
     for(const dz of [-d/2+.35,d/2-.35])box(.24,h,.25,faceX,h/2,z+dz,coping);
   }
-  const towerStone=material('Downtown limestone tower',0xa8a397,.94);
+  const towerStone=material('Downtown pale slab',0xb8b7ae,.94);
   const towerGlass=material('Downtown glazing',0x506774,.4,.4);
   const crown=material('Downtown copper roof',0x4d6e67,.8,.3);
-  // North skyline: narrow slabs, a stepped masonry tower and a low brick base.
-  for(const [x,z,w,h,d] of [[-13,-94,9,35,12],[4,-102,13,25,10],[20,-92,10,19,13],[37,-105,12,29,10]]) {
-    box(w,h,d,x,h/2,z,towerStone);box(w+.2,.3,d+.2,x,h,z,coping);
-    for(let dx=-w/2+.8;dx<w/2;dx+=1.5)box(.8,h-3,.08,x+dx,h/2+.5,z+d/2+.05,towerGlass);
-    for(let dz=-d/2+.8;dz<d/2;dz+=1.5)box(.08,h-3,.8,x-w/2-.05,h/2+.5,z+dz,towerGlass);
-    for(let y=3;y<h;y+=2)box(w+.12,.10,d+.12,x,y,z,coping);
-  }
-  box(8,5,8,4,27.5,-102,towerStone);box(5.8,3.5,5.8,4,31.7,-102,towerStone);
-  const roof=new THREE.ConeGeometry(4.55,5,4);roof.rotateY(Math.PI/4);add(roof,crown,[4,35.9,-102]);
-  bar([4,38.3,-102],[4,41.5,-102],.06,rail);
+  const towerBrick=material('Downtown warm masonry tower',0xa18c77,.98);
+  const towerDark=material('Downtown dark monolith',0x3b4b50,.86);
+  // Photo 05's skyline reads as three different silhouettes: a pale slab,
+  // stepped warm masonry with a copper crown, and a dark flat-topped tower.
+  // Their distant placement is scenic context, not a surveyed building model.
+  box(10,38,12,-13,19,-94,towerStone);
+  box(10.45,.45,12.45,-13,38.22,-94,coping);
+  box(7,1.6,8,-13,39,-94,towerStone);
+  for(let dx=-4.2;dx<4.3;dx+=1.4)for(let y=2.6;y<36.5;y+=2.2)box(.72,1.25,.08,-13+dx,y,-87.95,towerGlass);
+  for(let dz=-5;dz<5.2;dz+=1.4)for(let y=2.6;y<36.5;y+=2.2)box(.08,1.25,.7,-18.05,y,-94+dz,towerGlass);
+  for(const y of [2,12.9,23.9,37])box(10.18,.18,12.18,-13,y,-94,coping);
+
+  box(13,21,11,4,10.5,-102,towerBrick);
+  box(9.6,6,8.6,4,24,-102,towerBrick);
+  box(7,4.5,6.6,4,29.25,-102,towerBrick);
+  box(5.8,2.1,5.4,4,32.55,-102,towerStone);
+  for(const [w,d,y] of [[13.35,11.35,21],[9.95,8.95,27],[7.35,6.95,31.5],[6.15,5.75,33.6]])box(w,.32,d,4,y,-102,coping);
+  for(let dx=-5.4;dx<5.5;dx+=1.5)for(let y=2.4;y<20;y+=2.2)box(.72,1.25,.08,4+dx,y,-96.45,towerGlass);
+  for(let dz=-4.5;dz<4.6;dz+=1.5)for(let y=2.4;y<20;y+=2.2)box(.08,1.25,.72,-2.55,y,-102+dz,towerGlass);
+  for(const [y,z,w] of [[23,-97.65,8],[25.1,-97.65,8],[28.6,-98.65,5.8],[30.2,-98.65,5.8]])for(let dx=-w/2;dx<w/2;dx+=1.4)box(.7,1,.08,4+dx,y,z,towerGlass);
+  const roof=new THREE.ConeGeometry(4.55,5,4);roof.rotateY(Math.PI/4);add(roof,crown,[4,36.1,-102]);
+  bar([4,38.5,-102],[4,41.3,-102],.06,rail);
+
+  box(12,32.5,11,37,16.25,-105,towerDark);
+  box(12.25,.32,11.25,37,32.66,-105,black);
+  for(let dx=-5.4;dx<5.5;dx+=1.15)box(.68,29.5,.075,37+dx,16.6,-99.45,towerGlass);
+  for(let dz=-4.8;dz<4.9;dz+=1.15)box(.075,29.5,.68,30.95,16.6,-105+dz,towerGlass);
+  for(let y=3;y<32;y+=2.1)box(12.05,.08,11.05,37,y,-105,towerDark);
+  box(14,12,12,21,6,-91,building);box(14.3,.3,12.3,21,12.1,-91,coping);
+  for(let dx=-5.8;dx<6;dx+=1.8)for(let y=2;y<11;y+=2.2)box(1,1.25,.08,21+dx,y,-84.95,windows);
 
   for(const [mat,geometries] of batches) {
     const mesh=new THREE.Mesh(mergeGeometries(geometries,false),mat);mesh.name=mat.name;
-    mesh.receiveShadow=true;mesh.castShadow=![grass,asphalt,road,water,line,yellow,shade,fence,emissive].includes(mat);
+    mesh.receiveShadow=true;mesh.castShadow=![grass,asphalt,road,aggregate,mulch,water,line,yellow,shade,fence,emissive].includes(mat);
     group.add(mesh);geometries.forEach(g=>g.dispose());
   }
   group.userData.materials=ownedMaterials;

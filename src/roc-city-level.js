@@ -3,6 +3,7 @@ import { makeMaterials, surfaceUV } from './materials.js';
 import { ROC_CITY_LAYOUT } from './roc-city-layout.js';
 import { buildRocCityHip } from './roc-city-hip.js';
 import { createTrailGeometry, createTrailFoundationGeometry } from './roc-city-surroundings.js';
+import { paintedBorder, paintedHubba, railPost, archedRailSupport, rectangularFlatbar, createPoolTileMap, mapPoolBand } from './roc-city-trim.js';
 
 const UP = new THREE.Vector3(0,1,0);
 const v = p => new THREE.Vector3(...p);
@@ -129,7 +130,10 @@ export class RocCityLevel {
     this.mats.floor.color.set(0xe0ded5);this.mats.concrete.color.set(0xe5e3db);
     this.mats.rocYellow=new THREE.MeshStandardMaterial({color:0xefb322,roughness:.5,metalness:.38});
     this.mats.rocBlue=new THREE.MeshStandardMaterial({color:0x167bbe,roughness:.55,metalness:.3});
-    this.mats.poolTile=new THREE.MeshStandardMaterial({color:0x3d514e,roughness:.42});
+    const poolMap=createPoolTileMap();
+    this.mats.poolTile=new THREE.MeshStandardMaterial({color:poolMap?0xffffff:0x416a89,map:poolMap,roughness:.52});
+    this.mats.poolPlain=new THREE.MeshStandardMaterial({color:0xa7aaa3,roughness:.85});
+    this.mats.poolCoping=new THREE.MeshStandardMaterial({color:0xd9d8ca,roughness:.88});
     this.spawn={pos:new THREE.Vector3(2,1.62,-44),heading:new THREE.Vector3(0,0,1)};
     this.bailFloorY=-3;
     this.horizontalRailCapture=true;
@@ -166,7 +170,8 @@ export class RocCityLevel {
   addRail(a,b,kind='rail',{visual=true,color=this.mats.rocYellow,posts=false,floor=0,radius=.035}={}) {
     const dir=b.clone().sub(a),len=dir.length();if(len<.001)return;
     const rail={a:a.clone(),b:b.clone(),dir:dir.normalize(),len,kind};this.rails.push(rail);
-    if(visual)this.beam(a,b,radius,color);
+    rail.visuals=[];
+    if(visual)rail.visuals.push(this.beam(a,b,radius,color));
     if(posts)for(const t of [.15,.5,.85]){const p=a.clone().lerp(b,t);this.beam(v([p.x,floor,p.z]),p,.024,color);}
     return rail;
   }
@@ -203,15 +208,28 @@ export class RocCityLevel {
     this.addRail(a,b,'coping',{color,radius:.045});return mesh;
   }
 
-  ledge(w,h,d,x,y,z,{rotation=0,color=this.mats.rocBlue}={}) {
+  ledge(w,h,d,x,y,z,{rotation=0,color=this.mats.rocBlue,trim=true}={}) {
     const mesh=this.box(w,h,d,x,y+h/2,z,this.mats.concrete,{rotY:rotation});
     const edges=[];
     for(const side of [-1,1]){
       const a=v([-w/2,h/2,side*d/2]).applyMatrix4(mesh.matrixWorld),b=v([w/2,h/2,side*d/2]).applyMatrix4(mesh.matrixWorld);
-      edges.push(this.addRail(a,b,'ledge',{color,radius:.035}));
+      edges.push(this.addRail(a,b,'ledge',{visual:false}));
     }
-    mesh.railEdges=edges;
+    mesh.railEdges=edges;mesh.trimColor=color;
+    if(trim)this.paintLedge(mesh);
     return mesh;
+  }
+
+  paintLedge(mesh,{sides=true,start=true,end=true}={}) {
+    const [left,right]=mesh.railEdges,color=mesh.trimColor;
+    if(sides){
+      paintedBorder(this,left,right.a.clone().sub(left.a),{color});
+      paintedBorder(this,right,left.a.clone().sub(right.a),{color});
+    }
+    for(const [enabled,key,sign] of [[start,'a',1],[end,'b',-1]])if(enabled){
+      const a=left[key],b=right[key],edge={a,b,dir:b.clone().sub(a).normalize()};
+      paintedBorder(this,edge,left.dir.clone().multiplyScalar(sign),{color,name:'Painted ledge end wrap'});
+    }
   }
 
   stairs(count,rise,tread,width,start,direction,{bankWidth=2.5,feature='',hubbaColor=this.mats.rocYellow}={}) {
@@ -234,12 +252,16 @@ export class RocCityLevel {
       const z=side*(width/2+.23);
       const ledge=this.profile([[0,height],[0,height+.3],[run,.3],[run,0]],.44,start[0],start[1],start[2],angle);
       const shift=v([0,0,z]).applyQuaternion(mesh.quaternion);ledge.position.add(shift);ledge.updateMatrixWorld(true);
-      this.addRail(local(-.15,height+.32,z),local(run+.15,.32,z),'ledge',{radius:.04,color:hubbaColor});
+      const edge=this.addRail(local(-.15,height+.32,z),local(run+.15,.32,z),'ledge',{visual:false});edge.feature=feature;
+      paintedHubba(this,edge,{color:hubbaColor,name:`${feature} — Painted hubba cap and end wraps`});
       const bank=this.profile([[0,0],[0,height],[run+1.3,0]],bankWidth,start[0],start[1],start[2],angle);
       bank.position.add(v([0,0,side*(width/2+.45+bankWidth/2)]).applyQuaternion(mesh.quaternion));bank.updateMatrixWorld(true);
     }
-    this.addRail(local(-.3,height+.82,0),local(run+.4,.82,0),'rail',{radius:.038});
-    for(const t of [.15,.85])this.beam(local(run*t,height*(1-t),0),local(run*t,height*(1-t)+.82,0),.028);
+    const rail=this.addRail(local(-.3,height+.82,0),local(run+.4,.82,0),'rail',{radius:.038});rail.feature=feature;
+    if(feature==='E'){
+      archedRailSupport(this,rail,0,1,{name:'E — Arched stair handrail brace'});
+      for(const t of [0,.33,.66,1])railPost(this,rail,t,{name:'E — Stair handrail post'});
+    }else for(const t of [.15,.85])railPost(this,rail,t,{name:`${feature} — Stair handrail post`});
     return mesh;
   }
 
@@ -361,10 +383,11 @@ export class RocCityLevel {
 
     // The curved western ledge follows the outside of the pool deck.
     const curve=new THREE.CatmullRomCurve3([v([-17.6,1.62,-10]),v([-17.5,1.62,-5]),v([-15.4,1.62,.5])]);
-    const curvedEdges=[[],[]];
+    const curvedEdges=[[],[]],curvedMeshes=[];
     for(let i=0;i<18;i++){
       const a=curve.getPoint(i/18),b=curve.getPoint((i+1)/18),mid=a.clone().add(b).multiplyScalar(.5),dir=b.clone().sub(a);
-      const mesh=this.ledge(dir.length(),.35,.6,mid.x,1.62,mid.z,{rotation:-Math.atan2(dir.z,dir.x)});
+      const mesh=this.ledge(dir.length(),.35,.6,mid.x,1.62,mid.z,{rotation:-Math.atan2(dir.z,dir.x),trim:false});
+      curvedMeshes.push(mesh);
       mesh.railEdges.forEach((rail,j)=>curvedEdges[j].push(rail));
     }
     // Meet at averaged corner points so a rider follows each continuous edge.
@@ -376,6 +399,7 @@ export class RocCityLevel {
       for(const rail of chain){rail.dir.copy(rail.b).sub(rail.a);rail.len=rail.dir.length();rail.dir.normalize();}
       this.linkRails(chain);
     }
+    curvedMeshes.forEach((mesh,i)=>this.paintLedge(mesh,{start:i===0,end:i===curvedMeshes.length-1}));
     this.stairs(9,.18,.43,4.2,[-5.4,0,7.294737],[-.20601048,.97854978],{bankWidth:2.4,feature:'G'});
 
     this.hip=buildRocCityHip(this);
@@ -383,10 +407,12 @@ export class RocCityLevel {
     // Grade change into the narrow promenade under I-490.
     const ramp=this.profile([[0,0],[0,.9],[5,0]],10,10,-.9,19,-Math.PI/2);ramp.userData.feature='I';
     for(const x of [5.25,14.75]){
-      this.addRail(v([x,.36,19]),v([x,-.54,24]),'ledge',{color:M.rocBlue,radius:.045});
+      const edge=this.addRail(v([x,.36,19]),v([x,-.54,24]),'ledge',{visual:false});edge.feature='I';
+      paintedHubba(this,edge,{width:.48,color:M.rocBlue,name:'I — Blue bank hubba cap'});
       const side=this.profile([[0,.9],[0,1.2],[5,.3],[5,0]],.48,x,-.9,19,-Math.PI/2);side.userData.feature='I';
     }
-    this.addRail(v([10,.72,18.5]),v([10,-.18,24.5]),'rail',{radius:.038});
+    const bankRail=this.addRail(v([10,.72,18.5]),v([10,-.18,24.5]),'rail',{radius:.038});bankRail.feature='I';
+    for(const t of [.2,.5,.8])railPost(this,bankRail,t,{name:'I — Grounded bank handrail post'});
     this.floorSouth=this.add(new THREE.Mesh(horizontalPolygon([[5,24],[15,24],[15,54],[5,54]],[],-.9),M.floor),true,false);
     this.floorSouth.name='Promenade under I-490';
     // Photo 06's paving meets the riprap near flush, without enclosing walls.
@@ -396,8 +422,10 @@ export class RocCityLevel {
     }
 
     // Long, bright flatbar and blue-edged manual pad shown in the bridge photo.
-    this.addRail(v([8,-.15,29]),v([8,-.15,38]),'rail',{posts:true,floor:-.9,radius:.045});
-    for(const z of [30,33,36])this.beam(v([8,-.85,z]),v([8,-.15,z+1]),.027);
+    const flatRail=this.addRail(v([8,-.15,29]),v([8,-.15,38]),'rail',{visual:false});flatRail.feature='J';
+    rectangularFlatbar(this,flatRail);
+    for(const t of [0,1/3,2/3,1])railPost(this,flatRail,t,{radius:.032,name:'J — Flatbar post'});
+    for(let i=0;i<3;i++)archedRailSupport(this,flatRail,i/3,(i+1)/3,{name:'J — Arched flatbar brace'});
     this.manualPad=this.ledge(8.5,.48,2.1,13,-.9,35,{rotation:Math.PI/2});this.manualPad.userData.feature='K';
     this.quarter(2.3,6,8,-.9,47.5,-Math.PI/2,{deck:4.2,feature:'L'});
     this.quarter(2.9,4,13,-.9,47.5,-Math.PI/2,{deck:3.6,feature:'L'});
@@ -412,7 +440,8 @@ export class RocCityLevel {
     const coping=[];
     for(let i=0;i<outline.length;i++){
       const next=(i+1)%outline.length,a=outline[i],b=outline[next];
-      const rail=this.addRail(v([a[0],y+.035,a[1]]),v([b[0],y+.035,b[1]]),'coping',{color:this.mats.rocYellow,radius:.045});
+      const yellow=(a[1]+b[1])/2<-21.5;
+      const rail=this.addRail(v([a[0],y+.035,a[1]]),v([b[0],y+.035,b[1]]),'coping',{color:yellow?this.mats.rocYellow:this.mats.poolCoping,radius:yellow?.045:.075});
       rail.feature='D';coping.push(rail);
     }
     this.linkRails(coping,true);
@@ -420,7 +449,7 @@ export class RocCityLevel {
     // surface, including irregular rim cells and the straight shallow tail.
     const geometry=this.bowl.geometry,p=geometry.attributes.position,n=geometry.attributes.normal;
     const minimumY=y-.23;
-    const positions=[],indices=[];
+    const positions=[],indices=[],groups=[];
     for(let i=0;i<geometry.index.count;i+=3){
       const triangle=[0,1,2].map(k=>{
         const id=geometry.index.getX(i+k);
@@ -438,9 +467,19 @@ export class RocCityLevel {
       if(clipped.length<3)continue;
       const base=positions.length/3;
       for(const sample of clipped)positions.push(...sample.p.clone().addScaledVector(sample.n,.006));
+      const indexStart=indices.length,center=clipped.reduce((sum,sample)=>sum.add(sample.p),new THREE.Vector3()).multiplyScalar(1/clipped.length);
       for(let j=1;j<clipped.length-1;j++)indices.push(base,base+j,base+j+1);
+      groups.push([indexStart,indices.length-indexStart,center.z>-22.5&&center.z<-8&&center.x<-3?0:1]);
     }
-    const band=new THREE.BufferGeometry();band.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));band.setIndex(indices);band.computeVertexNormals();surfaceUV(band,1);
-    this.poolBand=this.add(new THREE.Mesh(band,this.mats.poolTile),false,false);this.poolBand.name='D — Continuous pool tile band';
+    const band=new THREE.BufferGeometry();band.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));band.setIndex(indices);band.computeVertexNormals();mapPoolBand(band,outline,y);
+    // Gather by material rather than issuing one draw call per clipped cell.
+    const grouped=[];
+    for(const material of [0,1]){
+      const start=grouped.length;
+      for(const [offset,count,index] of groups)if(index===material)grouped.push(...indices.slice(offset,offset+count));
+      band.addGroup(start,grouped.length-start,material);
+    }
+    band.setIndex(grouped);
+    this.poolBand=this.add(new THREE.Mesh(band,[this.mats.poolTile,this.mats.poolPlain]),false,false);this.poolBand.name='D — Continuous pool tile band';
   }
 }

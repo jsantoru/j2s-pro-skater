@@ -163,10 +163,15 @@ try {
       ['mellow-bank',[7,2,28],[10,.1,19]],
       ['under-bridge',[7,2,25],[11,.3,48]],
     ]){
+      if(process.env.QA_VIEWS&&!process.env.QA_VIEWS.split(',').includes(name))continue;
       await evaluate('(()=>{const g=__game;g.camera.up.set('+(up||[0,1,0])+');g.camera.position.set('+pos+');g.camera.lookAt('+target+');g.camera.fov=60;g.camera.updateProjectionMatrix();g.renderer.render(g.scene,g.camera);})()');await shot(name);
     }
     report.features=await evaluate('__game.level.features');
     report.rendering=await evaluate('({calls:__game.renderer.info.render.calls,triangles:__game.renderer.info.render.triangles,memory:{...__game.renderer.info.memory},concrete:__game.floorSurface.status})');
+    if(process.env.QA_THUMBNAIL==='1'){
+      const data=await evaluate('(()=>{const g=__game;g.camera.up.set(0,1,0);g.renderer.setSize(1000,560);g.camera.aspect=1000/560;g.camera.position.set(-30,24,-37);g.camera.lookAt(0,0,-1);g.camera.fov=62;g.camera.updateProjectionMatrix();g.renderer.render(g.scene,g.camera);return g.renderer.domElement.toDataURL("image/webp",.9).split(",")[1];})()');
+      await mkdir(resolve('public/textures/levels'),{recursive:true});await writeFile(resolve('public/textures/levels/roc-city-skatepark.webp'),Buffer.from(data,'base64'));
+    }
     assert.deepEqual(browserErrors,[]);assert.equal(await evaluate('__game.renderer.getContext().getError()'),0);
   });
 } catch (error) {

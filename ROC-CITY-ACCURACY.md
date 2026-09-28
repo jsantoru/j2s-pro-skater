@@ -44,7 +44,7 @@ It confirmed the angled mini, connected deck, squared shallow bowl pocket,
 continuous H hip, and longitudinal bridge supports. The comparison also exposed
 an unfilled mini-extension trim outline, an uneven pool tile strip, overly tall
 promenade sidewalls, and a stair-bank landing extending into the lawn. These
-findings must be corrected and rechecked before final delivery.
+findings were corrected and rechecked before closing this pass.
 
 Pass 1 completed: the extension is solid, the tile strip follows the actual wall,
 G has a paved landing connected to the southwest entrance, and the promenade
@@ -85,3 +85,50 @@ downhill and banks 130 on landing. Its actual game screenshot and result are in
 this route releases earlier than a speed-regulated simulation fixture. The full
 pass-1 browser suite also passed level switching, independent saves/reload,
 stable resource counts and phone controls.
+
+## Pass 3 — visual accuracy and final verification
+
+All eleven fixed viewpoints were compared again with the feature map, drone
+image and completed-park photographs. The mini floor remains unobstructed, the
+southern bowl pocket has its broad shallow floor, H is one connected hip, and
+the G landing and I promenade are fully supported. Final images are in
+`screenshots/roc-accuracy/final/`; the refreshed level-select thumbnail is also
+rendered from the corrected game world.
+
+The ROC concrete now blends the shared scan in world space, removing the sharp
+projection seams and jagged normal bands on the bowl and transitions. Blue and
+yellow ledge paint has broad caps and corner wraps. The E/J rails have the
+photographed arched braces, J has a rectangular bar, and I has grounded support
+posts. Pale pool coping, its yellow accent, and a small blue ceramic pattern
+replace the uniform rim and stretched tiles. The flower is a stronger medium
+blue. Beneath the bridge, low pale aggregate replaces the dark gaps and tall
+sidewalls; young planting beds and distinct skyline silhouettes refine the
+surroundings.
+
+Five trim checks lock the complete rail endpoints and collider geometry to the
+verified pass-2 state, check visible grind alignment within 6 mm, and verify
+support placement and tile continuity. An independent review confirmed shader
+hooks, asynchronous cleanup, and disposal of both desktop and mobile art without
+disposing shared Warehouse textures. The final eleven-view capture has no
+JavaScript or WebGL errors. The under-bridge view uses 60 draw calls and 64,042
+triangles; that is a scene measurement, not a phone frame-rate benchmark.
+
+Final production-browser integration passes all 10 checks, including controller
+Start navigation and the downhill E grind/landing, isolated collectible retirement,
+independent save/reload, unchanged resource counts through repeated switching,
+and touch input at 390×844, 844×390 and 320×568. No JavaScript, network or WebGL
+errors were reported. Evidence is in
+`screenshots/roc-accuracy/final-integration/`. The final paint review also caught
+coplanar side wraps on I; their render-only faces now sit 3 mm outside the
+concrete, with a fresh screenshot confirming clean edges. Production build and
+whitespace checks pass; Vite retains its existing bundle-size advisory.
+
+## Remaining accuracy limits
+
+The named features, stair counts, relative layout and characteristic finishes
+are supported by the supplied map and public photographs. Exact metric
+dimensions, radii, slopes, bridge spans and grades remain estimated. The city
+silhouette, planting and minor wear are simplified to match the existing game's
+visual style and rendering budget. This review covers the supplied Phase 1 park,
+not its later expansion. Mobile checks use touch emulation; physical-phone
+performance has not been measured.
