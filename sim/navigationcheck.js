@@ -154,6 +154,7 @@ try {
 
   await check('home keyboard controls stay in the visible screen and held Enter or Space never skips a screen',async()=>{
     await evaluate('document.getElementById("fe-play").focus()');
+    await tap('Tab');assert.equal(await evaluate('document.activeElement.id'),'fe-skater');
     await tap('Tab');assert.equal(await evaluate('document.activeElement.id'),'fe-controls');
     await tap('ArrowDown');assert.equal(await evaluate('document.activeElement.id'),'fe-settings');
     await tap('ArrowDown');assert.equal(await evaluate('document.activeElement.id'),'fe-play');
@@ -202,6 +203,7 @@ try {
 
   await check('gamepad Start, A, B and D-pad navigate without carrying held skating inputs',async()=>{
     await evaluate('__qa.connectPad();__game.showHome()');await step();
+    await pad(13);assert.equal(await evaluate('document.activeElement.id'),'fe-skater');
     await pad(13);assert.equal(await evaluate('document.activeElement.id'),'fe-controls');
     await pad(9);await mode('levels');await pad(1);await mode('home');
     await pad(0);await mode('levels');

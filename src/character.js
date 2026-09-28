@@ -55,8 +55,31 @@ function legDrop(hip, knee) { return L1 * Math.cos(hip * D2R) + L2 * Math.cos((h
 function legReach(hip, knee) { return L1 * Math.sin(hip * D2R) + L2 * Math.sin((hip - knee) * D2R); }
 const STAND_DROP = legDrop(POSES.ride.lHip, POSES.ride.lKnee);
 
+function resources(root) {
+  const result={geometries:new Set(),materials:new Set(),textures:new Set(),skeletons:new Set()};
+  root.traverse(object=>{
+    if(object.geometry)result.geometries.add(object.geometry);
+    if(object.skeleton)result.skeletons.add(object.skeleton);
+    for(const material of Array.isArray(object.material)?object.material:object.material?[object.material]:[]){
+      result.materials.add(material);
+      for(const value of Object.values(material))if(value?.isTexture)result.textures.add(value);
+    }
+  });return result;
+}
+
+function disposeResources(owned,protectedResources=null) {
+  for(const kind of ['skeletons','geometries','materials','textures'])for(const resource of owned[kind]){
+    if(!protectedResources?.[kind].has(resource))resource.dispose();
+  }
+}
+
+const rigNodes=rig=>[rig.hips,rig.torso,rig.head,rig.lArm.sh,rig.lArm.el,rig.rArm.sh,rig.rArm.el,
+  rig.lLeg.hp,rig.lLeg.kn,rig.lLeg.ankle,rig.rLeg.hp,rig.rLeg.kn,rig.rLeg.ankle];
+
 export class Character {
-  constructor() {
+  constructor({characterId='joe'}={}) {
+    this.characterId=characterId==='aaron'?'aaron':'joe';
+    this.disposed=false;
     this.root = new THREE.Group();          // placed at skater.pos with skater.modelQuat
     this.body = new THREE.Group();          // rotated so the chest faces root -x (the right of travel: regular)
     this.body.rotation.y = -Math.PI / 2;
@@ -75,7 +98,23 @@ export class Character {
 
   buildBoard() { this.board = buildDetailedBoard(this.root); }
 
-  buildBody() { buildDetailedBody(this); }
+  buildBody() { buildDetailedBody(this,this.characterId); }
+
+  setCharacter(id) {
+    const resolved=id==='aaron'?'aaron':'joe';
+    if(this.disposed||resolved===this.characterId)return this.characterId;
+    const pose=rigNodes(this).map(node=>({position:node.position.clone(),quaternion:node.quaternion.clone()}));
+    disposeResources(resources(this.body),resources(this.board));
+    this.body.clear();this.characterId=resolved;this.buildBody();
+    rigNodes(this).forEach((node,index)=>{node.position.copy(pose[index].position);node.quaternion.copy(pose[index].quaternion);});
+    this.root.updateMatrixWorld(true);
+    return this.characterId;
+  }
+
+  dispose() {
+    if(this.disposed)return;
+    this.disposed=true;disposeResources(resources(this.root));this.root.removeFromParent();this.root.clear();
+  }
 
   // Render-only two-bone IK. Targets are on the deck; no simulation state is written.
   plantFoot(leg, target, orientation, weight) {

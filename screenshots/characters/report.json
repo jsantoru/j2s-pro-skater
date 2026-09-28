@@ -1,0 +1,428 @@
+{
+  "url": "http://127.0.0.1:4176/",
+  "recordedAt": "2026-09-28T19:41:27.377Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "Joe boots by default and mouse previews do not commit until confirmation",
+      "passed": true
+    },
+    {
+      "name": "keyboard navigation, held Enter, and Escape preserve intentional draft/confirm behavior",
+      "passed": true
+    },
+    {
+      "name": "gamepad drafts, cancels to originating level selection, and Start confirms focused skater",
+      "passed": true
+    },
+    {
+      "name": "settings and controls isolate selector focus and close back to the same draft",
+      "passed": true
+    },
+    {
+      "name": "saved character survives reload while both park careers and high scores stay unchanged",
+      "passed": true,
+      "detail": {
+        "genesee-warehouse": {
+          "completed": [
+            "high-score",
+            "combo"
+          ],
+          "bestScore": 5000,
+          "bestCombo": 5000
+        },
+        "roc-city-skatepark": {
+          "completed": [
+            "high-score",
+            "combo"
+          ],
+          "bestScore": 5000,
+          "bestCombo": 5000
+        }
+      }
+    },
+    {
+      "name": "both characters use identical real controller physics in both parks",
+      "passed": true,
+      "detail": {
+        "genesee-warehouse": [
+          {
+            "position": [
+              5.0714793755301075,
+              -3.1086244689504383e-15,
+              14
+            ],
+            "velocity": [
+              5.3962398333333335,
+              -8.473331173044831e-31,
+              3.816049111351151e-15
+            ],
+            "state": "ride",
+            "score": 100,
+            "air": true,
+            "bail": false
+          },
+          {
+            "position": [
+              5.0714793755301075,
+              -3.1086244689504383e-15,
+              14
+            ],
+            "velocity": [
+              5.3962398333333335,
+              -8.473331173044831e-31,
+              3.816049111351151e-15
+            ],
+            "state": "ride",
+            "score": 100,
+            "air": true,
+            "bail": false
+          }
+        ],
+        "roc-city-skatepark": [
+          {
+            "position": [
+              1.6281268681137921,
+              0,
+              -34.748540778774334
+            ],
+            "velocity": [
+              -0.7981752457266599,
+              0,
+              5.718133139621272
+            ],
+            "state": "ride",
+            "score": 100,
+            "air": true,
+            "bail": false
+          },
+          {
+            "position": [
+              1.6281268681137921,
+              0,
+              -34.748540778774334
+            ],
+            "velocity": [
+              -0.7981752457266599,
+              0,
+              5.718133139621272
+            ],
+            "state": "ride",
+            "score": 100,
+            "air": true,
+            "bail": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "character selection cannot mutate a live run and menus discard held input safely",
+      "passed": true,
+      "detail": {
+        "crouch": false,
+        "buffer": false,
+        "clock": false,
+        "audio": true,
+        "input": true,
+        "touch": true
+      }
+    },
+    {
+      "name": "repeated model switching keeps one rig and stable GPU allocations",
+      "passed": true,
+      "detail": {
+        "before": {
+          "geometries": 653,
+          "textures": 92
+        },
+        "after": {
+          "geometries": 653,
+          "textures": 92
+        }
+      }
+    },
+    {
+      "name": "mobile portrait and short-landscape selectors support touch with visible 44px targets",
+      "passed": true,
+      "detail": [
+        {
+          "width": 390,
+          "height": 844,
+          "scroll": 390,
+          "client": 390,
+          "page": 390,
+          "targets": [
+            {
+              "id": "fe-controls",
+              "w": 78.09375,
+              "h": 44,
+              "left": 213.171875,
+              "right": 291.265625,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-settings",
+              "w": 73.734375,
+              "h": 44,
+              "left": 296.265625,
+              "right": 370,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-back",
+              "w": 70.21875,
+              "h": 44,
+              "left": 20,
+              "right": 90.21875,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-joe",
+              "w": 169,
+              "h": 323.6875,
+              "left": 20,
+              "right": 189,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-aaron",
+              "w": 169,
+              "h": 323.6875,
+              "left": 201,
+              "right": 370,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-confirm",
+              "w": 350,
+              "h": 73.09375,
+              "left": 20,
+              "right": 370,
+              "clipped": [],
+              "hit": true
+            }
+          ]
+        },
+        {
+          "width": 320,
+          "height": 568,
+          "scroll": 310,
+          "client": 310,
+          "page": 320,
+          "targets": [
+            {
+              "id": "fe-controls",
+              "w": 78.09375,
+              "h": 44,
+              "left": 133.171875,
+              "right": 211.265625,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-settings",
+              "w": 73.734375,
+              "h": 44,
+              "left": 216.265625,
+              "right": 290,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-back",
+              "w": 70.21875,
+              "h": 44,
+              "left": 20,
+              "right": 90.21875,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-joe",
+              "w": 129,
+              "h": 286.59375,
+              "left": 20,
+              "right": 149,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-aaron",
+              "w": 129,
+              "h": 286.59375,
+              "left": 161,
+              "right": 290,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-confirm",
+              "w": 270,
+              "h": 73.09375,
+              "left": 20,
+              "right": 290,
+              "clipped": [],
+              "hit": true
+            }
+          ]
+        },
+        {
+          "width": 844,
+          "height": 390,
+          "scroll": 844,
+          "client": 844,
+          "page": 844,
+          "targets": [
+            {
+              "id": "fe-controls",
+              "w": 101.296875,
+              "h": 44,
+              "left": 600.640625,
+              "right": 701.9375,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-settings",
+              "w": 96.9375,
+              "h": 44,
+              "left": 709.9375,
+              "right": 806.875,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-back",
+              "w": 70.21875,
+              "h": 44,
+              "left": 37.125,
+              "right": 107.34375,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-joe",
+              "w": 376.375,
+              "h": 163,
+              "left": 37.125,
+              "right": 413.5,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-aaron",
+              "w": 376.375,
+              "h": 163,
+              "left": 430.5,
+              "right": 806.875,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-confirm",
+              "w": 245,
+              "h": 58.390625,
+              "left": 561.875,
+              "right": 806.875,
+              "clipped": [],
+              "hit": true
+            }
+          ]
+        },
+        {
+          "width": 568,
+          "height": 320,
+          "scroll": 568,
+          "client": 568,
+          "page": 568,
+          "targets": [
+            {
+              "id": "fe-controls",
+              "w": 78.09375,
+              "h": 44,
+              "left": 393.171875,
+              "right": 471.265625,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-settings",
+              "w": 73.734375,
+              "h": 44,
+              "left": 476.265625,
+              "right": 550,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-back",
+              "w": 70.21875,
+              "h": 44,
+              "left": 18,
+              "right": 88.21875,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-joe",
+              "w": 260,
+              "h": 125,
+              "left": 18,
+              "right": 278,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-aaron",
+              "w": 260,
+              "h": 125,
+              "left": 290,
+              "right": 550,
+              "clipped": [],
+              "hit": true
+            },
+            {
+              "id": "fe-character-confirm",
+              "w": 228,
+              "h": 56.59375,
+              "left": 322,
+              "right": 550,
+              "clipped": [],
+              "hit": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "unknown stored identities safely fall back to Joe without erasing careers",
+      "passed": true
+    },
+    {
+      "name": "denied localStorage still boots and allows selection for the current visit",
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    "selector-joe-desktop.png",
+    "selector-aaron-desktop.png",
+    "aaron-skating-warehouse.png",
+    "aaron-skating-roc.png",
+    "selector-touch-390x844.png",
+    "selector-touch-320x568.png",
+    "selector-touch-844x390.png",
+    "selector-touch-568x320.png"
+  ],
+  "browserErrors": [],
+  "passed": true
+}

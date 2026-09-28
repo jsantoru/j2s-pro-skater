@@ -6,6 +6,7 @@ import { createRocCityArt } from './roc-city-art.js';
 import { upgradeRocCityConcrete } from './roc-city-concrete.js';
 import { Skater } from './skater.js';
 import { Character } from './character.js';
+import { CHARACTERS, CharacterSelection } from './characters.js';
 import { FollowCamera } from './camera.js';
 import { Input } from './input.js';
 import { TouchControls } from './touch-controls.js';
@@ -98,7 +99,8 @@ let { level, atmosphere, floorSurface, collectibles } = activeRuntime;
 scene.add(activeRuntime.root);
 applyEnvironment(activeRuntime);
 const skater = new Skater(level);
-const character = new Character();
+const characterSelection = new CharacterSelection();
+const character = new Character({ characterId: characterSelection.id });
 scene.add(character.root);
 const followCam = new FollowCamera(camera, level);
 const input = new Input();
@@ -114,11 +116,14 @@ levelUI.setLevel(activeConfig, progress.snapshot());
 const frontEnd = new FrontEnd({
   onLevels: showLevelSelect, onHome: showHome,
   onLevel: selectLevel,
+  onCharacters: showCharacterSelect, onCharacter: selectCharacter, onCharacterBack: leaveCharacterSelect,
   onControls: () => hud.toggleControls(true), onSettings: () => hud.toggleSettings(true),
 });
+frontEnd.setCharacter(characterSelection.id);
 
 // ---- game state ----
-let mode = 'home'; // home | levels | title (goal board) | playing | over
+let mode = 'home'; // home | levels | characters | title (goal board) | playing | over
+let characterReturnMode = 'home';
 let runMode = 'goals', focusGoal = activeConfig.goals[0].id;
 let bankedThisStep = false;
 let accumulator = 0, last = performance.now(), visualTime = 0;
@@ -318,6 +323,29 @@ function showLevelSelect() {
   enterMenu('levels');
   frontEnd.showLevels(progressByLevel(), activeLevelId);
 }
+function showCharacterSelect() {
+  // Character changes belong between runs; opening a wardrobe must not end one.
+  if (mode !== 'home' && mode !== 'levels') return false;
+  characterReturnMode = mode;
+  enterMenu('characters');
+  frontEnd.showCharacters(progressByLevel(), activeLevelId, characterSelection.id, characterReturnMode);
+  return true;
+}
+function selectCharacter(id) {
+  if (mode !== 'characters' || !CHARACTERS.some(candidate => candidate.id === id)) return false;
+  character.setCharacter(id);
+  characterSelection.select(id);
+  frontEnd.setCharacter(id);
+  leaveCharacterSelect();
+  return true;
+}
+function leaveCharacterSelect() {
+  if (mode !== 'characters') return;
+  if (characterReturnMode === 'levels') showLevelSelect();
+  else showHome();
+  // Return focus to the control that opened the selector.
+  frontEnd.root.querySelector(characterReturnMode === 'levels' ? '#fe-level-skater' : '#fe-skater')?.focus({ preventScroll: false });
+}
 function progressByLevel() {
   return Object.fromEntries([...careers].map(([id, career]) => [id, career.progress.snapshot()]));
 }
@@ -353,7 +381,8 @@ function showGoalBoard() {
   levelUI.showBoard(progress.snapshot());
 }
 function navigateBack() {
-  if (mode === 'over') showGoalBoard();
+  if (mode === 'characters') leaveCharacterSelect();
+  else if (mode === 'over') showGoalBoard();
   else if (mode === 'title') showLevelSelect();
   else if (mode === 'levels') showHome();
 }
@@ -411,7 +440,7 @@ function frame(now) {
     renderer.render(scene, camera);
     return;
   }
-  if (mode === 'home' || mode === 'levels') frontEnd.updateMenuInput(inp);
+  if (mode === 'home' || mode === 'levels' || mode === 'characters') frontEnd.updateMenuInput(inp);
   else if (mode !== 'playing') levelUI.updateMenuInput(inp);
   visualTime += dt;
   levelUI.tick?.(dt);
@@ -440,7 +469,7 @@ function frame(now) {
   fx.update(dt, skater);
   collectibles.update(dt, mode === 'playing' && runMode === 'goals' && !sessionClock.overtime, camera);
   atmosphere.update(visualTime);
-  if (mode === 'home' || mode === 'levels' || mode === 'title') {
+  if (mode === 'home' || mode === 'levels' || mode === 'characters' || mode === 'title') {
     // A slow establishing shot gives the title the same rendered park as gameplay.
     const t = reducedMotion.matches ? 0 : visualTime * 0.035;
     if (activeLevelId === 'roc-city-skatepark') {
@@ -501,7 +530,7 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 
-window.__game = { skater, input, touchControls, character, followCam, startRun, endRun, showHome, showLevelSelect, showGoalBoard, selectLevel, settings, audio, renderer, scene, camera, fx, levelUI, frontEnd, sessionClock,
+window.__game = { skater, input, touchControls, character, characterSelection, followCam, startRun, endRun, showHome, showLevelSelect, showCharacterSelect, selectCharacter, showGoalBoard, selectLevel, settings, audio, renderer, scene, camera, fx, levelUI, frontEnd, sessionClock,
   get level() { return level; }, get highScores() { return highScores; }, get floorSurface() { return floorSurface; }, get atmosphere() { return atmosphere; },
   get goals() { return goals; }, get progress() { return progress; }, get collectibles() { return collectibles; }, get levelConfig() { return activeConfig; },
   get loadedLevels() { return [...levelRuntimes.keys()]; }, get careers() { return progressByLevel(); },

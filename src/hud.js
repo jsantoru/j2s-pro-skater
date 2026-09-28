@@ -124,9 +124,9 @@ export class HUD {
       this.el.resume.textContent = playing ? 'RESUME SESSION' : 'BACK TO MENU';
       this.el.restart.hidden = !playing;
       this.el.board.hidden = !playing;
-      this.el.levels.hidden = this.mode === 'home' || this.mode === 'levels';
+      this.el.levels.hidden = ['home', 'levels', 'characters'].includes(this.mode);
       this.el.home.hidden = this.mode === 'home';
-      this.el.menuLocation.innerHTML = this.mode === 'home' || this.mode === 'levels'
+      this.el.menuLocation.innerHTML = ['home', 'levels', 'characters'].includes(this.mode)
         ? 'J2S PRO SKATER <span>GAME SETTINGS</span>' : 'GENESEE WAREHOUSE <span>LEVEL / 01</span>';
       this.el.menuStatus.textContent = playing ? 'Your run is on hold. Pick up where you left off.' : 'Set the soundtrack before you drop in.';
     }
