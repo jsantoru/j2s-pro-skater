@@ -1,0 +1,927 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-09-29T13:13:53.440Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "desktop: fixed actual environment views and rendering workload",
+      "passed": true,
+      "detail": {
+        "views": 9,
+        "timing": {
+          "method": "Date.now wall time around ten batches of twelve real application RAF callbacks",
+          "frames": 120,
+          "batchesMsPerFrame": [
+            4.583333333333333,
+            11,
+            4.75,
+            5.333333333333333,
+            6.75,
+            10.5,
+            7.333333333333333,
+            9.166666666666666,
+            9.25,
+            8.75
+          ],
+          "medianMsPerFrame": 8.75,
+          "p90MsPerFrame": 10.5,
+          "minMsPerFrame": 4.583333333333333,
+          "maxMsPerFrame": 11,
+          "shadows": true,
+          "deltaMedianMsPerFrame": 0.25
+        }
+      }
+    },
+    {
+      "name": "touch-landscape: fixed actual environment views and rendering workload",
+      "passed": true,
+      "detail": {
+        "views": 9,
+        "timing": {
+          "method": "Date.now wall time around ten batches of twelve real application RAF callbacks",
+          "frames": 120,
+          "batchesMsPerFrame": [
+            2.8333333333333335,
+            3,
+            2.75,
+            3.75,
+            5.666666666666667,
+            5.666666666666667,
+            5.75,
+            7.5,
+            7.666666666666667,
+            7.5
+          ],
+          "medianMsPerFrame": 5.666666666666667,
+          "p90MsPerFrame": 7.5,
+          "minMsPerFrame": 2.75,
+          "maxMsPerFrame": 7.666666666666667,
+          "shadows": false,
+          "deltaMedianMsPerFrame": -0.75
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    "desktop-north-entry-to-bowl.png",
+    "desktop-flower-to-city.png",
+    "desktop-bowl-to-trail-trees.png",
+    "desktop-street-east-buildings.png",
+    "desktop-south-underpass.png",
+    "desktop-bridge-pier-riprap.png",
+    "desktop-landscape-sidewalk-edge.png",
+    "desktop-wide-establishing.png",
+    "desktop-warehouse-control.png",
+    "touch-landscape-north-entry-to-bowl.png",
+    "touch-landscape-flower-to-city.png",
+    "touch-landscape-bowl-to-trail-trees.png",
+    "touch-landscape-street-east-buildings.png",
+    "touch-landscape-south-underpass.png",
+    "touch-landscape-bridge-pier-riprap.png",
+    "touch-landscape-landscape-sidewalk-edge.png",
+    "touch-landscape-wide-establishing.png",
+    "touch-landscape-warehouse-control.png"
+  ],
+  "audit": {
+    "label": "Fixed environment comparison",
+    "coordinateSpace": "Authored X/Z scaled by current level.horizontalScale; Y unchanged",
+    "timingCaveat": "Rough elapsed wall time for deterministic headless application frames, including JS, rendering submission and scheduler yields. Not display FPS, GPU timing, a hardware benchmark, or physical-device performance.",
+    "baselineReport": "screenshots/environment/before/report.json",
+    "views": [
+      {
+        "name": "north-entry-to-bowl",
+        "level": "roc-city-skatepark",
+        "position": [
+          2,
+          3.24,
+          -42
+        ],
+        "target": [
+          -5,
+          1.8,
+          -23
+        ],
+        "fov": 62
+      },
+      {
+        "name": "flower-to-city",
+        "level": "roc-city-skatepark",
+        "position": [
+          10,
+          2.9,
+          -22
+        ],
+        "target": [
+          2,
+          4,
+          -47
+        ],
+        "fov": 62
+      },
+      {
+        "name": "bowl-to-trail-trees",
+        "level": "roc-city-skatepark",
+        "position": [
+          -15.5,
+          3.25,
+          -17
+        ],
+        "target": [
+          -27,
+          3,
+          -20
+        ],
+        "fov": 62
+      },
+      {
+        "name": "street-east-buildings",
+        "level": "roc-city-skatepark",
+        "position": [
+          13.2,
+          1.65,
+          -10
+        ],
+        "target": [
+          43,
+          4.5,
+          -10
+        ],
+        "fov": 62
+      },
+      {
+        "name": "south-underpass",
+        "level": "roc-city-skatepark",
+        "position": [
+          10,
+          0.75,
+          29
+        ],
+        "target": [
+          10,
+          1.7,
+          49
+        ],
+        "fov": 62
+      },
+      {
+        "name": "bridge-pier-riprap",
+        "level": "roc-city-skatepark",
+        "position": [
+          13,
+          0.72,
+          40
+        ],
+        "target": [
+          20,
+          1.5,
+          43
+        ],
+        "fov": 62
+      },
+      {
+        "name": "landscape-sidewalk-edge",
+        "level": "roc-city-skatepark",
+        "position": [
+          15.6,
+          1.65,
+          -28
+        ],
+        "target": [
+          19.8,
+          0.2,
+          -20
+        ],
+        "fov": 62
+      },
+      {
+        "name": "wide-establishing",
+        "level": "roc-city-skatepark",
+        "position": [
+          -31,
+          17,
+          -40
+        ],
+        "target": [
+          -1,
+          0,
+          7
+        ],
+        "fov": 62
+      },
+      {
+        "name": "warehouse-control",
+        "level": "genesee-warehouse",
+        "position": [
+          -7.2,
+          1.7,
+          17.4
+        ],
+        "target": [
+          -4,
+          0.88,
+          14
+        ],
+        "fov": 45
+      }
+    ],
+    "profiles": [
+      {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900,
+        "touch": false,
+        "views": [
+          {
+            "name": "north-entry-to-bowl",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              2.5,
+              3.24,
+              -52.5
+            ],
+            "targetWorld": [
+              -6.25,
+              1.8,
+              -28.75
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 413,
+              "triangles": 348365,
+              "geometries": 665,
+              "textures": 99,
+              "programs": 78,
+              "pixelRatio": 1,
+              "shadows": true,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 18,
+              "triangles": 211806,
+              "geometries": 18,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "flower-to-city",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              12.5,
+              2.9,
+              -27.5
+            ],
+            "targetWorld": [
+              2.5,
+              4,
+              -58.75
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 176,
+              "triangles": 298706,
+              "geometries": 670,
+              "textures": 100,
+              "programs": 78,
+              "pixelRatio": 1,
+              "shadows": true,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 19,
+              "triangles": 141914,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "bowl-to-trail-trees",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              -19.375,
+              3.25,
+              -21.25
+            ],
+            "targetWorld": [
+              -33.75,
+              3,
+              -25
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 47,
+              "triangles": 235473,
+              "geometries": 670,
+              "textures": 100,
+              "programs": 78,
+              "pixelRatio": 1,
+              "shadows": true,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 9,
+              "triangles": 139186,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "street-east-buildings",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              16.5,
+              1.65,
+              -12.5
+            ],
+            "targetWorld": [
+              53.75,
+              4.5,
+              -12.5
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 53,
+              "triangles": 229076,
+              "geometries": 670,
+              "textures": 100,
+              "programs": 78,
+              "pixelRatio": 1,
+              "shadows": true,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 17,
+              "triangles": 141326,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "south-underpass",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              12.5,
+              0.75,
+              36.25
+            ],
+            "targetWorld": [
+              12.5,
+              1.7,
+              61.25
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 78,
+              "triangles": 308912,
+              "geometries": 670,
+              "textures": 100,
+              "programs": 78,
+              "pixelRatio": 1,
+              "shadows": true,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 11,
+              "triangles": 211998,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "bridge-pier-riprap",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              16.25,
+              0.72,
+              50
+            ],
+            "targetWorld": [
+              25,
+              1.5,
+              53.75
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 47,
+              "triangles": 289660,
+              "geometries": 670,
+              "textures": 100,
+              "programs": 78,
+              "pixelRatio": 1,
+              "shadows": true,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 10,
+              "triangles": 194878,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "landscape-sidewalk-edge",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              19.5,
+              1.65,
+              -35
+            ],
+            "targetWorld": [
+              24.75,
+              0.2,
+              -25
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 174,
+              "triangles": 324872,
+              "geometries": 670,
+              "textures": 100,
+              "programs": 78,
+              "pixelRatio": 1,
+              "shadows": true,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 18,
+              "triangles": 211806,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "wide-establishing",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              -38.75,
+              17,
+              -50
+            ],
+            "targetWorld": [
+              -1.25,
+              0,
+              8.75
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 412,
+              "triangles": 348333,
+              "geometries": 670,
+              "textures": 100,
+              "programs": 78,
+              "pixelRatio": 1,
+              "shadows": true,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 18,
+              "triangles": 211806,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "warehouse-control",
+            "level": "genesee-warehouse",
+            "scale": 1,
+            "positionWorld": [
+              -7.2,
+              1.7,
+              17.4
+            ],
+            "targetWorld": [
+              -4,
+              0.88,
+              14
+            ],
+            "fov": 45,
+            "renderer": {
+              "calls": 221,
+              "triangles": 229416,
+              "geometries": 671,
+              "textures": 101,
+              "programs": 78,
+              "pixelRatio": 1,
+              "shadows": true,
+              "colliders": 58,
+              "rails": 16
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 0,
+              "triangles": 0,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          }
+        ],
+        "timing": {
+          "method": "Date.now wall time around ten batches of twelve real application RAF callbacks",
+          "frames": 120,
+          "batchesMsPerFrame": [
+            4.583333333333333,
+            11,
+            4.75,
+            5.333333333333333,
+            6.75,
+            10.5,
+            7.333333333333333,
+            9.166666666666666,
+            9.25,
+            8.75
+          ],
+          "medianMsPerFrame": 8.75,
+          "p90MsPerFrame": 10.5,
+          "minMsPerFrame": 4.583333333333333,
+          "maxMsPerFrame": 11,
+          "shadows": true,
+          "deltaMedianMsPerFrame": 0.25
+        }
+      },
+      {
+        "name": "touch-landscape",
+        "width": 844,
+        "height": 390,
+        "touch": true,
+        "views": [
+          {
+            "name": "north-entry-to-bowl",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              2.5,
+              3.24,
+              -52.5
+            ],
+            "targetWorld": [
+              -6.25,
+              1.8,
+              -28.75
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 413,
+              "triangles": 272891,
+              "geometries": 654,
+              "textures": 98,
+              "programs": 49,
+              "pixelRatio": 1,
+              "shadows": false,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 18,
+              "triangles": 141532,
+              "geometries": 18,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "flower-to-city",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              12.5,
+              2.9,
+              -27.5
+            ],
+            "targetWorld": [
+              2.5,
+              4,
+              -58.75
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 192,
+              "triangles": 261173,
+              "geometries": 665,
+              "textures": 99,
+              "programs": 49,
+              "pixelRatio": 1,
+              "shadows": false,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 19,
+              "triangles": 94440,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "bowl-to-trail-trees",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              -19.375,
+              3.25,
+              -21.25
+            ],
+            "targetWorld": [
+              -33.75,
+              3,
+              -25
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 47,
+              "triangles": 187999,
+              "geometries": 665,
+              "textures": 99,
+              "programs": 49,
+              "pixelRatio": 1,
+              "shadows": false,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 9,
+              "triangles": 91712,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "street-east-buildings",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              16.5,
+              1.65,
+              -12.5
+            ],
+            "targetWorld": [
+              53.75,
+              4.5,
+              -12.5
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 54,
+              "triangles": 181682,
+              "geometries": 665,
+              "textures": 99,
+              "programs": 49,
+              "pixelRatio": 1,
+              "shadows": false,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 18,
+              "triangles": 93932,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "south-underpass",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              12.5,
+              0.75,
+              36.25
+            ],
+            "targetWorld": [
+              12.5,
+              1.7,
+              61.25
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 78,
+              "triangles": 233438,
+              "geometries": 665,
+              "textures": 99,
+              "programs": 49,
+              "pixelRatio": 1,
+              "shadows": false,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 11,
+              "triangles": 141724,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "bridge-pier-riprap",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              16.25,
+              0.72,
+              50
+            ],
+            "targetWorld": [
+              25,
+              1.5,
+              53.75
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 49,
+              "triangles": 225712,
+              "geometries": 665,
+              "textures": 99,
+              "programs": 49,
+              "pixelRatio": 1,
+              "shadows": false,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 10,
+              "triangles": 135974,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "landscape-sidewalk-edge",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              19.5,
+              1.65,
+              -35
+            ],
+            "targetWorld": [
+              24.75,
+              0.2,
+              -25
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 195,
+              "triangles": 250012,
+              "geometries": 665,
+              "textures": 99,
+              "programs": 49,
+              "pixelRatio": 1,
+              "shadows": false,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 18,
+              "triangles": 141532,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "wide-establishing",
+            "level": "roc-city-skatepark",
+            "scale": 1.25,
+            "positionWorld": [
+              -38.75,
+              17,
+              -50
+            ],
+            "targetWorld": [
+              -1.25,
+              0,
+              8.75
+            ],
+            "fov": 62,
+            "renderer": {
+              "calls": 413,
+              "triangles": 272891,
+              "geometries": 665,
+              "textures": 99,
+              "programs": 49,
+              "pixelRatio": 1,
+              "shadows": false,
+              "colliders": 207,
+              "rails": 248
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 18,
+              "triangles": 141532,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          },
+          {
+            "name": "warehouse-control",
+            "level": "genesee-warehouse",
+            "scale": 1,
+            "positionWorld": [
+              -7.2,
+              1.7,
+              17.4
+            ],
+            "targetWorld": [
+              -4,
+              0.88,
+              14
+            ],
+            "fov": 45,
+            "renderer": {
+              "calls": 235,
+              "triangles": 243374,
+              "geometries": 665,
+              "textures": 99,
+              "programs": 49,
+              "pixelRatio": 1,
+              "shadows": false,
+              "colliders": 58,
+              "rails": 16
+            },
+            "webglError": 0,
+            "delta": {
+              "calls": 0,
+              "triangles": 0,
+              "geometries": 20,
+              "textures": 10,
+              "programs": 7
+            }
+          }
+        ],
+        "timing": {
+          "method": "Date.now wall time around ten batches of twelve real application RAF callbacks",
+          "frames": 120,
+          "batchesMsPerFrame": [
+            2.8333333333333335,
+            3,
+            2.75,
+            3.75,
+            5.666666666666667,
+            5.666666666666667,
+            5.75,
+            7.5,
+            7.666666666666667,
+            7.5
+          ],
+          "medianMsPerFrame": 5.666666666666667,
+          "p90MsPerFrame": 7.5,
+          "minMsPerFrame": 2.75,
+          "maxMsPerFrame": 7.666666666666667,
+          "shadows": false,
+          "deltaMedianMsPerFrame": -0.75
+        }
+      }
+    ]
+  },
+  "browserErrors": [],
+  "passed": true
+}

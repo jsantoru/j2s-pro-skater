@@ -1,0 +1,446 @@
+{
+  "coordinateSpace": "Authored X/Z scaled by current level.horizontalScale; Y unchanged",
+  "views": [
+    {
+      "name": "north-entry-to-bowl",
+      "level": "roc-city-skatepark",
+      "position": [
+        2,
+        3.24,
+        -42
+      ],
+      "target": [
+        -5,
+        1.8,
+        -23
+      ],
+      "fov": 62
+    },
+    {
+      "name": "flower-to-city",
+      "level": "roc-city-skatepark",
+      "position": [
+        10,
+        2.9,
+        -22
+      ],
+      "target": [
+        2,
+        4,
+        -47
+      ],
+      "fov": 62
+    },
+    {
+      "name": "bowl-to-trail-trees",
+      "level": "roc-city-skatepark",
+      "position": [
+        -15.5,
+        3.25,
+        -17
+      ],
+      "target": [
+        -27,
+        3,
+        -20
+      ],
+      "fov": 62
+    },
+    {
+      "name": "street-east-buildings",
+      "level": "roc-city-skatepark",
+      "position": [
+        13.2,
+        1.65,
+        -10
+      ],
+      "target": [
+        43,
+        4.5,
+        -10
+      ],
+      "fov": 62
+    },
+    {
+      "name": "south-underpass",
+      "level": "roc-city-skatepark",
+      "position": [
+        10,
+        0.75,
+        29
+      ],
+      "target": [
+        10,
+        1.7,
+        49
+      ],
+      "fov": 62
+    },
+    {
+      "name": "bridge-pier-riprap",
+      "level": "roc-city-skatepark",
+      "position": [
+        13,
+        0.72,
+        40
+      ],
+      "target": [
+        20,
+        1.5,
+        43
+      ],
+      "fov": 62
+    },
+    {
+      "name": "landscape-sidewalk-edge",
+      "level": "roc-city-skatepark",
+      "position": [
+        15.6,
+        1.65,
+        -28
+      ],
+      "target": [
+        19.8,
+        0.2,
+        -20
+      ],
+      "fov": 62
+    },
+    {
+      "name": "wide-establishing",
+      "level": "roc-city-skatepark",
+      "position": [
+        -31,
+        17,
+        -40
+      ],
+      "target": [
+        -1,
+        0,
+        7
+      ],
+      "fov": 62
+    },
+    {
+      "name": "warehouse-control",
+      "level": "genesee-warehouse",
+      "position": [
+        -7.2,
+        1.7,
+        17.4
+      ],
+      "target": [
+        -4,
+        0.88,
+        14
+      ],
+      "fov": 45
+    }
+  ],
+  "profiles": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900,
+      "touch": false,
+      "views": [
+        {
+          "name": "north-entry-to-bowl",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            2.5,
+            3.24,
+            -52.5
+          ],
+          "targetWorld": [
+            -6.25,
+            1.8,
+            -28.75
+          ],
+          "fov": 62
+        },
+        {
+          "name": "flower-to-city",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            12.5,
+            2.9,
+            -27.5
+          ],
+          "targetWorld": [
+            2.5,
+            4,
+            -58.75
+          ],
+          "fov": 62
+        },
+        {
+          "name": "bowl-to-trail-trees",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            -19.375,
+            3.25,
+            -21.25
+          ],
+          "targetWorld": [
+            -33.75,
+            3,
+            -25
+          ],
+          "fov": 62
+        },
+        {
+          "name": "street-east-buildings",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            16.5,
+            1.65,
+            -12.5
+          ],
+          "targetWorld": [
+            53.75,
+            4.5,
+            -12.5
+          ],
+          "fov": 62
+        },
+        {
+          "name": "south-underpass",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            12.5,
+            0.75,
+            36.25
+          ],
+          "targetWorld": [
+            12.5,
+            1.7,
+            61.25
+          ],
+          "fov": 62
+        },
+        {
+          "name": "bridge-pier-riprap",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            16.25,
+            0.72,
+            50
+          ],
+          "targetWorld": [
+            25,
+            1.5,
+            53.75
+          ],
+          "fov": 62
+        },
+        {
+          "name": "landscape-sidewalk-edge",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            19.5,
+            1.65,
+            -35
+          ],
+          "targetWorld": [
+            24.75,
+            0.2,
+            -25
+          ],
+          "fov": 62
+        },
+        {
+          "name": "wide-establishing",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            -38.75,
+            17,
+            -50
+          ],
+          "targetWorld": [
+            -1.25,
+            0,
+            8.75
+          ],
+          "fov": 62
+        },
+        {
+          "name": "warehouse-control",
+          "level": "genesee-warehouse",
+          "scale": 1,
+          "positionWorld": [
+            -7.2,
+            1.7,
+            17.4
+          ],
+          "targetWorld": [
+            -4,
+            0.88,
+            14
+          ],
+          "fov": 45
+        }
+      ]
+    },
+    {
+      "name": "touch-landscape",
+      "width": 844,
+      "height": 390,
+      "touch": true,
+      "views": [
+        {
+          "name": "north-entry-to-bowl",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            2.5,
+            3.24,
+            -52.5
+          ],
+          "targetWorld": [
+            -6.25,
+            1.8,
+            -28.75
+          ],
+          "fov": 62
+        },
+        {
+          "name": "flower-to-city",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            12.5,
+            2.9,
+            -27.5
+          ],
+          "targetWorld": [
+            2.5,
+            4,
+            -58.75
+          ],
+          "fov": 62
+        },
+        {
+          "name": "bowl-to-trail-trees",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            -19.375,
+            3.25,
+            -21.25
+          ],
+          "targetWorld": [
+            -33.75,
+            3,
+            -25
+          ],
+          "fov": 62
+        },
+        {
+          "name": "street-east-buildings",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            16.5,
+            1.65,
+            -12.5
+          ],
+          "targetWorld": [
+            53.75,
+            4.5,
+            -12.5
+          ],
+          "fov": 62
+        },
+        {
+          "name": "south-underpass",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            12.5,
+            0.75,
+            36.25
+          ],
+          "targetWorld": [
+            12.5,
+            1.7,
+            61.25
+          ],
+          "fov": 62
+        },
+        {
+          "name": "bridge-pier-riprap",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            16.25,
+            0.72,
+            50
+          ],
+          "targetWorld": [
+            25,
+            1.5,
+            53.75
+          ],
+          "fov": 62
+        },
+        {
+          "name": "landscape-sidewalk-edge",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            19.5,
+            1.65,
+            -35
+          ],
+          "targetWorld": [
+            24.75,
+            0.2,
+            -25
+          ],
+          "fov": 62
+        },
+        {
+          "name": "wide-establishing",
+          "level": "roc-city-skatepark",
+          "scale": 1.25,
+          "positionWorld": [
+            -38.75,
+            17,
+            -50
+          ],
+          "targetWorld": [
+            -1.25,
+            0,
+            8.75
+          ],
+          "fov": 62
+        },
+        {
+          "name": "warehouse-control",
+          "level": "genesee-warehouse",
+          "scale": 1,
+          "positionWorld": [
+            -7.2,
+            1.7,
+            17.4
+          ],
+          "targetWorld": [
+            -4,
+            0.88,
+            14
+          ],
+          "fov": 45
+        }
+      ]
+    }
+  ]
+}
