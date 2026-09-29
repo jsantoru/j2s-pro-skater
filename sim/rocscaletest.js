@@ -402,12 +402,34 @@ test('The unchanged score goals remain attainable with real flips, grabs and lin
   console.log(`  Enlarged score route: ${skater.score} in ${time.toFixed(2)} seconds; best combo ${best}; ${bails} bails.`);
 });
 
-test('The warehouse retains its exact pre-scale collision surfaces, rails and spawn', () => {
+test('The warehouse retains its original layout apart from the intentional 4 cm backstop recess', () => {
   const warehouse = new Level(); warehouse.group.updateMatrixWorld(true);
+  const candidates=warehouse.colliders.filter(mesh=>mesh.geometry.type==='BoxGeometry'
+    && mesh.position.x===0 && mesh.position.y===1.1 && mesh.position.z>22.5 && mesh.position.z<23);
+  assert.equal(candidates.length,1,'Identify only the south-bank backstop');
+  const backstop=candidates[0],bounds=new THREE.Box3().setFromObject(backstop);
+  close(bounds.min.z,22.5,'The rideable bank-to-backstop join remains unchanged');
+  close(bounds.max.z,22.96,'The rear face is recessed 4 cm from the wall columns');
+  close(bounds.min.x,-11,'Backstop west edge');close(bounds.max.x,11,'Backstop east edge');
+  close(bounds.min.y,0,'Backstop base');close(bounds.max.y,2.2,'Backstop height');
+  const colliderData=mesh=>{
+    const positions=Array.from(mesh.geometry.attributes.position.array),matrix=mesh.matrixWorld.toArray();
+    if(mesh===backstop){
+      // Undo only the approved depth/centre change in this serialized copy.
+      // Preserve the old golden for every other vertex, transform, rail and
+      // spawn; a newly generated whole-warehouse hash would hide regressions.
+      for(let i=2;i<positions.length;i+=3){
+        close(Math.abs(positions[i]),.23,'Recessed backstop local depth');
+        positions[i]=Math.sign(positions[i])*.25;
+      }
+      matrix[14]=22.75;
+    }
+    return [mesh.name,positions,mesh.geometry.index?Array.from(mesh.geometry.index.array):null,matrix];
+  };
   const data = {
     spawn: { pos: warehouse.spawn.pos.toArray(), heading: warehouse.spawn.heading.toArray() },
     rails: warehouse.rails.map(rail => [rail.kind, rail.a.toArray(), rail.b.toArray(), rail.dir.toArray(), rail.len]),
-    colliders: warehouse.colliders.map(mesh => [mesh.name, Array.from(mesh.geometry.attributes.position.array), mesh.geometry.index ? Array.from(mesh.geometry.index.array) : null, mesh.matrixWorld.toArray()]),
+    colliders: warehouse.colliders.map(colliderData),
   };
   // Captured before the ROC scale change, including all 58 warehouse colliders.
   assert.equal(createHash('sha256').update(JSON.stringify(data)).digest('hex'), '49511f243d27fe70308a483bdcda0614aadc11e621c6c5df3ceb0fbbdf0f5edf');
