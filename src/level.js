@@ -234,7 +234,9 @@ export class Level {
     this.quarterPipe(2.7, 14, 31.5, 0, -6, 0, { vert: 0.25, deck: 1.4 });
     // ---- SOUTH bank wall (rides toward +z), long shallow bank to carve on ----
     this.bank(5, 2.2, 22, 0, 0, 17.5, -Math.PI / 2, M.concrete);
-    this.box(22, 2.2, 0.5, 0, 1.1, 22.75, M.concrete);
+    // Keep the bank join at z=22.5, but recess its rear face from the wall
+    // columns at z=23 so the exterior home-camera view cannot z-fight.
+    this.box(22, 2.2, 0.46, 0, 1.1, 22.73, M.concrete);
     // ---- Raised platform (south-east) with bank approach, stairs + handrail + hubba ----
     const PH = 1.6;
     this.box(12, PH, 12, 28, PH / 2, 16, M.concrete);                   // platform x:22..34, z:10..22
