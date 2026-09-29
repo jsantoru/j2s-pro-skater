@@ -274,7 +274,7 @@ test('A charged quarter-pipe ollie reaches the secret tape through real airborne
 
 test('Every bottle cap has a clean local route, including an ollie onto the manual pad',()=>{
   for(const [id,from,release] of [
-    ['cap-1',[-7,1.62,-38],null],['cap-2',[-16.3,1.62,-11],null],
+    ['cap-1',[-7,1.62,-38],null],['cap-2',[-15.3,1.62,-11],null],
     ['cap-3',[7,0,0],null],['cap-4',[13,-.9,23],28.8],['cap-5',[8,-.9,40],null],
   ]){
     const skater=rider(from,[0,0,1]),goals=new GoalRun(new GoalProgress(null),ROC_PICKUPS);

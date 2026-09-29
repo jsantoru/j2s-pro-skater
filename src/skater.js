@@ -138,7 +138,7 @@ export class Skater {
     // Collision points already use matrixWorld. Normals need its inverse
     // transpose too, including any nonuniform scale on a parent level group.
     const n = h.face.normal.clone().applyMatrix3(_normalMatrix.getNormalMatrix(h.object.matrixWorld)).normalize();
-    return { point: h.point, normal: n, distance: h.distance };
+    return { point: h.point, normal: n, distance: h.distance, solidBoundary: h.object.userData.solidBoundary === true };
   }
 
   // ---------- main update (fixed dt) ----------
@@ -260,10 +260,15 @@ export class Skater {
     if (sp > 0.5) {
       const origin = _v2.copy(this.pos).addScaledVector(this.normal, 0.42);
       const hit = this.raycast(origin, travel, 0.5 + sp * dt);
-      if (hit && hit.normal.dot(travel) < -0.5 && hit.normal.y < 0.35) {
+      // ROC retaining faces and furniture must stop shallow approaches too;
+      // otherwise the rider can slip through their sides and under the bank.
+      // Keep the existing approach threshold for all other skating surfaces.
+      const incidence = hit ? hit.normal.dot(travel) : 0;
+      if (hit && incidence < (hit.solidBoundary ? -1e-4 : -0.5) && hit.normal.y < 0.35) {
         // tall wall at speed = slam; a low box / kicker side is just a bonk
         const tall = this.raycast(_v3.copy(this.pos).addScaledVector(this.normal, 1.0), travel, 0.5 + sp * dt);
-        if (sp > T.splatSpeed && tall && tall.normal.y < 0.35) { this.bail('wall'); return; }
+        const impactSpeed = hit.solidBoundary ? sp * -incidence : sp;
+        if (impactSpeed > T.splatSpeed && tall && tall.normal.y < 0.35) { this.bail('wall'); return; }
         this.speed = sp * 0.05;
         this.pos.copy(hit.point).addScaledVector(hit.normal, 0.45).addScaledVector(this.normal, -0.42);
         this.vel.set(0, 0, 0);

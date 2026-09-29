@@ -3,6 +3,7 @@ import { makeMaterials, surfaceUV } from './materials.js';
 import { ROC_CITY_LAYOUT, ROC_CITY_HORIZONTAL_SCALE } from './roc-city-layout.js';
 import { buildRocCityHip } from './roc-city-hip.js';
 import { createTrailGeometry, createTrailFoundationGeometry } from './roc-city-surroundings.js';
+import { createRocCityFixtures, fixturePoint } from './roc-city-fixtures.js';
 import { paintedBorder, paintedHubba, railPost, archedRailSupport, rectangularFlatbar, createPoolTileMap, mapPoolBand } from './roc-city-trim.js';
 
 const UP = new THREE.Vector3(0,1,0);
@@ -139,6 +140,7 @@ export class RocCityLevel {
     this.bailFloorY=-3;
     this.horizontalRailCapture=true;
     this.layout=ROC_CITY_LAYOUT;this.designLayout=ROC_CITY_LAYOUT;
+    this.fixtures=createRocCityFixtures(this.layout);this.fixtureColliders=[];
     this.horizontalScale=horizontalScale;this.worldScale=Object.freeze({x:horizontalScale,y:1,z:horizontalScale});
     this.features=Object.freeze(Object.fromEntries(Object.entries(ROC_CITY_LAYOUT.features).map(([id,feature])=>[id,Object.freeze({
       ...feature,position:Object.freeze(this.toWorldPoint(feature.position)),
@@ -233,6 +235,30 @@ export class RocCityLevel {
     const mesh=this.add(new THREE.Mesh(geometry,this.mats.concrete),collide);mesh.name='Concrete retaining faces';return mesh;
   }
 
+  sealBankPerimeter(surface,id,bottom=-.04) {
+    // Keep the riding mesh unchanged. Its directed boundary edges define the
+    // matching outward-facing concrete walls, including sloped end profiles.
+    const p=surface.geometry.attributes.position,index=surface.geometry.index,edges=new Map();
+    const key=i=>`${p.getX(i)},${p.getY(i)},${p.getZ(i)}`;
+    const edge=(a,b)=>{
+      const ka=key(a),kb=key(b);if(ka===kb)return;
+      const k=ka<kb?`${ka}|${kb}`:`${kb}|${ka}`;
+      const existing=edges.get(k);if(existing)existing.count++;else edges.set(k,{a,b,count:1});
+    };
+    for(let i=0;i<index.count;i+=3){const a=index.getX(i),b=index.getX(i+1),c=index.getX(i+2);edge(a,b);edge(b,c);edge(c,a);}
+    const positions=[],indices=[];
+    for(const {a,b,count} of edges.values()){
+      if(count!==1||Math.max(p.getY(a),p.getY(b))<=bottom)continue;
+      const n=positions.length/3;
+      positions.push(p.getX(a),p.getY(a),p.getZ(a),p.getX(a),bottom,p.getZ(a),p.getX(b),bottom,p.getZ(b),p.getX(b),p.getY(b),p.getZ(b));
+      indices.push(n,n+1,n+2,n,n+2,n+3);
+    }
+    const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setIndex(indices);geometry.computeVertexNormals();surfaceUV(geometry,3);
+    const wall=this.add(new THREE.Mesh(geometry,this.mats.concrete));
+    wall.name=`${surface.name} — solid retaining faces`;wall.userData={feature:'C',part:'bank-shell',surface:id,solidBoundary:true};
+    (this.bankRetainingFaces??=[]).push(wall);return wall;
+  }
+
   quarter(radius,width,x,y,z,rotation=0,{deck=1.8,color=this.mats.rocBlue,feature=''}={}) {
     const points=[[0,0]];
     for(let i=1;i<=36;i++){const a=i/36*Math.PI/2;points.push([radius*Math.sin(a),radius*(1-Math.cos(a))]);}
@@ -285,7 +311,7 @@ export class RocCityLevel {
     for(const side of [-1,1]){
       const z=side*(width/2+.23);
       const ledge=this.profile([[0,feature==='G'?0:height],[0,height+.3],[run,.3],[run,0]],.44,start[0],start[1],start[2],angle);
-      if(feature==='G'){ledge.name=`G — Solid ${side<0?'north':'south'} hubba`;ledge.userData={feature,part:'hubba',side};}
+      if(feature==='G'){ledge.name=`G — Solid ${side<0?'north':'south'} hubba`;ledge.userData={feature,part:'hubba',side,solidBoundary:true};}
       const shift=v([0,0,z]).applyQuaternion(mesh.quaternion);ledge.position.add(shift);ledge.updateMatrixWorld(true);
       const edge=this.addRail(local(-.15,height+.32,z),local(run+.15,.32,z),'ledge',{visual:false});edge.feature=feature;
       paintedHubba(this,edge,{color:hubbaColor,name:`${feature} — Painted hubba cap and end wraps`});
@@ -366,6 +392,9 @@ export class RocCityLevel {
     this.deckConnectorEnd=this.add(new THREE.Mesh(end,this.mats.concrete),true,false);
     this.deckConnectorEnd.name='C — Divider bank ending at nine-stair hubba';
     this.deckConnectorEnd.userData.feature='C';
+    this.sealBankPerimeter(this.flowerDeck,'flower-deck');
+    this.sealBankPerimeter(this.deckConnector,'central-bank');
+    this.sealBankPerimeter(this.deckConnectorEnd,'divider-end');
   }
 
   buildEntryAccess() {
@@ -385,6 +414,36 @@ export class RocCityLevel {
       const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
       geometry.setIndex(t===rows[0]?[0,2,1,0,3,2]:[0,1,2,0,2,3]);geometry.computeVertexNormals();surfaceUV(geometry,3);
       this.add(new THREE.Mesh(geometry,this.mats.concrete));
+    }
+  }
+
+  buildFixtureColliders() {
+    const record=(mesh,fixture,fixtureType,part)=>{
+      mesh.visible=false;mesh.castShadow=false;
+      mesh.name=`${fixture} — ${part} collider`;mesh.userData={fixture,fixtureType,part,solidBoundary:true};
+      this.fixtureColliders.push(mesh);return mesh;
+    };
+    for(const railing of this.fixtures.railings??[this.fixtures.westRailing]){
+      const radius=Math.max(...railing.rails.map(rail=>rail.radius));
+      for(let i=1;i<railing.points.length;i++){
+        const [ax,az]=railing.points[i-1],[bx,bz]=railing.points[i];
+        const length=Math.hypot(bx-ax,bz-az),height=railing.height+radius;
+        // A rider cannot fit between the three bars. Use their narrow occupied
+        // span for body clearance, without bridging the intentional entry gaps.
+        const mesh=this.box(length,height,.06,(ax+bx)/2,railing.baseY+height/2,(az+bz)/2,this.mats.concrete,{rotY:-Math.atan2(bz-az,bx-ax)});
+        record(mesh,railing.id,'railing',`span-${i-1}`);
+      }
+      for(const post of railing.posts){
+        const [x,y,z]=post.position,height=post.height-.025;
+        const mesh=this.add(new THREE.Mesh(new THREE.CylinderGeometry(post.radius,post.radius,height,7),this.mats.concrete));
+        mesh.position.set(x,y+.025+height/2,z);mesh.updateMatrixWorld(true);
+        record(mesh,railing.id,'railing',post.id);
+        record(this.box(...post.footSize,x,y+post.footSize[1]/2,z),railing.id,'railing',`${post.id}-foot`);
+      }
+    }
+    for(const bench of this.fixtures.benches)for(const part of bench.boxes){
+      const [x,y,z]=fixturePoint(bench,part.position);
+      record(this.box(...part.size,x,y,z,this.mats.concrete,{rotY:bench.rotationY}),bench.id,'bench',part.id);
     }
   }
 
@@ -432,11 +491,12 @@ export class RocCityLevel {
     this.stairs(7,.18,.4,3.7,[10,0,-20],[0,1],{bankWidth:2.3,feature:'E',hubbaColor:M.rocBlue});
 
     // The curved western ledge follows the outside of the pool deck.
-    const curve=new THREE.CatmullRomCurve3([v([-17.6,1.62,-10]),v([-17.5,1.62,-5]),v([-15.4,1.62,.5])]);
+    const curve=new THREE.CatmullRomCurve3([v([-16.6,1.62,-10]),v([-16.5,1.62,-5]),v([-14.4,1.62,.5])]);
     const curvedEdges=[[],[]],curvedMeshes=[];
     for(let i=0;i<18;i++){
       const a=curve.getPoint(i/18),b=curve.getPoint((i+1)/18),mid=a.clone().add(b).multiplyScalar(.5),dir=b.clone().sub(a);
       const mesh=this.ledge(dir.length(),.35,.6,mid.x,1.62,mid.z,{rotation:-Math.atan2(dir.z,dir.x),trim:false});
+      mesh.name='F — Curved pool-deck ledge';mesh.userData.feature='F';mesh.railEdges.forEach(rail=>{rail.feature='F';});
       curvedMeshes.push(mesh);
       mesh.railEdges.forEach((rail,j)=>curvedEdges[j].push(rail));
     }
@@ -485,6 +545,7 @@ export class RocCityLevel {
     this.beam(v([5,2.45,54]),v([11,2.45,54]),.035,M.rocBlue);
     this.beam(v([11,3.05,54]),v([15,3.05,54]),.035,M.rocBlue);
     for(let x=5;x<=15;x+=.8){const base=x<11?1.4:2;this.beam(v([x,base,54]),v([x,base+1.05,54]),.023,M.rocBlue);}
+    this.buildFixtureColliders();
   }
 
   buildPoolTrim() {

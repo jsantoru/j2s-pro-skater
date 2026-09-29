@@ -93,8 +93,8 @@ function grindRoute(rails, { dir = 1, speed = 7, lead = 7, pop = 3.5, duration =
 const stairE = level.rails.find(rail => rail.kind === 'rail' && rail.feature === 'E');
 const stairG = level.rails.find(rail => rail.kind === 'rail' && rail.feature === 'G');
 const hip = level.hip?.backRail || chain(level.rails.find(rail => rail.feature === 'H' && rail.kind === 'rail' && rail.bLink && !rail.aLink));
-const curvedF = chain(level.rails.find(rail => rail.kind === 'ledge' && rail.a.x < -15 && rail.bLink && !rail.aLink));
-const everyFRail = level.rails.filter(rail => rail.kind === 'ledge' && rail.a.x < -15 && (rail.bLink || rail.aLink));
+const curvedF = chain(level.rails.find(rail => rail.feature === 'F' && rail.bLink && !rail.aLink));
+const everyFRail = level.rails.filter(rail => rail.feature === 'F');
 const pool = chain(level.rails.find(rail => rail.feature === 'D'));
 const flatJ = level.rails.find(rail => rail.kind === 'rail' && rail.a.x === 8 && Math.abs(rail.a.y + .15) < .01);
 const manualK = level.rails.find(rail => rail.kind === 'ledge' && Math.abs(rail.a.y + .42) < .01);
@@ -104,7 +104,7 @@ const bankI = level.rails.find(rail => rail.kind === 'rail' && rail.a.x === 10 &
   check('A–L rendered topography agrees with collisions and the playable footprint has no voids', () => {
     const visible = []; level.group.traverse(mesh => { if (mesh.isMesh && mesh.visible) visible.push(mesh); });
     const gSample=stairG.a.clone().lerp(stairG.b,.5).add(new THREE.Vector3(-stairG.dir.z,0,stairG.dir.x).setLength(.75));
-    for (const [name, x, z] of [['A',2,-44],['B',1.5,-35],['C',1,-16],['D',-7,-15],['E',10.6,-18.5],['F',-17.55,-6],['G',gSample.x,gSample.z],['H',11,1],['I',8,21],['J',7,34],['K',13,35],['L',7.5,51]]) {
+    for (const [name, x, z] of [['A',2,-44],['B',1.5,-35],['C',1,-16],['D',-7,-15],['E',10.6,-18.5],['F',-16.55,-6],['G',gSample.x,gSample.z],['H',11,1],['I',8,21],['J',7,34],['K',13,35],['L',7.5,51]]) {
       const physical = support(x, z);
       ray.set(new THREE.Vector3(x, 10, z), new THREE.Vector3(0, -1, 0)); ray.far = 20;
       const rendered = ray.intersectObjects(visible, false)[0];

@@ -1,5 +1,6 @@
 // Visible finish must stay aligned with the physical skate surfaces. The later
-// layout correction intentionally revises B/C/G; preserve the other features.
+// layout correction revises B/C/G and fixture clearance moves F; preserve the
+// unaffected features. F's translated path is covered by rocfixturetest.js.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import * as THREE from 'three';
@@ -11,8 +12,8 @@ let passed=0;
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 function test(name,run){run();passed++;console.log(`PASS: ${name}`);}
 
-test('Unchanged D/E/F/H/I/J/K/L features retain their validated surfaces and grind paths',()=>{
-  const unchanged=new Set(['D','E','F','H','I','J','K','L']);
+test('Unchanged D/E/H/I/J/K/L features retain their validated surfaces and grind paths',()=>{
+  const unchanged=new Set(['D','E','H','I','J','K','L']);
   const rails=level.rails.filter(rail=>unchanged.has(rail.feature)).map(rail=>[rail.feature,rail.kind,rail.a.toArray(),rail.b.toArray()]);
   const colliders=level.colliders.filter(mesh=>unchanged.has(mesh.userData.feature)).map(mesh=>[
     mesh.userData.feature,

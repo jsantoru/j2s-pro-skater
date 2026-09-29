@@ -1,0 +1,33 @@
+{
+  "url": "http://127.0.0.1:4176/",
+  "recordedAt": "2026-09-29T02:42:18.098Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "Ground-level views expose ramp ends, railing footings and both benches",
+      "passed": true,
+      "detail": {
+        "views": 9,
+        "scale": 1.25
+      }
+    }
+  ],
+  "screenshots": [
+    "ramp-underside.png",
+    "ramp-from-south.png",
+    "ramp-east-side.png",
+    "flower-deck-side.png",
+    "outer-railing.png",
+    "outer-railing-deck.png",
+    "southwest-bench.png",
+    "south-bench-apron.png",
+    "north-bench.png"
+  ],
+  "browserErrors": [],
+  "passed": true
+}

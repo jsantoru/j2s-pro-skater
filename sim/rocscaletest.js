@@ -318,7 +318,7 @@ test('All five caps can be collected together from spawn within one ordinary run
   goals.start({ skater }); let index = 0, time = 0, previous = false, released = false;
   const bails = []; skater.events.bail = reason => bails.push(reason);
   const route = [
-    [2,-41],[-4,-40],[-7,-38],[-7,-30,'cap-1'],[-13,-28],[-17,-20],[-17,-14],[-16.3,-11],[-16.6,-7,'cap-2'],
+    [2,-41],[-4,-40],[-7,-38],[-7,-30,'cap-1'],[-13,-28],[-17,-20],[-17,-14],[-15.3,-11],[-15.6,-7,'cap-2'],
     [-14,-3],[-12,3],[-8,5],[-2,5],[0,2],[4,0],[7,0],[7,6,'cap-3'],[8,16],[13,25],[13,35,'cap-4'],[13,40],[8,43],[8,46,'cap-5'],
   ];
   while (time < 120 && !goals.completed.has('caps') && !bails.length) {
@@ -339,7 +339,7 @@ test('All five caps can be collected together from spawn within one ordinary run
 
 test('Every cap and the secret tape have real ride or ollie approaches at their scaled destinations', () => {
   for (const [id, from, release, speed] of [
-    ['cap-1',[-7,1.62,-38],null,7], ['cap-2',[-16.3,1.62,-11],null,7], ['cap-3',[7,0,0],null,7],
+    ['cap-1',[-7,1.62,-38],null,7], ['cap-2',[-15.3,1.62,-11],null,7], ['cap-3',[7,0,0],null,7],
     ['cap-4',[13,-.9,23],28.8,7], ['cap-5',[8,-.9,40],null,7], ['secret-tape',[7.5,-.9,41],48.4,8],
   ]) {
     const skater = rider(from, [0,0,1], speed), goals = new GoalRun(new GoalProgress(null), ROC_PICKUPS);

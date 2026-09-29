@@ -7,6 +7,7 @@ import { paintMark } from './warehouse-identity.js';
 import { displayFont, labelFont } from './typography.js';
 import { ROC_CITY_LAYOUT } from './roc-city-layout.js';
 import { createTrailGeometry, createTrailFoundationGeometry } from './roc-city-surroundings.js';
+import { createRocCityFixtures, fixturePoint } from './roc-city-fixtures.js';
 
 const UP = new THREE.Vector3(0, 1, 0);
 const layouts = new WeakMap();
@@ -36,6 +37,7 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   if (layouts.has(level)) return layouts.get(level);
   const L = level.layout || ROC_CITY_LAYOUT, group = new THREE.Group();
   const horizontalScale=level.horizontalScale??1;
+  const fixtures=level.fixtures || createRocCityFixtures(L);
   group.name = 'ROC City / Riverway landscape and I-490';
   level.group.add(group); layouts.set(level,group);
   const batches = new Map(), ownedMaterials = new Set(), rng = randomSeed(490);
@@ -230,9 +232,17 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   railPath([[3.9,bridge.minZ],[3.9,bridge.maxZ]],bridge.floorY,1.95);
 
   railPath([[6,-42],[11.7,-38],[15.6,-32]],0,1.0);
-  railPath([[15.6,-31],[15.6,-20.5]],1.26,1.0);
   railPath([[15.6,-17],[15.6,17]],0,1.0);
-  railPath([[-12,-34],[-18,-28],[-19.5,-16],[-18.7,-4],[-14.1,6.8]],1.62,.95);
+  // Grounded on the actual pool-deck boundary; these same records define the
+  // physical posts and rails. Shared corner posts avoid doubled metal faces.
+  for(const railing of fixtures.railings){
+    for(const segment of railing.rails)bar(segment.a,segment.b,segment.radius,rail);
+    for(const post of railing.posts){
+      const [x,y,z]=post.position;
+      bar([x,y+.025,z],[x,y+post.height,z],post.radius,rail);
+      box(...post.footSize,x,y+post.footSize[1]/2,z,rail);
+    }
+  }
   // Thin twin-arm park lights echo the actual Riverway fixtures.
   const lamp=(x,z,y=0,height=5.7,turn=0) => {
     const dx=Math.cos(turn),dz=Math.sin(turn);
@@ -248,11 +258,11 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   for(let x=-47;x<50;x+=26)lamp(x,bridge.minZ-.66,9.26,5.4,0);
 
   // Benches and a simple park sign sit beyond the entrances, never in a line.
-  for(const [x,z,ry] of [[7.9,-44.3,0],[-13,12,-.55]]) {
-    for(const xx of [-.82,.82]) {box(.09,.5,.7,x+xx,.25,z,black,ry);}
-    for(const dz of [-.28,-.08,.12,.32])box(2.15,.07,.13,x,.49,z+dz,rail,ry);
-    for(const yy of [.86,1.05])box(2.15,.1,.05,x,yy,z+.42,rail,ry);
-    bar([x-.85,.4,z+.42],[x-.85,1.13,z+.42],.03,black);bar([x+.85,.4,z+.42],[x+.85,1.13,z+.42],.03,black);
+  for(const bench of fixtures.benches) {
+    for(const part of bench.boxes){
+      const [x,y,z]=fixturePoint(bench,part.position);
+      box(...part.size,x,y,z,part.material==='slat'?rail:black,bench.rotationY);
+    }
   }
   const signMap=canvasMap((c,s)=>{
     c.fillStyle='#274853';c.fillRect(0,0,s,s/2);c.fillStyle='#e6eadb';c.font=displayFont(115);c.fillText('ROC CITY',38,140);c.font=displayFont(76);c.fillText('SKATEPARK',40,227);c.fillStyle='#92b2b4';c.font=labelFont(25);c.fillText('GENESEE RIVERWAY · ROCHESTER',40,290);
@@ -361,6 +371,7 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   }
   group.userData.materials=ownedMaterials;
   group.userData.pierBounds=pierBounds;
+  group.userData.fixtures=fixtures;
   group.userData.water=waterMap;
   group.userData.decorativeOnly=true;
   return group;
