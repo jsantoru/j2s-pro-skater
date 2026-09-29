@@ -169,7 +169,9 @@ Skate** to learn the controls without a timer.
 Phones use lighter rendering by default (1× pixels, no dynamic shadows or floor reflections).
 Add `?highfx` to compare full effects, or `?touch` to try the controls with a mouse on desktop.
 Keyboard and gamepad inputs remain available. Progress belongs to each browser and site origin;
-the ChatGPT Site and the PR preview keep separate records.
+the public ChatGPT Site and a local development server keep separate records.
+The ChatGPT Site is the active deployment target; the former Netlify repository
+connection has been removed, so pushes and pull requests no longer trigger Netlify builds.
 
 `npm run sim:touch` checks input ownership, short taps, cancellation, and keyboard/gamepad
 coexistence. With the dev server running, `npm run qa:mobile` checks actual browser multitouch
