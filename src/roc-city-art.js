@@ -7,6 +7,7 @@ import { paintMark } from './warehouse-identity.js';
 import { displayFont, labelFont } from './typography.js';
 import { ROC_CITY_LAYOUT } from './roc-city-layout.js';
 import { createTrailGeometry, createTrailFoundationGeometry } from './roc-city-surroundings.js';
+import { createRocCityFixtures, fixturePoint } from './roc-city-fixtures.js';
 
 const UP = new THREE.Vector3(0, 1, 0);
 const layouts = new WeakMap();
@@ -35,6 +36,8 @@ function flatShape(points, y, holes = []) {
 export function dressRocCity(level, { lowfx = false } = {}) {
   if (layouts.has(level)) return layouts.get(level);
   const L = level.layout || ROC_CITY_LAYOUT, group = new THREE.Group();
+  const horizontalScale=level.horizontalScale??1;
+  const fixtures=level.fixtures || createRocCityFixtures(L);
   group.name = 'ROC City / Riverway landscape and I-490';
   level.group.add(group); layouts.set(level,group);
   const batches = new Map(), ownedMaterials = new Set(), rng = randomSeed(490);
@@ -160,7 +163,7 @@ export function dressRocCity(level, { lowfx = false } = {}) {
     box(1.85,1.05,depth+1,x,5.95,zc,concrete);
     for(const z of bridge.pierStations) {
       box(...bridge.pierSize,x,bridge.pierCenterY,z,concrete);
-      pierBounds.push({x,y:bridge.pierCenterY,z,width:bridge.pierSize[0],height:bridge.pierSize[1],depth:bridge.pierSize[2]});
+      pierBounds.push({x:x*horizontalScale,y:bridge.pierCenterY,z:z*horizontalScale,width:bridge.pierSize[0]*horizontalScale,height:bridge.pierSize[1],depth:bridge.pierSize[2]*horizontalScale});
       box(...bridge.pierFootingSize,x,bridge.pierFootingY,z,concrete);
       const shoulder=new THREE.Shape([new THREE.Vector2(-.73,0),new THREE.Vector2(-1.65,1.05),new THREE.Vector2(1.65,1.05),new THREE.Vector2(.73,0)]);
       const g=new THREE.ExtrudeGeometry(shoulder,{depth:1.7,bevelEnabled:false});g.translate(0,0,-.85);g.rotateY(Math.PI/2);add(g,concrete,[x,4.92,z]);
@@ -229,9 +232,17 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   railPath([[3.9,bridge.minZ],[3.9,bridge.maxZ]],bridge.floorY,1.95);
 
   railPath([[6,-42],[11.7,-38],[15.6,-32]],0,1.0);
-  railPath([[15.6,-31],[15.6,-20.5]],1.26,1.0);
   railPath([[15.6,-17],[15.6,17]],0,1.0);
-  railPath([[-12,-34],[-18,-28],[-19.5,-16],[-18.7,-4],[-14.1,6.8]],1.62,.95);
+  // Grounded on the actual pool-deck boundary; these same records define the
+  // physical posts and rails. Shared corner posts avoid doubled metal faces.
+  for(const railing of fixtures.railings){
+    for(const segment of railing.rails)bar(segment.a,segment.b,segment.radius,rail);
+    for(const post of railing.posts){
+      const [x,y,z]=post.position;
+      bar([x,y+.025,z],[x,y+post.height,z],post.radius,rail);
+      box(...post.footSize,x,y+post.footSize[1]/2,z,rail);
+    }
+  }
   // Thin twin-arm park lights echo the actual Riverway fixtures.
   const lamp=(x,z,y=0,height=5.7,turn=0) => {
     const dx=Math.cos(turn),dz=Math.sin(turn);
@@ -247,11 +258,11 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   for(let x=-47;x<50;x+=26)lamp(x,bridge.minZ-.66,9.26,5.4,0);
 
   // Benches and a simple park sign sit beyond the entrances, never in a line.
-  for(const [x,z,ry] of [[7.9,-44.3,0],[-13,12,-.55]]) {
-    for(const xx of [-.82,.82]) {box(.09,.5,.7,x+xx,.25,z,black,ry);}
-    for(const dz of [-.28,-.08,.12,.32])box(2.15,.07,.13,x,.49,z+dz,rail,ry);
-    for(const yy of [.86,1.05])box(2.15,.1,.05,x,yy,z+.42,rail,ry);
-    bar([x-.85,.4,z+.42],[x-.85,1.13,z+.42],.03,black);bar([x+.85,.4,z+.42],[x+.85,1.13,z+.42],.03,black);
+  for(const bench of fixtures.benches) {
+    for(const part of bench.boxes){
+      const [x,y,z]=fixturePoint(bench,part.position);
+      box(...part.size,x,y,z,part.material==='slat'?rail:black,bench.rotationY);
+    }
   }
   const signMap=canvasMap((c,s)=>{
     c.fillStyle='#274853';c.fillRect(0,0,s,s/2);c.fillStyle='#e6eadb';c.font=displayFont(115);c.fillText('ROC CITY',38,140);c.font=displayFont(76);c.fillText('SKATEPARK',40,227);c.fillStyle='#92b2b4';c.font=labelFont(25);c.fillText('GENESEE RIVERWAY · ROCHESTER',40,290);
@@ -360,6 +371,7 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   }
   group.userData.materials=ownedMaterials;
   group.userData.pierBounds=pierBounds;
+  group.userData.fixtures=fixtures;
   group.userData.water=waterMap;
   group.userData.decorativeOnly=true;
   return group;
@@ -367,6 +379,7 @@ export function dressRocCity(level, { lowfx = false } = {}) {
 
 /** Cached-world lighting: lights belong to root, not the shared scene. */
 export function createRocCityArt(root, level, { lowfx = false } = {}) {
+  const horizontalScale=level.horizontalScale??1;
   const dressing=dressRocCity(level,{lowfx}), lights=new THREE.Group();lights.name='ROC City outdoor daylight';root.add(lights);
   const skyMaterial=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,
     uniforms:{top:{value:new THREE.Color(0x80acc6)},horizon:{value:new THREE.Color(0xb4c6cb)}},
@@ -381,13 +394,13 @@ export function createRocCityArt(root, level, { lowfx = false } = {}) {
   });
   const sky=new THREE.Mesh(new THREE.SphereGeometry(450,24,12),skyMaterial);sky.name='Open Riverway sky';sky.frustumCulled=false;sky.renderOrder=-100;lights.add(sky);
   const ambient=new THREE.HemisphereLight(0xc3dded,0x7d8062,1.45);
-  const sun=new THREE.DirectionalLight(0xffebce,2.8);sun.position.set(-34,61,-43);sun.target.position.set(0,0,0);
-  sun.castShadow=!lowfx;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-58,right:58,top:71,bottom:-71,near:1,far:170});sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-.00035;sun.shadow.normalBias=.035;sun.shadow.radius=2;
+  const sun=new THREE.DirectionalLight(0xffebce,2.8);sun.position.set(-34,61,-43).multiplyScalar(horizontalScale);sun.target.position.set(0,0,0);
+  sun.castShadow=!lowfx;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-58*horizontalScale,right:58*horizontalScale,top:71*horizontalScale,bottom:-71*horizontalScale,near:1,far:170*horizontalScale});sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-.00035;sun.shadow.normalBias=.035;sun.shadow.radius=2;
   const fill=new THREE.DirectionalLight(0xc4d8e0,.32);fill.position.set(28,10,39);lights.add(ambient,sun,sun.target,fill);
-  if(!lowfx)for(const z of [30,40,50]){const lamp=new THREE.PointLight(0xe3eddb,3.5,10,2);lamp.position.set(10,4.8,z);lights.add(lamp);}
+  if(!lowfx)for(const z of [30,40,50]){const lamp=new THREE.PointLight(0xe3eddb,3.5,10*horizontalScale,2);lamp.position.set(10*horizontalScale,4.8,z*horizontalScale);lights.add(lamp);}
   let disposed=false;
   return {
-    sun, pierBounds:dressing.userData.pierBounds, background:new THREE.Color(0xb4c6cb),fog:new THREE.Fog(0xb4c6cb,76,185),environmentIntensity:.45,toneMappingExposure:.93,
+    sun, pierBounds:dressing.userData.pierBounds, cameraFar:200*horizontalScale, background:new THREE.Color(0xb4c6cb),fog:new THREE.Fog(0xb4c6cb,76*horizontalScale,185*horizontalScale),environmentIntensity:.45,toneMappingExposure:.93,
     update(time) { const water=dressing.userData.water;if(water)water.offset.x=time*.002; },
     dispose() {
       if(disposed)return;disposed=true;lights.removeFromParent();sun.shadow.map?.dispose();sky.geometry.dispose();skyMaterial.dispose();

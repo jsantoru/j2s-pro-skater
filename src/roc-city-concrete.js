@@ -33,7 +33,8 @@ export function upgradeRocCityConcrete(level, source) {
       compile(shader);
       shader.vertexShader = shader.vertexShader
         .replace('varying float vConcreteUp;', 'varying float vConcreteUp;\nvarying vec3 vRocNormal;')
-        .replace('vConcreteWorld = concreteWorld.xyz;', 'vConcreteWorld = concreteWorld.xyz;\nvRocNormal = normalize(mat3(modelMatrix) * normal);');
+        .replace('vConcreteWorld = concreteWorld.xyz;', 'vConcreteWorld = concreteWorld.xyz;\nvRocNormal = inverseTransformDirection(normalMatrix * normal, viewMatrix);')
+        .replace('vConcreteUp = max(0.0,normalize(mat3(modelMatrix) * normal).y);', 'vConcreteUp = max(0.0, vRocNormal.y);');
       shader.fragmentShader = shader.fragmentShader
         .replace('varying float vConcreteUp;', 'varying float vConcreteUp;\nvarying vec3 vRocNormal;')
         .replace('vec3 concreteScan = texture2D(map,vMapUv).rgb;', `
@@ -66,7 +67,7 @@ export function upgradeRocCityConcrete(level, source) {
           normal = perturbNormalArb(-vViewPosition, normal, vec2(dFdx(rocBump), dFdy(rocBump)), faceDirection);
         `);
     };
-    material.customProgramCacheKey = () => 'roc-city-concrete-v2';
+    material.customProgramCacheKey = () => 'roc-city-concrete-v3';
     state.status = 'ready'; return true;
   }).catch(() => { state.status = 'fallback'; return false; });
   return state;

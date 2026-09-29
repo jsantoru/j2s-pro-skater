@@ -1,0 +1,540 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-09-29T01:58:56.715Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "Repeatable Joe-to-feature scale views and measured dimensions",
+      "passed": true,
+      "detail": {
+        "worldScale": [
+          1.25,
+          1,
+          1.25
+        ],
+        "characterId": "joe",
+        "rail": {
+          "start": [
+            12.5,
+            2.08,
+            -25.375
+          ],
+          "end": [
+            12.5,
+            0.82,
+            -21
+          ],
+          "length": 4.552826045435956,
+          "heightAboveStart": 0.8200000095367432
+        },
+        "sevenStairs": {
+          "top": 1.2599999904632568,
+          "landing": 0
+        },
+        "manualPad": {
+          "min": [
+            14.937500059604643,
+            -0.899999994635582,
+            38.4375
+          ],
+          "max": [
+            17.562499940395355,
+            -0.42000000536441806,
+            49.0625
+          ],
+          "size": [
+            2.6249998807907122,
+            0.47999998927116394,
+            10.625
+          ]
+        },
+        "mini": {
+          "rim": 1.6200000047683716,
+          "bottom": 0
+        },
+        "bowl": {
+          "deck": 1.620000004768368,
+          "deepFloor": -1.029999971389774
+        }
+      }
+    },
+    {
+      "name": "Broader world preserves measured human heights and the Warehouse control",
+      "passed": true,
+      "detail": {
+        "riderHeight": 1.7557765116096968,
+        "padSize": [
+          2.6249998807907122,
+          0.47999998927116394,
+          10.625
+        ],
+        "railHeight": 0.8200000095367432,
+        "warehouseSHA256": {
+          "before": "8f5bccef0f00d65d166e705645f75b4b3931436371293d69ec975b3b776fbb62",
+          "after": "8f5bccef0f00d65d166e705645f75b4b3931436371293d69ec975b3b776fbb62"
+        }
+      }
+    },
+    {
+      "name": "Contact shadows follow actual world-space slope triangles without shader errors",
+      "passed": true,
+      "detail": [
+        {
+          "feature": "I",
+          "normal": [
+            0,
+            0.9897905070156926,
+            0.1425298292345086
+          ],
+          "visible": true,
+          "alignmentError": 1.423407673790357e-16,
+          "oldError": 0.07827756681663876,
+          "positionError": 0
+        },
+        {
+          "feature": "H",
+          "normal": [
+            -0.22889905988919723,
+            0.9734501632758821,
+            0
+          ],
+          "visible": true,
+          "alignmentError": 6.938893903907228e-18,
+          "oldError": 0.12107873806839603,
+          "positionError": 0
+        },
+        {
+          "feature": "B",
+          "normal": [
+            -0.27718269092098446,
+            0.9199668437509041,
+            0.27718362551348835
+          ],
+          "visible": true,
+          "alignmentError": 1.2412670766236366e-16,
+          "oldError": 0.1843250068128806,
+          "positionError": 0
+        },
+        {
+          "feature": "D",
+          "normal": [
+            0.35877495656595026,
+            0.9283133100708908,
+            -0.09754449695562868
+          ],
+          "visible": true,
+          "alignmentError": 3.2398021848425308e-16,
+          "oldError": 0.1779904251129385,
+          "positionError": 0
+        }
+      ]
+    },
+    {
+      "name": "Scaled level switching keeps saved careers isolated and GPU resources stable",
+      "passed": true,
+      "detail": {
+        "careers": {
+          "genesee-warehouse": {
+            "completed": [
+              "high-score",
+              "combo"
+            ],
+            "bestScore": 7000,
+            "bestCombo": 7000
+          },
+          "roc-city-skatepark": {
+            "completed": [
+              "high-score",
+              "combo"
+            ],
+            "bestScore": 7000,
+            "bestCombo": 7000
+          }
+        },
+        "before": {
+          "geometries": 647,
+          "textures": 91
+        },
+        "after": {
+          "geometries": 647,
+          "textures": 91
+        }
+      }
+    },
+    {
+      "name": "Phone touch skating lands an ollie and pause freezes the scaled world",
+      "passed": true,
+      "detail": {
+        "viewport": [
+          390,
+          844
+        ],
+        "landed": {
+          "state": "ride",
+          "pos": [
+            10,
+            -0.8999999761581421,
+            54.02042988297665
+          ]
+        },
+        "paused": {
+          "position": [
+            10,
+            -0.8999999761581421,
+            54.02042988297665
+          ],
+          "time": null,
+          "paused": true
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    "seven-stairs-follow.png",
+    "seven-stairs-side.png",
+    "bridge-manual-pad.png",
+    "bowl-deck.png",
+    "mini-ramp.png",
+    "warehouse-control.png"
+  ],
+  "views": [
+    {
+      "name": "seven-stairs-follow",
+      "point": [
+        10,
+        1.26,
+        -23.8
+      ],
+      "follow": true,
+      "position": [
+        12.5,
+        1.2599999904632568,
+        -29.75
+      ],
+      "rider": {
+        "min": [
+          12.262558895348658,
+          1.2600895243448034,
+          -30.189999997615814
+        ],
+        "max": [
+          12.70797926030577,
+          3.0158660359545,
+          -29.310000002384186
+        ],
+        "size": [
+          0.445420364957112,
+          1.7557765116096968,
+          0.8799999952316284
+        ]
+      },
+      "camera": {
+        "position": [
+          12.5,
+          3.310191952092182,
+          -32.650559888084366
+        ],
+        "fov": 53.608768109759176
+      }
+    },
+    {
+      "name": "seven-stairs-side",
+      "point": [
+        7.35,
+        0,
+        -16.8
+      ],
+      "offset": [
+        -3.8,
+        1.8,
+        5.2
+      ],
+      "target": [
+        2.3,
+        1,
+        -2
+      ],
+      "position": [
+        9.1875,
+        0.27658534088565645,
+        -21
+      ],
+      "rider": {
+        "min": [
+          8.950058895339684,
+          0.27667487476720304,
+          -21.439999997615814
+        ],
+        "max": [
+          9.395479343615353,
+          2.0324513863766493,
+          -20.560000002384186
+        ],
+        "size": [
+          0.4454204482756694,
+          1.7557765116094464,
+          0.8799999952316284
+        ]
+      },
+      "camera": {
+        "position": [
+          5.3875,
+          2.0765853408856563,
+          -15.8
+        ],
+        "fov": 52
+      }
+    },
+    {
+      "name": "bridge-manual-pad",
+      "point": [
+        10.5,
+        -0.9,
+        35
+      ],
+      "offset": [
+        -4.1,
+        1.5,
+        -5.2
+      ],
+      "target": [
+        1.5,
+        0.85,
+        0
+      ],
+      "position": [
+        13.125,
+        -0.8999999761581421,
+        43.75
+      ],
+      "rider": {
+        "min": [
+          12.887558895339684,
+          -0.8999104422765956,
+          43.310000002384186
+        ],
+        "max": [
+          13.332979244604122,
+          0.8558660693328511,
+          44.189999997615814
+        ],
+        "size": [
+          0.4454203492644382,
+          1.7557765116094468,
+          0.8799999952316284
+        ]
+      },
+      "camera": {
+        "position": [
+          9.025,
+          0.6000000238418579,
+          38.55
+        ],
+        "fov": 52
+      }
+    },
+    {
+      "name": "bowl-deck",
+      "point": [
+        -17.5,
+        1.62,
+        -15
+      ],
+      "offset": [
+        3.8,
+        2.1,
+        5.2
+      ],
+      "target": [
+        1.2,
+        0.5,
+        -1
+      ],
+      "position": [
+        -21.875,
+        1.620000004768368,
+        -18.75
+      ],
+      "rider": {
+        "min": [
+          -22.112441104660313,
+          1.6200895386499146,
+          -19.189999997615814
+        ],
+        "max": [
+          -21.66701987529604,
+          3.375866050259361,
+          -18.310000002384186
+        ],
+        "size": [
+          0.4454212293642712,
+          1.7557765116094464,
+          0.8799999952316284
+        ]
+      },
+      "camera": {
+        "position": [
+          -18.075,
+          3.720000004768368,
+          -13.55
+        ],
+        "fov": 52
+      }
+    },
+    {
+      "name": "mini-ramp",
+      "point": [
+        1.5,
+        0,
+        -35
+      ],
+      "offset": [
+        -4.8,
+        4,
+        -4.8
+      ],
+      "target": [
+        0,
+        0.85,
+        0
+      ],
+      "position": [
+        1.875,
+        0,
+        -43.75
+      ],
+      "rider": {
+        "min": [
+          1.6375588953396851,
+          0.00008953388154656072,
+          -44.189999997615814
+        ],
+        "max": [
+          2.0829795274933556,
+          1.7558660454909931,
+          -43.310000002384186
+        ],
+        "size": [
+          0.44542063215367045,
+          1.7557765116094466,
+          0.8799999952316284
+        ]
+      },
+      "camera": {
+        "position": [
+          -2.925,
+          4,
+          -48.55
+        ],
+        "fov": 52
+      }
+    },
+    {
+      "name": "warehouse-control",
+      "park": "genesee-warehouse",
+      "point": [
+        5.8,
+        0,
+        7
+      ],
+      "offset": [
+        -4.1,
+        1.5,
+        -5.2
+      ],
+      "target": [
+        1.5,
+        0.85,
+        0
+      ],
+      "position": [
+        5.8,
+        -1.5543122344752192e-15,
+        7
+      ],
+      "rider": {
+        "min": [
+          5.562558895344109,
+          0.00020104551509447094,
+          6.560000002384186
+        ],
+        "max": [
+          6.007979428790491,
+          1.755866045485935,
+          7.439999997615814
+        ],
+        "size": [
+          0.44542053344638166,
+          1.7556649999708405,
+          0.8799999952316284
+        ]
+      },
+      "camera": {
+        "position": [
+          1.7000000000000002,
+          1.4999999999999984,
+          1.7999999999999998
+        ],
+        "fov": 52
+      }
+    }
+  ],
+  "measurements": {
+    "worldScale": [
+      1.25,
+      1,
+      1.25
+    ],
+    "characterId": "joe",
+    "rail": {
+      "start": [
+        12.5,
+        2.08,
+        -25.375
+      ],
+      "end": [
+        12.5,
+        0.82,
+        -21
+      ],
+      "length": 4.552826045435956,
+      "heightAboveStart": 0.8200000095367432
+    },
+    "sevenStairs": {
+      "top": 1.2599999904632568,
+      "landing": 0
+    },
+    "manualPad": {
+      "min": [
+        14.937500059604643,
+        -0.899999994635582,
+        38.4375
+      ],
+      "max": [
+        17.562499940395355,
+        -0.42000000536441806,
+        49.0625
+      ],
+      "size": [
+        2.6249998807907122,
+        0.47999998927116394,
+        10.625
+      ]
+    },
+    "mini": {
+      "rim": 1.6200000047683716,
+      "bottom": 0
+    },
+    "bowl": {
+      "deck": 1.620000004768368,
+      "deepFloor": -1.029999971389774
+    }
+  },
+  "browserErrors": [],
+  "passed": true
+}

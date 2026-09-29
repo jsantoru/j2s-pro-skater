@@ -1,5 +1,10 @@
 # ROC City accuracy review
 
+**Follow-up correction:** The later [layout audit](ROC-CITY-LAYOUT.md) found that
+G's placement and direction were still wrong despite the checks below. It
+supersedes the claims here that the complete stair arrangement was verified.
+This document records the earlier passes and their gameplay checks.
+
 This review covers the Phase 1 A–L park in the supplied feature map. The source
 baseline is `bf6be1056ec8f33946087b3fe601fb6baf1f1b4a`. Comparison images are
 rendered from the actual game with fixed viewpoints using
@@ -18,7 +23,7 @@ No dimensioned, as-built survey was available in these references.
 | North and southwest entrances; bowl west of street; promenade south under I-490 | Feature map, drone | Verified arrangement; metre coordinates estimated |
 | Angled, terrain-connected mini ramp beside the bowl deck | Map B, photos 01–02, drone | Verified configuration; width, angle and transition radius estimated |
 | Joined deep rounded bowl and shallower rectangular southern pocket | Map D, drone, photo 03 | Verified silhouette and depth relationship; exact curves and depths estimated |
-| Seven and nine stair sets with handrails, hubbas and banks | Map E/G, photos 02/04/05 | Verified counts and arrangement; tread/riser dimensions estimated |
+| Seven and nine stair sets with handrails and hubbas; banks beside E | Map E/G, photos 02/04/05 | Counts supported; G placement/orientation corrected in the later layout audit; dimensions estimated |
 | A-frame with continuous plaza-facing quarter-pipe hip | Map H, photo 05 | Verified connected form; transition profile estimated |
 | Mellow bank, flat rail, manual pad, terminal quarter with extension | Map I–L, photo 06 | Verified sequence and relative placement; clearance and dimensions estimated |
 | Pale concrete, blue ledge edges, yellow rails/risers, Rochester flower | Photos 01–06 | Verified appearance; wear and exact shades interpreted |

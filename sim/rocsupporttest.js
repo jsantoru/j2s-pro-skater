@@ -8,7 +8,8 @@ import { trailPoints } from '../src/roc-city-surroundings.js';
 import { Skater } from '../src/skater.js';
 import { makeState } from '../src/input.js';
 
-const level = new RocCityLevel(), root = new THREE.Group(), ray = new THREE.Raycaster();
+// Explicit authoring scale keeps these map/trail coordinate fixtures meaningful.
+const level = new RocCityLevel({ horizontalScale: 1 }), root = new THREE.Group(), ray = new THREE.Raycaster();
 root.add(level.group);
 const art = createRocCityArt(root, level, { lowfx: true }); root.updateMatrixWorld(true);
 const dressing = level.group.getObjectByName('ROC City / Riverway landscape and I-490');

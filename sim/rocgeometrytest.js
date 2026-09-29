@@ -8,7 +8,8 @@ import { RocCityLevel } from '../src/roc-city-level.js';
 import { Skater } from '../src/skater.js';
 import { makeState } from '../src/input.js';
 
-const level = new RocCityLevel(), dt = 1 / 120, ray = new THREE.Raycaster();
+// Preserve the pass-2 authored approach fixtures; production scale has its own suite.
+const level = new RocCityLevel({ horizontalScale: 1 }), dt = 1 / 120, ray = new THREE.Raycaster();
 let passed = 0, failed = 0;
 const report = { level: 'roc-city-skatepark', method: 'Real Skater.update inputs with initial fixtures on actual collision surfaces; no direct grind attachment', checks: [], coverage: {
   A: 'Trail apron up/down, north entry to bowl deck', B: 'Repeated mini-ramp passes both ways, clear flat bottom and banked grind exits on both lips',
@@ -89,11 +90,11 @@ function grindRoute(rails, { dir = 1, speed = 7, lead = 7, pop = 3.5, duration =
   return { captured, bails, longest: +longest.toFixed(3), visited: visited.size, score: skater.score, minimumAirAlong: Number.isFinite(minimumAirAlong) ? +minimumAirAlong.toFixed(3) : null, position: skater.pos.toArray() };
 }
 
-const stairE = level.rails.find(rail => rail.kind === 'rail' && rail.a.x === 10 && rail.a.z < -20 && rail.a.z > -21);
-const stairG = level.rails.find(rail => rail.kind === 'rail' && rail.a.z > 6 && rail.a.z < 8);
+const stairE = level.rails.find(rail => rail.kind === 'rail' && rail.feature === 'E');
+const stairG = level.rails.find(rail => rail.kind === 'rail' && rail.feature === 'G');
 const hip = level.hip?.backRail || chain(level.rails.find(rail => rail.feature === 'H' && rail.kind === 'rail' && rail.bLink && !rail.aLink));
-const curvedF = chain(level.rails.find(rail => rail.kind === 'ledge' && rail.a.x < -15 && rail.bLink && !rail.aLink));
-const everyFRail = level.rails.filter(rail => rail.kind === 'ledge' && rail.a.x < -15 && (rail.bLink || rail.aLink));
+const curvedF = chain(level.rails.find(rail => rail.feature === 'F' && rail.bLink && !rail.aLink));
+const everyFRail = level.rails.filter(rail => rail.feature === 'F');
 const pool = chain(level.rails.find(rail => rail.feature === 'D'));
 const flatJ = level.rails.find(rail => rail.kind === 'rail' && rail.a.x === 8 && Math.abs(rail.a.y + .15) < .01);
 const manualK = level.rails.find(rail => rail.kind === 'ledge' && Math.abs(rail.a.y + .42) < .01);
@@ -102,7 +103,8 @@ const bankI = level.rails.find(rail => rail.kind === 'rail' && rail.a.x === 10 &
 {
   check('A–L rendered topography agrees with collisions and the playable footprint has no voids', () => {
     const visible = []; level.group.traverse(mesh => { if (mesh.isMesh && mesh.visible) visible.push(mesh); });
-    for (const [name, x, z] of [['A',2,-44],['B',1.5,-35],['C',1,-16],['D',-7,-15],['E',10.6,-18.5],['F',-17.55,-6],['G',-4.7,9],['H',11,1],['I',8,21],['J',7,34],['K',13,35],['L',7.5,51]]) {
+    const gSample=stairG.a.clone().lerp(stairG.b,.5).add(new THREE.Vector3(-stairG.dir.z,0,stairG.dir.x).setLength(.75));
+    for (const [name, x, z] of [['A',2,-44],['B',1.5,-35],['C',1,-16],['D',-7,-15],['E',10.6,-18.5],['F',-16.55,-6],['G',gSample.x,gSample.z],['H',11,1],['I',8,21],['J',7,34],['K',13,35],['L',7.5,51]]) {
       const physical = support(x, z);
       ray.set(new THREE.Vector3(x, 10, z), new THREE.Vector3(0, -1, 0)); ray.far = 20;
       const rendered = ray.intersectObjects(visible, false)[0];
@@ -130,7 +132,9 @@ const bankI = level.rails.find(rail => rail.kind === 'rail' && rail.a.x === 10 &
   check('B: both mini transitions support repeated passes with an open flat bottom', () => {
     const m = level.layout.mini;
     for (const sign of [1, -1]) {
-      const skater = rider(...m.center, m.axis[0] * sign, m.axis[1] * sign, 7), bails = [];
+      // Repeated transitions use w=-1, clear of the separate extension ledge.
+      // The following grind case still starts at centre and exercises its lip.
+      const skater = rider(m.center[0]+m.axis[1],m.center[1]-m.axis[0],m.axis[0] * sign,m.axis[1] * sign,7), bails = [];
       let minimum = 0, maximum = 0, landings = 0;
       skater.events.bail = reason => bails.push(reason); skater.events.land = () => landings++;
       for (let i = 0; i < 960; i++) {

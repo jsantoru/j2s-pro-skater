@@ -1,0 +1,292 @@
+{
+  "url": "http://127.0.0.1:4176/",
+  "recordedAt": "2026-09-29T02:45:12.135Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "Controller ollie captures the relocated G handrail and banks its landing",
+      "passed": true,
+      "detail": {
+        "capture": {
+          "state": "grind",
+          "feature": "G",
+          "target": true,
+          "dir": 1,
+          "position": [
+            1.2391217866428101,
+            2.4384486810180332,
+            8.084960190560325
+          ],
+          "trick": "50-50"
+        },
+        "landing": {
+          "state": "ride",
+          "score": 150,
+          "position": [
+            8.491114493137776,
+            0,
+            11.088833923821289
+          ]
+        }
+      }
+    },
+    {
+      "name": "True orthographic north-up plan exposes the actual A–L skate geometry",
+      "passed": true,
+      "detail": {
+        "labels": 13,
+        "scale": {
+          "x": 1.25,
+          "y": 1,
+          "z": 1.25
+        },
+        "bounds": {
+          "minX": -23.75,
+          "maxX": 18.75,
+          "minZ": -60,
+          "maxZ": 67.5
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    "nine-stair-controller-grind.png",
+    "north-up-plan.png"
+  ],
+  "plan": {
+    "scale": {
+      "x": 1.25,
+      "y": 1,
+      "z": 1.25
+    },
+    "bounds": {
+      "minX": -23.75,
+      "maxX": 18.75,
+      "minZ": -60,
+      "maxZ": 67.5
+    },
+    "projection": [
+      0.0206782464846981,
+      0,
+      0,
+      0,
+      0,
+      0.014336917562724014,
+      0,
+      0,
+      0,
+      0,
+      -0.005001250312578144,
+      0,
+      0,
+      0,
+      -1.0005001250312577,
+      1
+    ],
+    "camera": {
+      "position": [
+        -2.5,
+        180,
+        3.75
+      ],
+      "up": [
+        0,
+        0,
+        -1
+      ],
+      "left": -48.36,
+      "right": 48.36,
+      "top": 69.75,
+      "bottom": -69.75
+    },
+    "labels": [
+      {
+        "id": "A",
+        "name": "Skate Park Entry",
+        "position": [
+          2.5,
+          1.62,
+          -55
+        ],
+        "pixel": {
+          "x": 573.763440860215,
+          "y": 118.27956989247357
+        }
+      },
+      {
+        "id": "A2",
+        "name": "Skate Park Entry",
+        "position": [
+          -12.5,
+          0,
+          13.75
+        ],
+        "pixel": {
+          "x": 412.4731182795699,
+          "y": 857.5268817204304
+        }
+      },
+      {
+        "id": "B",
+        "name": "Bowl Area Entry / Mini-Ramp",
+        "position": [
+          1.875,
+          0,
+          -43.75
+        ],
+        "pixel": {
+          "x": 567.0430107526881,
+          "y": 239.24731182795742
+        }
+      },
+      {
+        "id": "C",
+        "name": "Top Deck",
+        "position": [
+          1.25,
+          1.62,
+          -20
+        ],
+        "pixel": {
+          "x": 560.3225806451612,
+          "y": 494.6236559139789
+        }
+      },
+      {
+        "id": "D",
+        "name": "Multi-Depth Bowl with Pool Coping",
+        "position": [
+          -10,
+          -0.8,
+          -18.75
+        ],
+        "pixel": {
+          "x": 439.35483870967744,
+          "y": 508.06451612903265
+        }
+      },
+      {
+        "id": "E",
+        "name": "7-Stair with Handrails, Hubba Ledge, and Bank",
+        "position": [
+          12.5,
+          0,
+          -23.25
+        ],
+        "pixel": {
+          "x": 681.2903225806451,
+          "y": 459.6774193548391
+        }
+      },
+      {
+        "id": "F",
+        "name": "Grind Ledge",
+        "position": [
+          -20,
+          1.62,
+          -7.5
+        ],
+        "pixel": {
+          "x": 331.8279569892473,
+          "y": 629.0322580645166
+        }
+      },
+      {
+        "id": "G",
+        "name": "9-Stair with Handrail and Hubba Ledges",
+        "position": [
+          3.75,
+          0.8099999999999999,
+          9.125
+        ],
+        "pixel": {
+          "x": 587.2043010752689,
+          "y": 807.7956989247317
+        }
+      },
+      {
+        "id": "H",
+        "name": "A-Frame with Ledge, Rail, and Quarter Pipe Hip",
+        "position": [
+          13.75,
+          0,
+          1.25
+        ],
+        "pixel": {
+          "x": 694.7311827956989,
+          "y": 723.1182795698929
+        }
+      },
+      {
+        "id": "I",
+        "name": "Mellow Bank with Rail and Hubba Ledges",
+        "position": [
+          12.5,
+          -0.45,
+          26.875
+        ],
+        "pixel": {
+          "x": 681.2903225806451,
+          "y": 998.655913978495
+        }
+      },
+      {
+        "id": "J",
+        "name": "Flat Rail",
+        "position": [
+          10,
+          -0.15,
+          42.5
+        ],
+        "pixel": {
+          "x": 654.4086021505376,
+          "y": 1166.6666666666672
+        }
+      },
+      {
+        "id": "K",
+        "name": "Manual Pad / Flat Ledge",
+        "position": [
+          16.25,
+          -0.42,
+          43.75
+        ],
+        "pixel": {
+          "x": 721.6129032258063,
+          "y": 1180.1075268817208
+        }
+      },
+      {
+        "id": "L",
+        "name": "Quarter Pipe with Extension",
+        "position": [
+          12.5,
+          1.4,
+          62.75
+        ],
+        "pixel": {
+          "x": 681.2903225806451,
+          "y": 1384.4086021505382
+        }
+      }
+    ],
+    "heightInvariant": {
+      "floor": {
+        "x": 520,
+        "y": 750.0000000000005
+      },
+      "raised": {
+        "x": 520,
+        "y": 750.0000000000003
+      }
+    },
+    "renderer": 0
+  },
+  "browserErrors": [],
+  "passed": true
+}

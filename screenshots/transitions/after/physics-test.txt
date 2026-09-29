@@ -1,0 +1,43 @@
+
+> j2s-pro-skater@0.1.0 sim:transitions
+> node sim/transitiontest.js
+
+PASS: Warehouse west quarter: early and mid-slope release responds immediately
+PASS: Warehouse west quarter: lip release and held-to-lip pop vertically and return close to the face
+PASS: Warehouse west quarter: an angled lip approach retains travel along the coping
+PASS: Warehouse north half-pipe: early and mid-slope release responds immediately
+PASS: Warehouse north half-pipe: lip release and held-to-lip pop vertically and return close to the face
+PASS: Warehouse north half-pipe: an angled lip approach retains travel along the coping
+PASS: ROC 1× mini flower lip: early and mid-slope release responds immediately
+PASS: ROC 1× mini flower lip: lip release and held-to-lip pop vertically and return close to the face
+PASS: ROC 1× mini flower lip: an angled lip approach retains travel along the coping
+PASS: ROC 1× mini north lip: early and mid-slope release responds immediately
+PASS: ROC 1× mini north lip: lip release and held-to-lip pop vertically and return close to the face
+PASS: ROC 1× mini north lip: an angled lip approach retains travel along the coping
+PASS: ROC 1× bridge lower quarter: early and mid-slope release responds immediately
+PASS: ROC 1× bridge lower quarter: lip release and held-to-lip pop vertically and return close to the face
+PASS: ROC 1× bridge lower quarter: an angled lip approach retains travel along the coping
+PASS: ROC 1× bridge extension quarter: early and mid-slope release responds immediately
+PASS: ROC 1× bridge extension quarter: lip release and held-to-lip pop vertically and return close to the face
+PASS: ROC 1× bridge extension quarter: an angled lip approach retains travel along the coping
+PASS: ROC 1.25× mini flower lip: early and mid-slope release responds immediately
+PASS: ROC 1.25× mini flower lip: lip release and held-to-lip pop vertically and return close to the face
+PASS: ROC 1.25× mini flower lip: an angled lip approach retains travel along the coping
+PASS: ROC 1.25× mini north lip: early and mid-slope release responds immediately
+PASS: ROC 1.25× mini north lip: lip release and held-to-lip pop vertically and return close to the face
+PASS: ROC 1.25× mini north lip: an angled lip approach retains travel along the coping
+PASS: ROC 1.25× bridge lower quarter: early and mid-slope release responds immediately
+PASS: ROC 1.25× bridge lower quarter: lip release and held-to-lip pop vertically and return close to the face
+PASS: ROC 1.25× bridge lower quarter: an angled lip approach retains travel along the coping
+PASS: ROC 1.25× bridge extension quarter: early and mid-slope release responds immediately
+PASS: ROC 1.25× bridge extension quarter: lip release and held-to-lip pop vertically and return close to the face
+PASS: ROC 1.25× bridge extension quarter: an angled lip approach retains travel along the coping
+PASS: Warehouse diagonal 25–35 degree approaches land both steep and blended transition returns
+PASS: A mild diagonal shoulder release can still transfer forward onto the deck
+PASS: A ground revert into fakie retains switch stance through an untouched transition air
+PASS: Neutral automatic return turns do not earn spin tricks or score
+PASS: Intentional steering or bumper spin cancels automatic facing and stays canceled through the apex
+PASS: Reset abandons an assisted air before a new flat-ground jump
+PASS: Flat ground and ordinary banks preserve their established input-driven launch trajectories
+PASS: An actual flat-rail capture still permits a charged ollie along the rail and a banked landing
+38 transition checks passed.

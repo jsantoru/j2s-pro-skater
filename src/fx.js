@@ -71,6 +71,7 @@ export class Effects {
     this.shadow = contactShadow(scene);
     this.ray = new THREE.Raycaster(); this.origin = new THREE.Vector3();
     this.contact = new THREE.Vector3(); this.normal = new THREE.Vector3(0, 1, 0);
+    this.normalMatrix = new THREE.Matrix3();
     this.acc = 0;
   }
   land(sk, strength = sk.landSquash || .25) {
@@ -103,7 +104,8 @@ export class Effects {
     this.shadow.visible = !!hit && sk.state !== 'bail';
     if (hit) {
       const height = Math.max(0, sk.pos.y - hit.point.y);
-      this.normal.copy(hit.face.normal).transformDirection(hit.object.matrixWorld);
+      this.normalMatrix.getNormalMatrix(hit.object.matrixWorld);
+      this.normal.copy(hit.face.normal).applyMatrix3(this.normalMatrix).normalize();
       this.shadow.position.copy(hit.point).addScaledVector(this.normal, .008);
       this.shadow.quaternion.setFromUnitVectors(Z, this.normal);
       this.shadow.scale.set(.72 + height * .25, 1.25 + height * .35, 1);

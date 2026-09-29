@@ -1,0 +1,2536 @@
+{
+  "recordedAt": "2026-09-29T05:11:17.264Z",
+  "method": "Actual 120Hz input steps on unchanged level colliders",
+  "checks": [
+    {
+      "name": "Warehouse west quarter: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 65,
+          "launchFrame": 65,
+          "launchPosition": [
+            -32.39894,
+            0.15449,
+            6
+          ],
+          "launchVelocity": [
+            -7.52222,
+            12.44312,
+            0
+          ],
+          "normalY": 0.92388,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 7.52222,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 2.58451,
+          "wallDisplacement": [
+            0,
+            1.56713
+          ],
+          "bails": [
+            "wall"
+          ],
+          "landing": null
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 82,
+          "launchFrame": 82,
+          "launchPosition": [
+            -33.62508,
+            1.0365,
+            6
+          ],
+          "launchVelocity": [
+            -0.5202,
+            14.89834,
+            0
+          ],
+          "normalY": 0.57867,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 0.5202,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.98263,
+          "wallDisplacement": [
+            0,
+            0.6362
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -34.26128,
+              2.95,
+              6
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "name": "Warehouse west quarter: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 92,
+          "launchFrame": 92,
+          "launchPosition": [
+            -34.05116,
+            1.81755,
+            6
+          ],
+          "launchVelocity": [
+            0.7,
+            14.38873,
+            0
+          ],
+          "normalY": 0.27684,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.64559,
+          "wallDisplacement": [
+            -0.98084,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -33.07033,
+              0.50881,
+              6
+            ],
+            "normal": [
+              0.57867,
+              0.81556,
+              0
+            ],
+            "airSeconds": 1.38333
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 105,
+          "launchPosition": [
+            -34.2,
+            3.01947,
+            6
+          ],
+          "launchVelocity": [
+            0.7,
+            12.65528,
+            0
+          ],
+          "normalY": 0,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.5872,
+          "wallDisplacement": [
+            -0.9248,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -33.2752,
+              0.67107,
+              6
+            ],
+            "normal": [
+              0.66635,
+              0.74564,
+              0
+            ],
+            "airSeconds": 1.30833
+          }
+        }
+      ]
+    },
+    {
+      "name": "Warehouse west quarter: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 106,
+        "launchPosition": [
+          -34.2,
+          2.96912,
+          4.37607
+        ],
+        "launchVelocity": [
+          0.7,
+          12.51811,
+          -1.94266
+        ],
+        "normalY": 0,
+        "charge": 1,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.94266,
+        "incomingCopingSpeed": 1.94766,
+        "rise": 3.50943,
+        "wallDisplacement": [
+          -0.91462,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            -33.28538,
+            0.68017,
+            1.8378
+          ],
+          "normal": [
+            0.66635,
+            0.74564,
+            0
+          ],
+          "airSeconds": 1.29167
+        }
+      }
+    },
+    {
+      "name": "Warehouse north half-pipe: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 48,
+          "launchFrame": 48,
+          "launchPosition": [
+            -4,
+            0.15065,
+            -17.87017
+          ],
+          "launchVelocity": [
+            0,
+            11.82753,
+            -7.70359
+          ],
+          "normalY": 0.92388,
+          "charge": 0.74242,
+          "vertAir": false,
+          "wallSpeed": 7.70359,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 2.35003,
+          "wallDisplacement": [
+            0,
+            1.47652
+          ],
+          "bails": [
+            "wall"
+          ],
+          "landing": null
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 65,
+          "launchFrame": 65,
+          "launchPosition": [
+            -4,
+            1.04831,
+            -19.08199
+          ],
+          "launchVelocity": [
+            0,
+            14.89585,
+            -0.51896
+          ],
+          "normalY": 0.57867,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 0.51896,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.98095,
+          "wallDisplacement": [
+            0,
+            0.63933
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -4,
+              2.85,
+              -19.72133
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 1.20833
+          }
+        }
+      ]
+    },
+    {
+      "name": "Warehouse north half-pipe: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 74,
+          "launchFrame": 74,
+          "launchPosition": [
+            -4,
+            1.7553,
+            -19.45814
+          ],
+          "launchVelocity": [
+            0,
+            14.39545,
+            0.7
+          ],
+          "normalY": 0.27684,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.64996,
+          "wallDisplacement": [
+            -0.98042,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -4,
+              0.46552,
+              -18.47772
+            ],
+            "normal": [
+              0,
+              0.81556,
+              0.57867
+            ],
+            "airSeconds": 1.38333
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 86,
+          "launchPosition": [
+            -4,
+            2.87353,
+            -19.6
+          ],
+          "launchVelocity": [
+            0,
+            12.69032,
+            0.7
+          ],
+          "normalY": 0,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.60735,
+          "wallDisplacement": [
+            -0.92296,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -4,
+              0.61725,
+              -18.67704
+            ],
+            "normal": [
+              0,
+              0.74564,
+              0.66635
+            ],
+            "airSeconds": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "Warehouse north half-pipe: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 88,
+        "launchPosition": [
+          -2.65741,
+          2.93063,
+          -19.6
+        ],
+        "launchVelocity": [
+          1.94175,
+          12.51337,
+          0.7
+        ],
+        "normalY": 0,
+        "charge": 1,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.94175,
+        "incomingCopingSpeed": 1.94675,
+        "rise": 3.50674,
+        "wallDisplacement": [
+          -0.91511,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            -0.11895,
+            0.62427,
+            -18.68489
+          ],
+          "normal": [
+            0,
+            0.74564,
+            0.66635
+          ],
+          "airSeconds": 1.29167
+        }
+      }
+    },
+    {
+      "name": "ROC 1× mini flower lip: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 30,
+          "launchFrame": 30,
+          "launchPosition": [
+            3.81719,
+            0.07192,
+            -34.09702
+          ],
+          "launchVelocity": [
+            5.60599,
+            10.35332,
+            5.60599
+          ],
+          "normalY": 0.94989,
+          "charge": 0.4697,
+          "vertAir": false,
+          "wallSpeed": 7.92807,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 1.54884,
+          "wallDisplacement": [
+            0,
+            0.85887
+          ],
+          "bails": [
+            "wall"
+          ],
+          "landing": null
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 41,
+          "launchFrame": 41,
+          "launchPosition": [
+            4.36373,
+            0.59079,
+            -33.55049
+          ],
+          "launchVelocity": [
+            1.5073,
+            13.78025,
+            1.5073
+          ],
+          "normalY": 0.63654,
+          "charge": 0.63636,
+          "vertAir": false,
+          "wallSpeed": 2.13164,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.25849,
+          "wallDisplacement": [
+            0,
+            2.57768
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              6.18642,
+              1.31362,
+              -31.72779
+            ],
+            "normal": [
+              0,
+              0.99307,
+              0.11751
+            ],
+            "airSeconds": 1.19167
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1× mini flower lip: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 49,
+          "launchFrame": 49,
+          "launchPosition": [
+            4.58191,
+            1.19824,
+            -33.3323
+          ],
+          "launchVelocity": [
+            -0.49498,
+            13.2138,
+            -0.49497
+          ],
+          "normalY": 0.14434,
+          "charge": 0.75758,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.91328,
+          "wallDisplacement": [
+            -0.90007,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              3.94546,
+              0.14017,
+              -33.96874
+            ],
+            "normal": [
+              -0.27997,
+              0.91828,
+              -0.27997
+            ],
+            "airSeconds": 1.26667
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 54,
+          "launchPosition": [
+            4.63362,
+            1.69963,
+            -33.28059
+          ],
+          "launchVelocity": [
+            -0.49498,
+            13.1251,
+            -0.49497
+          ],
+          "normalY": 0.14434,
+          "charge": 0.83333,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.86068,
+          "wallDisplacement": [
+            -0.9163,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              3.9857,
+              0.16694,
+              -33.92851
+            ],
+            "normal": [
+              -0.30944,
+              0.89916,
+              -0.30944
+            ],
+            "airSeconds": 1.29167
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1× mini flower lip: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 54,
+        "launchPosition": [
+          4.07552,
+          1.63989,
+          -32.73481
+        ],
+        "launchVelocity": [
+          -1.81529,
+          13.0217,
+          0.82534
+        ],
+        "normalY": 0.14434,
+        "charge": 0.83333,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.8672,
+        "incomingCopingSpeed": 1.87189,
+        "rise": 3.7995,
+        "wallDisplacement": [
+          -0.90754,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            1.72202,
+            0.16697,
+            -31.66477
+          ],
+          "normal": [
+            -0.30944,
+            0.89916,
+            -0.30944
+          ],
+          "airSeconds": 1.28333
+        }
+      }
+    },
+    {
+      "name": "ROC 1× mini north lip: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 30,
+          "launchFrame": 30,
+          "launchPosition": [
+            0.59702,
+            0.07192,
+            -37.31719
+          ],
+          "launchVelocity": [
+            -5.606,
+            10.35331,
+            -5.606
+          ],
+          "normalY": 0.94989,
+          "charge": 0.4697,
+          "vertAir": false,
+          "wallSpeed": 7.92808,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 1.54884,
+          "wallDisplacement": [
+            0,
+            0.85888
+          ],
+          "bails": [
+            "wall"
+          ],
+          "landing": null
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 41,
+          "launchFrame": 41,
+          "launchPosition": [
+            0.05049,
+            0.59078,
+            -37.86373
+          ],
+          "launchVelocity": [
+            -1.50728,
+            13.78025,
+            -1.50729
+          ],
+          "normalY": 0.63654,
+          "charge": 0.63636,
+          "vertAir": false,
+          "wallSpeed": 2.13162,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.25849,
+          "wallDisplacement": [
+            0,
+            2.52609
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -1.73573,
+              1.62,
+              -39.64995
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 1.16667
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1× mini north lip: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 49,
+          "launchFrame": 49,
+          "launchPosition": [
+            -0.1677,
+            1.19824,
+            -38.08191
+          ],
+          "launchVelocity": [
+            0.49498,
+            13.21381,
+            0.49497
+          ],
+          "normalY": 0.14434,
+          "charge": 0.75758,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0.00001,
+          "incomingCopingSpeed": 0.00001,
+          "rise": 3.91328,
+          "wallDisplacement": [
+            -0.90007,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              0.46875,
+              0.14017,
+              -37.44547
+            ],
+            "normal": [
+              0.27997,
+              0.91828,
+              0.27997
+            ],
+            "airSeconds": 1.26667
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 54,
+          "launchPosition": [
+            -0.21941,
+            1.69963,
+            -38.13363
+          ],
+          "launchVelocity": [
+            0.49498,
+            13.1251,
+            0.49497
+          ],
+          "normalY": 0.14434,
+          "charge": 0.83333,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0.00001,
+          "incomingCopingSpeed": 0.00001,
+          "rise": 3.86069,
+          "wallDisplacement": [
+            -0.9163,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              0.42852,
+              0.16694,
+              -37.48571
+            ],
+            "normal": [
+              0.30944,
+              0.89916,
+              0.30944
+            ],
+            "airSeconds": 1.29167
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1× mini north lip: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 54,
+        "launchPosition": [
+          0.33869,
+          1.63989,
+          -38.67941
+        ],
+        "launchVelocity": [
+          1.81529,
+          13.0217,
+          -0.82534
+        ],
+        "normalY": 0.14434,
+        "charge": 0.83333,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.8672,
+        "incomingCopingSpeed": 1.87189,
+        "rise": 3.79951,
+        "wallDisplacement": [
+          -0.85766,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            2.56284,
+            1.22376,
+            -39.69064
+          ],
+          "normal": [
+            -0.34733,
+            0.76984,
+            0.53546
+          ],
+          "airSeconds": 1.20833
+        }
+      }
+    },
+    {
+      "name": "ROC 1× bridge lower quarter: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 63,
+          "launchFrame": 63,
+          "launchPosition": [
+            7.5,
+            -0.78283,
+            48.22321
+          ],
+          "launchVelocity": [
+            0,
+            11.85593,
+            8.18089
+          ],
+          "normalY": 0.94693,
+          "charge": 0.9697,
+          "vertAir": false,
+          "wallSpeed": 8.18089,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 2.12379,
+          "wallDisplacement": [
+            0,
+            1.29531
+          ],
+          "bails": [
+            "wall"
+          ],
+          "landing": null
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 78,
+          "launchFrame": 78,
+          "launchPosition": [
+            7.5,
+            -0.01725,
+            49.31099
+          ],
+          "launchVelocity": [
+            0,
+            14.81919,
+            1.6627
+          ],
+          "normalY": 0.62592,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 1.6627,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.92946,
+          "wallDisplacement": [
+            0,
+            2.08637
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              7.5,
+              1.4,
+              51.39736
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 1.23333
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1× bridge lower quarter: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 88,
+          "launchFrame": 88,
+          "launchPosition": [
+            7.5,
+            0.77413,
+            49.71271
+          ],
+          "launchVelocity": [
+            0,
+            14.39162,
+            -0.7
+          ],
+          "normalY": 0.27983,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.64747,
+          "wallDisplacement": [
+            -0.98136,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              7.5,
+              -0.54249,
+              48.73136
+            ],
+            "normal": [
+              0,
+              0.85491,
+              -0.51877
+            ],
+            "airSeconds": 1.38333
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 95,
+          "launchPosition": [
+            7.5,
+            1.46667,
+            49.80145
+          ],
+          "launchVelocity": [
+            0,
+            12.94559,
+            -0.7
+          ],
+          "normalY": 0.02182,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.75507,
+          "wallDisplacement": [
+            -0.92238,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              7.5,
+              -0.44017,
+              48.87907
+            ],
+            "normal": [
+              0,
+              0.80644,
+              -0.59131
+            ],
+            "airSeconds": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1× bridge lower quarter: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 96,
+        "launchPosition": [
+          6.05335,
+          1.43181,
+          49.80069
+        ],
+        "launchVelocity": [
+          -1.87319,
+          12.80991,
+          -0.7
+        ],
+        "normalY": 0.02182,
+        "charge": 1,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.87319,
+        "incomingCopingSpeed": 1.87799,
+        "rise": 3.67612,
+        "wallDisplacement": [
+          -0.93284,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            3.55709,
+            -0.9,
+            48.86786
+          ],
+          "normal": [
+            0,
+            1,
+            0
+          ],
+          "airSeconds": 1.31667
+        }
+      }
+    },
+    {
+      "name": "ROC 1× bridge extension quarter: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 65,
+          "launchFrame": 65,
+          "launchPosition": [
+            13,
+            -0.75614,
+            48.40044
+          ],
+          "launchVelocity": [
+            0,
+            11.92964,
+            8.16297
+          ],
+          "normalY": 0.94693,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 8.16297,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 2.52284,
+          "wallDisplacement": [
+            0,
+            1.70062
+          ],
+          "bails": [
+            "wall"
+          ],
+          "landing": null
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 83,
+          "launchFrame": 83,
+          "launchPosition": [
+            13,
+            0.13949,
+            49.7244
+          ],
+          "launchVelocity": [
+            0,
+            14.81974,
+            1.66315
+          ],
+          "normalY": 0.62592,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 1.66315,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.92983,
+          "wallDisplacement": [
+            0,
+            2.02784
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              13,
+              2,
+              51.75224
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1× bridge extension quarter: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 96,
+          "launchFrame": 96,
+          "launchPosition": [
+            13,
+            1.15268,
+            50.27299
+          ],
+          "launchVelocity": [
+            0,
+            14.35946,
+            -0.7
+          ],
+          "normalY": 0.27983,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.62657,
+          "wallDisplacement": [
+            -0.98436,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              13,
+              -0.28209,
+              49.28863
+            ],
+            "normal": [
+              0,
+              0.77988,
+              -0.62592
+            ],
+            "airSeconds": 1.39167
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 105,
+          "launchPosition": [
+            13,
+            2.01107,
+            50.40024
+          ],
+          "launchVelocity": [
+            0,
+            12.86158,
+            -0.7
+          ],
+          "normalY": 0.02181,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.70606,
+          "wallDisplacement": [
+            -0.92746,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              13,
+              -0.12511,
+              49.47278
+            ],
+            "normal": [
+              0,
+              0.72236,
+              -0.69151
+            ],
+            "airSeconds": 1.30833
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1× bridge extension quarter: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 107,
+        "launchPosition": [
+          11.38122,
+          2.04925,
+          50.40107
+        ],
+        "launchVelocity": [
+          -1.85536,
+          12.71214,
+          -0.7
+        ],
+        "normalY": 0.02181,
+        "charge": 1,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.85536,
+        "incomingCopingSpeed": 1.86015,
+        "rise": 3.6199,
+        "wallDisplacement": [
+          -0.90385,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            8.98555,
+            0.25978,
+            49.49722
+          ],
+          "normal": [
+            0,
+            0.48099,
+            -0.87673
+          ],
+          "airSeconds": 1.275
+        }
+      }
+    },
+    {
+      "name": "ROC 1.25× mini flower lip: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 39,
+          "launchFrame": 39,
+          "launchPosition": [
+            4.92157,
+            0.13516,
+            -42.4712
+          ],
+          "launchVelocity": [
+            5.85309,
+            10.98669,
+            5.85309
+          ],
+          "normalY": 0.94534,
+          "charge": 0.60606,
+          "vertAir": false,
+          "wallSpeed": 8.27752,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 2.69762,
+          "wallDisplacement": [
+            0,
+            7.24283
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              10.04302,
+              1.26,
+              -37.34974
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 0.875
+          }
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 51,
+          "launchFrame": 51,
+          "launchPosition": [
+            5.54662,
+            0.73104,
+            -41.84615
+          ],
+          "launchVelocity": [
+            0.99881,
+            14.48199,
+            0.99882
+          ],
+          "normalY": 0.60443,
+          "charge": 0.78788,
+          "vertAir": false,
+          "wallSpeed": 1.41253,
+          "copingSpeed": 0.00001,
+          "incomingCopingSpeed": 0,
+          "rise": 4.70621,
+          "wallDisplacement": [
+            0,
+            1.79991
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              6.81934,
+              1.46145,
+              -40.57342
+            ],
+            "normal": [
+              0.08659,
+              0.99415,
+              0.06458
+            ],
+            "airSeconds": 1.25833
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1.25× mini flower lip: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 57,
+          "launchFrame": 57,
+          "launchPosition": [
+            5.72773,
+            1.20088,
+            -41.66504
+          ],
+          "launchVelocity": [
+            -0.49498,
+            13.95787,
+            -0.49497
+          ],
+          "normalY": 0.17937,
+          "charge": 0.87879,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.3697,
+          "wallDisplacement": [
+            -0.94118,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              5.06221,
+              0.21481,
+              -42.33055
+            ],
+            "normal": [
+              -0.28309,
+              0.91636,
+              -0.28309
+            ],
+            "airSeconds": 1.325
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 61,
+          "launchPosition": [
+            5.78389,
+            1.63647,
+            -41.60888
+          ],
+          "launchVelocity": [
+            -0.49498,
+            13.88718,
+            -0.49497
+          ],
+          "normalY": 0.17937,
+          "charge": 0.93939,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.32532,
+          "wallDisplacement": [
+            -0.95457,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              5.1089,
+              0.24679,
+              -42.28386
+            ],
+            "normal": [
+              -0.31027,
+              0.89859,
+              -0.31026
+            ],
+            "airSeconds": 1.35
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1.25× mini flower lip: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 62,
+        "launchPosition": [
+          5.13664,
+          1.64682,
+          -40.95897
+        ],
+        "launchVelocity": [
+          -1.88099,
+          13.74029,
+          0.89104
+        ],
+        "normalY": 0.17937,
+        "charge": 0.95455,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.96012,
+        "incomingCopingSpeed": 1.96478,
+        "rise": 4.2336,
+        "wallDisplacement": [
+          -0.94625,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            2.59396,
+            0.25178,
+            -39.75448
+          ],
+          "normal": [
+            -0.31026,
+            0.89859,
+            -0.31026
+          ],
+          "airSeconds": 1.33333
+        }
+      }
+    },
+    {
+      "name": "ROC 1.25× mini north lip: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 39,
+          "launchFrame": 39,
+          "launchPosition": [
+            0.5962,
+            0.13517,
+            -46.79657
+          ],
+          "launchVelocity": [
+            -5.85308,
+            10.98669,
+            -5.85309
+          ],
+          "normalY": 0.94534,
+          "charge": 0.60606,
+          "vertAir": false,
+          "wallSpeed": 8.27751,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 2.69762,
+          "wallDisplacement": [
+            0,
+            6.82895
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -4.2326,
+              1.62,
+              -51.62537
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 0.825
+          }
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 51,
+          "launchFrame": 51,
+          "launchPosition": [
+            -0.02885,
+            0.73104,
+            -47.42162
+          ],
+          "launchVelocity": [
+            -0.99879,
+            14.48199,
+            -0.9988
+          ],
+          "normalY": 0.60443,
+          "charge": 0.78788,
+          "vertAir": false,
+          "wallSpeed": 1.41251,
+          "copingSpeed": 0.00001,
+          "incomingCopingSpeed": 0,
+          "rise": 4.70621,
+          "wallDisplacement": [
+            0,
+            1.78357
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -1.29002,
+              1.62,
+              -48.6828
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 1.24167
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1.25× mini north lip: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 57,
+          "launchFrame": 57,
+          "launchPosition": [
+            -0.20996,
+            1.20088,
+            -47.60273
+          ],
+          "launchVelocity": [
+            0.49498,
+            13.95787,
+            0.49497
+          ],
+          "normalY": 0.17937,
+          "charge": 0.87879,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0.00001,
+          "incomingCopingSpeed": 0.00001,
+          "rise": 4.36971,
+          "wallDisplacement": [
+            -0.94118,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              0.45556,
+              0.21481,
+              -46.93722
+            ],
+            "normal": [
+              0.28309,
+              0.91636,
+              0.28309
+            ],
+            "airSeconds": 1.325
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 61,
+          "launchPosition": [
+            -0.26612,
+            1.63647,
+            -47.65889
+          ],
+          "launchVelocity": [
+            0.49498,
+            13.88718,
+            0.49497
+          ],
+          "normalY": 0.17937,
+          "charge": 0.93939,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0.00001,
+          "incomingCopingSpeed": 0.00001,
+          "rise": 4.32532,
+          "wallDisplacement": [
+            -0.95457,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              0.40887,
+              0.24679,
+              -46.98391
+            ],
+            "normal": [
+              0.31026,
+              0.89859,
+              0.31026
+            ],
+            "airSeconds": 1.35
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1.25× mini north lip: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 62,
+        "launchPosition": [
+          0.38112,
+          1.64682,
+          -48.3088
+        ],
+        "launchVelocity": [
+          1.88098,
+          13.74029,
+          -0.89104
+        ],
+        "normalY": 0.17937,
+        "charge": 0.95455,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.96011,
+        "incomingCopingSpeed": 1.96478,
+        "rise": 4.2336,
+        "wallDisplacement": [
+          -0.91215,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            2.83218,
+            1.01009,
+            -49.46988
+          ],
+          "normal": [
+            -0.23135,
+            0.80768,
+            0.54234
+          ],
+          "airSeconds": 1.28333
+        }
+      }
+    },
+    {
+      "name": "ROC 1.25× bridge lower quarter: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 80,
+          "launchFrame": 80,
+          "launchPosition": [
+            9.375,
+            -0.71796,
+            60.49501
+          ],
+          "launchVelocity": [
+            0,
+            12.02057,
+            8.05559
+          ],
+          "normalY": 0.94327,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 8.05559,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.23406,
+          "wallDisplacement": [
+            0,
+            6.91438
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              9.375,
+              1.4,
+              67.40939
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 0.85833
+          }
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 97,
+          "launchFrame": 97,
+          "launchPosition": [
+            9.375,
+            0.11289,
+            61.75689
+          ],
+          "launchVelocity": [
+            0,
+            14.78464,
+            1.98947
+          ],
+          "normalY": 0.64104,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 1.98947,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.90642,
+          "wallDisplacement": [
+            0,
+            2.50956
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              9.375,
+              1.4,
+              64.26645
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 1.24167
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1.25× bridge lower quarter: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 106,
+          "launchFrame": 106,
+          "launchPosition": [
+            9.375,
+            0.80843,
+            62.15317
+          ],
+          "launchVelocity": [
+            0,
+            14.46944,
+            -0.7
+          ],
+          "normalY": 0.2925,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.69805,
+          "wallDisplacement": [
+            -0.98116,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              9.375,
+              -0.39465,
+              61.17201
+            ],
+            "normal": [
+              0,
+              0.84148,
+              -0.54029
+            ],
+            "airSeconds": 1.38333
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 112,
+          "launchPosition": [
+            9.375,
+            1.41449,
+            62.2504
+          ],
+          "launchVelocity": [
+            0,
+            13.04971,
+            -0.7
+          ],
+          "normalY": 0.02727,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.81608,
+          "wallDisplacement": [
+            -0.91923,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              9.375,
+              -0.28514,
+              61.33116
+            ],
+            "normal": [
+              0,
+              0.79393,
+              -0.60801
+            ],
+            "airSeconds": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1.25× bridge lower quarter: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 114,
+        "launchPosition": [
+          7.64729,
+          1.4426,
+          62.25116
+        ],
+        "launchVelocity": [
+          -1.88295,
+          12.88995,
+          -0.7
+        ],
+        "normalY": 0.02727,
+        "charge": 1,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.88295,
+        "incomingCopingSpeed": 1.88776,
+        "rise": 3.72261,
+        "wallDisplacement": [
+          -0.93777,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            5.12477,
+            -0.9,
+            61.3134
+          ],
+          "normal": [
+            0,
+            1,
+            0
+          ],
+          "airSeconds": 1.325
+        }
+      }
+    },
+    {
+      "name": "ROC 1.25× bridge extension quarter: early and mid-slope release responds immediately",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "early",
+          "angleDegrees": 0,
+          "releaseFrame": 84,
+          "launchFrame": 84,
+          "launchPosition": [
+            16.25,
+            -0.64972,
+            60.84613
+          ],
+          "launchVelocity": [
+            0,
+            12.02057,
+            8.05559
+          ],
+          "normalY": 0.94327,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 8.05559,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.23406,
+          "wallDisplacement": [
+            0,
+            6.17595
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              16.25,
+              2,
+              67.02208
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 0.76667
+          }
+        },
+        {
+          "mode": "mid",
+          "angleDegrees": 0,
+          "releaseFrame": 105,
+          "launchFrame": 105,
+          "launchPosition": [
+            16.25,
+            0.39492,
+            62.39311
+          ],
+          "launchVelocity": [
+            0,
+            14.78295,
+            1.98804
+          ],
+          "normalY": 0.64104,
+          "charge": 1,
+          "vertAir": false,
+          "wallSpeed": 1.98804,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.9053,
+          "wallDisplacement": [
+            0,
+            2.45797
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              16.25,
+              2,
+              64.85109
+            ],
+            "normal": [
+              0,
+              1,
+              0
+            ],
+            "airSeconds": 1.21667
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1.25× bridge extension quarter: lip release and held-to-lip pop vertically and return close to the face",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": 0,
+          "releaseFrame": 117,
+          "launchFrame": 117,
+          "launchPosition": [
+            16.25,
+            1.32995,
+            62.90111
+          ],
+          "launchVelocity": [
+            0,
+            14.4179,
+            -0.7
+          ],
+          "normalY": 0.2925,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 4.66455,
+          "wallDisplacement": [
+            -0.98634,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              16.25,
+              -0.0686,
+              61.91477
+            ],
+            "normal": [
+              0,
+              0.79393,
+              -0.60802
+            ],
+            "airSeconds": 1.39167
+          }
+        },
+        {
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 124,
+          "launchPosition": [
+            16.25,
+            2.02,
+            63.00055
+          ],
+          "launchVelocity": [
+            0,
+            12.96549,
+            -0.7
+          ],
+          "normalY": 0.02727,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.76668,
+          "wallDisplacement": [
+            -0.9255,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              16.25,
+              0.0658,
+              62.07505
+            ],
+            "normal": [
+              0,
+              0.73879,
+              -0.67394
+            ],
+            "airSeconds": 1.30833
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROC 1.25× bridge extension quarter: an angled lip approach retains travel along the coping",
+      "passed": true,
+      "detail": {
+        "mode": "hold",
+        "angleDegrees": 10,
+        "releaseFrame": null,
+        "launchFrame": 126,
+        "launchPosition": [
+          14.33409,
+          2.03228,
+          63.00088
+        ],
+        "launchVelocity": [
+          -1.86945,
+          12.81596,
+          -0.7
+        ],
+        "normalY": 0.02727,
+        "charge": 1,
+        "vertAir": true,
+        "wallSpeed": -0.7,
+        "copingSpeed": 1.86945,
+        "incomingCopingSpeed": 1.87425,
+        "rise": 3.67959,
+        "wallDisplacement": [
+          -0.875,
+          0
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            11.99728,
+            0.73293,
+            62.12588
+          ],
+          "normal": [
+            0,
+            0.34233,
+            -0.93958
+          ],
+          "airSeconds": 1.25
+        }
+      }
+    },
+    {
+      "name": "Warehouse diagonal 25–35 degree approaches land both steep and blended transition returns",
+      "passed": true,
+      "detail": [
+        {
+          "mode": "lip",
+          "angleDegrees": -25,
+          "releaseFrame": 76,
+          "launchFrame": 76,
+          "launchPosition": [
+            -34.13326,
+            2.10481,
+            2.92295
+          ],
+          "launchVelocity": [
+            0.7,
+            12.86667,
+            4.80052
+          ],
+          "normalY": 0.16751,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": -4.80052,
+          "incomingCopingSpeed": -4.80052,
+          "rise": 3.70903,
+          "wallDisplacement": [
+            -0.89846,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -33.2348,
+              0.63497,
+              9.08446
+            ],
+            "normal": [
+              0.66635,
+              0.74564,
+              0
+            ],
+            "airSeconds": 1.26667
+          }
+        },
+        {
+          "mode": "lip",
+          "angleDegrees": -29.999999999999996,
+          "releaseFrame": 80,
+          "launchFrame": 80,
+          "launchPosition": [
+            -34.13815,
+            2.13361,
+            3.63753
+          ],
+          "launchVelocity": [
+            0.7,
+            12.43175,
+            5.66852
+          ],
+          "normalY": 0.16751,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": -5.66852,
+          "incomingCopingSpeed": -5.66852,
+          "rise": 3.46078,
+          "wallDisplacement": [
+            -0.87328,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -33.26487,
+              0.66184,
+              10.70928
+            ],
+            "normal": [
+              0.66635,
+              0.74564,
+              0
+            ],
+            "airSeconds": 1.23333
+          }
+        },
+        {
+          "mode": "lip",
+          "angleDegrees": -35,
+          "releaseFrame": 72,
+          "launchFrame": 72,
+          "launchPosition": [
+            -33.80076,
+            1.28994,
+            3.73006
+          ],
+          "launchVelocity": [
+            0.75369,
+            13.08083,
+            6.43285
+          ],
+          "normalY": 0.48372,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.75369,
+          "copingSpeed": -6.43285,
+          "incomingCopingSpeed": -6.43285,
+          "rise": 3.83449,
+          "wallDisplacement": [
+            -0.95385,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -32.84691,
+              0.36434,
+              11.87131
+            ],
+            "normal": [
+              0.48372,
+              0.87522,
+              0
+            ],
+            "airSeconds": 1.25
+          }
+        }
+      ]
+    },
+    {
+      "name": "A mild diagonal shoulder release can still transfer forward onto the deck",
+      "passed": true,
+      "detail": {
+        "mode": "mid",
+        "angleDegrees": -14.999999999999998,
+        "releaseFrame": 58,
+        "launchFrame": 58,
+        "launchPosition": [
+          -33.65949,
+          1.08499,
+          1.3565
+        ],
+        "launchVelocity": [
+          -0.46986,
+          14.38787,
+          2.93159
+        ],
+        "normalY": 0.57867,
+        "charge": 0.89394,
+        "vertAir": false,
+        "wallSpeed": 0.46986,
+        "copingSpeed": -2.93159,
+        "incomingCopingSpeed": -2.93159,
+        "rise": 4.64503,
+        "wallDisplacement": [
+          0,
+          0.55232
+        ],
+        "bails": [],
+        "landing": {
+          "position": [
+            -34.21181,
+            2.95,
+            4.80255
+          ],
+          "normal": [
+            0,
+            1,
+            0
+          ],
+          "airSeconds": 1.15
+        }
+      }
+    },
+    {
+      "name": "A ground revert into fakie retains switch stance through an untouched transition air",
+      "passed": true,
+      "detail": [
+        {
+          "name": "Warehouse west quarter",
+          "launchStance": -1,
+          "landingStance": -1,
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 122,
+          "launchPosition": [
+            -34.2,
+            3.02376,
+            6
+          ],
+          "launchVelocity": [
+            0.7,
+            12.434,
+            0
+          ],
+          "normalY": 0,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0,
+          "incomingCopingSpeed": 0,
+          "rise": 3.46204,
+          "wallDisplacement": [
+            -0.9121,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              -33.2879,
+              0.68242,
+              6
+            ],
+            "normal": [
+              0.66635,
+              0.74564,
+              0
+            ],
+            "airSeconds": 1.29167
+          }
+        },
+        {
+          "name": "ROC 1.25× mini north lip",
+          "launchStance": -1,
+          "landingStance": -1,
+          "mode": "hold",
+          "angleDegrees": 0,
+          "releaseFrame": null,
+          "launchFrame": 80,
+          "launchPosition": [
+            -0.26685,
+            1.64214,
+            -47.65962
+          ],
+          "launchVelocity": [
+            0.49498,
+            11.55462,
+            0.49497
+          ],
+          "normalY": 0.17937,
+          "charge": 1,
+          "vertAir": true,
+          "wallSpeed": -0.7,
+          "copingSpeed": 0.00001,
+          "incomingCopingSpeed": 0,
+          "rise": 2.98617,
+          "wallDisplacement": [
+            -0.81535,
+            0
+          ],
+          "bails": [],
+          "landing": {
+            "position": [
+              0.30969,
+              0.32387,
+              -47.08309
+            ],
+            "normal": [
+              0.36686,
+              0.85489,
+              0.36686
+            ],
+            "airSeconds": 1.15
+          }
+        }
+      ]
+    },
+    {
+      "name": "Neutral automatic return turns do not earn spin tricks or score",
+      "passed": true,
+      "detail": {
+        "score": 0,
+        "spinDegrees": 0
+      }
+    },
+    {
+      "name": "Intentional steering or bumper spin cancels automatic facing and stays canceled through the apex",
+      "passed": true,
+      "detail": [
+        {
+          "control": "steer",
+          "manualSpin": 84.00000000000001,
+          "neutralFrames": 50,
+          "facingChange": 0
+        },
+        {
+          "control": "spinRight",
+          "manualSpin": 84.00000000000001,
+          "neutralFrames": 50,
+          "facingChange": 0
+        }
+      ]
+    },
+    {
+      "name": "Reset abandons an assisted air before a new flat-ground jump",
+      "passed": true,
+      "detail": {
+        "state": "air",
+        "facingChange": 0
+      }
+    },
+    {
+      "name": "Flat ground and ordinary banks preserve their established input-driven launch trajectories",
+      "passed": true,
+      "detail": [
+        {
+          "name": "flat",
+          "launchPosition": [
+            -5.95508,
+            0,
+            14
+          ],
+          "launchVelocity": [
+            10.79296,
+            8.8,
+            0
+          ],
+          "landing": [
+            2.58935,
+            0,
+            14
+          ]
+        },
+        {
+          "name": "uphill bank",
+          "launchPosition": [
+            18.99358,
+            0.63795,
+            16
+          ],
+          "launchVelocity": [
+            6.71015,
+            9.28065,
+            0
+          ],
+          "landing": [
+            23.74661,
+            1.6,
+            16
+          ]
+        },
+        {
+          "name": "downhill bank",
+          "launchPosition": [
+            19.92423,
+            0.93575,
+            16
+          ],
+          "launchVelocity": [
+            -10.99232,
+            3.61586,
+            0
+          ],
+          "landing": [
+            14.51968,
+            0,
+            16
+          ]
+        }
+      ]
+    },
+    {
+      "name": "An actual flat-rail capture still permits a charged ollie along the rail and a banked landing",
+      "passed": true,
+      "detail": {
+        "launchVelocity": [
+          8.79339,
+          7.00955,
+          0
+        ],
+        "score": 120,
+        "landing": [
+          1.89247,
+          0,
+          10
+        ]
+      }
+    }
+  ],
+  "passed": true
+}

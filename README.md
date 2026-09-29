@@ -151,6 +151,10 @@ this is a playable recreation rather than a surveyed model.
 
 Keyboard: arrows / WASD, Space (ollie), J (flip), K (grab), L (grind), Q/E (spin), Z/C (revert), Enter (start / pause), Escape (pause / resume), Tab (controls).
 
+Quarter-pipe ollies carry the climb upward and return to the transition, with
+manual spins taking priority over automatic facing. See [the air comparison and
+verification notes](QUARTER-PIPE-AIRS.md); `npm run sim:transitions` checks both parks.
+
 ## Controls (phone / tablet)
 
 Touch controls appear automatically on devices with a coarse primary pointer. Landscape gives
@@ -169,7 +173,9 @@ Skate** to learn the controls without a timer.
 Phones use lighter rendering by default (1× pixels, no dynamic shadows or floor reflections).
 Add `?highfx` to compare full effects, or `?touch` to try the controls with a mouse on desktop.
 Keyboard and gamepad inputs remain available. Progress belongs to each browser and site origin;
-the ChatGPT Site and the PR preview keep separate records.
+the public ChatGPT Site and a local development server keep separate records.
+The ChatGPT Site is the active deployment target; the former Netlify repository
+connection has been removed, so pushes and pull requests no longer trigger Netlify builds.
 
 `npm run sim:touch` checks input ownership, short taps, cancellation, and keyboard/gamepad
 coexistence. With the dev server running, `npm run qa:mobile` checks actual browser multitouch
@@ -192,7 +198,8 @@ from home. See [pause verification](PAUSE-MENU.md).
   Genesee Warehouse is the first playable entry.
 - `src/skater.js` – the controller. States: ride, air, grind, bail. Surface following via raycasts with
   a 3-D travel vector that stays tangent to banks, transitions and vert; ramp-assisted uphill gravity;
-  crouch "pump" in transitions; late-release ollie forgiveness at lips; vert airs auto-turn 180;
+  crouch "pump" in transitions; late-release ollie forgiveness at lips; steep ollies carry upward
+  momentum into a return to the ramp, with automatic facing that yields to manual spins;
   forgiving landing snap (65°) with sketchy-landing speed scrub; rail snapping with a cooldown so rail
   exits are clean; wall splat vs. wall scrub; tiny hops don't break combos. THPS-style input forgiveness:
   flip/grab presses are buffered through the pop, a grind tap arms a magnet window that steers you onto

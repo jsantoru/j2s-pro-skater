@@ -1,0 +1,158 @@
+{
+  "level": "roc-city-skatepark",
+  "method": "Real Skater.update inputs with initial fixtures on actual collision surfaces; no direct grind attachment",
+  "checks": [
+    {
+      "name": "A–L rendered topography agrees with collisions and the playable footprint has no voids",
+      "passed": true
+    },
+    {
+      "name": "A and C: trail entry, raised north deck and return remain connected",
+      "passed": true
+    },
+    {
+      "name": "B: both mini transitions support repeated passes with an open flat bottom",
+      "passed": true
+    },
+    {
+      "name": "B: either mini lip accepts a charged grind and exits onto the deck without a false bail",
+      "passed": true,
+      "detail": [
+        {
+          "lip": 1,
+          "banked": 530,
+          "grindSeconds": 0.675
+        },
+        {
+          "lip": -1,
+          "banked": 180,
+          "grindSeconds": 0.8
+        }
+      ]
+    },
+    {
+      "name": "C: bowl-to-street connector rides smoothly in both directions",
+      "passed": true
+    },
+    {
+      "name": "D: deep bowl and shallow tail have reachable physical approaches and exits",
+      "passed": true
+    },
+    {
+      "name": "E and G downhill handrails accept a normal early-held grind in the direction of travel",
+      "passed": true
+    },
+    {
+      "name": "E: holding grind during a late high ollie never reverses the rider uphill",
+      "passed": true,
+      "detail": {
+        "minimumForwardSpeed": 7.018,
+        "reversedCaptures": 0
+      }
+    },
+    {
+      "name": "D: ollie capture, continuous pool coping and ollie exit work both ways",
+      "passed": true,
+      "detail": [
+        {
+          "direction": 1,
+          "grindSeconds": 1.808,
+          "railSegments": 23,
+          "banked": 280
+        },
+        {
+          "direction": -1,
+          "grindSeconds": 1.808,
+          "railSegments": 24,
+          "banked": 280
+        }
+      ]
+    },
+    {
+      "name": "F and H: an actual ollie captures each linked grind in both directions",
+      "passed": true,
+      "detail": [
+        {
+          "feature": "F",
+          "direction": 1,
+          "grindSeconds": 1.475,
+          "railSegments": 15,
+          "banked": 240
+        },
+        {
+          "feature": "F",
+          "direction": -1,
+          "grindSeconds": 1.308,
+          "railSegments": 16,
+          "banked": 230
+        },
+        {
+          "feature": "H",
+          "direction": 1,
+          "grindSeconds": 3.233,
+          "railSegments": 3,
+          "banked": 420
+        },
+        {
+          "feature": "H",
+          "direction": -1,
+          "grindSeconds": 3.483,
+          "railSegments": 3,
+          "banked": 440
+        },
+        {
+          "feature": "H coping",
+          "direction": 1,
+          "grindSeconds": 1.408,
+          "railSegments": 43,
+          "banked": 240
+        },
+        {
+          "feature": "H coping",
+          "direction": -1,
+          "grindSeconds": 1.4,
+          "railSegments": 43,
+          "banked": 240
+        }
+      ]
+    },
+    {
+      "name": "H: quarter face, crest and back A-frame have continuous riding surfaces",
+      "passed": true
+    },
+    {
+      "name": "I: both bank directions and its western landing edge remain usable",
+      "passed": true
+    },
+    {
+      "name": "J and K: flat rail and manual-pad edges can be ollied onto and exited",
+      "passed": true
+    },
+    {
+      "name": "L: both quarter heights roll in and return without false floor or wall hits",
+      "passed": true
+    },
+    {
+      "name": "L: both quarter copings accept a charged approach and bank the grind on exit",
+      "passed": true
+    }
+  ],
+  "coverage": {
+    "A": "Trail apron up/down, north entry to bowl deck",
+    "B": "Repeated mini-ramp passes both ways, clear flat bottom and banked grind exits on both lips",
+    "C": "Connected upper deck and street-bank ascent/descent",
+    "D": "Deep bowl/shallow tail entry/exit; actual coping capture, continuous grind and ollie exit both ways",
+    "E": "Seven-stair downhill handrail, early-held grind and late-ollie direction stability",
+    "F": "Curved ledge capture, continuous linked grind and banked exit both ways",
+    "G": "Nine-stair downhill handrail approach and banked exit",
+    "H": "Continuous quarter/crest surface, back A-frame, both coping and kink-rail grinds in both directions",
+    "I": "Bank up/down, west approach support and handrail grinds both ways",
+    "J": "Flat rail capture and banked exits both ways",
+    "K": "Manual-pad edge ollies and banked grinds both ways",
+    "L": "Both quarter heights: approach, return and coping grinds"
+  },
+  "passed": 15,
+  "failed": 0,
+  "recordedAt": "2026-09-29T01:58:33.878Z",
+  "runtime": "v22.21.0"
+}

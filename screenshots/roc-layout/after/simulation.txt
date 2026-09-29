@@ -1,0 +1,107 @@
+
+> j2s-pro-skater@0.1.0 sim:roccity
+> node sim/roccitytest.js && node sim/rocgeometrytest.js && node sim/rocsupporttest.js && node sim/roctrimtest.js && node sim/levelprogresstest.js && node sim/levelbailtest.js && node sim/linkedrailtest.js && node sim/rocarttest.js && node sim/rocscaletest.js && node sim/roclayouttest.js
+
+PASS: Phase 1 landmark and pickup contract has supported, distinct destinations
+PASS: Bowl is a continuous upward-wound surface with a genuinely open deck and floor
+PASS: Rail endpoints use final world transforms and remain normalized
+PASS: Ordinary push input enters the pool, traverses its curved bottom and exits to deck
+PASS: The seven-stair bank, bowl-deck connector and promenade grade transition are safely ridable
+PASS: The mini-ramp has a clear flat bottom and supports repeated passes in both directions
+PASS: The bowl deck is accessible from the north entry around the mini-ramp
+PASS: The trail connects to the raised north entrance in both directions without crossing the mini
+PASS: The relocated nine-stair landing is paved and the west side of the mellow bank has no unsupported wedge
+  Score route: 42250 in 42.82 seconds; best 9000; 2 bails.
+PASS: 35,000 Sick Score and a 5,000 combo are attainable with ordinary trick/manual input
+  SKATE route: 17.79 seconds, no bails.
+PASS: All S-K-A-T-E letters are collected from spawn within one ordinary 120-second run
+PASS: A charged quarter-pipe ollie reaches the secret tape through real airborne motion
+PASS: Every bottle cap has a clean local route, including an ollie onto the manual pad
+13/13 ROC City geometry and gameplay checks passed.
+PASS: A–L rendered topography agrees with collisions and the playable footprint has no voids
+PASS: A and C: trail entry, raised north deck and return remain connected
+PASS: B: both mini transitions support repeated passes with an open flat bottom
+PASS: B: either mini lip accepts a charged grind and exits onto the deck without a false bail [{"lip":1,"banked":530,"grindSeconds":0.675},{"lip":-1,"banked":180,"grindSeconds":0.8}]
+PASS: C: bowl-to-street connector rides smoothly in both directions
+PASS: D: deep bowl and shallow tail have reachable physical approaches and exits
+PASS: E and G downhill handrails accept a normal early-held grind in the direction of travel
+PASS: E: holding grind during a late high ollie never reverses the rider uphill {"minimumForwardSpeed":7.018,"reversedCaptures":0}
+PASS: D: ollie capture, continuous pool coping and ollie exit work both ways [{"direction":1,"grindSeconds":1.808,"railSegments":23,"banked":280},{"direction":-1,"grindSeconds":1.808,"railSegments":24,"banked":280}]
+PASS: F and H: an actual ollie captures each linked grind in both directions [{"feature":"F","direction":1,"grindSeconds":1.475,"railSegments":15,"banked":240},{"feature":"F","direction":-1,"grindSeconds":1.308,"railSegments":16,"banked":230},{"feature":"H","direction":1,"grindSeconds":3.233,"railSegments":3,"banked":420},{"feature":"H","direction":-1,"grindSeconds":3.483,"railSegments":3,"banked":440},{"feature":"H coping","direction":1,"grindSeconds":1.408,"railSegments":43,"banked":240},{"feature":"H coping","direction":-1,"grindSeconds":1.4,"railSegments":43,"banked":240}]
+PASS: H: quarter face, crest and back A-frame have continuous riding surfaces
+PASS: I: both bank directions and its western landing edge remain usable
+PASS: J and K: flat rail and manual-pad edges can be ollied onto and exited
+PASS: L: both quarter heights roll in and return without false floor or wall hits
+PASS: L: both quarter copings accept a charged approach and bank the grind on exit
+15 ROC feature checks passed.
+PASS: Riverway trail has physical support at the rendered grade along its complete route
+PASS: A rider can follow the underbridge trail without sinking or crossing bridge piers
+PASS: River water has no invisible skate floor and the visible railing stops a ground approach
+PASS: Substantial bridge columns block riding through them while the promenade stays clear
+PASS: A rider who clears the river boundary falls and safely returns instead of skating over water
+5 ROC surroundings checks passed.
+PASS: Unchanged D/E/F/H/I/J/K/L features retain their validated surfaces and grind paths
+PASS: Broad painted borders follow the exact grind targets and stay visual only
+PASS: E/J arches and I posts meet the visible skating surface and stay under their rail
+PASS: J flatbar top and rounded D coping remain centered on their grind paths
+PASS: The deep-lobe tile strip has continuous arc-length UVs and only two draw groups
+5/5 ROC trim checks passed.
+PASS: warehouse defaults retain the original save keys and goal thresholds
+PASS: same goal IDs use each park’s own targets and save slots
+PASS: retired collections in one park remain available in the other
+PASS: switching parks abandons partial sets and finished runs reject late events
+PASS: run snapshots use the selected park’s custom definitions and whitelist
+PASS: park pickups use their own coordinates and reset complete sets per career
+PASS: high scores load, submit and clear only the selected park
+PASS: blocked storage preserves independent in-memory careers
+
+8/8 per-level progression checks passed.
+PASS: an airborne bail below street height falls to its bowl floor without snapping upward
+PASS: the ROC deep bowl recovers against its actual curved collider below street height
+PASS: a bail past the park void limit returns to a valid spawn and then recovers on the ground
+PASS: warehouse levels without a below-grade limit preserve their original ground fallback
+PASS: a park reset clears held and buffered tricks before the next physics step
+
+5/5 below-grade bail checks passed.
+PASS: ROC bowl coping sustains one continuous grind for more than a second in both directions
+PASS: ROC A-frame follows the uphill, flat and downhill kink before its open end
+PASS: endpoint overshoot crosses multiple short segments and honors reverse-oriented links
+PASS: turning a linked corner preserves fakie stance and the chosen side of a boardslide
+PASS: jumping after a handoff leaves along the new rail and ends the grind once
+PASS: unlinked warehouse rails retain the original endpoint pop
+
+6/6 linked rail checks passed.
+PASS: desktop bridge scenery leaves the promenade clear and disposes safely.
+PASS: mobile bridge scenery leaves the promenade clear and disposes safely.
+PASS: Default scale expands X/Z once while authoring data and human-sized heights stay intact
+PASS: Skater ray normals agree with actual transformed triangle geometry on curved and rotated surfaces
+PASS: World rails preserve every link and coincide with their scaled rods, bars and painted trim
+PASS: Spawn and every pickup use the enlarged world with their original height and collection radius
+PASS: Outdoor art, trail support, bridge columns and rail supports share the same world scale
+PASS: The wider mini still supports repeated passes in both directions using ordinary push input
+PASS: The steep-lip fix preserves slow and sideways deck crossings and launches only upward momentum
+PASS: Bowl pockets, street connectors and the A-frame remain reachable on scaled collision surfaces
+PASS: Seven/nine-stair rails, A-frame and hip coping accept real ollie approaches in the enlarged park
+PASS: Both bridge quarter heights launch and return to the lower promenade
+  Enlarged SKATE route: 22.05 seconds, no bails.
+PASS: All five SKATE letters remain reachable from the default spawn within 120 seconds
+  Enlarged cap route: 33.50 seconds, no bails.
+PASS: All five caps can be collected together from spawn within one ordinary run
+PASS: Every cap and the secret tape have real ride or ollie approaches at their scaled destinations
+  Enlarged score route: 38400 in 42.78 seconds; best combo 9000; 3 bails.
+PASS: The unchanged score goals remain attainable with real flips, grabs and linked manuals
+PASS: The warehouse retains its exact pre-scale collision surfaces, rails and spawn
+15 ROC world-scale checks passed.
+PASS: B/G at 1×: extension foundation meets the deck and hubba sidewalls are solid to ground {"extensionBase":1.4000000095367433,"adjacentDeckHeights":[1.4486072464398898,1.524787179646193,1.6200000047683716,1.6200000047683716],"solidHubbas":2}
+PASS: B at 1×: an intentional centre-line ollie captures the extension and lands its grind {"captures":[{"feature":"B","kind":"ledge"},{"feature":"B","kind":"ledge"}],"score":530}
+PASS: G at 1×: sits east of the bowl tail and descends east/southeast across the divider {"direction":[0.9238795325112867,0,0.38268343236508956],"descentDegrees":22.49999999999999,"center":[3.046193976625565,1.63,7.319134171618254]}
+PASS: B/C at 1×: rotated mini faces the flower deck and the G connector remains traversable both ways [{"reached":true,"bails":[],"minimum":0,"maximum":1.6200000047683716,"position":[5.953901967797011,0,2.931421153318368]},{"reached":true,"bails":[],"minimum":0,"maximum":1.6200000047683716,"position":[2.3235456490581,1.6200000047683716,2.4422080902141694]},{"reached":true,"bails":[],"minimum":0,"maximum":1.6200000047683716,"position":[6.097485289074509,0,4.708770627503667]},{"reached":true,"bails":[],"minimum":0,"maximum":1.6200000047683716,"position":[1.9928889372671366,1.6200000047683716,3.350421808355194]}]
+PASS: G at 1×: all nine treads are visible, supported, and free of hidden deck planes {"direction":[0.923879532511287,0,0.3826834323650897],"railStart":[0.9351292448372741,2.44,6.444702528664024],"railEnd":[5.157258708413855,0.82,8.193565814572484]}
+PASS: G at 1×: held grind from a real approach follows the rail and banks on its supported runout {"captures":[{"feature":"G","dir":1,"target":true}],"bails":[],"longest":0.24166666666666664,"score":120,"position":[6.637473754304748,0,8.806690961809187],"state":"ride"}
+PASS: B/G at 1.25×: extension foundation meets the deck and hubba sidewalls are solid to ground {"extensionBase":1.4000000095367433,"adjacentDeckHeights":[1.4486072464398934,1.524787179646193,1.6200000047683716,1.6200000047683716],"solidHubbas":2}
+PASS: B at 1.25×: an intentional centre-line ollie captures the extension and lands its grind {"captures":[{"feature":"B","kind":"ledge"},{"feature":"B","kind":"ledge"}],"score":590}
+PASS: G at 1.25×: sits east of the bowl tail and descends east/southeast across the divider {"direction":[0.923879532511287,0,0.38268343236508945],"descentDegrees":22.49999999999998,"center":[3.0461939766255646,1.63,7.319134171618254]}
+PASS: B/C at 1.25×: rotated mini faces the flower deck and the G connector remains traversable both ways [{"reached":true,"bails":[],"minimum":-5.551115123125783e-17,"maximum":1.6200000047683716,"position":[7.552157062535965,0,3.71357197257477]},{"reached":true,"bails":[],"minimum":0,"maximum":1.6200000047683716,"position":[2.846027261771636,1.6200000047683716,3.072758675864369]},{"reached":true,"bails":[],"minimum":0,"maximum":1.6200000047683716,"position":[7.6918494496545975,0,5.919910237927417]},{"reached":true,"bails":[],"minimum":0,"maximum":1.6200000047683716,"position":[2.4160703911215435,1.6200000047683716,4.195596019279014]}]
+PASS: G at 1.25×: all nine treads are visible, supported, and free of hidden deck planes {"direction":[0.9238795325112866,0,0.38268343236508984],"railStart":[1.1689115560465926,2.44,8.05587816083003],"railEnd":[6.446573385517319,0.82,10.241957268215604]}
+PASS: G at 1.25×: held grind from a real approach follows the rail and banks on its supported runout {"captures":[{"feature":"G","dir":1,"target":true}],"bails":[],"longest":0.3250000000000002,"score":130,"position":[8.120708467256158,5.551115123125783e-17,10.93540672431644],"state":"ride"}
+12 ROC corrected-layout checks passed.

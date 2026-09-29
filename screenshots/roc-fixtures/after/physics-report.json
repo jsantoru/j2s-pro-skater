@@ -1,0 +1,469 @@
+{
+  "recordedAt": "2026-09-29T02:43:07.825Z",
+  "checks": [
+    {
+      "name": "Glancing contacts are opt-in: solid boundaries block while untagged Warehouse-style walls retain their response",
+      "passed": true,
+      "detail": [
+        {
+          "solidBoundary": false,
+          "furthestX": 2.9694603313703545,
+          "bails": []
+        },
+        {
+          "solidBoundary": true,
+          "furthestX": -0.18205146126303845,
+          "bails": []
+        }
+      ]
+    },
+    {
+      "name": "C at 1×: a lower-side approach cannot ride beneath the visible bank",
+      "passed": true,
+      "detail": {
+        "minimumClearance": null,
+        "contacts": [
+          {
+            "frame": 49,
+            "speed": 0.3955623444576001,
+            "position": [
+              4.562473203950985,
+              0.36000001430511475,
+              6.150426538145354
+            ]
+          },
+          {
+            "frame": 89,
+            "speed": 0.16719686070374795,
+            "position": [
+              3.558774080126555,
+              0.7200000286102295,
+              5.734680748515283
+            ]
+          },
+          {
+            "frame": 131,
+            "speed": 0.16645624963633981,
+            "position": [
+              2.5550749563021355,
+              1.2599999904632568,
+              5.318934958885215
+            ]
+          }
+        ],
+        "bails": [],
+        "position": [
+          0.00941306634498662,
+          1.6200000047683716,
+          2.7732730689280594
+        ]
+      }
+    },
+    {
+      "name": "C at 1×: filling the underside preserves ordinary bank ascent and descent",
+      "passed": true,
+      "detail": [
+        {
+          "reached": true,
+          "bails": [],
+          "min": -5.551115123125783e-17,
+          "max": 1.6200000047683716,
+          "position": [
+            6.652784834687291,
+            0,
+            0
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "min": 0,
+          "max": 1.6200000047683716,
+          "position": [
+            1.3453483185950417,
+            1.6200000047683716,
+            0
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "min": 0,
+          "max": 1.6200000047683716,
+          "position": [
+            6.694531420727357,
+            0,
+            4.5044371916062955
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "min": 0,
+          "max": 1.6200000047683716,
+          "position": [
+            1.9386909076584686,
+            1.6200000047683716,
+            3.337069203752811
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Deck fences at 1×: every foot rests on the real deck and spans remain continuous",
+      "passed": true,
+      "detail": [
+        {
+          "id": "west-deck-railing",
+          "posts": 25,
+          "footCornerSamples": 100,
+          "visibleSpans": 12
+        },
+        {
+          "id": "east-flower-railing",
+          "posts": 7,
+          "footCornerSamples": 28,
+          "visibleSpans": 3
+        }
+      ]
+    },
+    {
+      "name": "West fence at 1×: riding into a span stops before the edge while entrances stay open",
+      "passed": true,
+      "detail": {
+        "blockedAt": [
+          -17.056757390019822,
+          1.6200000047683716,
+          -21.159700248044818
+        ],
+        "openRoutes": [
+          {
+            "reached": true,
+            "bails": [],
+            "min": 0.004999999888241291,
+            "max": 1.6200000047683716,
+            "position": [
+              -0.31015826651928785,
+              1.6200000047683716,
+              -45.05706249181498
+            ]
+          },
+          {
+            "reached": true,
+            "bails": [],
+            "min": 0.004999999888241291,
+            "max": 1.6200000047683716,
+            "position": [
+              -6.978059763473917,
+              0.004999999888241291,
+              -44.88388825116738
+            ]
+          },
+          {
+            "reached": true,
+            "bails": [],
+            "min": 0,
+            "max": 0,
+            "position": [
+              -5.344823142937884,
+              0,
+              11
+            ]
+          },
+          {
+            "reached": true,
+            "bails": [],
+            "min": 0,
+            "max": 0,
+            "position": [
+              -11.655176857062113,
+              0,
+              11
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Benches at 1×: built seat ends align, feet are planted and the trail remains clear",
+      "passed": true,
+      "detail": [
+        {
+          "id": "north-entry-bench",
+          "seatEndVertices": 72,
+          "footCorners": 16,
+          "maxGroundGap": 0.004999998956918716,
+          "minimumTrailDistance": 13.262919261162338
+        },
+        {
+          "id": "south-entry-bench",
+          "seatEndVertices": 72,
+          "footCorners": 16,
+          "maxGroundGap": 7.450580430390374e-11,
+          "minimumTrailDistance": 2.8334311024156777
+        }
+      ]
+    },
+    {
+      "name": "Benches at 1×: an ordinary approach meets the visible frame",
+      "passed": true,
+      "detail": [
+        {
+          "id": "north-entry-bench",
+          "position": [
+            7.9,
+            -0.03999999910593033,
+            -44.77145117608068
+          ],
+          "bails": []
+        },
+        {
+          "id": "south-entry-bench",
+          "position": [
+            -6.7535784911982875,
+            0,
+            13.298076311437434
+          ],
+          "bails": []
+        }
+      ]
+    },
+    {
+      "name": "F at 1×: clearance relocation preserves its established shape and keeps cap two on deck",
+      "passed": true,
+      "detail": {
+        "linkedRails": 36,
+        "capSupport": 1.6200000047683716
+      }
+    },
+    {
+      "name": "C at 1.25×: a lower-side approach cannot ride beneath the visible bank",
+      "passed": true,
+      "detail": {
+        "minimumClearance": null,
+        "contacts": [
+          {
+            "frame": 61,
+            "speed": 0.4299155176359006,
+            "position": [
+              5.746143391079795,
+              0.36000001430511475,
+              7.58409672527417
+            ]
+          },
+          {
+            "frame": 101,
+            "speed": 0.16890381964736245,
+            "position": [
+              4.742444267255395,
+              0.7200000286102295,
+              7.16835093564411
+            ]
+          },
+          {
+            "frame": 143,
+            "speed": 0.16654107353143277,
+            "position": [
+              3.738745143430994,
+              1.0800000429153442,
+              6.752605146014051
+            ]
+          },
+          {
+            "frame": 185,
+            "speed": 0.16642366148939017,
+            "position": [
+              2.735046019606588,
+              1.440000057220459,
+              6.3368593563839895
+            ]
+          }
+        ],
+        "bails": [],
+        "position": [
+          1.9896624684729587,
+          1.6200000047683716,
+          5.5914758052503535
+        ]
+      }
+    },
+    {
+      "name": "C at 1.25×: filling the underside preserves ordinary bank ascent and descent",
+      "passed": true,
+      "detail": [
+        {
+          "reached": true,
+          "bails": [],
+          "min": 0,
+          "max": 1.6200000047683716,
+          "position": [
+            8.439357295014744,
+            0,
+            0
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "min": 0,
+          "max": 1.6200000047683716,
+          "position": [
+            1.5603712462656474,
+            1.6200000047683716,
+            0
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "min": 0,
+          "max": 1.6200000047683716,
+          "position": [
+            8.415458461625924,
+            0,
+            5.658509191868094
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "min": 0,
+          "max": 1.6200000047683716,
+          "position": [
+            2.329833571866126,
+            1.6200000047683716,
+            4.1772314895074185
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Deck fences at 1.25×: every foot rests on the real deck and spans remain continuous",
+      "passed": true,
+      "detail": [
+        {
+          "id": "west-deck-railing",
+          "posts": 25,
+          "footCornerSamples": 100,
+          "visibleSpans": 12
+        },
+        {
+          "id": "east-flower-railing",
+          "posts": 7,
+          "footCornerSamples": 28,
+          "visibleSpans": 3
+        }
+      ]
+    },
+    {
+      "name": "West fence at 1.25×: riding into a span stops before the edge while entrances stay open",
+      "passed": true,
+      "detail": {
+        "blockedAt": [
+          -21.432420551042952,
+          1.6200000047683716,
+          -26.464785748694627
+        ],
+        "openRoutes": [
+          {
+            "reached": true,
+            "bails": [],
+            "min": 0.004999999888241291,
+            "max": 1.6200000047683716,
+            "position": [
+              -0.33991194838363104,
+              1.6200000047683716,
+              -56.28240510680748
+            ]
+          },
+          {
+            "reached": true,
+            "bails": [],
+            "min": 0.004999999888241291,
+            "max": 1.6200000047683716,
+            "position": [
+              -8.825743545190443,
+              0.004999999888241291,
+              -56.180386148023125
+            ]
+          },
+          {
+            "reached": true,
+            "bails": [],
+            "min": 0,
+            "max": 0,
+            "position": [
+              -6.572505093353406,
+              0,
+              13.75
+            ]
+          },
+          {
+            "reached": true,
+            "bails": [],
+            "min": 0,
+            "max": 0,
+            "position": [
+              -14.677494906646816,
+              0,
+              13.75
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Benches at 1.25×: built seat ends align, feet are planted and the trail remains clear",
+      "passed": true,
+      "detail": [
+        {
+          "id": "north-entry-bench",
+          "seatEndVertices": 72,
+          "footCorners": 16,
+          "maxGroundGap": 0.004999998956918716,
+          "minimumTrailDistance": 13.262919261162338
+        },
+        {
+          "id": "south-entry-bench",
+          "seatEndVertices": 72,
+          "footCorners": 16,
+          "maxGroundGap": 7.450580430390374e-11,
+          "minimumTrailDistance": 2.8334311024156777
+        }
+      ]
+    },
+    {
+      "name": "Benches at 1.25×: an ordinary approach meets the visible frame",
+      "passed": true,
+      "detail": [
+        {
+          "id": "north-entry-bench",
+          "position": [
+            9.875,
+            -0.03999999910593033,
+            -55.86150129758312
+          ],
+          "bails": []
+        },
+        {
+          "id": "south-entry-bench",
+          "position": [
+            -8.495711984895106,
+            0,
+            16.710245713796642
+          ],
+          "bails": []
+        }
+      ]
+    },
+    {
+      "name": "F at 1.25×: clearance relocation preserves its established shape and keeps cap two on deck",
+      "passed": true,
+      "detail": {
+        "linkedRails": 36,
+        "capSupport": 1.6200000047683716
+      }
+    }
+  ],
+  "passed": true
+}
