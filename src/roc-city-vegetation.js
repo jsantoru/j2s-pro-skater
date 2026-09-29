@@ -97,10 +97,41 @@ function segmentDistance(x, z, a, b) {
   return Math.hypot(x - a[0] - t * dx, z - a[1] - t * dz);
 }
 
+// Apply the same authored-space motion after instancing in both the visible
+// and shadow passes. Instance matrices and geometry buffers remain immutable.
+function windMaterial(mat, clock, kind, lowfx) {
+  const previous = mat.onBeforeCompile;
+  const header = `uniform float riverwayWindTime;
+    vec3 riverwayWindPosition(vec3 p) {
+      float phase = dot(p.xz, vec2(.105, .063));
+      float breeze = sin(riverwayWindTime * .78 + phase);
+      ${lowfx ? '' : 'breeze += sin(riverwayWindTime * 1.31 + phase * 1.73) * .22;'}
+      ${kind === 'foliage'
+        ? 'float bend = .025 + .050 * smoothstep(.2, 9.0, p.y);'
+        : 'float height = max(0.0, p.y + .028); float bend = min(.072, height * height * .40);'}
+      p.xz += vec2(.89, .46) * breeze * bend;
+      return p;
+    }
+  `;
+  mat.onBeforeCompile = (shader, renderer) => {
+    previous.call(mat, shader, renderer);
+    shader.uniforms.riverwayWindTime = clock;
+    shader.vertexShader = header + shader.vertexShader
+      .replace('#include <project_vertex>', THREE.ShaderChunk.project_vertex.replace(
+        'mvPosition = modelViewMatrix * mvPosition;',
+        'mvPosition.xyz = riverwayWindPosition(mvPosition.xyz);\nmvPosition = modelViewMatrix * mvPosition;'))
+      .replace('#include <worldpos_vertex>', THREE.ShaderChunk.worldpos_vertex.replace(
+        'worldPosition = modelMatrix * worldPosition;',
+        'worldPosition.xyz = riverwayWindPosition(worldPosition.xyz);\nworldPosition = modelMatrix * worldPosition;'));
+  };
+  mat.customProgramCacheKey = () => `riverway-wind-v1-${kind}-${lowfx ? 'low' : 'full'}`;
+  return mat;
+}
+
 /** Adds four vegetation batches, with every material/map owned by the caller. */
 export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledMaterials, ownedMaterials, lowfx = false, layout }) {
   const rng = randomSeed(73490), sprays = [], mulchParts = [], grassPositions = [], grassColors = [];
-  const trunks = [], groundPatches = [];
+  const trunks = [], groundPatches = [], plantingPockets = [], windTime = { value: 0 };
   const trail = new THREE.CatmullRomCurve3(layout.trail.map(([x, z]) => new THREE.Vector3(x, 0, z))).getPoints(280).map(p => [p.x, p.z]);
   const outline = layout.mainPerimeter || layout.perimeter;
   const safeGround = (x, z, clearance = .2) => {
@@ -120,9 +151,16 @@ export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledM
   const foliage = material('Riverway cutout broadleaf foliage', 0xffffff, .98, 0, leafSprayMap());
   foliage.side = THREE.DoubleSide; foliage.shadowSide = THREE.DoubleSide;
   foliage.alphaTest = .42; foliage.transparent = false; foliage.depthWrite = true;
-  // No blending or custom shader: Three's depth pass uses the same alpha cutout.
-  // Explicit registration also supports lightweight callers that pass a factory.
-  for (const mat of [bark, mulch, blades, foliage]) ownedMaterials.add(mat);
+  windMaterial(foliage, windTime, 'foliage', lowfx);
+  windMaterial(blades, windTime, 'grass', lowfx);
+  const depth = windMaterial(new THREE.MeshDepthMaterial({ depthPacking:THREE.RGBADepthPacking,
+    map:foliage.map, alphaTest:foliage.alphaTest, side:THREE.DoubleSide }), windTime, 'foliage', lowfx);
+  const distance = windMaterial(new THREE.MeshDistanceMaterial({ map:foliage.map,
+    alphaTest:foliage.alphaTest, side:THREE.DoubleSide }), windTime, 'foliage', lowfx);
+  depth.name = 'Riverway moving foliage depth'; distance.name = 'Riverway moving foliage distance';
+  const materials = [bark, mulch, blades, foliage, depth, distance];
+  // Maps are shared rather than cloned; the owning art deduplicates textures.
+  for (const mat of materials) ownedMaterials.add(mat);
 
   const taper = (a, b, bottom, top, segments = 7) => {
     const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), delta = B.clone().sub(A);
@@ -167,8 +205,8 @@ export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledM
     if (!safeGround(x, z, .3)) return;
     const n = lowfx ? 5 : 8;
     for (let i = 0; i < n; i++) {
-      const angle = rng() * Math.PI * 2, width = .003 + rng() * .0035;
-      const h = height * (.35 + rng() * .7), px = x + (rng() - .5) * .15, pz = z + (rng() - .5) * .15;
+      const angle = rng() * Math.PI * 2, width = .0045 + rng() * .004;
+      const h = height * (.55 + rng() * .55), px = x + (rng() - .5) * .15, pz = z + (rng() - .5) * .15;
       const dx = Math.cos(angle), dz = Math.sin(angle), lean = h * (.22 + rng() * .5);
       const a = [px - dx * width, GROUND, pz - dz * width], b = [px + dx * width, GROUND, pz + dz * width];
       const m = [px + dz * lean * .25, GROUND + h * .55, pz - dx * lean * .25];
@@ -179,7 +217,7 @@ export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledM
         const light = j === 4 ? 1.05 : j < 2 ? .72 : .90;
         // Vertex colours are linear in Three. Convert the chosen muted turf
         // colours from sRGB so sunlit tips never become pale straw triangles.
-        c.setRGB((48 + green * 17) / 255, (65 + green * 22) / 255, (28 + green * 12) / 255).convertSRGBToLinear().multiplyScalar(light);
+        c.setRGB((66 + green * 19) / 255, (82 + green * 24) / 255, (37 + green * 14) / 255).convertSRGBToLinear().multiplyScalar(light);
         grassColors.push(c.r, c.g, c.b);
       }
     }
@@ -255,12 +293,77 @@ export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledM
     }
   }
 
+  // Pocket planting breaks up the lawn with low, interrupted layers. Every
+  // shrub checks its whole footprint, not just its centre, including wind room.
+  const seedHead = (x, z) => {
+    if (!safeGround(x, z, .28)) return;
+    const h = .26 + rng() * .19, lean = (rng() - .5) * .12, angle = rng() * Math.PI * 2;
+    const dx = Math.cos(angle), dz = Math.sin(angle), color = new THREE.Color(0x8a8056);
+    const triangle = (...points) => { grassPositions.push(...points.flat()); for (let i = 0; i < 3; i++) grassColors.push(color.r, color.g, color.b); };
+    const a = [x - dx * .0035,GROUND,z - dz * .0035], b = [x + dx * .0035,GROUND,z + dz * .0035];
+    const tip = [x + lean,GROUND + h,z];
+    triangle(a,b,tip);
+    for (let j = 0; j < 4; j++) {
+      const y = GROUND + h - .018 - j * .025, side = j % 2 ? -1 : 1;
+      const cx = x + lean * (y - GROUND) / h + dx * side * .013, cz = z + dz * side * .013;
+      const base = [cx,y - .014,cz], top = [cx + dx * side * .012,y + .019,cz + dz * side * .012];
+      triangle(base,[cx - dz * .009,y,cz + dx * .009],top);
+      triangle(base,top,[cx + dz * .009,y,cz - dx * .009]);
+    }
+  };
+  for (const [x,z,rx,rz] of [[-25.7,-29,1.0,1.8],[-26.3,-13,1.1,1.7],[-27,4,1.0,1.6],
+    [-22.8,11,1.0,1.5],[-9,-53,1.4,1.0],[8,-46,.65,1.0],
+    [16.55,-35,.46,1.8],[16.55,-20,.46,1.6],[16.55,-4,.46,1.5],[16.55,7,.46,1.4],[16.55,16,.46,1.0]]) {
+    let shrubs = 0;
+    const clusters = lowfx ? 4 : 7;
+    for (let i = 0; i < clusters; i++) {
+      const a = rng() * Math.PI * 2, r = Math.sqrt(rng()), px = x + Math.cos(a) * rx * r, pz = z + Math.sin(a) * rz * r;
+      for (let j = 0; j < (lowfx ? 2 : 4); j++) tuft(px + (rng() - .5) * .30,pz + (rng() - .5) * .30,.13 + rng() * .12);
+      const radius = .20 + rng() * .10;
+      if (i % 2 === 0 && safeGround(px,pz,radius+.22)) {
+        const height = .17 + rng() * .12;
+        lobe([px,GROUND+height,pz],[radius,height*.7,radius],lowfx?9:17,.19+rng()*.08,.98);
+        shrubs++;
+      }
+      if (i % 2 === 1) seedHead(px,pz);
+    }
+    plantingPockets.push({x,z,rx,rz,shrubs});
+  }
+
+  // Small mown spaces around the stationary neighbours and the bench bag.
+  // Filter only intersecting low plants after generation: the seeded trees and
+  // every distant planting pocket keep their exact accepted positions.
+  const standingClearings = [[8.5,-46.3],[9.7,-45.5],[16.12,-6.6],[16.35,-5.5],[9.25,-44.15]];
+  const clearRadius = .40;
+  let kept = 0;
+  for (const s of sprays) {
+    const reach = Math.hypot(s.scale.x,s.scale.y)*.5 + .04; // Includes gentle wind.
+    const overlaps = s.position.y < 1 && standingClearings.some(([x,z]) =>
+      Math.hypot(s.position.x-x,s.position.z-z) < clearRadius+reach);
+    if (!overlaps) sprays[kept++] = s;
+  }
+  sprays.length = kept;
+  kept = 0;
+  for (let i=0;i<grassPositions.length;i+=9) {
+    const minX=Math.min(grassPositions[i],grassPositions[i+3],grassPositions[i+6]);
+    const maxX=Math.max(grassPositions[i],grassPositions[i+3],grassPositions[i+6]);
+    const minZ=Math.min(grassPositions[i+2],grassPositions[i+5],grassPositions[i+8]);
+    const maxZ=Math.max(grassPositions[i+2],grassPositions[i+5],grassPositions[i+8]);
+    const overlaps=standingClearings.some(([x,z])=>Math.hypot(Math.max(minX-x,0,x-maxX),Math.max(minZ-z,0,z-maxZ))<clearRadius+.09);
+    if (!overlaps) for (let j=0;j<9;j++) {
+      grassPositions[kept]=grassPositions[i+j]; grassColors[kept++]=grassColors[i+j];
+    }
+  }
+  grassPositions.length=grassColors.length=kept;
+
   const canopy = new THREE.InstancedMesh(foldedCard(), foliage, sprays.length);
   canopy.name = 'Riverway open broadleaf crowns'; canopy.castShadow = !lowfx; canopy.receiveShadow = true;
+  canopy.customDepthMaterial = depth; canopy.customDistanceMaterial = distance;
   const matrix = new THREE.Matrix4();
   sprays.forEach((s, i) => { matrix.compose(s.position, s.rotation, s.scale); canopy.setMatrixAt(i, matrix); canopy.setColorAt(i, s.color); });
   canopy.instanceMatrix.needsUpdate = true; canopy.instanceColor.needsUpdate = true;
-  canopy.computeBoundingBox(); canopy.computeBoundingSphere(); group.add(canopy);
+  canopy.computeBoundingBox(); canopy.computeBoundingSphere();
+  canopy.boundingBox.expandByScalar(.13); canopy.boundingSphere.radius += .13; group.add(canopy);
   if (mulchParts.length) {
     const mesh = new THREE.Mesh(mergeGeometries(mulchParts, false), mulch);
     mesh.name = 'Riverway uneven mulch and leaf litter'; mesh.receiveShadow = true; mesh.castShadow = false;
@@ -272,9 +375,12 @@ export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledM
   grass.computeVertexNormals();
   const meadow = new THREE.Mesh(grass, blades); meadow.name = 'Riverway scattered meadow tufts';
   meadow.receiveShadow = true; meadow.castShadow = false; group.add(meadow);
-  const result = { trees: trunks, groundPatches, foliage: canopy, materials: [bark, mulch, blades, foliage],
-    foliageTriangles: sprays.length * 4, groundTriangles: grassPositions.length / 9, lowfx };
-  group.userData.vegetation = { trees: trunks, groundPatches, foliageTriangles: result.foliageTriangles,
+  grass.computeBoundingBox(); grass.computeBoundingSphere();
+  grass.boundingBox.expandByScalar(.1); grass.boundingSphere.radius += .1;
+  const result = { trees: trunks, groundPatches, plantingPockets, foliage: canopy, materials,
+    foliageTriangles: sprays.length * 4, groundTriangles: grassPositions.length / 9, lowfx,
+    update(time) { if (Number.isFinite(time)) windTime.value = time; } };
+  group.userData.vegetation = { trees: trunks, groundPatches, plantingPockets, foliageTriangles: result.foliageTriangles,
     groundTriangles: result.groundTriangles, batches: 4, lowfx };
   return result;
 }

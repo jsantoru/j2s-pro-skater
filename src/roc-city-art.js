@@ -12,6 +12,8 @@ import { riverwaySurface, varySurface } from './roc-city-surfaces.js';
 import { addRiverwayStreets } from './roc-city-streets.js';
 import { addRiverwayVegetation } from './roc-city-vegetation.js';
 import { addRocCityBuildings } from './roc-city-buildings.js';
+import { addRocCityProps } from './roc-city-props.js';
+import { addRocCityLife } from './roc-city-life.js';
 
 const UP = new THREE.Vector3(0, 1, 0);
 const layouts = new WeakMap();
@@ -301,8 +303,12 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   }
 
   const artContext={group,add,box,bar,material,surfaceMap,tiledMaterials,ownedMaterials,lowfx,layout:L};
-  addRiverwayVegetation(artContext);
+  const vegetation=addRiverwayVegetation(artContext);
+  group.userData.updateVegetation=vegetation.update;
   const city=addRocCityBuildings(artContext);
+  addRocCityProps({...artContext,horizontalScale});
+  const neighborhood=addRocCityLife({...artContext,horizontalScale});
+  group.userData.updateLife=neighborhood.update;
   const building=city.materials.brick;
   const windows=material('Skyline window glass',0x4e676d,.55,.28);
   const towerStone=material('Downtown pale slab',0xb8b7ae,.94);
@@ -357,14 +363,14 @@ export function createRocCityArt(root, level, { lowfx = false } = {}) {
   const horizontalScale=level.horizontalScale??1;
   const dressing=dressRocCity(level,{lowfx}), lights=new THREE.Group();lights.name='ROC City outdoor daylight';root.add(lights);
   const skyMaterial=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,
-    uniforms:{top:{value:new THREE.Color(0x689bb9)},horizon:{value:new THREE.Color(0xc5ceca)}},
+    uniforms:{top:{value:new THREE.Color(0x689bb9)},horizon:{value:new THREE.Color(0xc5ceca)},breezeTime:{value:0}},
     vertexShader:'varying vec3 direction; void main(){direction=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);gl_Position.z=gl_Position.w*.99999;}',
-    fragmentShader:`uniform vec3 top; uniform vec3 horizon; varying vec3 direction;
+    fragmentShader:`uniform vec3 top; uniform vec3 horizon; uniform float breezeTime; varying vec3 direction;
       float cloudHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
       float cloudNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(cloudHash(i),cloudHash(i+vec2(1,0)),f.x),mix(cloudHash(i+vec2(0,1)),cloudHash(i+vec2(1,1)),f.x),f.y);}
       void main(){
         vec3 d=normalize(direction);float h=smoothstep(-.04,.78,d.y);
-        vec2 p=d.xz/max(.16,d.y+.22)*2.1;
+        vec2 p=d.xz/max(.16,d.y+.22)*2.1+vec2(breezeTime*.004,breezeTime*.001);
         float clouds=cloudNoise(p)*.58+cloudNoise(p*2.1)*.28+cloudNoise(p*4.3)*.14;
         clouds=smoothstep(.49,.76,clouds)*smoothstep(.005,.2,d.y)*.55;
         vec3 sky=mix(mix(horizon,top,h),vec3(.83,.85,.81),clouds);
@@ -381,9 +387,16 @@ export function createRocCityArt(root, level, { lowfx = false } = {}) {
   const fill=new THREE.DirectionalLight(0xc4d8e0,.26);fill.position.set(28,10,39);lights.add(ambient,sun,sun.target,fill);
   if(!lowfx)for(const z of [30,40,50]){const lamp=new THREE.PointLight(0xe3eddb,3.5,10*horizontalScale,2);lamp.position.set(10*horizontalScale,4.8,z*horizontalScale);lights.add(lamp);}
   let disposed=false;
+  const reduceMotion=typeof matchMedia==='function'?matchMedia('(prefers-reduced-motion: reduce)'):null;
   return {
     sun, pierBounds:dressing.userData.pierBounds, cameraFar:260*horizontalScale, background:new THREE.Color(0xc5ceca),fog:new THREE.Fog(0xc5ceca,110*horizontalScale,240*horizontalScale),environmentIntensity:.36,toneMappingExposure:.96,
-    update(time) { const water=dressing.userData.water;if(water)water.offset.x=time*.002; },
+    update(time) {
+      const t=reduceMotion?.matches?0:time;
+      const water=dressing.userData.water;if(water)water.offset.x=t*.002;
+      skyMaterial.uniforms.breezeTime.value=t;
+      dressing.userData.updateVegetation?.(t);
+      dressing.userData.updateLife?.(t);
+    },
     dispose() {
       if(disposed)return;disposed=true;lights.removeFromParent();sun.shadow.map?.dispose();sky.geometry.dispose();skyMaterial.dispose();
       const textures=new Set();dressing.traverse(object=>{if(object.geometry)object.geometry.dispose();if(object.isInstancedMesh)object.dispose();});

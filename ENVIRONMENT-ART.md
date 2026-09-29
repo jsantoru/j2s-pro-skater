@@ -2,6 +2,8 @@
 
 The September 2026 pass gives ROC City Skatepark a warm afternoon Rochester streetscape: pale skating concrete, red and buff masonry, olive broadleaf planting, charcoal asphalt and oxidized bridge steel. The park's authored layout, skating surfaces, physics, characters, progression and controls are unchanged. Genesee Warehouse is the comparison control.
 
+The subsequent [ambient-life pass](ENVIRONMENT-LIFE.md) adds people, street furniture and motion. The measurements and images below record the original v15 environment pass; the follow-up has its own validation evidence.
+
 ## Reference study
 
 Real photographs were opened and visually inspected before implementation. These informed proportions, material choices and placement; they are not bundled as game textures.

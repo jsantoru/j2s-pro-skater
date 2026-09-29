@@ -70,6 +70,46 @@ export function addRocCityBuildings({ group, add, box, bar, material, surfaceMap
   }, 256);
   const glass = material('Rochester window reflections', 0xffffff, .38, .32, glassMap);
   glass.vertexColors = true;
+  // An inexpensive original storefront vignette gives the broad shop panes
+  // depth and a hint of occupancy, without transparent walls or interior draws.
+  const shopMap = canvasMap((c,s,r)=>{
+    c.fillStyle='#55584d';c.fillRect(0,0,s,s);
+    const back=c.createLinearGradient(0,0,0,s);back.addColorStop(0,'#727061');back.addColorStop(1,'#343f3c');
+    c.fillStyle=back;c.fillRect(s*.12,s*.10,s*.76,s*.75);
+    c.fillStyle='#353e39';c.beginPath();c.moveTo(0,0);c.lineTo(s*.12,s*.10);c.lineTo(s*.12,s*.85);c.lineTo(0,s);c.fill();
+    c.fillStyle='#47514a';c.beginPath();c.moveTo(s,0);c.lineTo(s*.88,s*.1);c.lineTo(s*.88,s*.85);c.lineTo(s,s);c.fill();
+    c.fillStyle='#635b46';c.beginPath();c.moveTo(0,s);c.lineTo(s*.12,s*.85);c.lineTo(s*.88,s*.85);c.lineTo(s,s);c.fill();
+    // Shelves, paper goods and a few bottles behind a service counter.
+    for(const y of [.40,.57]) {
+      c.fillStyle='#a79770';c.fillRect(s*.19,s*y,s*.49,s*.017);
+      for(let j=0;j<10;j++) {
+        const x=s*(.22+j*.043),h=s*(.055+r()*.04);
+        c.fillStyle=['#a59976','#8a614c','#769085','#b4ad8c'][j%4];c.fillRect(x,s*y-h,s*.026,h);
+        c.fillStyle='#dad0ae';c.fillRect(x,s*y-h*.52,s*.026,s*.025);
+      }
+    }
+    c.fillStyle='#38403a';c.fillRect(s*.17,s*.725,s*.53,s*.10);
+    c.fillStyle='#a49470';c.fillRect(s*.16,s*.712,s*.55,s*.016);
+    c.fillStyle='#8d957f';c.fillRect(s*.25,s*.66,s*.095,s*.05);c.fillStyle='#bac1ac';c.fillRect(s*.25,s*.658,s*.095,s*.008);
+    // Pendant and a broad-leaf indoor plant create different near/far layers.
+    c.strokeStyle='#343c36';c.lineWidth=s*.008;c.beginPath();c.moveTo(s*.45,0);c.lineTo(s*.45,s*.20);c.stroke();
+    c.fillStyle='#b69e6f';c.beginPath();c.ellipse(s*.45,s*.22,s*.078,s*.037,0,0,Math.PI*2);c.fill();
+    c.fillStyle='#eee0ad';c.fillRect(s*.40,s*.241,s*.10,s*.008);
+    c.fillStyle='#9f7760';c.beginPath();c.moveTo(s*.77,s*.74);c.lineTo(s*.88,s*.74);c.lineTo(s*.86,s*.90);c.lineTo(s*.79,s*.90);c.fill();
+    for(let i=0;i<12;i++) {
+      const x=s*(.823+(r()-.5)*.11),y=s*(.44+r()*.27);
+      c.strokeStyle='#52705c';c.lineWidth=s*.005;c.beginPath();c.moveTo(s*.824,s*.75);c.lineTo(x,y);c.stroke();
+      c.fillStyle=i%2?'#637b61':'#829272';c.beginPath();c.ellipse(x,y,s*.023,s*.055,(r()-.5)*1.3,0,Math.PI*2);c.fill();
+    }
+    // Reflections remain over the interior; it should never resemble a bright
+    // advertising panel pasted onto the glass in full daylight.
+    const reflection=c.createLinearGradient(0,0,0,s);reflection.addColorStop(0,'#b9cad370');reflection.addColorStop(.56,'#87a5af28');reflection.addColorStop(1,'#263b401b');
+    c.fillStyle=reflection;c.fillRect(0,0,s,s);
+    c.fillStyle='#ced6ce18';c.beginPath();c.moveTo(s*.06,0);c.lineTo(s*.16,0);c.lineTo(s*.58,s);c.lineTo(s*.45,s);c.fill();
+    c.fillStyle='#e1dfc35c';c.font=`${s*.025}px Georgia`;c.textAlign='center';c.fillText('LOCALLY OWNED / ROCHESTER',s*.45,s*.92);
+  },lowfx?256:512);
+  const shopGlass=material('Rochester occupied shop windows',0xffffff,.49,.12,shopMap);
+  shopGlass.vertexColors=true;
   const awningMap = canvasMap((c, s) => {
     c.fillStyle = '#354c49'; c.fillRect(0, 0, s, s);
     for (let x = 0; x < s; x += s / 24) {
@@ -89,7 +129,7 @@ export function addRocCityBuildings({ group, add, box, bar, material, surfaceMap
     }
   }, 512);
   const signs = material('Rochester modest storefront signs', 0xffffff, .96, 0, signMap);
-  const materials = { brick: masonry, buff: buffBrick, stone, dark, metal, roof, glass, awning, signs };
+  const materials = { brick: masonry, buff: buffBrick, stone, dark, metal, roof, glass, shopGlass, awning, signs };
   // Material creation normally registers these. Explicit registration also
   // makes the module safe with a standalone preview's lightweight helper.
   for (const mat of Object.values(materials)) ownedMaterials.add(mat);
@@ -119,12 +159,12 @@ export function addRocCityBuildings({ group, add, box, bar, material, surfaceMap
       face.z - u * Math.sin(face.ry) + distance * Math.cos(face.ry));
     const faceBox = (face, w, h, d, u, y, distance, mat) => box(w, h, d, ...facePoint(face, u, y, distance), mat, b.ry + face.ry);
     const faceBar = (face, a, end, radius = .024, mat = dark) => bar(facePoint(face, ...a), facePoint(face, ...end), radius, mat, 6);
-    const pane = (face, w, h, u, y, distance, variation = 0) => {
+    const pane = (face, w, h, u, y, distance, variation = 0, paneMaterial = glass) => {
       const geometry = new THREE.PlaneGeometry(w, h); geometry.rotateY(b.ry + face.ry);
       const tint = new THREE.Color().setHSL(.53 + (variation % 3) * .008, .10, .57 + (variation % 5) * .045);
       const colors = new Float32Array(geometry.attributes.position.count * 3);
       for (let i = 0; i < colors.length; i += 3) tint.toArray(colors, i);
-      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3)); add(geometry, glass, facePoint(face, u, y, distance));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3)); add(geometry, paneMaterial, facePoint(face, u, y, distance));
     };
     const window = (face, u, y, width, height, variation, ornate = false) => {
       faceBox(face, width + .17, height + .19, .06, u, y, .038, dark);
@@ -184,7 +224,7 @@ export function addRocCityBuildings({ group, add, box, bar, material, surfaceMap
         const u = -b.w / 2 + shopWidth * (shop + .5), left = u - shopWidth / 2;
         faceBox(front, shopWidth - .26, 2.84, .08, u, 1.57, .058, dark);
         const doorU = left + .91, displayU = u + .60, displayWidth = shopWidth - 2.04;
-        pane(front, displayWidth, 1.93, displayU, 1.54, .107, index + shop + 1);
+        pane(front, displayWidth, 1.93, displayU, 1.54, .107, index + shop + 1, shopGlass);
         for (let j = 0; j < 3; j++) faceBox(front, .06, 2.03, .16, displayU + (j - 1) * displayWidth / 2, 1.54, .145, metal);
         for (const y of [.53, 2.56]) faceBox(front, displayWidth + .11, .085, .17, displayU, y, .15, metal);
         faceBox(front, 1.12, 2.77, .12, doorU, 1.49, .115, stone);
