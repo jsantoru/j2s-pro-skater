@@ -25,7 +25,7 @@ check('an airborne bail below street height falls to its bowl floor without snap
   assert.ok(peak<-.4);assert.ok(skater.normal.y>.999);dispose(level);
 });
 check('the ROC deep bowl recovers against its actual curved collider below street height',()=>{
-  const level=new RocCityLevel(),skater=new Skater(level);
+  const level=new RocCityLevel({horizontalScale:1}),skater=new Skater(level);
   skater.pos.set(-7.2,-.5,-13.7);skater.state='air';skater.vel.set(0,0,0);skater.bail('trick');
   for(let frame=0;frame<200&&skater.state==='bail';frame++){
     skater.updateBail(1/120);

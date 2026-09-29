@@ -5,7 +5,7 @@ import { RocCityLevel } from '../src/roc-city-level.js';
 import { createRocCityArt } from '../src/roc-city-art.js';
 
 for (const lowfx of [false, true]) {
-  const level = new RocCityLevel(), root = new THREE.Group();
+  const level = new RocCityLevel({ horizontalScale: 1 }), root = new THREE.Group();
   const colliders = level.colliders.length;
   root.add(level.group);
   const art = createRocCityArt(root, level, { lowfx });

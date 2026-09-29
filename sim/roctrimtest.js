@@ -5,7 +5,8 @@ import { createHash } from 'node:crypto';
 import * as THREE from 'three';
 import { RocCityLevel } from '../src/roc-city-level.js';
 
-const level=new RocCityLevel(),up=new THREE.Vector3(0,1,0),ray=new THREE.Raycaster();
+// The pass-2 hashes describe the original authored surfaces, before world scaling.
+const level=new RocCityLevel({horizontalScale:1}),up=new THREE.Vector3(0,1,0),ray=new THREE.Raycaster();
 let passed=0;
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 function test(name,run){run();passed++;console.log(`PASS: ${name}`);}

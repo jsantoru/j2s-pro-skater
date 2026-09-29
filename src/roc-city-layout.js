@@ -1,6 +1,9 @@
 // Phase 1 landmarks traced from ROC City Skatepark's published A–L feature map.
 // Distances are playable estimates, not surveyed construction dimensions.
 // +X is east, +Z is south; the north entry is at the negative-Z end.
+// The authored plan stays stable; the playable park gets more horizontal room
+// while stair heights, rail heights and the rider remain at their original scale.
+export const ROC_CITY_HORIZONTAL_SCALE = 1.25;
 const SQRT_HALF=Math.SQRT1_2;
 const MINI={ center:[1.5,-35],axis:[SQRT_HALF,-SQRT_HALF],flatHalf:1.8,width:5,height:1.62,sideBank:2.4 };
 const miniPoint=(u,w)=>[MINI.center[0]+SQRT_HALF*(u+w),MINI.center[1]+SQRT_HALF*(-u+w)];
@@ -43,7 +46,7 @@ export const ROC_CITY_LAYOUT = Object.freeze({
   }),
 });
 
-export const ROC_PICKUPS = Object.freeze([
+export const ROC_PICKUPS_AUTHORED = Object.freeze([
   { id:'letter-s', goalId:'skate', type:'letter', label:'S', position:[2,2.57,-40], surfaceY:1.62, hint:'Roll in from the north entrance.' },
   { id:'letter-k', goalId:'skate', type:'letter', label:'K', position:[10,2.21,-25], surfaceY:1.26, hint:'Take the bank onto the flower deck.' },
   { id:'letter-a', goalId:'skate', type:'letter', label:'A', position:[9,.95,-10], surfaceY:0, hint:'Continue beyond the seven stairs.' },
@@ -56,3 +59,15 @@ export const ROC_PICKUPS = Object.freeze([
   { id:'cap-5', goalId:'caps', type:'cap', label:'5', position:[8,.05,46], surfaceY:-.9, hint:'At the approach to the bridge quarter pipe.' },
   { id:'secret-tape', goalId:'tape', type:'tape', label:'SECRET', position:[7.5,2.35,51], surfaceY:1.4, hint:'Air onto the lower quarter-pipe deck beneath the bridge.' },
 ].map(p=>Object.freeze({ ...p, radius:1.05, position:Object.freeze(p.position) })));
+
+export function createRocPickups(horizontalScale = ROC_CITY_HORIZONTAL_SCALE) {
+  if (!Number.isFinite(horizontalScale) || horizontalScale <= 0) throw new RangeError('ROC horizontal scale must be positive.');
+  return Object.freeze(ROC_PICKUPS_AUTHORED.map(pickup => Object.freeze({
+    ...pickup,
+    position: Object.freeze([pickup.position[0] * horizontalScale, pickup.position[1], pickup.position[2] * horizontalScale]),
+  })));
+}
+
+// Rendering and collection detection consume the same world-space centres.
+// Hover height, collection radius and the models stay human-sized.
+export const ROC_PICKUPS = createRocPickups();

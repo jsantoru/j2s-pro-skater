@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { makeMaterials, surfaceUV } from './materials.js';
-import { ROC_CITY_LAYOUT } from './roc-city-layout.js';
+import { ROC_CITY_LAYOUT, ROC_CITY_HORIZONTAL_SCALE } from './roc-city-layout.js';
 import { buildRocCityHip } from './roc-city-hip.js';
 import { createTrailGeometry, createTrailFoundationGeometry } from './roc-city-surroundings.js';
 import { paintedBorder, paintedHubba, railPost, archedRailSupport, rectangularFlatbar, createPoolTileMap, mapPoolBand } from './roc-city-trim.js';
@@ -124,7 +124,8 @@ export function createBowlGeometry(outline, rimY=1.62, cellSize=.28) {
 }
 
 export class RocCityLevel {
-  constructor() {
+  constructor({ horizontalScale = ROC_CITY_HORIZONTAL_SCALE } = {}) {
+    if (!Number.isFinite(horizontalScale) || horizontalScale <= 0) throw new RangeError('ROC horizontal scale must be positive.');
     this.group=new THREE.Group();this.group.name='ROC City Skatepark — Phase 1';
     this.colliders=[];this.rails=[];this.mats=makeMaterials();
     this.mats.floor.color.set(0xe0ded5);this.mats.concrete.color.set(0xe5e3db);
@@ -137,9 +138,42 @@ export class RocCityLevel {
     this.spawn={pos:new THREE.Vector3(2,1.62,-44),heading:new THREE.Vector3(0,0,1)};
     this.bailFloorY=-3;
     this.horizontalRailCapture=true;
-    this.layout=ROC_CITY_LAYOUT;this.features=ROC_CITY_LAYOUT.features;this.bounds=ROC_CITY_LAYOUT.bounds;
+    this.layout=ROC_CITY_LAYOUT;this.designLayout=ROC_CITY_LAYOUT;
+    this.horizontalScale=horizontalScale;this.worldScale=Object.freeze({x:horizontalScale,y:1,z:horizontalScale});
+    this.features=Object.freeze(Object.fromEntries(Object.entries(ROC_CITY_LAYOUT.features).map(([id,feature])=>[id,Object.freeze({
+      ...feature,position:Object.freeze(this.toWorldPoint(feature.position)),
+      ...(feature.secondEntry?{secondEntry:Object.freeze(this.toWorldPoint(feature.secondEntry))}:{}),
+    })])));
+    this.bounds=Object.freeze(Object.fromEntries(Object.entries(ROC_CITY_LAYOUT.bounds).map(([axis,value])=>[axis,value*horizontalScale])));
     this.menuCamera={position:[-38,28,38],target:[-1,0,-3],fov:61};
-    this.build();this.group.updateMatrixWorld(true);
+    // Build at identity: the rail and paint builders intentionally derive their
+    // shared coordinates from the original meshes before the world transform.
+    this.build();
+    this.group.scale.set(horizontalScale,1,horizontalScale);
+    for(const rail of this.rails){
+      rail.a.x*=horizontalScale;rail.a.z*=horizontalScale;
+      rail.b.x*=horizontalScale;rail.b.z*=horizontalScale;
+      rail.dir.copy(rail.b).sub(rail.a);rail.len=rail.dir.length();rail.dir.normalize();
+    }
+    this.spawn.pos.x*=horizontalScale;this.spawn.pos.z*=horizontalScale;
+    this.menuCamera.position=this.toWorldPoint(this.menuCamera.position);
+    this.menuCamera.target=this.toWorldPoint(this.menuCamera.target);
+    // Support curves, trim measurements and geometry userData stay in authored
+    // space for editing; their meshes inherit group.matrixWorld for rendering.
+    this.group.updateMatrixWorld(true);
+  }
+
+  toWorldPoint(point) {return [point[0]*this.horizontalScale,point[1],point[2]*this.horizontalScale];}
+  toWorldXZ(point) {return [point[0]*this.horizontalScale,point[1]*this.horizontalScale];}
+
+  isTransitionLip(position) {
+    // Only B's two quarter-to-deck seams need the close-probe exception.
+    // Test in authored space so widening the park keeps these bands aligned.
+    const mini=this.layout.mini;
+    const x=position.x/this.horizontalScale-mini.center[0],z=position.z/this.horizontalScale-mini.center[1];
+    const along=x*mini.axis[0]+z*mini.axis[1],across=-x*mini.axis[1]+z*mini.axis[0];
+    return Math.abs(Math.abs(along)-mini.flatHalf-mini.height)<.16
+      && Math.abs(across)<=mini.width/2+.04 && Math.abs(position.y-mini.height)<.18;
   }
 
   add(mesh,collide=true,shadow=true) {

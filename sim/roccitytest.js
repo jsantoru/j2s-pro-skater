@@ -2,12 +2,14 @@
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { RocCityLevel } from '../src/roc-city-level.js';
-import { ROC_CITY_LAYOUT, ROC_PICKUPS } from '../src/roc-city-layout.js';
+import { ROC_CITY_LAYOUT, ROC_PICKUPS_AUTHORED as ROC_PICKUPS } from '../src/roc-city-layout.js';
 import { Skater } from '../src/skater.js';
 import { makeState } from '../src/input.js';
 import { GoalProgress, GoalRun } from '../src/goals.js';
 
-const level=new RocCityLevel(),dt=1/120;
+// These fixture routes and dimensions are authored metres; rocscaletest checks
+// their production-scale transformation independently.
+const level=new RocCityLevel({horizontalScale:1}),dt=1/120;
 const ray=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0);
 function support(x,z) { ray.set(new THREE.Vector3(x,8,z),down);return ray.intersectObjects(level.colliders,false); }
 function rider(from,direction,speed=7) {

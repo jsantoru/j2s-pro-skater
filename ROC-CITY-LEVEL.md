@@ -19,6 +19,53 @@ recognizable, playable game recreation, not a survey-accurate architectural mode
 Coordinates use +X east and +Z south; one world unit is approximately one metre.
 Source photographs are reference material, not copied game textures.
 
+### Rider-to-park scale
+
+The two supplied photographs with people in the bowl and street section prompted
+a horizontal scale pass. ROC City is now **25% wider and longer** than the first
+recreation (X/Z ×1.25). This is a visual/gameplay estimate, not a measurement of
+the real park. It increases the plan area by 56.25%; it does not increase heights.
+
+The riding Joe model measures approximately 1.75 m including board and cap.
+Keeping the same model and feature heights preserves the relationship between
+the skater and the 18 cm stair risers, 82 cm stair handrail, 75 cm bridge flatbar,
+48 cm manual pad and 2.65 m deepest bowl pocket. Those are **game dimensions**;
+the supplied photographs do not establish surveyed dimensions for these features.
+The broader footprint provides more room across the bowl, mini and approach decks.
+
+| Game measurement | Previous | Revised |
+| --- | ---: | ---: |
+| Plan bounding box (not usable floor area) | 34 × 102 m | 42.5 × 127.5 m |
+| Mini flat length / width | 3.6 / 5 m | 4.5 / 6.25 m |
+| Bridge manual-pad length / width | 8.5 / 2.1 m | 10.625 / 2.625 m |
+| Stair riser / manual-pad height | 0.18 / 0.48 m | unchanged |
+
+`ROC_CITY_LAYOUT` remains the authored plan. `RocCityLevel` applies the horizontal
+world transform once after building it; its spawn, grind segments, feature
+positions and bounds are world coordinates. `ROC_PICKUPS` uses the same transform,
+with pickup hover height, size and collection radius unchanged. Surrounding art
+inherits the transform. Collision and contact-shadow normals use the inverse
+transpose of the world matrix so the wider slopes render and ride consistently.
+Game speeds, gravity, ollies, follow-camera framing, warehouse geometry, characters,
+save keys and mobile controls retain their existing settings.
+The mini's steep transition lips now preserve upward momentum when their ground probe
+first touches the flat deck. This prevents the wider mini from snapping the rider
+onto the apron instead of airing back in. It retains the existing launch-speed
+threshold; the bowl, other ramps, shallow banks and warehouse do not use this additional condition.
+
+Compare the fixed camera views in `screenshots/roc-scale/before` and `after`.
+`sim:roc-scale` exercises the actual enlarged level; the older detailed geometry
+and trim fixtures explicitly use the authored 1× layout. `qa:roc-scale` captures
+the same rider-relative viewpoints before/after and checks the rendered game.
+
+On the revised default scale, real input simulations collect all S-K-A-T-E
+letters from spawn in **22.75 seconds with no bails**, collect all five caps in
+one **37.07-second run with no bails**, reach the secret tape by skating/ollies,
+and bank **38,400 points in 42.78 seconds** on a
+street line (9,000 best combo, three recoverable bails). The score line starts on
+the plaza. These are deterministic test routes rather than player performance
+guarantees; the two-minute run timer and score thresholds are unchanged.
+
 ## Feature correspondence
 
 | Map | Implemented feature |
@@ -68,7 +115,7 @@ The existing warehouse, navigation, checklist and mobile checks remain available
 Phone-sized touch emulation verifies layout and input; it is not a physical-phone
 performance benchmark.
 
-The physical route checks collect all S-K-A-T-E letters from spawn in 18.39 seconds
+The original authored-layout route checks collect all S-K-A-T-E letters from spawn in 18.39 seconds
 without a bail, reach every cap and the secret tape with skating inputs, and bank
 42,250 points in 42.82 seconds on a street line with two recoverable bails and a
 9,000-point best combo. The score line begins on the plaza, leaving ample time to

@@ -148,7 +148,7 @@ try {
   await check('both real levels have independent cards and ROC opens its own goal board',async()=>{
     await click('#fe-play');await step();
     assert.equal(await evaluate('document.querySelectorAll(".fe-level-card").length'),2);
-    const images=await evaluate('[...document.querySelectorAll(".fe-card-image img")].map(i=>({ready:i.complete,width:i.naturalWidth,height:i.naturalHeight}))');
+    const images=await evaluate('Promise.all([...document.querySelectorAll(".fe-card-image img")].map(async i=>{await i.decode();return{ready:i.complete,width:i.naturalWidth,height:i.naturalHeight};}))');
     for(const image of images)assert.ok(image.ready&&image.width===1000&&image.height===560,'actual level thumbnails are loaded');
     await shot('level-select-desktop');
     await click('#fe-level-roc-city-skatepark');await step();await mode('title');
@@ -172,8 +172,8 @@ try {
   await check('ROC starts on its actual north entry, exposes every map feature and binds all systems',async()=>{
     await evaluate('__qa.pad=null;__game.selectLevel("roc-city-skatepark")');await step();
     await click('#overlay-msg');await step(2);await mode('playing');
-    const result=await evaluate('({position:__game.skater.pos.toArray(),features:Object.keys(__game.level.features),camera:__game.followCam.level===__game.level,effects:__game.fx.level===__game.level,skater:__game.skater.level===__game.level,pickups:__game.collectibles.items.length,activeRoots:__game.scene.children.filter(o=>o.name.startsWith("Level:")).length})');
-    assert.ok(Math.abs(result.position[0]-2)<.1&&Math.abs(result.position[2]+44)<.1&&Math.abs(result.position[1]-1.62)<.1);
+    const result=await evaluate('({position:__game.skater.pos.toArray(),spawn:__game.level.spawn.pos.toArray(),features:Object.keys(__game.level.features),camera:__game.followCam.level===__game.level,effects:__game.fx.level===__game.level,skater:__game.skater.level===__game.level,pickups:__game.collectibles.items.length,activeRoots:__game.scene.children.filter(o=>o.name.startsWith("Level:")).length})');
+    assert.ok(result.position.every((value,i)=>Math.abs(value-result.spawn[i])<.1));
     assert.equal(result.features.join(''),'ABCDEFGHIJKL');assert.ok(result.camera&&result.effects&&result.skater);assert.equal(result.pickups,11);assert.equal(result.activeRoots,1);
     await step(25);await shot('roc-gameplay-entry');return result;
   });
@@ -182,13 +182,15 @@ try {
     // Place one fixture on the real approach; the controller, game loop, camera,
     // character and score display handle the entire ollie/grind/landing.
     await evaluate(`__game.selectLevel('roc-city-skatepark');__game.startRun('free');__qa.connectPad();
-      {const s=__game.skater;s.pos.set(10,1.26,-27.4);s.heading.set(0,0,1);s.facing.copy(s.heading);s.vel.set(0,0,7);s.speed=7;}`);
+      {const s=__game.skater,rail=__game.level.rails.find(r=>r.feature==='E'&&r.kind==='rail');
+      s.pos.set(rail.a.x,1.26,rail.a.z-6.5);s.heading.set(0,0,1);s.facing.copy(s.heading);s.vel.set(0,0,7);s.speed=7;
+      __qa.stairRail=rail;} void 0;`);
     await step();
     const capture=await evaluate(`(async()=>{
       const s=__game.skater;__qa.button(0,true);__qa.button(3,true);
       let released=false;const trace=[];
       for(let frame=0;frame<180;frame++){
-        if(!released&&s.pos.z>=-25){__qa.button(0,false);released=true;}
+        if(!released&&s.pos.z>=__qa.stairRail.a.z-4.1){__qa.button(0,false);released=true;}
         await __qa.step();
         if(frame%6===0)trace.push([frame,s.state,+s.pos.z.toFixed(2),+s.pos.y.toFixed(2),+s.speed.toFixed(2),__game.input.state.ollie,__game.input.state.grind]);
         if(s.state==='bail')return{state:s.state,reason:s.bailReason};
@@ -197,7 +199,8 @@ try {
       return{state:s.state,position:s.pos.toArray(),trace};
     })()`);
     assert.equal(capture.state,'grind',JSON.stringify(capture));assert.equal(capture.dir,1);
-    assert.equal(capture.railX,10);assert.ok(capture.railZ>-21&&capture.railZ<-20);
+    const railStart=await evaluate('__qa.stairRail.a.toArray()');
+    assert.equal(capture.railX,railStart[0]);assert.equal(capture.railZ,railStart[2]);
     await shot('roc-seven-stair-grind');
     const landing=await evaluate(`(async()=>{
       __qa.button(0,false);__qa.button(3,false);
@@ -220,10 +223,10 @@ try {
       ['roc-street',[1,5,-8],[11,.8,-26]],
       ['roc-under-bridge',[7,2,25],[11,.3,48]],
     ]){
-      await evaluate('(()=>{const g=__game;g.camera.position.set('+pos+');g.camera.lookAt('+target+');g.camera.fov=60;g.camera.updateProjectionMatrix();g.renderer.render(g.scene,g.camera);})()');await shot(name);
+      await evaluate('(()=>{const g=__game,s=g.level.horizontalScale;g.camera.position.set('+pos+').multiplyScalar(s);const target=['+target+'];g.camera.lookAt(target[0]*s,target[1],target[2]*s);g.camera.fov=60;g.camera.updateProjectionMatrix();g.renderer.render(g.scene,g.camera);})()');await shot(name);
     }
     if(process.env.QA_THUMBNAIL==='1'){
-      const data=await evaluate('(()=>{const g=__game;g.renderer.setSize(1000,560);g.camera.aspect=1000/560;g.camera.position.set(-30,24,-37);g.camera.lookAt(0,0,-1);g.camera.fov=62;g.camera.updateProjectionMatrix();g.renderer.render(g.scene,g.camera);return g.renderer.domElement.toDataURL("image/webp",.9).split(",")[1];})()');
+      const data=await evaluate('(()=>{const g=__game,s=g.level.horizontalScale;g.renderer.setSize(1000,560);g.camera.aspect=1000/560;g.camera.position.set(-30*s,24*s,-37*s);g.camera.lookAt(0,0,-s);g.camera.fov=62;g.camera.updateProjectionMatrix();g.renderer.render(g.scene,g.camera);return g.renderer.domElement.toDataURL("image/webp",.9).split(",")[1];})()');
       await mkdir(resolve('public/textures/levels'),{recursive:true});await writeFile(resolve('public/textures/levels/roc-city-skatepark.webp'),Buffer.from(data,'base64'));
     }
     await evaluate('for(const [e,d]of __qaHidden)e.style.display=d;__game.character.root.visible=true;window.dispatchEvent(new Event("resize"));');await step();
@@ -279,7 +282,9 @@ try {
     assert.equal(await evaluate('__game.renderer.shadowMap.enabled'),false);
     assert.equal(await evaluate('document.getElementById("touch-controls").hidden'),false);
     await down(1,'#touch-ollie');await step(25);assert.equal(await evaluate('__game.skater.crouching'),true);await up(1);await step(3);
-    assert.equal(await evaluate('__game.skater.state'),'air');await step(70);assert.equal(await evaluate('__game.skater.state'),'ride');
+    assert.equal(await evaluate('__game.skater.state'),'air');
+    const landing=await evaluate('(async()=>{for(let i=0;i<180;i++){await __qa.step();if(__game.skater.state!=="air")return __game.skater.state;}return __game.skater.state;})()');
+    assert.equal(landing,'ride','Touch ollie returns to a rideable surface');
     await shot('roc-mobile-gameplay');
     await touch('#start-btn');await touch('#settings-levels');await mode('levels');
     await touch('#fe-level-genesee');await touch('#overlay-msg');await mode('playing');assert.equal(await evaluate('__game.skater.crouching||__game.skater.bufferedOllie'),false);

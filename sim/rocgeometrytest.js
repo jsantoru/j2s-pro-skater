@@ -8,7 +8,8 @@ import { RocCityLevel } from '../src/roc-city-level.js';
 import { Skater } from '../src/skater.js';
 import { makeState } from '../src/input.js';
 
-const level = new RocCityLevel(), dt = 1 / 120, ray = new THREE.Raycaster();
+// Preserve the pass-2 authored approach fixtures; production scale has its own suite.
+const level = new RocCityLevel({ horizontalScale: 1 }), dt = 1 / 120, ray = new THREE.Raycaster();
 let passed = 0, failed = 0;
 const report = { level: 'roc-city-skatepark', method: 'Real Skater.update inputs with initial fixtures on actual collision surfaces; no direct grind attachment', checks: [], coverage: {
   A: 'Trail apron up/down, north entry to bowl deck', B: 'Repeated mini-ramp passes both ways, clear flat bottom and banked grind exits on both lips',

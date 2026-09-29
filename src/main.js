@@ -91,6 +91,8 @@ function applyEnvironment(runtime) {
   scene.fog = runtime.fog;
   scene.environmentIntensity = runtime.environmentIntensity;
   renderer.toneMappingExposure = runtime.toneMappingExposure;
+  camera.far = runtime.atmosphere.cameraFar ?? 200;
+  camera.updateProjectionMatrix();
 }
 let activeLevelId = 'genesee-warehouse';
 let activeCareer = careers.get(activeLevelId), activeRuntime = runtimeFor(activeLevelId);
@@ -473,12 +475,13 @@ function frame(now) {
     // A slow establishing shot gives the title the same rendered park as gameplay.
     const t = reducedMotion.matches ? 0 : visualTime * 0.035;
     if (activeLevelId === 'roc-city-skatepark') {
+      const scale = level.horizontalScale;
       if (mode === 'home') {
-        camera.position.set(-28 + Math.sin(t) * 2, 16, -38 + Math.cos(t));
-        camera.lookAt(-2, 0, 8);
+        camera.position.set((-28 + Math.sin(t) * 2) * scale, 16 * scale, (-38 + Math.cos(t)) * scale);
+        camera.lookAt(-2 * scale, 0, 8 * scale);
       } else {
-        camera.position.set(-35 + Math.sin(t) * 2, 24, 35 + Math.cos(t) * 2);
-        camera.lookAt(-1, 0, -5);
+        camera.position.set((-35 + Math.sin(t) * 2) * scale, 24 * scale, (35 + Math.cos(t) * 2) * scale);
+        camera.lookAt(-1 * scale, 0, -5 * scale);
       }
       camera.fov = 60;
     } else if (mode === 'home') {

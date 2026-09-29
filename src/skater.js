@@ -64,6 +64,7 @@ export const TUNING = {
 const UP = new THREE.Vector3(0, 1, 0);
 const _v = new THREE.Vector3(), _v2 = new THREE.Vector3(), _v3 = new THREE.Vector3();
 const _ray = new THREE.Raycaster();
+const _normalMatrix = new THREE.Matrix3();
 _ray.firstHitOnly = true;
 
 function shapeStick(x) { const a = Math.abs(x); return Math.sign(x) * (0.55 * a + 0.45 * a * a); }
@@ -134,7 +135,9 @@ export class Skater {
     const hits = _ray.intersectObjects(this.level.colliders, false);
     if (!hits.length) return null;
     const h = hits[0];
-    const n = h.face.normal.clone().applyQuaternion(h.object.quaternion).normalize();
+    // Collision points already use matrixWorld. Normals need its inverse
+    // transpose too, including any nonuniform scale on a parent level group.
+    const n = h.face.normal.clone().applyMatrix3(_normalMatrix.getNormalMatrix(h.object.matrixWorld)).normalize();
     return { point: h.point, normal: n, distance: h.distance };
   }
 
@@ -274,7 +277,11 @@ export class Skater {
     const hit = this.raycast(origin, dir, 0.5 + T.snap);
     if (hit) {
       const relUp = this.vel.dot(hit.normal);
-      if (relUp > T.launchThresh && hit.distance > 0.6) { this.leaveGround(false); return; }
+      // A steep transition can meet its deck while the probe is still only
+      // 0.5 m away. Preserve the upward momentum across that convex lip instead
+      // of projecting it flat; slow rolls and shallow banks still stay grounded.
+      const transitionLip = this.normal.y < .45 && hit.normal.y > .85 && this.level.isTransitionLip?.(this.pos);
+      if (relUp > T.launchThresh && (hit.distance > 0.6 || transitionLip)) { this.leaveGround(false); return; }
       this.pos.copy(hit.point);
       this.normal.copy(hit.normal);
       project(this.heading, this.normal, _v);
