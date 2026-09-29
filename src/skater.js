@@ -57,6 +57,7 @@ export const TUNING = {
   grabMin: 0.3,
   pump: 4.0,           // m/s² while crouching down a transition
   vertKick: 1.3,       // outward push when leaving a vert lip without popping
+  vertClearance: 0.7,  // small return-to-ramp drift; a vert ollie must not kick across the park
   landBoost: 0.7,
   bailTime: 1.35,
 };
@@ -101,6 +102,7 @@ export class Skater {
     this.pushing = 0; this.braking = 0; this.steer = 0; this.lean = 0;
     this.airTime = 0; this.spinDeg = 0; this.spinVelocity = 0; this.spinTickCount = 0;
     this.spinDir = 1; this.vertAir = false; this.autoTurn = 0; this.autoTurnDir = 1;
+    this.transitionReturn = null;
     this.trick = null; this.airTrickIndex = -1;
     this.grind = null; this.bailT = 0; this.bailReason = '';
     this.balance.reset();
@@ -392,7 +394,8 @@ export class Skater {
       this.vel.copy(this.heading).multiplyScalar(this.speed);
       this.vel.addScaledVector(this.normal, power * 0.8);
       this.vel.y += power * 0.3;
-      this.startAir(this.normal, true);
+      const returnHeading = this.shapeTransitionLaunch();
+      this.startAir(this.normal, true, returnHeading);
     }
     this.emit('ollie', charge);
   }
@@ -405,7 +408,25 @@ export class Skater {
     this.startAir(this.normal, popped);
   }
 
-  startAir(launchNormal, popped) {
+  shapeTransitionLaunch() {
+    // On the upper transition, the normal points out across the park. Keep
+    // the approach's vertical momentum and sideways travel along the coping,
+    // but replace the normal ollie's wall kick with gentle landing clearance.
+    // Blend through the shoulder so small timing changes do not flip the air.
+    if (this.heading.y <= 0.2 || this.normal.y >= 0.65) return null;
+    const outward = _v2.set(this.normal.x, 0, this.normal.z).normalize();
+    const blend = 1 - THREE.MathUtils.smoothstep(this.normal.y, 0.45, 0.65);
+    const across = this.vel.dot(outward);
+    this.vel.addScaledVector(outward, (this.T.vertClearance - across) * blend);
+    if (this.vel.dot(outward) <= 0) return null; // an early pop can still transfer onto the deck
+    // Reflect the climbing direction into the return, preserving travel along
+    // the coping. A blanket 180 would face an angled air against that travel.
+    const rideAcross = this.heading.dot(outward);
+    return this.heading.clone().setY(0).addScaledVector(outward, -rideAcross)
+      .addScaledVector(outward, Math.hypot(rideAcross, this.heading.y)).normalize().multiplyScalar(this.stance);
+  }
+
+  startAir(launchNormal, popped, returnHeading = null) {
     // A revert connects through a manual, not by hopping before its grace timer expires.
     if (this.landingPending) this.bankCombo(false);
     this.revertBuffer = null; this.revertWindow = 0;
@@ -413,9 +434,15 @@ export class Skater {
     this.airTime = 0; this.spinDeg = 0; this.spinVelocity = 0; this.spinTickCount = 0;
     this.trick = null;
     this.airTrickIndex = this.combo.tricks.length;
-    this.vertAir = launchNormal.y < 0.45;
+    this.vertAir = launchNormal.y < 0.45 || returnHeading !== null;
     this.autoTurn = this.vertAir ? 180 : 0;
     this.autoTurnDir = this.steer !== 0 ? Math.sign(this.steer) : 1;
+    this.transitionReturn = returnHeading ? { height: this.pos.y, stance: this.stance, predicted: false } : null;
+    if (returnHeading) {
+      const turn = THREE.MathUtils.radToDeg(angleBetweenXZ(this.facing, returnHeading));
+      this.autoTurn = Math.abs(turn);
+      this.autoTurnDir = Math.abs(turn) < 179.9 ? Math.sign(turn) : this.autoTurnDir;
+    }
     this.launchNormal = launchNormal.clone();
     this.popped = popped;
     this.normal.set(0, 1, 0);
@@ -430,6 +457,33 @@ export class Skater {
       const dir = inp && inp.dir8 !== 'C' ? inp.dir8 : q.dir;
       if (q.kind === 'flip' || (inp && inp.grab)) this.startTrick(q.kind, dir);
     }
+  }
+
+  predictTransitionReturn() {
+    const assist = this.transitionReturn;
+    assist.predicted = true;
+    let targetY = assist.height, hit = null, time = 0;
+    // At the apex, forecast the landing surface and refine its height. This
+    // handles a diagonal mini-ramp air landing on the adjoining side bank.
+    // Only facing is assisted; position, velocity and landing tolerance stay real.
+    for (let i = 0; i < 3; i++) {
+      hit = null;
+      const discriminant = this.vel.y ** 2 + 2 * this.T.gravity * (this.pos.y - targetY);
+      if (discriminant < 0) break;
+      time = (this.vel.y + Math.sqrt(discriminant)) / this.T.gravity;
+      const origin = this.pos.clone().addScaledVector(this.vel, time);
+      origin.y = this.pos.y + 1;
+      hit = this.raycast(origin, new THREE.Vector3(0, -1, 0), 20);
+      if (!hit) break;
+      targetY = hit.point.y;
+    }
+    if (!hit || hit.normal.y <= 0.3) return;
+    const target = this.vel.clone();
+    target.y -= this.T.gravity * time;
+    target.projectOnPlane(hit.normal).setY(0).normalize().multiplyScalar(assist.stance);
+    if (target.lengthSq() < 0.01) return;
+    const turn = THREE.MathUtils.radToDeg(angleBetweenXZ(this.facing, target));
+    this.autoTurn = Math.abs(turn); this.autoTurnDir = Math.sign(turn);
   }
 
   startTrick(kind, dir8) {
@@ -449,6 +503,14 @@ export class Skater {
     const T = this.T;
     this.airTime += dt;
     this.vel.y -= T.gravity * dt;
+    if (this.transitionReturn) {
+      // Once the player chooses a spin, never steer that air back automatically.
+      if (inp.steer || inp.spinLeft || inp.spinRight) {
+        this.transitionReturn = null; this.autoTurn = 0;
+      } else if (!this.transitionReturn.predicted && this.vel.y <= 0) {
+        this.predictTransitionReturn();
+      }
+    }
 
     // THPS-style manual buffering: a down-up / up-down flick entered during a trick means
     // "land in a manual". Keep it until touchdown instead of requiring the player to repeat
@@ -612,6 +674,7 @@ export class Skater {
     }
     this.speed = sp;
     this.state = 'ride';
+    this.transitionReturn = null;
     this.groundTime = 0;
     this.grindIntent = 0; this.queued = null;
     this.landSquash = Math.min(1, 0.4 + Math.max(0, -this.vel.dot(n)) / 12);

@@ -1,0 +1,79 @@
+
+> j2s-pro-skater@0.1.0 sim:level
+> node sim/goaltest.js && node sim/sessiontest.js && node sim/collectibletest.js && node sim/levelroutetest.js
+
+PASS: seven goals and eleven unique pickups share valid definitions
+PASS: missing and malformed saves start an empty career
+PASS: saves whitelist goal IDs, deduplicate and reject nonnumeric records
+PASS: blocked reads and writes preserve an in-memory career
+PASS: a throwing global localStorage getter is also guarded
+PASS: score tiers complete once as landed payouts accumulate
+PASS: live combo points, skater totals and a bail cannot bank a goal
+PASS: Big Combo needs one landed combo, not the sum of smaller payouts
+PASS: invalid payouts do not affect score or completion
+PASS: swept collection catches fast passes even when neither endpoint overlaps
+PASS: large teleport segments cannot collect along their path or endpoint
+PASS: bails cannot collect or create a sweep when the rider recovers
+PASS: elevated E needs an ollie while ground-height letters collect while riding
+PASS: partial SKATE resets on restart but a completed set stays unavailable in later runs
+PASS: a run captures only unfinished career goals in its available set and snapshots
+PASS: partial caps reset after reload and a pause-style restart still includes all five
+PASS: finished caps and tape stay uncollectible after restart and reload while SKATE remains available
+PASS: banking later runs updates score but never re-awards completed score or combo goals
+PASS: earning goals preserves the active set and result count until the next start
+PASS: an entirely completed career has no eligible goals or pickups
+PASS: caps and tape finish separately and repeated contact does not double-count
+PASS: clock expiration stops pickups but allows the last combo until finish
+PASS: free skate cannot collect or award career goals and records
+PASS: best records survive restarts and reloads and never decrease
+PASS: snapshot arrays cannot mutate the run or saved career
+
+25/25 goal checks passed.
+PASS: clock starts inactive and ends exactly at its duration
+PASS: 120 seconds expires on the exact 14,400th fixed physics step
+PASS: an unresolved final combo gets overtime and landing closes it
+PASS: an in-flight trick qualifies even before it enters the combo
+PASS: airborne without a trick or combo does not create overtime
+PASS: a scored airborne spin gets time to land, but an unscored rotation does not
+PASS: banking during regulation leaves time to start another combo
+PASS: actual ramp landing cannot extend overtime by banking and starting a queued flip in the same step
+PASS: bail at the buzzer or during overtime immediately ends the run
+PASS: overtime ends at twenty seconds even if a manual/combo continues
+PASS: a step crossing expiration consumes only its excess from overtime
+PASS: zero, negative and nonfinite deltas leave both clocks unchanged
+PASS: free skate never times out or starts overtime
+PASS: restart resets both clocks after normal, overtime and free sessions
+PASS: finish stops future advancement and preserves the remaining time
+PASS: zero duration expires on the first positive step and invalid durations use default
+
+16/16 session checks passed.
+PASS letter-s: reached in 0.82s, board at y=-0.00
+PASS letter-k: reached in 0.77s, board at y=-0.00
+PASS letter-a: reached in 0.77s, board at y=0.00
+PASS letter-t: reached in 0.77s, board at y=0.00
+PASS letter-e: reached in 0.91s, board at y=0.97
+PASS cap-1: reached in 0.77s, board at y=-0.00
+PASS cap-2: reached in 0.77s, board at y=0.00
+PASS cap-3: reached in 0.77s, board at y=0.00
+PASS cap-4: reached in 1.01s, board at y=1.00
+PASS cap-5: reached in 0.77s, board at y=-0.00
+PASS secret-tape: reached in 1.53s, board at y=1.60
+All collectible reachability and rendering lifecycle checks passed.
+Route 0: letter-s at 0.82s
+Route 1: waypoint at 1.70s
+Route 2: waypoint at 2.86s
+Route 3: letter-k at 4.17s
+Route 4: waypoint at 6.09s
+Route 5: letter-a at 7.79s
+Route 6: waypoint at 9.56s
+Route 7: letter-t at 14.30s
+Route 8: waypoint at 15.72s
+Route 9: waypoint at 16.58s
+Route 10: waypoint at 17.46s
+Route 11: waypoint at 18.05s
+Route 12: waypoint at 18.67s
+Route 13: waypoint at 19.19s
+Route 14: letter-e at 19.57s
+PASS: all S-K-A-T-E letters from spawn in 19.57s with ordinary controls.
+Score route: 25236 in 28.19s; best combo 2226; 12 landings, 0 bails.
+Combo route: 3850 in 2.87s; manual linked true; 0 bails.
