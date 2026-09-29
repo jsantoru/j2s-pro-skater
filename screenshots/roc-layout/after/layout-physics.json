@@ -1,0 +1,293 @@
+{
+  "recordedAt": "2026-09-29T01:58:49.501Z",
+  "scales": [
+    1,
+    1.25
+  ],
+  "method": "Actual collision raycasts and Skater.update inputs; no direct grind attachment",
+  "checks": [
+    {
+      "name": "B/G at 1×: extension foundation meets the deck and hubba sidewalls are solid to ground",
+      "passed": true,
+      "detail": {
+        "extensionBase": 1.4000000095367433,
+        "adjacentDeckHeights": [
+          1.4486072464398898,
+          1.524787179646193,
+          1.6200000047683716,
+          1.6200000047683716
+        ],
+        "solidHubbas": 2
+      }
+    },
+    {
+      "name": "B at 1×: an intentional centre-line ollie captures the extension and lands its grind",
+      "passed": true,
+      "detail": {
+        "captures": [
+          {
+            "feature": "B",
+            "kind": "ledge"
+          },
+          {
+            "feature": "B",
+            "kind": "ledge"
+          }
+        ],
+        "score": 530
+      }
+    },
+    {
+      "name": "G at 1×: sits east of the bowl tail and descends east/southeast across the divider",
+      "passed": true,
+      "detail": {
+        "direction": [
+          0.9238795325112867,
+          0,
+          0.38268343236508956
+        ],
+        "descentDegrees": 22.49999999999999,
+        "center": [
+          3.046193976625565,
+          1.63,
+          7.319134171618254
+        ]
+      }
+    },
+    {
+      "name": "B/C at 1×: rotated mini faces the flower deck and the G connector remains traversable both ways",
+      "passed": true,
+      "detail": [
+        {
+          "reached": true,
+          "bails": [],
+          "minimum": 0,
+          "maximum": 1.6200000047683716,
+          "position": [
+            5.953901967797011,
+            0,
+            2.931421153318368
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "minimum": 0,
+          "maximum": 1.6200000047683716,
+          "position": [
+            2.3235456490581,
+            1.6200000047683716,
+            2.4422080902141694
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "minimum": 0,
+          "maximum": 1.6200000047683716,
+          "position": [
+            6.097485289074509,
+            0,
+            4.708770627503667
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "minimum": 0,
+          "maximum": 1.6200000047683716,
+          "position": [
+            1.9928889372671366,
+            1.6200000047683716,
+            3.350421808355194
+          ]
+        }
+      ]
+    },
+    {
+      "name": "G at 1×: all nine treads are visible, supported, and free of hidden deck planes",
+      "passed": true,
+      "detail": {
+        "direction": [
+          0.923879532511287,
+          0,
+          0.3826834323650897
+        ],
+        "railStart": [
+          0.9351292448372741,
+          2.44,
+          6.444702528664024
+        ],
+        "railEnd": [
+          5.157258708413855,
+          0.82,
+          8.193565814572484
+        ]
+      }
+    },
+    {
+      "name": "G at 1×: held grind from a real approach follows the rail and banks on its supported runout",
+      "passed": true,
+      "detail": {
+        "captures": [
+          {
+            "feature": "G",
+            "dir": 1,
+            "target": true
+          }
+        ],
+        "bails": [],
+        "longest": 0.24166666666666664,
+        "score": 120,
+        "position": [
+          6.637473754304748,
+          0,
+          8.806690961809187
+        ],
+        "state": "ride"
+      }
+    },
+    {
+      "name": "B/G at 1.25×: extension foundation meets the deck and hubba sidewalls are solid to ground",
+      "passed": true,
+      "detail": {
+        "extensionBase": 1.4000000095367433,
+        "adjacentDeckHeights": [
+          1.4486072464398934,
+          1.524787179646193,
+          1.6200000047683716,
+          1.6200000047683716
+        ],
+        "solidHubbas": 2
+      }
+    },
+    {
+      "name": "B at 1.25×: an intentional centre-line ollie captures the extension and lands its grind",
+      "passed": true,
+      "detail": {
+        "captures": [
+          {
+            "feature": "B",
+            "kind": "ledge"
+          },
+          {
+            "feature": "B",
+            "kind": "ledge"
+          }
+        ],
+        "score": 590
+      }
+    },
+    {
+      "name": "G at 1.25×: sits east of the bowl tail and descends east/southeast across the divider",
+      "passed": true,
+      "detail": {
+        "direction": [
+          0.923879532511287,
+          0,
+          0.38268343236508945
+        ],
+        "descentDegrees": 22.49999999999998,
+        "center": [
+          3.0461939766255646,
+          1.63,
+          7.319134171618254
+        ]
+      }
+    },
+    {
+      "name": "B/C at 1.25×: rotated mini faces the flower deck and the G connector remains traversable both ways",
+      "passed": true,
+      "detail": [
+        {
+          "reached": true,
+          "bails": [],
+          "minimum": -5.551115123125783e-17,
+          "maximum": 1.6200000047683716,
+          "position": [
+            7.552157062535965,
+            0,
+            3.71357197257477
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "minimum": 0,
+          "maximum": 1.6200000047683716,
+          "position": [
+            2.846027261771636,
+            1.6200000047683716,
+            3.072758675864369
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "minimum": 0,
+          "maximum": 1.6200000047683716,
+          "position": [
+            7.6918494496545975,
+            0,
+            5.919910237927417
+          ]
+        },
+        {
+          "reached": true,
+          "bails": [],
+          "minimum": 0,
+          "maximum": 1.6200000047683716,
+          "position": [
+            2.4160703911215435,
+            1.6200000047683716,
+            4.195596019279014
+          ]
+        }
+      ]
+    },
+    {
+      "name": "G at 1.25×: all nine treads are visible, supported, and free of hidden deck planes",
+      "passed": true,
+      "detail": {
+        "direction": [
+          0.9238795325112866,
+          0,
+          0.38268343236508984
+        ],
+        "railStart": [
+          1.1689115560465926,
+          2.44,
+          8.05587816083003
+        ],
+        "railEnd": [
+          6.446573385517319,
+          0.82,
+          10.241957268215604
+        ]
+      }
+    },
+    {
+      "name": "G at 1.25×: held grind from a real approach follows the rail and banks on its supported runout",
+      "passed": true,
+      "detail": {
+        "captures": [
+          {
+            "feature": "G",
+            "dir": 1,
+            "target": true
+          }
+        ],
+        "bails": [],
+        "longest": 0.3250000000000002,
+        "score": 130,
+        "position": [
+          8.120708467256158,
+          5.551115123125783e-17,
+          10.93540672431644
+        ],
+        "state": "ride"
+      }
+    }
+  ],
+  "passed": true
+}

@@ -214,7 +214,9 @@ test('Outdoor art, trail support, bridge columns and rail supports share the sam
 test('The wider mini still supports repeated passes in both directions using ordinary push input', () => {
   const mini = ROC_CITY_LAYOUT.mini;
   for (const sign of [-1, 1]) {
-    const skater = rider([mini.center[0], 0, mini.center[1]], [mini.axis[0] * sign, 0, mini.axis[1] * sign]);
+    // The unobstructed w=-1 lane avoids the legitimate extension-edge grind
+    // assist; dedicated coping/extension cases validate those separate routes.
+    const skater = rider([mini.center[0]+mini.axis[1],0,mini.center[1]-mini.axis[0]],[mini.axis[0] * sign,0,mini.axis[1] * sign]);
     let min = Infinity, max = -Infinity, landings = 0; const bails = [];
     skater.events.bail = reason => bails.push(reason); skater.events.land = () => landings++;
     for (let i = 0; i < 1200; i++) {
@@ -296,7 +298,8 @@ test('Both bridge quarter heights launch and return to the lower promenade', () 
 test('All five SKATE letters remain reachable from the default spawn within 120 seconds', () => {
   const skater = new Skater(level, () => .5), goals = new GoalRun(new GoalProgress(null), ROC_PICKUPS);
   goals.start({ skater }); let index = 0, time = 0; const bails = []; skater.events.bail = reason => bails.push(reason);
-  const route = [[2,-40,'letter-s'],[6.1,-39.5],[9.5,-36.5],[10,-31],[10,-25,'letter-k'],[9,-15],[9,-10,'letter-a'],[7,0],[4,0],[1,1,'letter-t'],[3,2.5],[7,3],[7,13],[8,27],[8,43,'letter-e']];
+  const startLetter=ROC_PICKUPS_AUTHORED.find(pickup=>pickup.id==='letter-s').position;
+  const route = [[startLetter[0],startLetter[2],'letter-s'],[6.1,-39.5],[9.5,-36.5],[10,-31],[10,-25,'letter-k'],[9,-15],[9,-10,'letter-a'],[7,0],[4,0],[1,1,'letter-t'],[3,2.5],[7,3],[7,13],[8,27],[8,43,'letter-e']];
   while (time < 120 && !goals.completed.has('skate') && !bails.length) {
     const [x, z, pickup] = route[index], dx = x * scale - skater.pos.x, dz = z * scale - skater.pos.z;
     const angle = Math.atan2(skater.heading.x * dz - skater.heading.z * dx, skater.heading.x * dx + skater.heading.z * dz);
@@ -316,7 +319,7 @@ test('All five caps can be collected together from spawn within one ordinary run
   const bails = []; skater.events.bail = reason => bails.push(reason);
   const route = [
     [2,-41],[-4,-40],[-7,-38],[-7,-30,'cap-1'],[-13,-28],[-17,-20],[-17,-14],[-16.3,-11],[-16.6,-7,'cap-2'],
-    [-14,-3],[-12,3],[-8.8,5.8],[-11,15],[0,15],[7,13],[7,6,'cap-3'],[8,16],[13,25],[13,35,'cap-4'],[13,40],[8,43],[8,46,'cap-5'],
+    [-14,-3],[-12,3],[-8,5],[-2,5],[0,2],[4,0],[7,0],[7,6,'cap-3'],[8,16],[13,25],[13,35,'cap-4'],[13,40],[8,43],[8,46,'cap-5'],
   ];
   while (time < 120 && !goals.completed.has('caps') && !bails.length) {
     const [x, z, pickup] = route[index], dx = x * scale - skater.pos.x, dz = z * scale - skater.pos.z;
@@ -324,7 +327,7 @@ test('All five caps can be collected together from spawn within one ordinary run
     const desired = index < 3 ? 3.2 : index < 13 ? 4 : Math.abs(angle) > .65 ? 3.5 : 7;
     const input = makeState(); input.steer = skater.state === 'ride' ? THREE.MathUtils.clamp(angle * 1.8, -1, 1) : 0;
     input.push = skater.speed < desired ? 1 : 0; input.brake = skater.speed > desired + .25 ? .5 : 0;
-    input.ollie = index === 18 && skater.pos.z < 28.8 * scale && !released;
+    input.ollie = pickup === 'cap-4' && skater.pos.z < 28.8 * scale && !released;
     input.olliePressed = input.ollie && !previous; input.ollieReleased = !input.ollie && previous;
     if (input.ollieReleased) released = true; previous = input.ollie;
     skater.update(dt, input); goals.update(skater); time += dt;

@@ -59,8 +59,8 @@ and trim fixtures explicitly use the authored 1× layout. `qa:roc-scale` capture
 the same rider-relative viewpoints before/after and checks the rendered game.
 
 On the revised default scale, real input simulations collect all S-K-A-T-E
-letters from spawn in **22.75 seconds with no bails**, collect all five caps in
-one **37.07-second run with no bails**, reach the secret tape by skating/ollies,
+letters from spawn in **22.05 seconds with no bails**, collect all five caps in
+one **33.50-second run with no bails**, reach the secret tape by skating/ollies,
 and bank **38,400 points in 42.78 seconds** on a
 street line (9,000 best combo, three recoverable bails). The score line starts on
 the plaza. These are deterministic test routes rather than player performance
@@ -76,7 +76,7 @@ guarantees; the two-minute run timer and score thresholds are unchanged.
 | D | Connected multi-depth bowl, pool tile band, grindable coping |
 | E | Seven stairs, central handrail, hubba ledges, adjoining banks |
 | F | Curved blue-edged grind ledge on the western pool deck |
-| G | Diagonal nine stairs, central handrail, hubbas and banks |
+| G | Nine stairs across the bowl/street divider, central handrail and hubbas |
 | H | A-frame, kinked rail, ledge and quarter-pipe hip |
 | I | Mellow descending bank into the bridge promenade |
 | J | Yellow flat rail beneath the bridge |
@@ -106,6 +106,8 @@ the active scene.
 The three-pass layout, rideability and visual audit is recorded in
 [ROC-CITY-ACCURACY.md](ROC-CITY-ACCURACY.md), including verified details versus
 estimated dimensions and before/after camera views.
+The subsequent [stair-layout correction](ROC-CITY-LAYOUT.md) supersedes that
+audit's earlier stair-placement claim and records the fresh reference comparison.
 
 Pure simulation checks: `sim/roccitytest.js`, `sim/rocgeometrytest.js`,
 `sim/rocsupporttest.js`, `sim/roctrimtest.js`, `sim/levelprogresstest.js`,
@@ -115,7 +117,7 @@ The existing warehouse, navigation, checklist and mobile checks remain available
 Phone-sized touch emulation verifies layout and input; it is not a physical-phone
 performance benchmark.
 
-The original authored-layout route checks collect all S-K-A-T-E letters from spawn in 18.39 seconds
+The current authored-layout route checks collect all S-K-A-T-E letters from spawn in 17.79 seconds
 without a bail, reach every cap and the secret tape with skating inputs, and bank
 42,250 points in 42.82 seconds on a street line with two recoverable bails and a
 9,000-point best combo. The score line begins on the plaza, leaving ample time to

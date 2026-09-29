@@ -1,25 +1,28 @@
-// Pass 3 must improve the visible finish without changing the validated skate
-// surfaces or grind paths from the pass 2 checkpoint (e4834a0).
+// Visible finish must stay aligned with the physical skate surfaces. The later
+// layout correction intentionally revises B/C/G; preserve the other features.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import * as THREE from 'three';
 import { RocCityLevel } from '../src/roc-city-level.js';
 
-// The pass-2 hashes describe the original authored surfaces, before world scaling.
+// Hashes below were captured before the B/C/G layout correction at scale 1.
 const level=new RocCityLevel({horizontalScale:1}),up=new THREE.Vector3(0,1,0),ray=new THREE.Raycaster();
 let passed=0;
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 function test(name,run){run();passed++;console.log(`PASS: ${name}`);}
 
-test('The complete pass 2 collider surfaces and grind endpoints remain unchanged',()=>{
-  const rails=level.rails.map(rail=>[rail.kind,rail.a.toArray(),rail.b.toArray()]);
-  const colliders=level.colliders.map(mesh=>[
+test('Unchanged D/E/F/H/I/J/K/L features retain their validated surfaces and grind paths',()=>{
+  const unchanged=new Set(['D','E','F','H','I','J','K','L']);
+  const rails=level.rails.filter(rail=>unchanged.has(rail.feature)).map(rail=>[rail.feature,rail.kind,rail.a.toArray(),rail.b.toArray()]);
+  const colliders=level.colliders.filter(mesh=>unchanged.has(mesh.userData.feature)).map(mesh=>[
+    mesh.userData.feature,
     Array.from(mesh.geometry.attributes.position.array),
     mesh.geometry.index?Array.from(mesh.geometry.index.array):null,
     mesh.matrixWorld.toArray(),
   ]);
-  assert.equal(hash(rails),'0f2a83a3efd019c9b34c918ac9680c5cff99fadab11a1a39a6cdf0abf3e4f0fd');
-  assert.equal(hash(colliders),'6109205ae05935ff0d0642f2b312ebfee8f184b08b19768099abda17c67611b6');
+  assert.equal(rails.length,199);assert.equal(colliders.length,10);
+  assert.equal(hash(rails),'25487e5e07caf4d0ae365632207203852d9636f6186d034c7ac71d0a0c8d361b');
+  assert.equal(hash(colliders),'9cea3947b7aa9178c539f13062f214345cf89c0e804782d0cc3ae32b9bb3d59b');
 });
 
 test('Broad painted borders follow the exact grind targets and stay visual only',()=>{

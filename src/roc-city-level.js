@@ -284,12 +284,15 @@ export class RocCityLevel {
     }
     for(const side of [-1,1]){
       const z=side*(width/2+.23);
-      const ledge=this.profile([[0,height],[0,height+.3],[run,.3],[run,0]],.44,start[0],start[1],start[2],angle);
+      const ledge=this.profile([[0,feature==='G'?0:height],[0,height+.3],[run,.3],[run,0]],.44,start[0],start[1],start[2],angle);
+      if(feature==='G'){ledge.name=`G — Solid ${side<0?'north':'south'} hubba`;ledge.userData={feature,part:'hubba',side};}
       const shift=v([0,0,z]).applyQuaternion(mesh.quaternion);ledge.position.add(shift);ledge.updateMatrixWorld(true);
       const edge=this.addRail(local(-.15,height+.32,z),local(run+.15,.32,z),'ledge',{visual:false});edge.feature=feature;
       paintedHubba(this,edge,{color:hubbaColor,name:`${feature} — Painted hubba cap and end wraps`});
-      const bank=this.profile([[0,0],[0,height],[run+1.3,0]],bankWidth,start[0],start[1],start[2],angle);
-      bank.position.add(v([0,0,side*(width/2+.45+bankWidth/2)]).applyQuaternion(mesh.quaternion));bank.updateMatrixWorld(true);
+      if(bankWidth>0){
+        const bank=this.profile([[0,0],[0,height],[run+1.3,0]],bankWidth,start[0],start[1],start[2],angle);
+        bank.position.add(v([0,0,side*(width/2+.45+bankWidth/2)]).applyQuaternion(mesh.quaternion));bank.updateMatrixWorld(true);
+      }
     }
     const rail=this.addRail(local(-.3,height+.82,0),local(run+.4,.82,0),'rail',{radius:.038});rail.feature=feature;
     if(feature==='E'){
@@ -321,8 +324,10 @@ export class RocCityLevel {
     }
     // The short raised extension sits on the deck, outside the riding lane.
     const apron=[[m.flatHalf+H,.15],[m.flatHalf+H+1,.15],[m.flatHalf+H+1,2.45],[m.flatHalf+H,2.45]];
-    const center=point(m.flatHalf+H+.5,1.3,H+.15);
-    this.miniExtension=this.box(1,.3,2.3,...center,this.mats.concrete,{rotY:-Math.atan2(m.axis[1],m.axis[0])});
+    // Keep the reference platform's top and outline while seating its base
+    // below the adjoining flower-deck slope instead of leaving an air gap.
+    const center=point(m.flatHalf+H+.5,1.3,H+.04);
+    this.miniExtension=this.box(1,.52,2.3,...center,this.mats.concrete,{rotY:-Math.atan2(m.axis[1],m.axis[0])});
     this.miniExtension.name='B — Raised rectangular deck extension';
     for(let i=0;i<apron.length;i++){
       const rail=this.addRail(v(point(...apron[i],H+.335)),v(point(...apron[(i+1)%apron.length],H+.335)),'ledge',{radius:.045});
@@ -350,6 +355,17 @@ export class RocCityLevel {
     });
     this.deckConnector=this.add(new THREE.Mesh(south,this.mats.concrete),true,false);
     this.deckConnector.name='Continuous bowl-to-street bank beside seven stairs';
+    // Carry the existing divider into G's northern hubba; the staircase itself
+    // has no independent side banks. Both edges use the same authored stations.
+    const G=L.nineStair,upperStart=[3,L.westDeckY,2],lowerStart=[5.4,0,2];
+    const end=surfaceGrid(xs,sampleRange(0,1,12),(across,along)=>{
+      const high=upperStart.map((value,i)=>THREE.MathUtils.lerp(value,G.upperNorth[i],along));
+      const low=lowerStart.map((value,i)=>THREE.MathUtils.lerp(value,G.lowerNorth[i],along));
+      return high.map((value,i)=>THREE.MathUtils.lerp(value,low[i],across));
+    });
+    this.deckConnectorEnd=this.add(new THREE.Mesh(end,this.mats.concrete),true,false);
+    this.deckConnectorEnd.name='C — Divider bank ending at nine-stair hubba';
+    this.deckConnectorEnd.userData.feature='C';
   }
 
   buildEntryAccess() {
@@ -434,7 +450,9 @@ export class RocCityLevel {
       this.linkRails(chain);
     }
     curvedMeshes.forEach((mesh,i)=>this.paintLedge(mesh,{start:i===0,end:i===curvedMeshes.length-1}));
-    this.stairs(9,.18,.43,4.2,[-5.4,0,7.294737],[-.20601048,.97854978],{bankWidth:2.4,feature:'G'});
+    const G=L.nineStair;
+    this.nineStair=this.stairs(G.count,G.rise,G.tread,G.width,G.start,G.axis,{bankWidth:G.bankWidth,feature:'G'});
+    this.nineStair.name='G — Nine stairs from bowl terrace to street plaza';
 
     this.hip=buildRocCityHip(this);
 
