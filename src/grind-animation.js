@@ -29,6 +29,7 @@ const IDENTITY = new THREE.Quaternion(), D = Math.PI / 180;
 const BODY = new THREE.Quaternion().setFromAxisAngle(UP, -Math.PI / 2);
 const AXLE = .24, HANGER_Y = .043, HANGER_RADIUS = .017, DECK_BOTTOM = .114;
 const ENTRY_TIME = .18, EXIT_RATE = 19;
+const CAR_BODY_TILT = 22 * D, CAR_BODY_RATE = 18;
 
 // +Z remains the anatomical nose even when travelling fakie. Pitch is about
 // local X (negative raises the nose); yaw is around the rail's surface normal.
@@ -57,6 +58,8 @@ export class GrindAnimation {
       normal: new THREE.Vector3(), railPoint: new THREE.Vector3(), railDirection: new THREE.Vector3(), radius: 0 };
     this._worldQ = new THREE.Quaternion(); this._entryQ = new THREE.Quaternion();
     this._bodyWorldQ = new THREE.Quaternion(); this._bodyQuaternion = new THREE.Quaternion();
+    this._bodyTargetQ = new THREE.Quaternion(); this._uprightQ = new THREE.Quaternion();
+    this._bodyForward = new THREE.Vector3(); this._bodyUp = new THREE.Vector3();
     this._frameQ = new THREE.Quaternion(); this._targetQ = new THREE.Quaternion();
     this._inverseQ = new THREE.Quaternion(); this._turnQ = new THREE.Quaternion();
     this._worldOffset = new THREE.Vector3(); this._right = new THREE.Vector3();
@@ -95,6 +98,7 @@ export class GrindAnimation {
     }
     if (this._grind !== g || this.name !== g.name) {
       this._elapsed = 0; this._entryQ.copy(this.weight > .0001 ? this._bodyWorldQ : sk.modelQuat);
+      this._bodyWorldQ.copy(this._entryQ);
       this._grind = g; this.name = g.name;
     }
     this.active = true; this._stance = sk.stance < 0 ? -1 : 1; this._spec = GRIND_POSES[g.name];
@@ -122,7 +126,28 @@ export class GrindAnimation {
     this._frameQ.setFromRotationMatrix(this._matrix.makeBasis(this._right, this._up, this._nose));
     this._turnQ.setFromEuler(this._angles.set(p.pitch * D, p.yaw * D, 0));
     this._targetQ.copy(this._frameQ).multiply(this._turnQ);
-    this._bodyWorldQ.copy(this._entryQ).slerp(this._targetQ, this.weight);
+    if (g.rail.category === 'car') {
+      // The board follows a steep windshield, but the rider balances above it.
+      // Keep the same horizontal facing while limiting body pitch/roll; foot
+      // IK absorbs the differing deck slope without changing truck contact.
+      this._bodyForward.set(0,0,1).applyQuaternion(this._targetQ).setY(0);
+      if (this._bodyForward.lengthSq() < 1e-8) this._bodyForward.copy(sk.facing).setY(0);
+      this._bodyUp.copy(UP).applyQuaternion(this._targetQ);
+      const tilt=Math.acos(THREE.MathUtils.clamp(this._bodyUp.y,-1,1));
+      if (tilt>CAR_BODY_TILT) {
+        const cross=Math.hypot(this._bodyUp.x,this._bodyUp.z);
+        this._bodyUp.x*=Math.sin(CAR_BODY_TILT)/Math.max(cross,1e-8);
+        this._bodyUp.z*=Math.sin(CAR_BODY_TILT)/Math.max(cross,1e-8);
+        this._bodyUp.y=Math.cos(CAR_BODY_TILT);
+      }
+      // Rebuild an orthogonal frame with that up vector and unchanged projected
+      // facing. A quaternion pitch/roll clamp can introduce unwanted yaw/roll.
+      this._bodyForward.y=-(this._bodyForward.x*this._bodyUp.x+this._bodyForward.z*this._bodyUp.z)/this._bodyUp.y;
+      this._bodyForward.normalize();this._right.crossVectors(this._bodyUp,this._bodyForward).normalize();
+      this._bodyTargetQ.setFromRotationMatrix(this._matrix.makeBasis(this._right,this._bodyUp,this._bodyForward));
+      this._uprightQ.copy(this._entryQ).slerp(this._bodyTargetQ,this.weight);
+      this._bodyWorldQ.slerp(this._uprightQ,1-Math.exp(-CAR_BODY_RATE*dt));
+    } else this._bodyWorldQ.copy(this._entryQ).slerp(this._targetQ, this.weight);
     this._bodyQuaternion.copy(this._inverseQ).multiply(this._bodyWorldQ);
     // The board must already straddle the rail at capture: easing an along-rail
     // board into a boardslide sweeps the trucks through the bar, and an angled

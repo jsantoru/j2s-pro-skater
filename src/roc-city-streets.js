@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { canvasMap, randomSeed } from './materials.js';
+import { ROC_PARKED_CARS, CAR_BODY, CAR_CABIN, createCarBodyGeometry, createCarCabinGeometry } from './roc-city-grindables.js';
 
-// Decorative infrastructure outside the skating footprint. Nothing here enters
-// the collision lists; street traffic is parked scenery, not a new skate route.
+// Street visuals share bodywork definitions with the level's physical cars and
+// grind routes. Collision is registered by the level, independently of dressing.
 export function addRiverwayStreets({ add, box, bar, material, layout, concrete, rail, black, horizontalScale = 1 }) {
   const rng = randomSeed(1224);
   const joint = material('Road tar and expansion joints', 0x343936, .96);
@@ -76,9 +76,7 @@ export function addRiverwayStreets({ add, box, bar, material, layout, concrete, 
   const rubber=material('Parked car rubber',0x202422,.95);
   const headlamp=material('Parked car headlamp glass',0xc3ccc7,.25,.35);
   const tail=material('Parked car rear reflectors',0x80312a,.4,.1);
-  const carColors=[0x6e3430,0xaaa99c,0x3e5865];
-  for(const [i,z] of [-38,-8,12].entries()) {
-    const x=31.7;
+  for(const {x,z,color:paintColor} of ROC_PARKED_CARS) {
     // The park's wider X/Z footprint must not turn familiar cars into wide
     // limousines or stretch circular wheels. Only their placement is scaled.
     const carAdd=(geometry,mat,pos)=>{
@@ -88,14 +86,12 @@ export function addRiverwayStreets({ add, box, bar, material, layout, concrete, 
     };
     const carBox=(w,h,d,px,py,pz,mat)=>carAdd(new THREE.BoxGeometry(w,h,d),mat,[px,py,pz]);
     const painted=(g,px,py,pz)=>{
-      const color=new THREE.Color(carColors[i]), colors=new Float32Array(g.attributes.position.count*3);
+      const color=new THREE.Color(paintColor), colors=new Float32Array(g.attributes.position.count*3);
       for(let j=0;j<g.attributes.position.count;j++)color.toArray(colors,j*3);
       g.setAttribute('color',new THREE.BufferAttribute(colors,3));carAdd(g,body,[px,py,pz]);
     };
-    painted(new RoundedBoxGeometry(1.66,.49,4.06,2,.10),x,.59,z);
-    const roofShape=new THREE.Shape([new THREE.Vector2(-1.22,0),new THREE.Vector2(-.65,.53),new THREE.Vector2(.68,.55),new THREE.Vector2(1.18,0)]);
-    const cabin=new THREE.ExtrudeGeometry(roofShape,{depth:1.40,bevelEnabled:true,bevelSegments:1,steps:1,bevelSize:.025,bevelThickness:.025});
-    cabin.translate(0,0,-.7);cabin.rotateY(Math.PI/2);painted(cabin,x,.81,z);
+    painted(createCarBodyGeometry(),x,CAR_BODY.centerY,z);
+    painted(createCarCabinGeometry(),x,CAR_CABIN.baseY,z);
     const pane=(points,mat=glass)=>{
       const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(points.flat(),3));g.setIndex([0,1,2,0,2,3]);g.computeVertexNormals();carAdd(g,mat);
     };
@@ -141,5 +137,5 @@ export function addRiverwayStreets({ add, box, bar, material, layout, concrete, 
       for(const y of [.18,1.70,3.22])box(.008,.018,1.66,x+side*.729,y,z,gutter);
     }
   }
-  return { materials: [stains], parkedCars: 3 };
+  return { materials: [stains], parkedCars: ROC_PARKED_CARS.length };
 }

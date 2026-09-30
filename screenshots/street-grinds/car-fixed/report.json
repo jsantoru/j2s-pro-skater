@@ -1,0 +1,381 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-09-30T22:45:06.815Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "native controller car: approach, linked grind and bank",
+      "passed": true,
+      "detail": {
+        "category": "car",
+        "start": [
+          38.925,
+          -0.017999999999996446,
+          -54.92999999999999
+        ],
+        "target": [
+          38.925,
+          0.835,
+          -49.42999999999999
+        ],
+        "captures": [
+          {
+            "args": [
+              "5-0"
+            ],
+            "pos": [
+              38.925,
+              0.855,
+              -49.4035522847161
+            ],
+            "feature": "south-avenue-car-1",
+            "part": "trunk-edge"
+          }
+        ],
+        "bails": [],
+        "banks": [
+          {
+            "args": [
+              180,
+              "5-0",
+              1,
+              false
+            ],
+            "pos": [
+              38.924463890628594,
+              -0.017999999999998222,
+              -43.57655511768592
+            ]
+          }
+        ],
+        "visited": 5,
+        "longest": 0.8916666666666659,
+        "airAfterExit": true,
+        "maxContactError": 2.220446049250313e-16,
+        "bodyTiltByPart": {
+          "trunk-edge": 8.700356511545209,
+          "rear-pillar": 20.9534419045023,
+          "roof-edge": 20.7422173929139,
+          "front-pillar": 19.90199365591415,
+          "hood-edge": 15.991287948470529
+        },
+        "score": 180,
+        "state": "ride",
+        "pos": [
+          38.924463890628594,
+          -0.017999999999998222,
+          -43.57655511768592
+        ],
+        "frames": 128
+      }
+    },
+    {
+      "name": "supplemental paced controller footage shows the car capture and landing at normal speed",
+      "passed": true,
+      "detail": {
+        "category": "car",
+        "start": [
+          38.925,
+          -0.017999999999996446,
+          -54.92999999999999
+        ],
+        "target": [
+          38.925,
+          0.835,
+          -49.42999999999999
+        ],
+        "captures": [
+          {
+            "args": [
+              "5-0"
+            ],
+            "pos": [
+              38.925,
+              0.855,
+              -49.42999999999999
+            ],
+            "feature": "south-avenue-car-1",
+            "part": "trunk-edge"
+          }
+        ],
+        "bails": [],
+        "banks": [
+          {
+            "args": [
+              190,
+              "5-0",
+              1,
+              false
+            ],
+            "pos": [
+              38.925,
+              -0.017999999999998222,
+              -43.60139155273447
+            ]
+          }
+        ],
+        "visited": 5,
+        "longest": 0.8999999999999992,
+        "airAfterExit": true,
+        "maxContactError": 2.220446049250313e-16,
+        "bodyTiltByPart": {
+          "trunk-edge": 8.700356511545548,
+          "rear-pillar": 20.95344190450239,
+          "roof-edge": 20.742217392913975,
+          "front-pillar": 19.167987658085597,
+          "hood-edge": 16.081171701281153
+        },
+        "score": 190,
+        "state": "ride",
+        "pos": [
+          38.925,
+          -0.017999999999998833,
+          -31.9234465679526
+        ],
+        "elapsed": 4000,
+        "simulationSeconds": 4,
+        "info": {
+          "frame": 411,
+          "calls": 291,
+          "triangles": 416537,
+          "points": 0,
+          "lines": 0,
+          "geometries": 678,
+          "textures": 103
+        }
+      }
+    },
+    {
+      "name": "supplemental touch: low-effects car grind and bank with native simultaneous controls",
+      "passed": true,
+      "detail": {
+        "category": "car",
+        "start": [
+          38.925,
+          -0.017999999999996446,
+          -54.92999999999999
+        ],
+        "target": [
+          38.925,
+          0.835,
+          -49.42999999999999
+        ],
+        "captures": [
+          {
+            "args": [
+              "5-0"
+            ],
+            "pos": [
+              38.925,
+              0.855,
+              -49.359224435258035
+            ],
+            "feature": "south-avenue-car-1",
+            "part": "trunk-edge"
+          }
+        ],
+        "bails": [],
+        "banks": [
+          {
+            "args": [
+              180,
+              "5-0",
+              1,
+              false
+            ],
+            "pos": [
+              38.925,
+              -0.017999999999998222,
+              -43.47780031844738
+            ]
+          }
+        ],
+        "visited": 5,
+        "longest": 0.7916666666666663,
+        "airAfterExit": true,
+        "maxContactError": 2.220446049250313e-16,
+        "bodyTiltByPart": {
+          "trunk-edge": 8.700356511545294,
+          "rear-pillar": 20.587294337152493,
+          "roof-edge": 20.47096860356287,
+          "front-pillar": 19.167961241036238,
+          "hood-edge": 14.360280664728814
+        },
+        "score": 180,
+        "state": "ride",
+        "pos": [
+          38.925,
+          -0.017999999999998333,
+          -43.299590653943085
+        ],
+        "lowfx": true,
+        "webgl": 0,
+        "controls": [
+          {
+            "action": "revert",
+            "w": 44,
+            "h": 44,
+            "x": 676,
+            "y": 198
+          },
+          {
+            "action": "grind",
+            "w": 50,
+            "h": 50,
+            "x": 726,
+            "y": 198
+          },
+          {
+            "action": "flip",
+            "w": 48,
+            "h": 48,
+            "x": 676,
+            "y": 253
+          },
+          {
+            "action": "grab",
+            "w": 48,
+            "h": 48,
+            "x": 778,
+            "y": 253
+          },
+          {
+            "action": "ollie",
+            "w": 64,
+            "h": 64,
+            "x": 719,
+            "y": 308
+          }
+        ],
+        "owners": 0,
+        "pointers": 0,
+        "render": {
+          "frame": 159,
+          "calls": 348,
+          "triangles": 307740,
+          "points": 32,
+          "lines": 0,
+          "geometries": 538,
+          "textures": 102
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    "car-approach.png",
+    "car-capture.png",
+    "car-pillar-gameplay.png",
+    "car-pillar-contact.png",
+    "car-gameplay.png",
+    "car-contact.png",
+    "car-exit.png",
+    "car-rollaway.png",
+    "touch-car-grind.png",
+    "touch-car-rollaway.png"
+  ],
+  "method": "Shared named views use the actual built scene. Native gamepad routes start from explicitly recorded ground approaches and advance the real application; no direct grind attachment.",
+  "views": [
+    [
+      "parked-car-player",
+      [
+        28.4,
+        1.65,
+        -11.7
+      ],
+      [
+        31.7,
+        0.8,
+        -8
+      ]
+    ],
+    [
+      "parked-car-side",
+      [
+        28.3,
+        1.6,
+        -7.5
+      ],
+      [
+        31.7,
+        0.85,
+        -8
+      ]
+    ],
+    [
+      "east-fence-player",
+      [
+        13.7,
+        1.7,
+        -9
+      ],
+      [
+        15.6,
+        0.9,
+        -3
+      ]
+    ],
+    [
+      "flower-fence-player",
+      [
+        11.6,
+        2.9,
+        -26
+      ],
+      [
+        14.88,
+        1.85,
+        -23
+      ]
+    ],
+    [
+      "north-bench-player",
+      [
+        6.5,
+        1.6,
+        -41
+      ],
+      [
+        7.9,
+        0.6,
+        -44.3
+      ]
+    ],
+    [
+      "south-bench-player",
+      [
+        -4.8,
+        1.6,
+        15.8
+      ],
+      [
+        -7,
+        0.6,
+        13.7
+      ]
+    ],
+    [
+      "sidewalk-curb-player",
+      [
+        18.7,
+        1.6,
+        -16
+      ],
+      [
+        21.7,
+        0.12,
+        -9
+      ]
+    ]
+  ],
+  "entryAssets": [
+    "http://127.0.0.1:4176/assets/index-DFf2tvG_.js",
+    "http://127.0.0.1:4176/assets/main-DPtAxrCx.js"
+  ],
+  "browserErrors": [],
+  "passed": true
+}

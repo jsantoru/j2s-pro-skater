@@ -54,6 +54,10 @@ Portraits are rendered from the actual game models; they can be regenerated
 against a development server with
 `node sim/charactercheck.js <dev-url> screenshots/characters --export-portraits`.
 
+ROC City's parked cars, fence tops, benches, curbs and river-wall edge are also
+grindable. Ollie near an edge and use Grind; Ollie again to dismount. See
+[street grind routes and validation](STREET-GRINDS.md).
+
 Grinds and grabs use individual contact-driven board and body poses for both
 characters. See [TRICK-ANIMATION.md](TRICK-ANIMATION.md) for all seventeen tricks,
 the anatomical contact references, comparisons and validation commands.
@@ -150,7 +154,7 @@ parked bikes and gently moving planting, with a reduced-motion option inherited 
 | A (hold) | Crouch **= speed up** (THPS style); release to ollie – longer hold = bigger pop (0.55 s to full) |
 | X + direction | Flip trick (Kickflip, Heelflip, Pop Shove-it, Impossible, 360 Flip, Varial Heel, Hardflip, Inward Heel). Can be pressed during the crouch or on the release frame – it fires on takeoff |
 | B + direction | Grab trick (hold; Indy, Melon, Nosegrab, Tailgrab, Method, Stalefish, Judo, Airwalk) |
-| Y + direction | Grind – a tap in the air arms a 0.6 s window; any rail within 2.6 m pulls you onto it like a magnet, coping included (50-50, Nosegrind, 5-0, Boardslide, Lipslide, Crooked, Overcrook, Smith, Feeble) |
+| Y + direction | Grind – a tap in the air arms a 0.6 s window; park rails assist within 2.6 m, including coping. Street objects use a tighter 0.65 m range (50-50, Nosegrind, 5-0, Boardslide, Lipslide, Crooked, Overcrook, Smith, Feeble). |
 | Left stick down | Brake |
 | Left stick up | Extra push – optional, the skater pushes by himself below 5.4 m/s on flat |
 | L2 / R2 (ZL / ZR, LT / RT) | Revert left / right anywhere on the ground to toggle regular/switch. On ramp landings, flick into a manual to keep the combo. Triggers no longer push or brake |

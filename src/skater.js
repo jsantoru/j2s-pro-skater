@@ -111,6 +111,7 @@ export class Skater {
     this.manualIntent = null; // manual flick entered in the air; consumed on the next valid landing
     this.flickDir = 0; this.flickT = 0; this.flickArmed = false; this.manualLean = 0;
     this.lastRail = null; this.railCooldown = 0;
+    this.departedEnvironmentFeature = null;
     this.landSquash = 0; this.groundTime = 1;
     this.lastAirWasTiny = false;
     this.revertBuffer = null; this.revertWindow = 0; this.revertLink = 0;
@@ -165,6 +166,7 @@ export class Skater {
       else if (this.queued && !this.crouching) { this.queued.age += dt; if (this.queued.age > this.T.trickBuffer) this.queued = null; }
     }
     if (this.state !== 'bail') {
+      if (inp.grindPressed) this.departedEnvironmentFeature = null;
       if (inp.grindPressed || inp.grind) { this.grindIntent = this.T.grindIntentTime; if (inp.dir8 !== 'C' || inp.grindPressed) this.grindIntentDir = inp.dir8; }
       else this.grindIntent = Math.max(0, this.grindIntent - dt);
     }
@@ -386,6 +388,9 @@ export class Skater {
     this.endManual(false);   // ollie out of a manual: the combo carries on into the air
     if (this.state === 'grind') {
       const g = this.grind;
+      // Long street edges can outlast an entire ollie. Let the rider leave
+      // without snapping straight back; a fresh grind press deliberately rearms.
+      if (g.rail.environment) this.departedEnvironmentFeature = g.rail.feature;
       this.vel.copy(g.rail.dir).multiplyScalar(g.dir * g.speed);
       this.vel.y += power * 1.05;
       this.endGrind();
@@ -647,6 +652,7 @@ export class Skater {
       project(this.vel, n, this.vel).multiplyScalar(0.7);
       return;
     }
+    this.departedEnvironmentFeature = null;
     if (this.trick && !(this.trick.kind === 'grab' && this.trick.t >= this.trick.dur)) { this.pos.copy(point); this.bail('trick'); return; }
     if (this.trick) this.completeTrick();
     // new heading from velocity on the surface
@@ -731,8 +737,10 @@ export class Skater {
     const dyMax = opts && opts.dyMax !== undefined ? opts.dyMax : null;
     let best = null, bestD = tol;
     for (const r of this.level.rails) {
+      if (r.environment && this.departedEnvironmentFeature && r.feature === this.departedEnvironmentFeature) continue;
       if (this.railCooldown > 0 && (r === this.lastRail || this.railCooldown > 0.25)) continue; // 0.2s global, 0.45s same rail
       if (assist && this.vel.y > 3.5 && !(opts && opts.anyVy)) continue;
+      if (r.requiresIntent && !assist) continue;
       if (r.kind === 'coping' && !assist) continue;
       _v.copy(this.pos).sub(r.a);
       // ROC's long sloped handrails use the rider's horizontal position. A
@@ -751,7 +759,7 @@ export class Skater {
       const fall = -this.vel.y * dt;
       if (dy < dyMin || dy > (dyMax !== null ? dyMax : 0.5 + fall)) continue;
       const d = Math.hypot(this.pos.x - _v2.x, this.pos.z - _v2.z);
-      if (d < bestD) { bestD = d; best = { rail: r, t, point: _v2.clone() }; }
+      if (d < bestD && d < (r.captureRadius ?? tol)) { bestD = d; best = { rail: r, t, point: _v2.clone() }; }
     }
     return best;
   }
@@ -852,6 +860,7 @@ export class Skater {
 
   // ---------- BAIL ----------
   bail(reason) {
+    this.departedEnvironmentFeature = null;
     this.revertBuffer = null; this.revertWindow = 0; this.revertLink = 0; this.revertT = 0;
     this.revertManualIntent = null; this.landingPending = false;
     if (this.state === 'grind') this.grind = null;

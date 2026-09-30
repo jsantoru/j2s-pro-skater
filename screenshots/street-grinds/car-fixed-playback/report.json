@@ -1,0 +1,113 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-09-30T22:46:17.392Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Native HTMLVideoElement playback at 1x, independent of deterministic game RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "car: native 1x playback",
+      "passed": true,
+      "detail": {
+        "elapsed": 3882,
+        "frames": [
+          {
+            "time": 0.139651,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          },
+          {
+            "time": 0.512903,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          },
+          {
+            "time": 0.889532,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          },
+          {
+            "time": 1.279815,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          },
+          {
+            "time": 1.655022,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          },
+          {
+            "time": 2.042215,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          },
+          {
+            "time": 2.413095,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          },
+          {
+            "time": 2.79122,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          },
+          {
+            "time": 3.168031,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          },
+          {
+            "time": 3.553421,
+            "rate": 1,
+            "paused": false,
+            "ended": false,
+            "ready": 4
+          }
+        ],
+        "end": {
+          "time": 3.85743,
+          "rate": 1,
+          "frames": 215,
+          "dropped": 3,
+          "error": null
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    "car-playback-0.png",
+    "car-playback-1.png",
+    "car-playback-2.png",
+    "car-playback-3.png",
+    "car-playback-4.png",
+    "car-playback-5.png",
+    "car-playback-6.png",
+    "car-playback-7.png",
+    "car-playback-8.png",
+    "car-playback-9.png"
+  ],
+  "observation": "Actual browser playback screenshots at regular wall-clock intervals; this is a visual frame sequence review, not a video-input model.",
+  "browserErrors": [],
+  "passed": true
+}

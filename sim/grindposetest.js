@@ -154,6 +154,39 @@ check('smoothed model orientation does not pull settled trucks off the rail',()=
   c.dispose();
 });
 
+check('car pillars keep both riders balanced upright across all nine grinds without moving contact or shoes',()=>{
+  const level=new RocCityLevel();
+  const first=level.environmentRails.find(r=>r.feature==='south-avenue-car-1'&&r.side===-1&&!r.aLink);
+  const chain=[];for(let rail=first;rail;rail=rail.bLink?.rail)chain.push(rail);
+  assert.equal(chain.length,5,'actual hood, pillars, roof and trunk form one route');
+  assert.ok(chain.some(r=>Math.abs(r.dir.y)>.7),'test includes the real steep car pillar');
+  for(const characterId of ['joe','aaron']) {
+    const c=new Character({characterId});
+    for(const name of names)for(const stance of [1,-1])for(const dir of [1,-1]) {
+      c.grindAnimation.reset();const sk=fixture(name,{stance,dir,yaw:0,radius:0});
+      const facing=name.includes('slide')?V(-1,0,0):V(0,0,dir*stance);
+      sk.facing.copy(facing);sk.modelQuat.setFromAxisAngle(UP,Math.atan2(facing.x,facing.z));
+      let lastBody=null;
+      for(const rail of dir===1?chain:[...chain].reverse())for(let i=0;i<20;i++) {
+        sk.grind.rail=rail;sk.grind.t=dir===1?(i+.5)/20:1-(i+.5)/20;
+        sk.pos.copy(rail.a).lerp(rail.b,sk.grind.t).add(V(0,.02,0));
+        sk.vel.copy(rail.dir).multiplyScalar(dir*7);sk.heading.copy(rail.dir).multiplyScalar(dir);
+        step(c,sk);support(c,sk);feet(c);
+        const body=c.body.getWorldQuaternion(new THREE.Quaternion());
+        const bodyUp=UP.clone().applyQuaternion(body),torsoUp=UP.clone().applyQuaternion(c.torso.getWorldQuaternion(new THREE.Quaternion()));
+        assert.ok(bodyUp.y>Math.cos(22.1*Math.PI/180),`${characterId} ${name} body must balance above the car, ${bodyUp.y}`);
+        assert.ok(torsoUp.y>.72,`${characterId} ${name} torso cannot fall almost horizontal on a pillar, ${torsoUp.y}`);
+        if(lastBody)assert.ok(body.angleTo(lastBody)<.20,'linked car slope changes smoothly reorient the rider');
+        lastBody=body;
+      }
+    }
+    c.dispose();
+  }
+  const geometries=new Set(),materials=new Set(),textures=new Set();
+  level.group.traverse(o=>{if(o.geometry)geometries.add(o.geometry);for(const m of [].concat(o.material||[])){materials.add(m);for(const x of Object.values(m))if(x?.isTexture)textures.add(x);}});
+  for(const resource of [...textures,...materials,...geometries])resource.dispose();
+});
+
 check('entry and exit are bounded blends, air tricks retained, bail and reset remove correction',()=>{
   const c=new Character(),sk=fixture('5-0');let lastQ=null;
   for(let i=0;i<25;i++) {

@@ -1,0 +1,457 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-09-30T22:31:06.538Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "player-height street objects have fixed comparison views",
+      "passed": true,
+      "detail": [
+        {
+          "name": "parked-car-player",
+          "calls": 55,
+          "triangles": 307425,
+          "geometries": 677,
+          "textures": 103,
+          "rails": 299,
+          "environmentRails": 51,
+          "webgl": 0
+        },
+        {
+          "name": "parked-car-side",
+          "calls": 51,
+          "triangles": 223309,
+          "geometries": 677,
+          "textures": 103,
+          "rails": 299,
+          "environmentRails": 51,
+          "webgl": 0
+        },
+        {
+          "name": "east-fence-player",
+          "calls": 161,
+          "triangles": 319205,
+          "geometries": 677,
+          "textures": 103,
+          "rails": 299,
+          "environmentRails": 51,
+          "webgl": 0
+        },
+        {
+          "name": "flower-fence-player",
+          "calls": 74,
+          "triangles": 318731,
+          "geometries": 677,
+          "textures": 103,
+          "rails": 299,
+          "environmentRails": 51,
+          "webgl": 0
+        },
+        {
+          "name": "north-bench-player",
+          "calls": 54,
+          "triangles": 225927,
+          "geometries": 680,
+          "textures": 103,
+          "rails": 299,
+          "environmentRails": 51,
+          "webgl": 0
+        },
+        {
+          "name": "south-bench-player",
+          "calls": 171,
+          "triangles": 231372,
+          "geometries": 680,
+          "textures": 103,
+          "rails": 299,
+          "environmentRails": 51,
+          "webgl": 0
+        },
+        {
+          "name": "sidewalk-curb-player",
+          "calls": 118,
+          "triangles": 314031,
+          "geometries": 680,
+          "textures": 103,
+          "rails": 299,
+          "environmentRails": 51,
+          "webgl": 0
+        }
+      ]
+    },
+    {
+      "name": "native controller car: approach, linked grind and bank",
+      "passed": true,
+      "detail": {
+        "category": "car",
+        "start": [
+          38.925,
+          -0.017999999999996446,
+          -54.92999999999999
+        ],
+        "target": [
+          38.925,
+          0.835,
+          -49.42999999999999
+        ],
+        "captures": [
+          {
+            "args": [
+              "5-0"
+            ],
+            "pos": [
+              38.925,
+              0.855,
+              -49.4035522847161
+            ],
+            "feature": "south-avenue-car-1",
+            "part": "trunk-edge"
+          }
+        ],
+        "bails": [],
+        "banks": [
+          {
+            "args": [
+              180,
+              "5-0",
+              1,
+              false
+            ],
+            "pos": [
+              38.92426751984524,
+              -0.017999999999998222,
+              -43.57655511768592
+            ]
+          }
+        ],
+        "visited": 5,
+        "longest": 0.8916666666666659,
+        "airAfterExit": true,
+        "maxContactError": 2.220446049250313e-16,
+        "score": 180,
+        "state": "ride",
+        "pos": [
+          38.92426751984524,
+          -0.017999999999998222,
+          -43.57655511768592
+        ],
+        "frames": 128
+      }
+    },
+    {
+      "name": "native controller fence: approach, linked grind and bank",
+      "passed": true,
+      "detail": {
+        "category": "fence",
+        "start": [
+          -13.090959447496067,
+          1.6200000047683716,
+          -43.70314407058192
+        ],
+        "target": [
+          -16.16024502585278,
+          2.5700000000000003,
+          -40.38810469849424
+        ],
+        "captures": [
+          {
+            "args": [
+              "5-0"
+            ],
+            "pos": [
+              -15.19516133763235,
+              2.5900000000000003,
+              -41.63605774360687
+            ],
+            "feature": "west-deck-railing",
+            "part": "top"
+          }
+        ],
+        "bails": [],
+        "banks": [
+          {
+            "args": [
+              1190,
+              "5-0",
+              1,
+              false
+            ],
+            "pos": [
+              -14.623009111647624,
+              0,
+              8.850464133138521
+            ]
+          }
+        ],
+        "visited": 4,
+        "longest": 10.966666666666685,
+        "airAfterExit": true,
+        "maxContactError": 1.1102230246251565e-16,
+        "score": 1190,
+        "state": "ride",
+        "pos": [
+          -14.607211344418934,
+          0,
+          8.880820627028948
+        ],
+        "frames": 721
+      }
+    },
+    {
+      "name": "native controller bench: approach, linked grind and bank",
+      "passed": true,
+      "detail": {
+        "category": "bench",
+        "start": [
+          -14.408112268147466,
+          0,
+          14.216816178580835
+        ],
+        "target": [
+          -10.145489657849932,
+          1.095,
+          16.830252323234127
+        ],
+        "captures": [
+          {
+            "args": [
+              "5-0"
+            ],
+            "pos": [
+              -10.145489657849932,
+              1.115,
+              16.830252323234127
+            ],
+            "feature": "south-entry-bench",
+            "part": "back-top"
+          }
+        ],
+        "bails": [],
+        "banks": [
+          {
+            "args": [
+              140,
+              "5-0",
+              1,
+              false
+            ],
+            "pos": [
+              -6.184788611145654,
+              0,
+              19.25857878324434
+            ]
+          }
+        ],
+        "visited": 1,
+        "longest": 0.47500000000000064,
+        "airAfterExit": true,
+        "maxContactError": 0,
+        "score": 140,
+        "state": "ride",
+        "pos": [
+          -6.184788611145654,
+          0,
+          19.25857878324434
+        ],
+        "frames": 104
+      }
+    },
+    {
+      "name": "native controller curb: approach, linked grind and bank",
+      "passed": true,
+      "detail": {
+        "category": "curb",
+        "start": [
+          21.737499999999997,
+          -0.03999999910593033,
+          -12.5
+        ],
+        "target": [
+          22.237499999999997,
+          0.12,
+          -7.5
+        ],
+        "captures": [
+          {
+            "args": [
+              "5-0"
+            ],
+            "pos": [
+              22.237499999999997,
+              0.13999999999999999,
+              -6.711480801110866
+            ],
+            "feature": "south-avenue-west-curb",
+            "part": "west-edge"
+          }
+        ],
+        "bails": [],
+        "banks": [
+          {
+            "args": [
+              270,
+              "5-0",
+              1,
+              false
+            ],
+            "pos": [
+              22.242083371692974,
+              0.11999999940395349,
+              8.539066426908825
+            ]
+          }
+        ],
+        "visited": 1,
+        "longest": 1.7833333333333294,
+        "airAfterExit": true,
+        "maxContactError": 1.1443916996305594e-16,
+        "score": 270,
+        "state": "ride",
+        "pos": [
+          22.242083371692974,
+          0.11999999940395349,
+          8.539066426908825
+        ],
+        "frames": 210
+      }
+    }
+  ],
+  "screenshots": [
+    "parked-car-player.png",
+    "parked-car-side.png",
+    "east-fence-player.png",
+    "flower-fence-player.png",
+    "north-bench-player.png",
+    "south-bench-player.png",
+    "sidewalk-curb-player.png",
+    "car-approach.png",
+    "car-capture.png",
+    "car-gameplay.png",
+    "car-contact.png",
+    "car-exit.png",
+    "car-rollaway.png",
+    "fence-approach.png",
+    "fence-capture.png",
+    "fence-gameplay.png",
+    "fence-contact.png",
+    "fence-exit.png",
+    "fence-rollaway.png",
+    "bench-approach.png",
+    "bench-capture.png",
+    "bench-gameplay.png",
+    "bench-contact.png",
+    "bench-exit.png",
+    "bench-rollaway.png",
+    "curb-approach.png",
+    "curb-capture.png",
+    "curb-gameplay.png",
+    "curb-contact.png",
+    "curb-exit.png",
+    "curb-rollaway.png"
+  ],
+  "method": "Shared named views use the actual built scene. Native gamepad routes start from explicitly recorded ground approaches and advance the real application; no direct grind attachment.",
+  "views": [
+    [
+      "parked-car-player",
+      [
+        28.4,
+        1.65,
+        -11.7
+      ],
+      [
+        31.7,
+        0.8,
+        -8
+      ]
+    ],
+    [
+      "parked-car-side",
+      [
+        28.3,
+        1.6,
+        -7.5
+      ],
+      [
+        31.7,
+        0.85,
+        -8
+      ]
+    ],
+    [
+      "east-fence-player",
+      [
+        13.7,
+        1.7,
+        -9
+      ],
+      [
+        15.6,
+        0.9,
+        -3
+      ]
+    ],
+    [
+      "flower-fence-player",
+      [
+        11.6,
+        2.9,
+        -26
+      ],
+      [
+        14.88,
+        1.85,
+        -23
+      ]
+    ],
+    [
+      "north-bench-player",
+      [
+        6.5,
+        1.6,
+        -41
+      ],
+      [
+        7.9,
+        0.6,
+        -44.3
+      ]
+    ],
+    [
+      "south-bench-player",
+      [
+        -4.8,
+        1.6,
+        15.8
+      ],
+      [
+        -7,
+        0.6,
+        13.7
+      ]
+    ],
+    [
+      "sidewalk-curb-player",
+      [
+        18.7,
+        1.6,
+        -16
+      ],
+      [
+        21.7,
+        0.12,
+        -9
+      ]
+    ]
+  ],
+  "entryAssets": [
+    "http://127.0.0.1:4176/assets/index-D3q2Oyfy.js",
+    "http://127.0.0.1:4176/assets/main-ZaQ8ZZiC.js"
+  ],
+  "browserErrors": [],
+  "passed": true
+}

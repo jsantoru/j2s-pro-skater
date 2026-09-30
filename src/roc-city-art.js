@@ -8,6 +8,7 @@ import { displayFont, labelFont } from './typography.js';
 import { ROC_CITY_LAYOUT } from './roc-city-layout.js';
 import { createTrailGeometry, createTrailFoundationGeometry } from './roc-city-surroundings.js';
 import { createRocCityFixtures, fixturePoint } from './roc-city-fixtures.js';
+import { ROC_STREET_EDGES } from './roc-city-grindables.js';
 import { riverwaySurface, varySurface } from './roc-city-surfaces.js';
 import { addRiverwayStreets } from './roc-city-streets.js';
 import { addRiverwayVegetation } from './roc-city-vegetation.js';
@@ -109,13 +110,6 @@ export function dressRocCity(level, { lowfx = false } = {}) {
     add(g,mat,A.add(B).multiplyScalar(.5).toArray());
   };
   const plane=(w,d,x,y,z,mat) => { const g=new THREE.PlaneGeometry(w,d);g.rotateX(-Math.PI/2);add(g,mat,[x,y,z]); };
-  const railPath=(points,y,h=1.04) => {
-    for(let i=1;i<points.length;i++) {
-      const [ax,az]=points[i-1],[bx,bz]=points[i],n=Math.ceil(Math.hypot(bx-ax,bz-az)/1.9);
-      for(const dy of [.18,.55,h])bar([ax,y+dy,az],[bx,y+dy,bz],.023,rail);
-      for(let j=0;j<=n;j++){const t=j/n,x=ax+(bx-ax)*t,z=az+(bz-az)*t;bar([x,y,z],[x,y+h+.06,z],.03,rail);box(.11,.035,.11,x,y+.02,z,rail);}
-    }
-  };
 
   // The concrete footprint remains a hole in the landscape: grass can never
   // overlay bowl interiors or the lower promenade floor.
@@ -130,8 +124,7 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   for(let distance=2;distance<trailLength;distance+=6){const t=distance/trailLength,p=trailCurve.getPointAt(t),direction=trailCurve.getTangentAt(t);box(.07,.012,1.1,p.x,.018,p.z,line,Math.atan2(direction.x,direction.z));}
   // South Avenue frames the east side instead of boxing the park in.
   box(3.8,.16,164,19.7,-.09,-6,coping);
-  box(.22,.22,164,17.9,.01,-6,concrete);
-  box(.22,.22,164,21.7,.01,-6,concrete);
+  for(const edge of ROC_STREET_EDGES.filter(edge=>edge.id!=='river-wall-coping'))box(...edge.size,...edge.position,concrete);
   plane(11,170,27.3,-.018,-6,road);
   for(let z=-84;z<77;z+=7){box(.1,.012,3,27.1,.0,z,yellow);box(.1,.012,3,27.5,.0,z,yellow);}
   for(const x of [22.8,31.8])box(.1,.012,160,x,.003,-6,line);
@@ -147,8 +140,8 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   const water=material('Genesee River',0x547b79,.32,.12,waterMap);
   plane(30,220,-57,-3.15,0,water);
   box(.8,3.8,220,-41,-1.8,0,concrete);
-  box(1,.24,220,-41,.14,0,coping);
-  railPath([[-40.8,-82],[-40.8,78]],.26,1.07);
+  const riverCoping=ROC_STREET_EDGES.find(edge=>edge.id==='river-wall-coping');
+  box(...riverCoping.size,...riverCoping.position,coping);
 
   // A broad concrete deck, rusty transverse I-sections and heavy cap beams,
   // all placed outside the playable ribbon. The deck really casts its shadow.
@@ -249,11 +242,10 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   const fenceMap=canvasMap((c,s)=>{c.clearRect(0,0,s,s);c.strokeStyle='#a5b1b1';c.lineWidth=4;for(let i=-s;i<s*2;i+=64){c.beginPath();c.moveTo(i,0);c.lineTo(i+s,s);c.stroke();c.beginPath();c.moveTo(i,0);c.lineTo(i-s,s);c.stroke();}},256);
   if(fenceMap)fenceMap.repeat.set(13,1.6);
   const fence=new THREE.MeshStandardMaterial({map:fenceMap,color:0x9ba8ac,transparent:true,alphaTest:.28,side:THREE.DoubleSide,roughness:.7,metalness:.4});ownedMaterials.add(fence);
-  const fenceGeometry=new THREE.PlaneGeometry(depth,1.8);fenceGeometry.rotateY(Math.PI/2);add(fenceGeometry,fence,[3.9,bridge.floorY+1,zc]);
-  railPath([[3.9,bridge.minZ],[3.9,bridge.maxZ]],bridge.floorY,1.95);
-
-  railPath([[6,-42],[11.7,-38],[15.6,-32]],0,1.0);
-  railPath([[15.6,-17],[15.6,17]],0,1.0);
+  const chainlink=fixtures.railings.find(path=>path.id==='underbridge-chainlink');
+  const [[fenceX,fenceStart],[,fenceEnd]]=chainlink.points;
+  const fenceGeometry=new THREE.PlaneGeometry(fenceEnd-fenceStart,chainlink.height-.15);
+  fenceGeometry.rotateY(Math.PI/2);add(fenceGeometry,fence,[fenceX,chainlink.baseY+1,(fenceStart+fenceEnd)/2]);
   // Grounded on the actual pool-deck boundary; these same records define the
   // physical posts and rails. Shared corner posts avoid doubled metal faces.
   for(const railing of fixtures.railings){

@@ -4,6 +4,7 @@ import { ROC_CITY_LAYOUT, ROC_CITY_HORIZONTAL_SCALE } from './roc-city-layout.js
 import { buildRocCityHip } from './roc-city-hip.js';
 import { createTrailGeometry, createTrailFoundationGeometry } from './roc-city-surroundings.js';
 import { createRocCityFixtures, fixturePoint } from './roc-city-fixtures.js';
+import { registerRocCityGrindables } from './roc-city-grindables.js';
 import { paintedBorder, paintedHubba, railPost, archedRailSupport, rectangularFlatbar, createPoolTileMap, mapPoolBand } from './roc-city-trim.js';
 
 const UP = new THREE.Vector3(0,1,0);
@@ -151,6 +152,7 @@ export class RocCityLevel {
     // Build at identity: the rail and paint builders intentionally derive their
     // shared coordinates from the original meshes before the world transform.
     this.build();
+    registerRocCityGrindables(this);
     this.group.scale.set(horizontalScale,1,horizontalScale);
     for(const rail of this.rails){
       rail.radiusScale=this.worldScale; // Rendering follows the tube's scaled cross-section.
@@ -423,7 +425,7 @@ export class RocCityLevel {
   buildFixtureColliders() {
     const record=(mesh,fixture,fixtureType,part)=>{
       mesh.visible=false;mesh.castShadow=false;
-      mesh.name=`${fixture} — ${part} collider`;mesh.userData={fixture,fixtureType,part,solidBoundary:true};
+      mesh.name=`${fixture} — ${part} collider`;mesh.userData={fixture,fixtureType,part,solidBoundary:true,environment:true,feature:fixture,category:fixtureType==='railing'?'fence':'bench'};
       this.fixtureColliders.push(mesh);return mesh;
     };
     for(const railing of this.fixtures.railings??[this.fixtures.westRailing]){
@@ -453,7 +455,7 @@ export class RocCityLevel {
   build() {
     const L=this.layout,M=this.mats;
     const groundOpening=[...L.perimeter.slice(0,5),[15,24],[38,24],[38,56],[-11,56],[-11,24],[5,24],...L.perimeter.slice(7)];
-    this.surround=this.add(new THREE.Mesh(horizontalPolygon([[-41,-64],[42,-64],[42,70],[-41,70]],[groundOpening],-.04),M.floor),true,false);
+    this.surround=this.add(new THREE.Mesh(horizontalPolygon([[-41,-110],[42,-110],[42,105],[-41,105]],[groundOpening],-.04),M.floor),true,false);
     this.surround.visible=false;this.surround.name='Outdoor ground outside the park perimeter';
     const rocks=this.add(new THREE.Mesh(horizontalPolygon([[-11,24],[38,24],[38,56],[-11,56]],[[[5,24],[15,24],[15,54],[5,54]]],-.9),M.floor),true,false);
     rocks.visible=false;rocks.name='Underbridge gravel beds';
@@ -467,7 +469,6 @@ export class RocCityLevel {
     for(const [w,h,d,x,y,z,name] of [
       [.8,3.8,220,-41,-1.8,0,'River retaining wall'],
       [1,.24,220,-41,.14,0,'River wall coping'],
-      [.06,1.13,160,-40.8,.825,-2,'River boundary railing'],
     ]){
       const barrier=this.box(w,h,d,x,y,z,M.concrete);barrier.visible=false;barrier.name=name;
     }
@@ -544,7 +545,8 @@ export class RocCityLevel {
     this.manualPad=this.ledge(8.5,.48,2.1,13,-.9,35,{rotation:Math.PI/2});this.manualPad.userData.feature='K';
     this.quarter(2.3,6,8,-.9,47.5,-Math.PI/2,{deck:4.2,feature:'L'});
     this.quarter(2.9,4,13,-.9,47.5,-Math.PI/2,{deck:3.6,feature:'L'});
-    // Blue guardrail along the back deck is scenery, not an invisible skate wall.
+    // The shared environment registration supplies collision and deliberate
+    // grind targets for these blue back-deck guardrails.
     this.beam(v([5,2.45,54]),v([11,2.45,54]),.035,M.rocBlue);
     this.beam(v([11,3.05,54]),v([15,3.05,54]),.035,M.rocBlue);
     for(let x=5;x<=15;x+=.8){const base=x<11?1.4:2;this.beam(v([x,base,54]),v([x,base+1.05,54]),.023,M.rocBlue);}

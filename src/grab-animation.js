@@ -137,7 +137,8 @@ export class GrabAnimation {
     const armed=sk.grindIntent>0,tolerance=armed?(sk.T?.grindSnapAssist||1.3):(sk.T?.grindSnapAuto||.62);
     let soonest=Infinity;
     for(const rail of sk.level.rails||[]) {
-      if(!rail.dir||!rail.len||(!armed&&rail.kind==='coping'))continue;
+      if(rail.environment&&sk.departedEnvironmentFeature&&rail.feature===sk.departedEnvironmentFeature)continue;
+      if(!rail.dir||!rail.len||(!armed&&(rail.kind==='coping'||rail.requiresIntent)))continue;
       const horizontal=rail.dir.x*rail.dir.x+rail.dir.z*rail.dir.z;
       const along=sk.vel.x*rail.dir.x+sk.vel.z*rail.dir.z;
       let time=0,parameter=0,x=0,y=0,z=0;
@@ -162,7 +163,7 @@ export class GrabAnimation {
       parameter=THREE.MathUtils.clamp(parameter,0,1);
       const targetX=rail.a.x+rail.dir.x*rail.len*parameter,targetY=rail.a.y+rail.dir.y*rail.len*parameter,targetZ=rail.a.z+rail.dir.z*rail.len*parameter;
       const below=armed?-(sk.T?.grindSnapBelow||.45):-.3;
-      if(y-targetY<below||Math.hypot(x-targetX,z-targetZ)>=tolerance)continue;
+      if(y-targetY<below||Math.hypot(x-targetX,z-targetZ)>=Math.min(tolerance,rail.captureRadius??tolerance))continue;
       soonest=Math.min(soonest,time);
     }
     return soonest;

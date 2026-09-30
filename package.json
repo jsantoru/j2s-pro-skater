@@ -23,6 +23,8 @@
     "sim:characters": "node sim/charactertest.js && node sim/charactermodeltest.js",
     "sim:trick-poses": "node sim/grindposetest.js && node sim/grabposetest.js && node sim/tricktransitiontest.js && node sim/footplanttest.js",
     "qa:trick-poses": "node sim/trickvisualcheck.js",
+    "sim:street-grinds": "node sim/streetgrindtest.js",
+    "qa:street-grinds": "node sim/streetgrindcheck.js",
     "qa:characters": "node sim/charactercheck.js",
     "sim:roccity": "node sim/roccitytest.js && node sim/rocgeometrytest.js && node sim/rocsupporttest.js && node sim/roctrimtest.js && node sim/levelprogresstest.js && node sim/levelbailtest.js && node sim/linkedrailtest.js && node sim/rocarttest.js && node sim/rocscaletest.js && node sim/roclayouttest.js && node sim/rocfixturetest.js",
     "qa:roccity": "node sim/roccitycheck.js",
