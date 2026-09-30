@@ -54,6 +54,10 @@ Portraits are rendered from the actual game models; they can be regenerated
 against a development server with
 `node sim/charactercheck.js <dev-url> screenshots/characters --export-portraits`.
 
+Grinds and grabs use individual contact-driven board and body poses for both
+characters. See [TRICK-ANIMATION.md](TRICK-ANIMATION.md) for all seventeen tricks,
+the anatomical contact references, comparisons and validation commands.
+
 ## Genesee Warehouse goals
 
 Choose a focus on the goal board and **Start Goal Run** for a two-minute session. Only unfinished

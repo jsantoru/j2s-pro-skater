@@ -153,6 +153,7 @@ export class RocCityLevel {
     this.build();
     this.group.scale.set(horizontalScale,1,horizontalScale);
     for(const rail of this.rails){
+      rail.radiusScale=this.worldScale; // Rendering follows the tube's scaled cross-section.
       rail.a.x*=horizontalScale;rail.a.z*=horizontalScale;
       rail.b.x*=horizontalScale;rail.b.z*=horizontalScale;
       rail.dir.copy(rail.b).sub(rail.a);rail.len=rail.dir.length();rail.dir.normalize();
@@ -205,7 +206,9 @@ export class RocCityLevel {
 
   addRail(a,b,kind='rail',{visual=true,color=this.mats.rocYellow,posts=false,floor=0,radius=.035}={}) {
     const dir=b.clone().sub(a),len=dir.length();if(len<.001)return;
-    const rail={a:a.clone(),b:b.clone(),dir:dir.normalize(),len,kind};this.rails.push(rail);
+    // A hidden ledge is authored at its flat top; drawn tubes use their radius.
+    const contactRadius = visual ? radius : kind === 'ledge' ? 0 : radius;
+    const rail={a:a.clone(),b:b.clone(),dir:dir.normalize(),len,kind,radius:contactRadius,surface:contactRadius?'round':'flat'};this.rails.push(rail);
     rail.visuals=[];
     if(visual)rail.visuals.push(this.beam(a,b,radius,color));
     if(posts)for(const t of [.15,.5,.85]){const p=a.clone().lerp(b,t);this.beam(v([p.x,floor,p.z]),p,.024,color);}

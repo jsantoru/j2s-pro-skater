@@ -20,6 +20,7 @@ function faces(level,quads,material,name) {
 
 /** A painted L-section follows the exact grind edge, then wraps down its face. */
 export function paintedBorder(level,rail,inward,{width=.16,drop=.14,color=level.mats.rocBlue,name='Painted ledge border'}={}) {
+  rail.radius=0;rail.surface='flat';rail.surfaceLift=.004;
   const side=inward.clone().setY(0).normalize(),lift=new THREE.Vector3(0,.004,0);
   const a=rail.a.clone().add(lift).addScaledVector(side,-.003),b=rail.b.clone().add(lift).addScaledVector(side,-.003);
   const c=b.clone().addScaledVector(side,width),d=a.clone().addScaledVector(side,width);
@@ -33,6 +34,7 @@ export function paintedBorder(level,rail,inward,{width=.16,drop=.14,color=level.
 
 /** Full hubba cap, including both outer faces and the exposed end corners. */
 export function paintedHubba(level,rail,{width=.44,drop=.13,endDrop=.3,color=level.mats.rocBlue,name='Painted hubba cap'}={}) {
+  rail.radius=0;rail.surface='flat';rail.surfaceLift=.004;
   const side=new THREE.Vector3(-rail.dir.z,0,rail.dir.x).normalize(),lift=new THREE.Vector3(0,.004,0);
   const along=rail.dir.clone().setY(0).normalize(),halfWidth=width/2+.003;
   // The vertical paint wraps need the same small outward separation as the
@@ -80,6 +82,7 @@ export function archedRailSupport(level,rail,start,end,{radius=.026,name='Yellow
 }
 
 export function rectangularFlatbar(level,rail,width=.075,height=.07) {
+  rail.radius=0;rail.surface='flat';
   const geometry=new THREE.BoxGeometry(width,height,rail.len),mesh=new THREE.Mesh(geometry,level.mats.rocYellow);
   mesh.position.copy(rail.a).lerp(rail.b,.5).addScaledVector(UP,-height/2);
   mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),rail.dir);
