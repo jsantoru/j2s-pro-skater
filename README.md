@@ -129,7 +129,13 @@ See [the reference and implementation notes](ROC-CITY-LEVEL.md) for source links
 feature correspondence. Dimensions are estimates from the supplied map and public photos;
 this is a playable recreation rather than a surveyed model.
 
-![ROC City Skatepark](screenshots/roc-city-level/roc-overview.png)
+The Riverway environment adds branching broadleaf trees, varied planting, Rochester-inspired
+brick storefronts, worn streets and detailed bridge materials. See [the environment art review](ENVIRONMENT-ART.md)
+for photographic references, matching before/after views, iteration notes and measured rendering costs.
+The [ambient-life pass](ENVIRONMENT-LIFE.md) adds spectators, sidewalk walkers, cafe furniture,
+parked bikes and gently moving planting, with a reduced-motion option inherited from the operating system.
+
+![ROC City Skatepark](screenshots/environment/final/desktop-wide-establishing.png)
 
 ## Controls (gamepad)
 

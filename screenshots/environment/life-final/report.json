@@ -1,0 +1,1475 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-09-29T15:24:52.753Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "desktop: matching environment and close-up life views render cleanly",
+      "passed": true,
+      "detail": {
+        "records": [
+          {
+            "name": "north-entry-to-bowl",
+            "time": 2,
+            "position": [
+              2.5,
+              3.24,
+              -52.5
+            ],
+            "calls": 415,
+            "triangles": 346832,
+            "geometries": 677,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "bowl-to-trail-trees",
+            "time": 2,
+            "position": [
+              -19.375,
+              3.25,
+              -21.25
+            ],
+            "calls": 47,
+            "triangles": 223892,
+            "geometries": 677,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "street-east-buildings",
+            "time": 2,
+            "position": [
+              16.5,
+              1.65,
+              -12.5
+            ],
+            "calls": 56,
+            "triangles": 227545,
+            "geometries": 677,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "landscape-sidewalk-edge",
+            "time": 2,
+            "position": [
+              19.5,
+              1.65,
+              -35
+            ],
+            "calls": 177,
+            "triangles": 323341,
+            "geometries": 677,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "wide-establishing",
+            "time": 2,
+            "position": [
+              -38.75,
+              17,
+              -50
+            ],
+            "calls": 415,
+            "triangles": 346802,
+            "geometries": 677,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "east-fence-people-natural",
+            "time": 2,
+            "position": [
+              16.625,
+              1.65,
+              -5.75
+            ],
+            "calls": 59,
+            "triangles": 232885,
+            "geometries": 678,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "east-fence-people-detail",
+            "time": 2,
+            "position": [
+              18.625,
+              1.25,
+              -10
+            ],
+            "calls": 78,
+            "triangles": 315665,
+            "geometries": 678,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "north-entry-friends",
+            "time": 2,
+            "position": [
+              8.75,
+              2,
+              -53.75
+            ],
+            "calls": 52,
+            "triangles": 222647,
+            "geometries": 680,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "cafe-patron-detail",
+            "time": 2,
+            "position": [
+              44.75,
+              1.45,
+              -21.25
+            ],
+            "calls": 54,
+            "triangles": 307453,
+            "geometries": 680,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "parked-bike-detail",
+            "time": 2,
+            "position": [
+              18.75,
+              1.25,
+              -21.25
+            ],
+            "calls": 131,
+            "triangles": 318407,
+            "geometries": 680,
+            "textures": 101,
+            "webglError": 0
+          },
+          {
+            "name": "community-board",
+            "time": 2,
+            "position": [
+              17.125,
+              1.65,
+              -14.625
+            ],
+            "calls": 57,
+            "triangles": 227713,
+            "geometries": 680,
+            "textures": 101,
+            "webglError": 0
+          }
+        ],
+        "people": [
+          {
+            "id": "frontage-walker-north",
+            "kind": "walker",
+            "height": 1.76,
+            "position": null,
+            "route": [
+              34.62,
+              -65,
+              -43,
+              0.35
+            ]
+          },
+          {
+            "id": "frontage-walker-middle",
+            "kind": "walker",
+            "height": 1.66,
+            "position": null,
+            "route": [
+              34.62,
+              -24,
+              3,
+              0.35
+            ]
+          },
+          {
+            "id": "frontage-walker-south",
+            "kind": "walker",
+            "height": 1.79,
+            "position": null,
+            "route": [
+              34.62,
+              6,
+              16,
+              0.35
+            ]
+          },
+          {
+            "id": "north-entry-skater",
+            "kind": "idle",
+            "height": 1.74,
+            "position": [
+              8.5,
+              -0.035,
+              -46.3
+            ],
+            "route": null
+          },
+          {
+            "id": "north-entry-friend",
+            "kind": "idle",
+            "height": 1.68,
+            "position": [
+              9.7,
+              -0.035,
+              -45.5
+            ],
+            "route": null
+          },
+          {
+            "id": "east-fence-skater",
+            "kind": "idle",
+            "height": 1.75,
+            "position": [
+              16.12,
+              -0.035,
+              -6.6
+            ],
+            "route": null
+          },
+          {
+            "id": "east-fence-friend",
+            "kind": "idle",
+            "height": 1.67,
+            "position": [
+              16.35,
+              -0.035,
+              -5.5
+            ],
+            "route": null
+          },
+          {
+            "id": "cafe-patron",
+            "kind": "seated",
+            "height": 1.73,
+            "position": [
+              37.72,
+              0.06,
+              -15
+            ],
+            "route": null
+          }
+        ],
+        "colliders": 207,
+        "rails": 248,
+        "shadows": true
+      }
+    },
+    {
+      "name": "desktop: walkers, foliage and matching shadows animate at two times",
+      "passed": true,
+      "detail": [
+        {
+          "view": "wind-detail",
+          "times": [
+            {
+              "wind": [
+                {
+                  "name": "Riverway cutout broadleaf foliage",
+                  "time": 2
+                },
+                {
+                  "name": "Riverway moving foliage depth",
+                  "time": 2
+                },
+                {
+                  "name": "Riverway meadow blades",
+                  "time": 2
+                }
+              ],
+              "water": [
+                [
+                  0.004,
+                  0
+                ]
+              ],
+              "skyTime": 2,
+              "peopleBatches": 9,
+              "expectedBatches": 9,
+              "peopleHash": "0802c899e7548eaf78eddb402af59916cc781c0863e026ac8c9f9229901a6c14",
+              "imageHash": "d388af98d723745cf7b2778d9a4adc37a94b438d26971ba4881ccddf58e85faf",
+              "pixelDifference": null
+            },
+            {
+              "wind": [
+                {
+                  "name": "Riverway cutout broadleaf foliage",
+                  "time": 10
+                },
+                {
+                  "name": "Riverway moving foliage depth",
+                  "time": 10
+                },
+                {
+                  "name": "Riverway meadow blades",
+                  "time": 10
+                }
+              ],
+              "water": [
+                [
+                  0.02,
+                  0
+                ]
+              ],
+              "skyTime": 10,
+              "peopleBatches": 9,
+              "expectedBatches": 9,
+              "peopleHash": "412a443e21cadb8ea085351682be181f97814aaf0a6c62e29449f482105f9ed8",
+              "imageHash": "54f08d924d4f34c55138cb195d10c5a2ddca5cb9534d375306199207928dc573",
+              "pixelDifference": {
+                "totalPixels": 1296000,
+                "changedPixels": 470359,
+                "pixelsOver2": 156795,
+                "maxChannelDelta": 208,
+                "meanChannelDelta": 1.19919341563786
+              }
+            }
+          ]
+        },
+        {
+          "view": "walker-detail",
+          "times": [
+            {
+              "wind": [
+                {
+                  "name": "Riverway cutout broadleaf foliage",
+                  "time": 2
+                },
+                {
+                  "name": "Riverway moving foliage depth",
+                  "time": 2
+                },
+                {
+                  "name": "Riverway meadow blades",
+                  "time": 2
+                }
+              ],
+              "water": [
+                [
+                  0.004,
+                  0
+                ]
+              ],
+              "skyTime": 2,
+              "peopleBatches": 9,
+              "expectedBatches": 9,
+              "peopleHash": "0802c899e7548eaf78eddb402af59916cc781c0863e026ac8c9f9229901a6c14",
+              "imageHash": "4485b1dcd75a8755b1ca243b4276ec51eac6642126f121d0d2fc8d109673e5eb",
+              "pixelDifference": {
+                "totalPixels": 1296000,
+                "changedPixels": 1295865,
+                "pixelsOver2": 1290379,
+                "maxChannelDelta": 212,
+                "meanChannelDelta": 76.59306507201646
+              }
+            },
+            {
+              "wind": [
+                {
+                  "name": "Riverway cutout broadleaf foliage",
+                  "time": 10
+                },
+                {
+                  "name": "Riverway moving foliage depth",
+                  "time": 10
+                },
+                {
+                  "name": "Riverway meadow blades",
+                  "time": 10
+                }
+              ],
+              "water": [
+                [
+                  0.02,
+                  0
+                ]
+              ],
+              "skyTime": 10,
+              "peopleBatches": 9,
+              "expectedBatches": 9,
+              "peopleHash": "412a443e21cadb8ea085351682be181f97814aaf0a6c62e29449f482105f9ed8",
+              "imageHash": "0b0784473feec3b6e0aa963a2091a30c20ee4c7dc6399186f36ace60b1164c31",
+              "pixelDifference": {
+                "totalPixels": 1296000,
+                "changedPixels": 83764,
+                "pixelsOver2": 46257,
+                "maxChannelDelta": 200,
+                "meanChannelDelta": 1.0178618827160495
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "desktop: reduced motion freezes people, wind, water and sky",
+      "passed": true,
+      "detail": [
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 0
+            },
+            {
+              "name": "Riverway moving foliage depth",
+              "time": 0
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 0
+            }
+          ],
+          "water": [
+            [
+              0,
+              0
+            ]
+          ],
+          "skyTime": 0,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "75f0a112d3c9580daa9992f9159fbfe188df4a3f68a8d891b659f2a24c75f16f",
+          "imageHash": "e54d74654317eacaa341f107703ddaede6ffa4c311642934fc334ef7fe35b364",
+          "pixelDifference": {
+            "totalPixels": 1296000,
+            "changedPixels": 1295700,
+            "pixelsOver2": 1289791,
+            "maxChannelDelta": 205,
+            "meanChannelDelta": 69.99127366255144
+          }
+        },
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 0
+            },
+            {
+              "name": "Riverway moving foliage depth",
+              "time": 0
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 0
+            }
+          ],
+          "water": [
+            [
+              0,
+              0
+            ]
+          ],
+          "skyTime": 0,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "75f0a112d3c9580daa9992f9159fbfe188df4a3f68a8d891b659f2a24c75f16f",
+          "imageHash": "e54d74654317eacaa341f107703ddaede6ffa4c311642934fc334ef7fe35b364",
+          "pixelDifference": {
+            "totalPixels": 1296000,
+            "changedPixels": 0,
+            "pixelsOver2": 0,
+            "maxChannelDelta": 0,
+            "meanChannelDelta": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "touch: matching environment and close-up life views render cleanly",
+      "passed": true,
+      "detail": {
+        "records": [
+          {
+            "name": "street-east-buildings",
+            "time": 2,
+            "position": [
+              16.5,
+              1.65,
+              -12.5
+            ],
+            "calls": 57,
+            "triangles": 171389,
+            "geometries": 666,
+            "textures": 100,
+            "webglError": 0
+          },
+          {
+            "name": "wide-establishing",
+            "time": 2,
+            "position": [
+              -38.75,
+              17,
+              -50
+            ],
+            "calls": 416,
+            "triangles": 220598,
+            "geometries": 666,
+            "textures": 100,
+            "webglError": 0
+          },
+          {
+            "name": "east-fence-people-natural",
+            "time": 2,
+            "position": [
+              16.625,
+              1.65,
+              -5.75
+            ],
+            "calls": 61,
+            "triangles": 179969,
+            "geometries": 669,
+            "textures": 100,
+            "webglError": 0
+          },
+          {
+            "name": "cafe-patron-detail",
+            "time": 2,
+            "position": [
+              44.75,
+              1.45,
+              -21.25
+            ],
+            "calls": 54,
+            "triangles": 181217,
+            "geometries": 669,
+            "textures": 100,
+            "webglError": 0
+          }
+        ],
+        "people": [
+          {
+            "id": "frontage-walker-north",
+            "kind": "walker",
+            "height": 1.76,
+            "position": null,
+            "route": [
+              34.62,
+              -65,
+              -43,
+              0.35
+            ]
+          },
+          {
+            "id": "frontage-walker-middle",
+            "kind": "walker",
+            "height": 1.66,
+            "position": null,
+            "route": [
+              34.62,
+              -24,
+              3,
+              0.35
+            ]
+          },
+          {
+            "id": "frontage-walker-south",
+            "kind": "walker",
+            "height": 1.79,
+            "position": null,
+            "route": [
+              34.62,
+              6,
+              16,
+              0.35
+            ]
+          },
+          {
+            "id": "north-entry-skater",
+            "kind": "idle",
+            "height": 1.74,
+            "position": [
+              8.5,
+              -0.035,
+              -46.3
+            ],
+            "route": null
+          },
+          {
+            "id": "north-entry-friend",
+            "kind": "idle",
+            "height": 1.68,
+            "position": [
+              9.7,
+              -0.035,
+              -45.5
+            ],
+            "route": null
+          },
+          {
+            "id": "east-fence-skater",
+            "kind": "idle",
+            "height": 1.75,
+            "position": [
+              16.12,
+              -0.035,
+              -6.6
+            ],
+            "route": null
+          },
+          {
+            "id": "east-fence-friend",
+            "kind": "idle",
+            "height": 1.67,
+            "position": [
+              16.35,
+              -0.035,
+              -5.5
+            ],
+            "route": null
+          },
+          {
+            "id": "cafe-patron",
+            "kind": "seated",
+            "height": 1.73,
+            "position": [
+              37.72,
+              0.06,
+              -15
+            ],
+            "route": null
+          }
+        ],
+        "colliders": 207,
+        "rails": 248,
+        "shadows": false
+      }
+    },
+    {
+      "name": "touch: walkers, foliage and matching shadows animate at two times",
+      "passed": true,
+      "detail": [
+        {
+          "view": "wind-detail",
+          "times": [
+            {
+              "wind": [
+                {
+                  "name": "Riverway cutout broadleaf foliage",
+                  "time": 2
+                },
+                {
+                  "name": "Riverway meadow blades",
+                  "time": 2
+                }
+              ],
+              "water": [
+                [
+                  0.004,
+                  0
+                ]
+              ],
+              "skyTime": 2,
+              "peopleBatches": 9,
+              "expectedBatches": 9,
+              "peopleHash": "0802c899e7548eaf78eddb402af59916cc781c0863e026ac8c9f9229901a6c14",
+              "imageHash": "41d4784305c97773fa53aa5d8507b42ae0eeb5bfc96a6f73b60935d5a9799f48",
+              "pixelDifference": null
+            },
+            {
+              "wind": [
+                {
+                  "name": "Riverway cutout broadleaf foliage",
+                  "time": 10
+                },
+                {
+                  "name": "Riverway meadow blades",
+                  "time": 10
+                }
+              ],
+              "water": [
+                [
+                  0.02,
+                  0
+                ]
+              ],
+              "skyTime": 10,
+              "peopleBatches": 9,
+              "expectedBatches": 9,
+              "peopleHash": "412a443e21cadb8ea085351682be181f97814aaf0a6c62e29449f482105f9ed8",
+              "imageHash": "09c18be0f1d35b71549fcdf7efbcb72a03726eda5fdfd69d2cd6b343f0faad4c",
+              "pixelDifference": {
+                "totalPixels": 329160,
+                "changedPixels": 87443,
+                "pixelsOver2": 18532,
+                "maxChannelDelta": 199,
+                "meanChannelDelta": 0.40087191639324343
+              }
+            }
+          ]
+        },
+        {
+          "view": "walker-detail",
+          "times": [
+            {
+              "wind": [
+                {
+                  "name": "Riverway cutout broadleaf foliage",
+                  "time": 2
+                },
+                {
+                  "name": "Riverway meadow blades",
+                  "time": 2
+                }
+              ],
+              "water": [
+                [
+                  0.004,
+                  0
+                ]
+              ],
+              "skyTime": 2,
+              "peopleBatches": 9,
+              "expectedBatches": 9,
+              "peopleHash": "0802c899e7548eaf78eddb402af59916cc781c0863e026ac8c9f9229901a6c14",
+              "imageHash": "67787df64acb6501b38c916f483238f8e80c038a9a9468bcd9fa161f86da8b4c",
+              "pixelDifference": {
+                "totalPixels": 329160,
+                "changedPixels": 329053,
+                "pixelsOver2": 326217,
+                "maxChannelDelta": 215,
+                "meanChannelDelta": 73.32462935958196
+              }
+            },
+            {
+              "wind": [
+                {
+                  "name": "Riverway cutout broadleaf foliage",
+                  "time": 10
+                },
+                {
+                  "name": "Riverway meadow blades",
+                  "time": 10
+                }
+              ],
+              "water": [
+                [
+                  0.02,
+                  0
+                ]
+              ],
+              "skyTime": 10,
+              "peopleBatches": 9,
+              "expectedBatches": 9,
+              "peopleHash": "412a443e21cadb8ea085351682be181f97814aaf0a6c62e29449f482105f9ed8",
+              "imageHash": "250f207a79c564eb03627cc54418b2d9a5d15fb37ba90de80cb7df0840e8b2e9",
+              "pixelDifference": {
+                "totalPixels": 329160,
+                "changedPixels": 10728,
+                "pixelsOver2": 3574,
+                "maxChannelDelta": 202,
+                "meanChannelDelta": 0.596579171223721
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "touch: reduced motion freezes people, wind, water and sky",
+      "passed": true,
+      "detail": [
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 0
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 0
+            }
+          ],
+          "water": [
+            [
+              0,
+              0
+            ]
+          ],
+          "skyTime": 0,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "75f0a112d3c9580daa9992f9159fbfe188df4a3f68a8d891b659f2a24c75f16f",
+          "imageHash": "2eb7969a7fd4919eb639ca58657f2b908dd8ca9c31c1f7558063620eed1a2731",
+          "pixelDifference": {
+            "totalPixels": 329160,
+            "changedPixels": 328911,
+            "pixelsOver2": 325927,
+            "maxChannelDelta": 205,
+            "meanChannelDelta": 64.52155385425527
+          }
+        },
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 0
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 0
+            }
+          ],
+          "water": [
+            [
+              0,
+              0
+            ]
+          ],
+          "skyTime": 0,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "75f0a112d3c9580daa9992f9159fbfe188df4a3f68a8d891b659f2a24c75f16f",
+          "imageHash": "2eb7969a7fd4919eb639ca58657f2b908dd8ca9c31c1f7558063620eed1a2731",
+          "pixelDifference": {
+            "totalPixels": 329160,
+            "changedPixels": 0,
+            "pixelsOver2": 0,
+            "maxChannelDelta": 0,
+            "meanChannelDelta": 0
+          }
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    "desktop-north-entry-to-bowl.png",
+    "desktop-bowl-to-trail-trees.png",
+    "desktop-street-east-buildings.png",
+    "desktop-landscape-sidewalk-edge.png",
+    "desktop-wide-establishing.png",
+    "desktop-east-fence-people-natural.png",
+    "desktop-east-fence-people-detail.png",
+    "desktop-north-entry-friends.png",
+    "desktop-cafe-patron-detail.png",
+    "desktop-parked-bike-detail.png",
+    "desktop-community-board.png",
+    "desktop-wind-detail-t2.png",
+    "desktop-wind-detail-t10.png",
+    "desktop-walker-detail-t2.png",
+    "desktop-walker-detail-t10.png",
+    "desktop-reduced-motion.png",
+    "touch-street-east-buildings.png",
+    "touch-wide-establishing.png",
+    "touch-east-fence-people-natural.png",
+    "touch-cafe-patron-detail.png",
+    "touch-wind-detail-t2.png",
+    "touch-wind-detail-t10.png",
+    "touch-walker-detail-t2.png",
+    "touch-walker-detail-t10.png",
+    "touch-reduced-motion.png"
+  ],
+  "baselineReport": "screenshots/environment/final/report.json",
+  "views": [
+    {
+      "name": "north-entry-to-bowl",
+      "level": "roc-city-skatepark",
+      "position": [
+        2,
+        3.24,
+        -42
+      ],
+      "target": [
+        -5,
+        1.8,
+        -23
+      ],
+      "fov": 62
+    },
+    {
+      "name": "bowl-to-trail-trees",
+      "level": "roc-city-skatepark",
+      "position": [
+        -15.5,
+        3.25,
+        -17
+      ],
+      "target": [
+        -27,
+        3,
+        -20
+      ],
+      "fov": 62
+    },
+    {
+      "name": "street-east-buildings",
+      "level": "roc-city-skatepark",
+      "position": [
+        13.2,
+        1.65,
+        -10
+      ],
+      "target": [
+        43,
+        4.5,
+        -10
+      ],
+      "fov": 62
+    },
+    {
+      "name": "landscape-sidewalk-edge",
+      "level": "roc-city-skatepark",
+      "position": [
+        15.6,
+        1.65,
+        -28
+      ],
+      "target": [
+        19.8,
+        0.2,
+        -20
+      ],
+      "fov": 62
+    },
+    {
+      "name": "wide-establishing",
+      "level": "roc-city-skatepark",
+      "position": [
+        -31,
+        17,
+        -40
+      ],
+      "target": [
+        -1,
+        0,
+        7
+      ],
+      "fov": 62
+    },
+    {
+      "name": "east-fence-people-natural",
+      "position": [
+        13.3,
+        1.65,
+        -4.6
+      ],
+      "target": [
+        16.2,
+        0.95,
+        -6
+      ],
+      "fov": 62
+    },
+    {
+      "name": "east-fence-people-detail",
+      "position": [
+        14.9,
+        1.25,
+        -8
+      ],
+      "target": [
+        16.2,
+        0.9,
+        -6.1
+      ],
+      "fov": 48
+    },
+    {
+      "name": "north-entry-friends",
+      "position": [
+        7,
+        2,
+        -43
+      ],
+      "target": [
+        9,
+        0.85,
+        -46
+      ],
+      "fov": 55
+    },
+    {
+      "name": "cafe-patron-detail",
+      "position": [
+        35.8,
+        1.45,
+        -17
+      ],
+      "target": [
+        37.65,
+        0.9,
+        -15
+      ],
+      "fov": 55
+    },
+    {
+      "name": "parked-bike-detail",
+      "position": [
+        15,
+        1.25,
+        -17
+      ],
+      "target": [
+        16.18,
+        0.55,
+        -15
+      ],
+      "fov": 55
+    },
+    {
+      "name": "community-board",
+      "position": [
+        13.7,
+        1.65,
+        -11.7
+      ],
+      "target": [
+        16.72,
+        1.25,
+        -13.1
+      ],
+      "fov": 55
+    },
+    {
+      "name": "wind-detail",
+      "position": [
+        14,
+        2.2,
+        -11
+      ],
+      "target": [
+        16.7,
+        3.4,
+        -10
+      ],
+      "fov": 55
+    },
+    {
+      "name": "walker-detail",
+      "position": [
+        31.2,
+        1.5,
+        -4.5
+      ],
+      "target": [
+        34.6,
+        0.9,
+        -7
+      ],
+      "fov": 65
+    }
+  ],
+  "animationSamples": [
+    {
+      "profile": "desktop",
+      "view": "wind-detail",
+      "times": [
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 2
+            },
+            {
+              "name": "Riverway moving foliage depth",
+              "time": 2
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 2
+            }
+          ],
+          "water": [
+            [
+              0.004,
+              0
+            ]
+          ],
+          "skyTime": 2,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "0802c899e7548eaf78eddb402af59916cc781c0863e026ac8c9f9229901a6c14",
+          "imageHash": "d388af98d723745cf7b2778d9a4adc37a94b438d26971ba4881ccddf58e85faf",
+          "pixelDifference": null
+        },
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 10
+            },
+            {
+              "name": "Riverway moving foliage depth",
+              "time": 10
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 10
+            }
+          ],
+          "water": [
+            [
+              0.02,
+              0
+            ]
+          ],
+          "skyTime": 10,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "412a443e21cadb8ea085351682be181f97814aaf0a6c62e29449f482105f9ed8",
+          "imageHash": "54f08d924d4f34c55138cb195d10c5a2ddca5cb9534d375306199207928dc573",
+          "pixelDifference": {
+            "totalPixels": 1296000,
+            "changedPixels": 470359,
+            "pixelsOver2": 156795,
+            "maxChannelDelta": 208,
+            "meanChannelDelta": 1.19919341563786
+          }
+        }
+      ]
+    },
+    {
+      "profile": "desktop",
+      "view": "walker-detail",
+      "times": [
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 2
+            },
+            {
+              "name": "Riverway moving foliage depth",
+              "time": 2
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 2
+            }
+          ],
+          "water": [
+            [
+              0.004,
+              0
+            ]
+          ],
+          "skyTime": 2,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "0802c899e7548eaf78eddb402af59916cc781c0863e026ac8c9f9229901a6c14",
+          "imageHash": "4485b1dcd75a8755b1ca243b4276ec51eac6642126f121d0d2fc8d109673e5eb",
+          "pixelDifference": {
+            "totalPixels": 1296000,
+            "changedPixels": 1295865,
+            "pixelsOver2": 1290379,
+            "maxChannelDelta": 212,
+            "meanChannelDelta": 76.59306507201646
+          }
+        },
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 10
+            },
+            {
+              "name": "Riverway moving foliage depth",
+              "time": 10
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 10
+            }
+          ],
+          "water": [
+            [
+              0.02,
+              0
+            ]
+          ],
+          "skyTime": 10,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "412a443e21cadb8ea085351682be181f97814aaf0a6c62e29449f482105f9ed8",
+          "imageHash": "0b0784473feec3b6e0aa963a2091a30c20ee4c7dc6399186f36ace60b1164c31",
+          "pixelDifference": {
+            "totalPixels": 1296000,
+            "changedPixels": 83764,
+            "pixelsOver2": 46257,
+            "maxChannelDelta": 200,
+            "meanChannelDelta": 1.0178618827160495
+          }
+        }
+      ]
+    },
+    {
+      "profile": "touch",
+      "view": "wind-detail",
+      "times": [
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 2
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 2
+            }
+          ],
+          "water": [
+            [
+              0.004,
+              0
+            ]
+          ],
+          "skyTime": 2,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "0802c899e7548eaf78eddb402af59916cc781c0863e026ac8c9f9229901a6c14",
+          "imageHash": "41d4784305c97773fa53aa5d8507b42ae0eeb5bfc96a6f73b60935d5a9799f48",
+          "pixelDifference": null
+        },
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 10
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 10
+            }
+          ],
+          "water": [
+            [
+              0.02,
+              0
+            ]
+          ],
+          "skyTime": 10,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "412a443e21cadb8ea085351682be181f97814aaf0a6c62e29449f482105f9ed8",
+          "imageHash": "09c18be0f1d35b71549fcdf7efbcb72a03726eda5fdfd69d2cd6b343f0faad4c",
+          "pixelDifference": {
+            "totalPixels": 329160,
+            "changedPixels": 87443,
+            "pixelsOver2": 18532,
+            "maxChannelDelta": 199,
+            "meanChannelDelta": 0.40087191639324343
+          }
+        }
+      ]
+    },
+    {
+      "profile": "touch",
+      "view": "walker-detail",
+      "times": [
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 2
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 2
+            }
+          ],
+          "water": [
+            [
+              0.004,
+              0
+            ]
+          ],
+          "skyTime": 2,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "0802c899e7548eaf78eddb402af59916cc781c0863e026ac8c9f9229901a6c14",
+          "imageHash": "67787df64acb6501b38c916f483238f8e80c038a9a9468bcd9fa161f86da8b4c",
+          "pixelDifference": {
+            "totalPixels": 329160,
+            "changedPixels": 329053,
+            "pixelsOver2": 326217,
+            "maxChannelDelta": 215,
+            "meanChannelDelta": 73.32462935958196
+          }
+        },
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 10
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 10
+            }
+          ],
+          "water": [
+            [
+              0.02,
+              0
+            ]
+          ],
+          "skyTime": 10,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "412a443e21cadb8ea085351682be181f97814aaf0a6c62e29449f482105f9ed8",
+          "imageHash": "250f207a79c564eb03627cc54418b2d9a5d15fb37ba90de80cb7df0840e8b2e9",
+          "pixelDifference": {
+            "totalPixels": 329160,
+            "changedPixels": 10728,
+            "pixelsOver2": 3574,
+            "maxChannelDelta": 202,
+            "meanChannelDelta": 0.596579171223721
+          }
+        }
+      ]
+    }
+  ],
+  "reducedMotionSamples": [
+    {
+      "profile": "desktop",
+      "samples": [
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 0
+            },
+            {
+              "name": "Riverway moving foliage depth",
+              "time": 0
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 0
+            }
+          ],
+          "water": [
+            [
+              0,
+              0
+            ]
+          ],
+          "skyTime": 0,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "75f0a112d3c9580daa9992f9159fbfe188df4a3f68a8d891b659f2a24c75f16f",
+          "imageHash": "e54d74654317eacaa341f107703ddaede6ffa4c311642934fc334ef7fe35b364",
+          "pixelDifference": {
+            "totalPixels": 1296000,
+            "changedPixels": 1295700,
+            "pixelsOver2": 1289791,
+            "maxChannelDelta": 205,
+            "meanChannelDelta": 69.99127366255144
+          }
+        },
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 0
+            },
+            {
+              "name": "Riverway moving foliage depth",
+              "time": 0
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 0
+            }
+          ],
+          "water": [
+            [
+              0,
+              0
+            ]
+          ],
+          "skyTime": 0,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "75f0a112d3c9580daa9992f9159fbfe188df4a3f68a8d891b659f2a24c75f16f",
+          "imageHash": "e54d74654317eacaa341f107703ddaede6ffa4c311642934fc334ef7fe35b364",
+          "pixelDifference": {
+            "totalPixels": 1296000,
+            "changedPixels": 0,
+            "pixelsOver2": 0,
+            "maxChannelDelta": 0,
+            "meanChannelDelta": 0
+          }
+        }
+      ]
+    },
+    {
+      "profile": "touch",
+      "samples": [
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 0
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 0
+            }
+          ],
+          "water": [
+            [
+              0,
+              0
+            ]
+          ],
+          "skyTime": 0,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "75f0a112d3c9580daa9992f9159fbfe188df4a3f68a8d891b659f2a24c75f16f",
+          "imageHash": "2eb7969a7fd4919eb639ca58657f2b908dd8ca9c31c1f7558063620eed1a2731",
+          "pixelDifference": {
+            "totalPixels": 329160,
+            "changedPixels": 328911,
+            "pixelsOver2": 325927,
+            "maxChannelDelta": 205,
+            "meanChannelDelta": 64.52155385425527
+          }
+        },
+        {
+          "wind": [
+            {
+              "name": "Riverway cutout broadleaf foliage",
+              "time": 0
+            },
+            {
+              "name": "Riverway meadow blades",
+              "time": 0
+            }
+          ],
+          "water": [
+            [
+              0,
+              0
+            ]
+          ],
+          "skyTime": 0,
+          "peopleBatches": 9,
+          "expectedBatches": 9,
+          "peopleHash": "75f0a112d3c9580daa9992f9159fbfe188df4a3f68a8d891b659f2a24c75f16f",
+          "imageHash": "2eb7969a7fd4919eb639ca58657f2b908dd8ca9c31c1f7558063620eed1a2731",
+          "pixelDifference": {
+            "totalPixels": 329160,
+            "changedPixels": 0,
+            "pixelsOver2": 0,
+            "maxChannelDelta": 0,
+            "meanChannelDelta": 0
+          }
+        }
+      ]
+    }
+  ],
+  "browserErrors": [],
+  "passed": true
+}

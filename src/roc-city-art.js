@@ -8,6 +8,12 @@ import { displayFont, labelFont } from './typography.js';
 import { ROC_CITY_LAYOUT } from './roc-city-layout.js';
 import { createTrailGeometry, createTrailFoundationGeometry } from './roc-city-surroundings.js';
 import { createRocCityFixtures, fixturePoint } from './roc-city-fixtures.js';
+import { riverwaySurface, varySurface } from './roc-city-surfaces.js';
+import { addRiverwayStreets } from './roc-city-streets.js';
+import { addRiverwayVegetation } from './roc-city-vegetation.js';
+import { addRocCityBuildings } from './roc-city-buildings.js';
+import { addRocCityProps } from './roc-city-props.js';
+import { addRocCityLife } from './roc-city-life.js';
 
 const UP = new THREE.Vector3(0, 1, 0);
 const layouts = new WeakMap();
@@ -44,43 +50,48 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   const material = (name,color,roughness=.9,metalness=0,map=null) => {
     const m=new THREE.MeshStandardMaterial({color,roughness,metalness,map}); m.name=name; ownedMaterials.add(m); return m;
   };
-  const grassMap=surfaceMap('#6a7451',['#c1c7a319','#38472420','#93a1581b'],1.2);
-  const grass=material('Riverway grass',0xc7d0b0,1,0,grassMap);
-  const concreteMap=surfaceMap('#babcb5',['#ddd8c61c','#55544912','#eeeecc15']);
-  const concrete=material('Weathered bridge concrete',0xc9cbc5,.97,0,concreteMap);
-  const coping=material('Light curb edge',0xb6b7a8,.93);
-  const asphalt=material('Riverway asphalt',0x5e6464,1,0,surfaceMap('#646566',['#d3d0b51c','#0d161f25']));
-  const road=material('South Avenue asphalt',0x484e52,1,0,surfaceMap('#777777',['#e8e3d62a','#17212b35']));
-  const steel=material('Oxidized I-490 steel',0x503c31,.79,.52,surfaceMap('#847262',['#24251e20','#b05c3030','#c4ba9a10']));
+  const grassMap=riverwaySurface('grass');
+  const grass=varySurface(material('Riverway grass',0xffffff,1,0,grassMap),.23);
+  const concreteMap=riverwaySurface('concrete');
+  const concrete=varySurface(material('Weathered bridge concrete',0xffffff,.97,0,concreteMap),.13);
+  concrete.bumpMap=concreteMap;concrete.bumpScale=.009;
+  const coping=material('Light curb edge',0xc4c0b1,.93,0,concreteMap);
+  const asphalt=varySurface(material('Riverway asphalt',0xffffff,1,0,riverwaySurface('asphalt')),.22);
+  const road=varySurface(material('South Avenue asphalt',0xffffff,1,0,riverwaySurface('road')),.25);
+  asphalt.bumpMap=asphalt.map;asphalt.bumpScale=.012;road.bumpMap=road.map;road.bumpScale=.009;
+  const steel=material('Oxidized I-490 steel',0xbca18b,.86,.4,riverwaySurface('steel'));
   const darkSteel=material('Steel flange edges',0x3b302b,.7,.6);
   const black=material('Park light graphite',0x263538,.66,.65);
   const rail=material('Galvanized park railing',0x8c9b9e,.52,.68);
   const blue=material('ROC bridge edge blue',0x2e708b,.72,.25);
   const line=material('Weathered lane paint',0xcfcbbb,.96);
   const yellow=material('South Avenue centreline',0xc8b055,.98);
-  const trunk=material('Tree bark',0x645d48,1,0,surfaceMap('#8d8063',['#30282044','#d9c39725'],2));
-  const leaves=material('Riverway tree foliage',0xe6eddb,.96,0,surfaceMap('#929778',['#2b481430','#c1c57930','#526b2330'],4));
-  const rock=material('Bridge riprap',0xc9cdc6,1);
   const aggregateMap=canvasMap((c,s,r)=>{
-    c.fillStyle='#858e88';c.fillRect(0,0,s,s);
-    const colors=['#a7ada6','#c0c3b8','#929c95','#a4aba7','#b4b8ae'];
+    c.fillStyle='#777b78';c.fillRect(0,0,s,s);
+    const colors=['#90938f','#858a87','#969993','#818683','#8c908c'];
     // Small, tightly packed angular stones fill the gaps between the 3D rocks.
     // Wrap the drawing so the low-cost texture has no visible tile boundary.
-    for(let i=0;i<1600;i++){
-      const x=r()*s,z=r()*s,rx=4+r()*10,rz=3+r()*7;
+    for(let i=0;i<2600;i++){
+      const x=r()*s,z=r()*s,rx=3+r()*9,rz=3+r()*7;
       const points=Array.from({length:6},(_,j)=>{const a=j*Math.PI/3;return [Math.cos(a)*rx*(.7+r()*.3),Math.sin(a)*rz*(.7+r()*.3)];});
-      c.fillStyle=colors[i%colors.length];c.strokeStyle='#727e75';c.lineWidth=.8;
+      c.fillStyle=colors[i%colors.length];
       for(const dx of [-s,0,s])for(const dz of [-s,0,s]){
-        c.beginPath();points.forEach(([px,pz],j)=>j?c.lineTo(x+dx+px,z+dz+pz):c.moveTo(x+dx+px,z+dz+pz));c.closePath();c.fill();c.stroke();
+        c.beginPath();points.forEach(([px,pz],j)=>j?c.lineTo(x+dx+px,z+dz+pz):c.moveTo(x+dx+px,z+dz+pz));c.closePath();c.fill();
       }
+    }
+    for(let i=0;i<22000;i++){
+      c.fillStyle=i%2?'rgba(220,222,212,.12)':'rgba(32,36,34,.12)';
+      c.fillRect(r()*s,r()*s,.6+r()*1.4,.6+r()*1.4);
     }
   },512);
   const aggregate=material('Pale riprap aggregate bed',0xffffff,1,0,aggregateMap);
+  const rock=material('Bridge riprap',0xffffff,1,0,aggregateMap);
+  rock.bumpMap=aggregateMap;rock.bumpScale=.025;
   const soil=material('Park earth foundation',0x73756c,1);
   const emissive=new THREE.MeshStandardMaterial({color:0xe8efd6,emissive:0xdce6cf,emissiveIntensity:1.8,roughness:.8});
   emissive.name='Overpass strip diffusers'; ownedMaterials.add(emissive);
 
-  const tiledMaterials=new Set([grass,concrete,asphalt,road,steel,trunk,leaves,aggregate]);
+  const tiledMaterials=new Set([grass,concrete,coping,asphalt,road,steel,aggregate]);
   const add=(geometry,mat,pos) => {
     if (pos) geometry.translate(...pos);
     if(tiledMaterials.has(mat))surfaceUV(geometry,mat===grass?2.4:mat===aggregate?2:3.4);
@@ -125,6 +136,8 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   for(let z=-84;z<77;z+=7){box(.1,.012,3,27.1,.0,z,yellow);box(.1,.012,3,27.5,.0,z,yellow);}
   for(const x of [22.8,31.8])box(.1,.012,160,x,.003,-6,line);
   for(let z=-76;z<72;z+=4)box(3.5,.016,.032,19.7,.005,z,concrete);
+  const streetDetail=addRiverwayStreets({add,box,bar,material,layout:L,concrete,rail,black,horizontalScale});
+  streetDetail.materials.forEach(mat=>ownedMaterials.add(mat));
   // A recessed river and substantial retaining wall give the trail its context.
   const waterMap=canvasMap((c,s,r)=>{
     c.fillStyle='#5f8886';c.fillRect(0,0,s,s);
@@ -212,16 +225,24 @@ export function dressRocCity(level, { lowfx = false } = {}) {
   plane(10,depth+1,10,bridge.floorY+.013,zc,shade);
   box(16,.12,depth+2,-3,bridge.floorY-.10,zc,aggregate);
   box(23,.12,depth+2,26.5,bridge.floorY-.10,zc,aggregate);
-  const stones=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,0),rock,lowfx?420:680);
+  const stoneGeometry=new THREE.IcosahedronGeometry(1,lowfx?0:1);
+  const stonePosition=stoneGeometry.attributes.position;
+  for(let i=0;i<stonePosition.count;i++){
+    const x=stonePosition.getX(i),y=stonePosition.getY(i),z=stonePosition.getZ(i);
+    const warp=1+.12*Math.sin(x*8.4+y*4.8+z*7.1);
+    stonePosition.setXYZ(i,x*warp,y*warp,z*warp);
+  }
+  stoneGeometry.computeVertexNormals();
+  const stones=new THREE.InstancedMesh(stoneGeometry,rock,lowfx?700:1050);
   stones.name='Gray bridge riprap beds';stones.receiveShadow=true;
   const transform=new THREE.Object3D(), tint=new THREE.Color();
   for(let i=0;i<stones.count;i++) {
     const east=i%2===0,nearEdge=i%4<2;
     const x=east?(nearEdge?15.72+rng()*4.2:20.2+rng()*14.7):(nearEdge?4.28-rng()*4.2:-9.7+rng()*9);
     // Riprap is embedded beside the flush promenade, not piled into a wall.
-    transform.position.set(x,bridge.floorY-.08+rng()*.04,bridge.minZ+rng()*depth);
-    transform.scale.set(.2+rng()*.42,.11+rng()*.14,.23+rng()*.45);transform.rotation.set((rng()-.5)*.2,rng()*6,(rng()-.5)*.2);transform.updateMatrix();stones.setMatrixAt(i,transform.matrix);
-    tint.setHSL(.13+rng()*.04,.025+rng()*.045,.57+rng()*.18);stones.setColorAt(i,tint);
+    transform.position.set(x,bridge.floorY-.085+rng()*.045,bridge.minZ+rng()*depth);
+    transform.scale.set(.22+rng()*.42,.13+rng()*.16,.25+rng()*.45);transform.rotation.set((rng()-.5)*.3,rng()*6,(rng()-.5)*.3);transform.updateMatrix();stones.setMatrixAt(i,transform.matrix);
+    tint.setHSL(.12+rng()*.04,.012+rng()*.018,.84+rng()*.15);stones.setColorAt(i,tint);
   }
   group.add(stones);
   // The west chain-link screen is open, allowing the river and trail to read.
@@ -281,55 +302,15 @@ export function dressRocCity(level, { lowfx = false } = {}) {
     plane(6.8,6.8,L.flower.x,L.flower.y+.018,L.flower.z,flower);
   }
 
-  // A few mature trees provide a believable grassy perimeter, with all crowns
-  // in one instance batch rather than hundreds of independent draw calls.
-  const treePositions=[[-25,-43],[-29,-47],[-21,-52],[-16,-57],[-7,-61],[4,-60],[15,-58],[35,-49],[38,-29],[36,-6],[37,14],[-30,-22],[-30,-2],[-26,15],[-32,27]];
-  const crowns=new THREE.InstancedMesh(new THREE.SphereGeometry(1,11,8),leaves,treePositions.length*6);crowns.name='Riverway tree canopies';crowns.castShadow=!lowfx;crowns.receiveShadow=true;
-  let ci=0;
-  for(const [x,z] of treePositions) {
-    const h=4.4+rng()*2.3;
-    bar([x,-.06,z],[x+.12,h,z],.12+rng()*.04,trunk,8);
-    for(let j=0;j<6;j++) {
-      const angle=j/6*Math.PI*2+rng()*.35,radius=j===0?0:.65+rng()*.7;
-      const px=x+Math.cos(angle)*radius,pz=z+Math.sin(angle)*radius,py=h-.25+rng()*1.2;
-      bar([x,h*.66,z],[px,py-.4,pz],.05,trunk);
-      transform.position.set(px,py,pz);transform.scale.set(1.1+rng()*.6,1.2+rng()*.65,.95+rng()*.55);transform.rotation.set(rng()*.5,rng()*6,rng()*.3);transform.updateMatrix();crowns.setMatrixAt(ci,transform.matrix);
-      tint.setHSL(.20+rng()*.045,.24+rng()*.14,.38+rng()*.14);crowns.setColorAt(ci++,tint);
-    }
-  }
-  group.add(crowns);
-  // The reference park has young planting as well as mature Riverway trees.
-  // These flat beds sit in grass beyond the park, trail and road boundaries.
-  const mulch=material('Young tree planting beds',0x625c4e,1,0,surfaceMap('#958774',['#342b2044','#c0ad8128'],1.5));
-  tiledMaterials.add(mulch);
-  const plantingBeds=[[16.7,-29,.65,1.35],[16.7,-10,.65,1.3],[16.7,11,.65,1.3],[-1.5,-52,1.15,.85],[7,-52,1.1,.85],[-26,-13,1.1,1.1],[-27,5,1.15,.9]];
-  const youngCrowns=new THREE.InstancedMesh(new THREE.SphereGeometry(1,8,6),leaves,plantingBeds.length*4);
-  youngCrowns.name='Young Riverway tree crowns';youngCrowns.castShadow=!lowfx;youngCrowns.receiveShadow=true;
-  let yi=0;
-  for(const [x,z,rx,rz] of plantingBeds){
-    const edge=Array.from({length:22},(_,j)=>{const a=j/22*Math.PI*2;return[x+Math.cos(a)*rx,z+Math.sin(a)*rz];});
-    add(flatShape(edge,-.024),mulch);
-    const h=3.2+rng()*.65;
-    bar([x,-.03,z],[x+.06,h,z],.037,trunk,7);
-    for(let j=0;j<4;j++){
-      const a=j*Math.PI/2+.4,px=x+Math.cos(a)*.24,pz=z+Math.sin(a)*.24,py=h-.25+j*.16;
-      bar([x,h*.62,z],[px,py,pz],.013,trunk,6);
-      transform.position.set(px,py,pz);transform.scale.set(.40+rng()*.10,.64+rng()*.18,.39+rng()*.10);transform.rotation.set(0,rng()*6,0);transform.updateMatrix();youngCrowns.setMatrixAt(yi,transform.matrix);
-      tint.setHSL(.21+rng()*.025,.28+rng()*.10,.43+rng()*.10);youngCrowns.setColorAt(yi++,tint);
-    }
-  }
-  group.add(youngCrowns);
-  // A quiet city edge past the road and river: layered masonry silhouettes,
-  // inset windows and rooftop equipment, at a distance from the actual park.
-  const building=material('Riverway distant masonry',0x77736a,.97);
-  const windows=material('Distant window glass',0x4e676d,.55,.28);
-  for(const [x,z,w,h,d] of [[47,-40,16,9,19],[51,-12,21,13,16],[50,14,18,7,18],[-78,-37,16,14,19],[-81,4,21,11,25],[-78,52,19,15,17]]) {
-    box(w,h,d,x,h/2-.12,z,building);box(w+.35,.35,d+.35,x,h,z,coping);box(w*.18,1.1,d*.24,x+2,h+.65,z+2,black);
-    const faceX=x>0?x-w/2-.012:x+w/2+.012;
-    for(let y=2;y<h-1;y+=2.5)for(let dz=-d/2+2;dz<d/2-1;dz+=2.7)box(.04,1.3,1.5,faceX,y,z+dz,windows);
-    for(let y=3.25;y<h;y+=2.5)box(.16,.16,d,faceX,y,z,coping);
-    for(const dz of [-d/2+.35,d/2-.35])box(.24,h,.25,faceX,h/2,z+dz,coping);
-  }
+  const artContext={group,add,box,bar,material,surfaceMap,tiledMaterials,ownedMaterials,lowfx,layout:L};
+  const vegetation=addRiverwayVegetation(artContext);
+  group.userData.updateVegetation=vegetation.update;
+  const city=addRocCityBuildings(artContext);
+  addRocCityProps({...artContext,horizontalScale});
+  const neighborhood=addRocCityLife({...artContext,horizontalScale});
+  group.userData.updateLife=neighborhood.update;
+  const building=city.materials.brick;
+  const windows=material('Skyline window glass',0x4e676d,.55,.28);
   const towerStone=material('Downtown pale slab',0xb8b7ae,.94);
   const towerGlass=material('Downtown glazing',0x506774,.4,.4);
   const crown=material('Downtown copper roof',0x4d6e67,.8,.3);
@@ -366,7 +347,7 @@ export function dressRocCity(level, { lowfx = false } = {}) {
 
   for(const [mat,geometries] of batches) {
     const mesh=new THREE.Mesh(mergeGeometries(geometries,false),mat);mesh.name=mat.name;
-    mesh.receiveShadow=true;mesh.castShadow=![grass,asphalt,road,aggregate,mulch,water,line,yellow,shade,fence,emissive].includes(mat);
+    mesh.receiveShadow=true;mesh.castShadow=![grass,asphalt,road,aggregate,water,line,yellow,shade,fence,emissive,...streetDetail.materials].includes(mat);
     group.add(mesh);geometries.forEach(g=>g.dispose());
   }
   group.userData.materials=ownedMaterials;
@@ -382,26 +363,40 @@ export function createRocCityArt(root, level, { lowfx = false } = {}) {
   const horizontalScale=level.horizontalScale??1;
   const dressing=dressRocCity(level,{lowfx}), lights=new THREE.Group();lights.name='ROC City outdoor daylight';root.add(lights);
   const skyMaterial=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,
-    uniforms:{top:{value:new THREE.Color(0x80acc6)},horizon:{value:new THREE.Color(0xb4c6cb)}},
+    uniforms:{top:{value:new THREE.Color(0x689bb9)},horizon:{value:new THREE.Color(0xc5ceca)},breezeTime:{value:0}},
     vertexShader:'varying vec3 direction; void main(){direction=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);gl_Position.z=gl_Position.w*.99999;}',
-    fragmentShader:`uniform vec3 top; uniform vec3 horizon; varying vec3 direction;
+    fragmentShader:`uniform vec3 top; uniform vec3 horizon; uniform float breezeTime; varying vec3 direction;
+      float cloudHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float cloudNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(cloudHash(i),cloudHash(i+vec2(1,0)),f.x),mix(cloudHash(i+vec2(0,1)),cloudHash(i+vec2(1,1)),f.x),f.y);}
       void main(){
-        float h=smoothstep(-.04,.70,normalize(direction).y);
-        gl_FragColor=vec4(mix(horizon,top,h),1.0);
+        vec3 d=normalize(direction);float h=smoothstep(-.04,.78,d.y);
+        vec2 p=d.xz/max(.16,d.y+.22)*2.1+vec2(breezeTime*.004,breezeTime*.001);
+        float clouds=cloudNoise(p)*.58+cloudNoise(p*2.1)*.28+cloudNoise(p*4.3)*.14;
+        clouds=smoothstep(.49,.76,clouds)*smoothstep(.005,.2,d.y)*.55;
+        vec3 sky=mix(mix(horizon,top,h),vec3(.83,.85,.81),clouds);
+        float glow=pow(max(0.,dot(d,normalize(vec3(-48.,54.,-35.)))),18.);
+        gl_FragColor=vec4(sky+vec3(.13,.095,.035)*glow,1.0);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }`,
   });
   const sky=new THREE.Mesh(new THREE.SphereGeometry(450,24,12),skyMaterial);sky.name='Open Riverway sky';sky.frustumCulled=false;sky.renderOrder=-100;lights.add(sky);
-  const ambient=new THREE.HemisphereLight(0xc3dded,0x7d8062,1.45);
-  const sun=new THREE.DirectionalLight(0xffebce,2.8);sun.position.set(-34,61,-43).multiplyScalar(horizontalScale);sun.target.position.set(0,0,0);
-  sun.castShadow=!lowfx;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-58*horizontalScale,right:58*horizontalScale,top:71*horizontalScale,bottom:-71*horizontalScale,near:1,far:170*horizontalScale});sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-.00035;sun.shadow.normalBias=.035;sun.shadow.radius=2;
-  const fill=new THREE.DirectionalLight(0xc4d8e0,.32);fill.position.set(28,10,39);lights.add(ambient,sun,sun.target,fill);
+  const ambient=new THREE.HemisphereLight(0xb9d2e2,0x52563c,.92);
+  const sun=new THREE.DirectionalLight(0xffe6bf,3.35);sun.position.set(-48,54,-35).multiplyScalar(horizontalScale);sun.target.position.set(0,0,0);
+  sun.castShadow=!lowfx;sun.shadow.mapSize.set(4096,4096);Object.assign(sun.shadow.camera,{left:-58*horizontalScale,right:58*horizontalScale,top:71*horizontalScale,bottom:-71*horizontalScale,near:1,far:170*horizontalScale});sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-.0002;sun.shadow.normalBias=.025;sun.shadow.radius=2;
+  const fill=new THREE.DirectionalLight(0xc4d8e0,.26);fill.position.set(28,10,39);lights.add(ambient,sun,sun.target,fill);
   if(!lowfx)for(const z of [30,40,50]){const lamp=new THREE.PointLight(0xe3eddb,3.5,10*horizontalScale,2);lamp.position.set(10*horizontalScale,4.8,z*horizontalScale);lights.add(lamp);}
   let disposed=false;
+  const reduceMotion=typeof matchMedia==='function'?matchMedia('(prefers-reduced-motion: reduce)'):null;
   return {
-    sun, pierBounds:dressing.userData.pierBounds, cameraFar:200*horizontalScale, background:new THREE.Color(0xb4c6cb),fog:new THREE.Fog(0xb4c6cb,76*horizontalScale,185*horizontalScale),environmentIntensity:.45,toneMappingExposure:.93,
-    update(time) { const water=dressing.userData.water;if(water)water.offset.x=time*.002; },
+    sun, pierBounds:dressing.userData.pierBounds, cameraFar:260*horizontalScale, background:new THREE.Color(0xc5ceca),fog:new THREE.Fog(0xc5ceca,110*horizontalScale,240*horizontalScale),environmentIntensity:.36,toneMappingExposure:.96,
+    update(time) {
+      const t=reduceMotion?.matches?0:time;
+      const water=dressing.userData.water;if(water)water.offset.x=t*.002;
+      skyMaterial.uniforms.breezeTime.value=t;
+      dressing.userData.updateVegetation?.(t);
+      dressing.userData.updateLife?.(t);
+    },
     dispose() {
       if(disposed)return;disposed=true;lights.removeFromParent();sun.shadow.map?.dispose();sky.geometry.dispose();skyMaterial.dispose();
       const textures=new Set();dressing.traverse(object=>{if(object.geometry)object.geometry.dispose();if(object.isInstancedMesh)object.dispose();});
