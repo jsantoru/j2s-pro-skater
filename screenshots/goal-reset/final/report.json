@@ -1,0 +1,136 @@
+{
+  "url": "http://127.0.0.1:4176/",
+  "recordedAt": "2026-10-01T04:14:16.185Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "fresh careers have no reset action; completed boards open a scoped confirmation with safe default focus",
+      "passed": true,
+      "detail": {
+        "mode": "title",
+        "level": "genesee-warehouse",
+        "dialog": true,
+        "focus": "goal-reset-cancel",
+        "progress": {
+          "completed": [
+            "high-score",
+            "pro-score",
+            "sick-score",
+            "combo",
+            "skate",
+            "caps",
+            "tape"
+          ],
+          "bestScore": 42000,
+          "bestCombo": 14000
+        },
+        "inert": true
+      }
+    },
+    {
+      "name": "Cancel, Escape and keyboard focus trapping preserve every save and do not leave the board",
+      "passed": true,
+      "detail": {
+        "canceled": true,
+        "unchangedSaves": true
+      }
+    },
+    {
+      "name": "confirm clears only this level, preserves records and preferences, and makes all goals replayable",
+      "passed": true,
+      "detail": {
+        "mode": "goals",
+        "available": [
+          "high-score",
+          "pro-score",
+          "sick-score",
+          "combo",
+          "skate",
+          "caps",
+          "tape"
+        ],
+        "pickups": 11,
+        "focus": "high-score",
+        "completed": []
+      }
+    },
+    {
+      "name": "controller default A cancels, B and Start cancel, and deliberate selection confirms once",
+      "passed": true,
+      "detail": {
+        "mode": "title",
+        "level": "roc-city-skatepark",
+        "dialog": false,
+        "focus": "overlay-msg",
+        "progress": {
+          "completed": [],
+          "bestScore": 42000,
+          "bestCombo": 14000
+        },
+        "inert": false
+      }
+    },
+    {
+      "name": "reset persists after reload and an active run cannot open the reset dialog",
+      "passed": true,
+      "detail": {
+        "reloaded": true,
+        "activeRunGuard": true
+      }
+    },
+    {
+      "name": "changing level closes a pending confirmation without clearing either career",
+      "passed": true,
+      "detail": {
+        "mode": "title",
+        "level": "roc-city-skatepark",
+        "dialog": false,
+        "focus": "overlay-msg",
+        "progress": {
+          "completed": [],
+          "bestScore": 42000,
+          "bestCombo": 14000
+        },
+        "inert": false
+      }
+    },
+    {
+      "name": "Perinton reset restores its eleven pickups and preserves both older careers",
+      "passed": true,
+      "detail": {
+        "restoredPickups": 11,
+        "otherCareersUnchanged": true
+      }
+    },
+    {
+      "name": "native touch confirmation fits portrait and short landscape with accessible targets",
+      "passed": true,
+      "detail": {
+        "viewports": 4,
+        "nativeTouchConfirmed": true
+      }
+    },
+    {
+      "name": "blocked storage still resets the in-memory career and restores the next run",
+      "passed": true,
+      "detail": {
+        "memoryReset": true
+      }
+    }
+  ],
+  "screenshots": [
+    "desktop-confirmation.png",
+    "desktop-reset-board.png",
+    "touch-390x844.png",
+    "touch-320x568.png",
+    "touch-844x390.png",
+    "touch-568x320.png"
+  ],
+  "browserErrors": [],
+  "passed": true
+}

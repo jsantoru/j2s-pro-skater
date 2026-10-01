@@ -65,7 +65,7 @@ body:is([data-mode="home"], [data-mode="levels"], [data-mode="characters"]) :is(
 .fe-level-count > span { max-width: 70px; font: 700 9px/1.5 var(--font-ui); letter-spacing: 1.5px; color: #9db194; }
 .fe-level-tools { display: flex; align-items: center; gap: 30px; }
 .fe-level-tools .fe-skater-link { width: auto; }
-.fe-spots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 25px; }
+.fe-spots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
 .fe-level-card { min-width: 0; border: 1px solid #c7d6b550; border-radius: 3px; background: #111f1eea; padding: 0; text-align: left; color: var(--fe-paper); overflow: hidden; box-shadow: 0 16px 50px #0002; transition: border-color .18s, transform .18s; }
 .fe-level-card:hover { border-color: var(--fe-acid); transform: translateY(-3px); }
 .fe-card-image { height: clamp(170px, 24vh, 230px); position: relative; overflow: hidden; background: #273d33; }
@@ -76,7 +76,7 @@ body:is([data-mode="home"], [data-mode="levels"], [data-mode="characters"]) :is(
 .fe-card-status { position: absolute; bottom: 15px; left: 17px; z-index: 1; background: var(--fe-acid); padding: 7px 9px; font-size: 9px; letter-spacing: 1.1px; font-weight: 700; color: #18320f; }
 .fe-card-body { padding: 23px 24px 20px; }
 .fe-card-location { color: #9db18e; font-size: 10px; letter-spacing: 1.6px; }
-.fe-card-body h2 { font: 700 43px/1 var(--font-display); margin: 7px 0 9px; letter-spacing: -.5px; }
+.fe-card-body h2 { font: 700 clamp(32px, 3.2vw, 43px)/1 var(--font-display); margin: 7px 0 9px; letter-spacing: -.5px; }
 .fe-card-description { font-size: 12px; color: #9baa99; margin: 0; line-height: 1.5; }
 .fe-card-bottom { display: flex; justify-content: space-between; gap: 20px; align-items: end; margin-top: 23px; }
 .fe-card-career { flex: 1; max-width: 220px; }

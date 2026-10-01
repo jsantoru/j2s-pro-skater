@@ -9,6 +9,10 @@ export const ROC_GOALS = Object.freeze(GOALS.map(goal => Object.freeze({
     : goal.type === 'combo' ? 'Land a single 5,000-point combo.'
     : goal.id === 'tape' ? 'Reach the secret tape on the quarter-pipe deck beneath the bridge.' : goal.description,
 })));
+export const PERINTON_GOALS = Object.freeze(ROC_GOALS.map(goal => Object.freeze({
+  ...goal,
+  description: goal.id==='tape' ? 'Reach the secret tape above the central curved transition deck.' : goal.description,
+})));
 
 // The original keys remain unchanged so an existing warehouse career is never
 // migrated, replaced, or mistaken for progress at a different park.
@@ -18,5 +22,10 @@ export const LEVEL_GOAL_CONFIGS = Object.freeze({
     goals: ROC_GOALS,
     progressKey: 'j2s-pro-skater.roc-city-skatepark.goals.v1',
     highScoresKey: 'j2s-pro-skater.roc-city-skatepark.highscores.v1',
+  }),
+  'perinton-skatepark': Object.freeze({
+    goals: PERINTON_GOALS,
+    progressKey: 'j2s-pro-skater.perinton-skatepark.goals.v1',
+    highScoresKey: 'j2s-pro-skater.perinton-skatepark.highscores.v1',
   }),
 });

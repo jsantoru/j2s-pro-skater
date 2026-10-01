@@ -1,0 +1,164 @@
+{
+  "coordinateSpace": "Unscaled authored metres; +X photo33 right, +Z toward entry",
+  "views": [
+    {
+      "name": "aerial-photo33",
+      "position": [
+        0,
+        38,
+        37
+      ],
+      "target": [
+        0,
+        0,
+        -1
+      ],
+      "fov": 57
+    },
+    {
+      "name": "plan-overhead",
+      "position": [
+        0,
+        68,
+        -1
+      ],
+      "target": [
+        0,
+        0,
+        -1
+      ],
+      "up": [
+        0,
+        0,
+        -1
+      ],
+      "fov": 47
+    },
+    {
+      "name": "plaza-from-entry",
+      "position": [
+        -5,
+        1.7,
+        13
+      ],
+      "target": [
+        -1,
+        0.9,
+        -2
+      ],
+      "fov": 68
+    },
+    {
+      "name": "central-transition",
+      "position": [
+        -14,
+        2.7,
+        9
+      ],
+      "target": [
+        -3,
+        0.5,
+        0
+      ],
+      "fov": 65
+    },
+    {
+      "name": "bowl-overview",
+      "position": [
+        1,
+        5.8,
+        -4
+      ],
+      "target": [
+        9,
+        -0.8,
+        -11
+      ],
+      "fov": 64
+    },
+    {
+      "name": "bowl-interior",
+      "position": [
+        5,
+        -0.4,
+        -10
+      ],
+      "target": [
+        12,
+        -0.2,
+        -11
+      ],
+      "fov": 70
+    },
+    {
+      "name": "pump-west",
+      "position": [
+        -20.5,
+        2.4,
+        -7.5
+      ],
+      "target": [
+        -11,
+        0.5,
+        -14
+      ],
+      "fov": 66
+    },
+    {
+      "name": "pump-rear-straight",
+      "position": [
+        -18,
+        2.2,
+        -19
+      ],
+      "target": [
+        18,
+        0.4,
+        -19
+      ],
+      "fov": 63
+    },
+    {
+      "name": "stairs-and-bank",
+      "position": [
+        15.5,
+        2.2,
+        4.5
+      ],
+      "target": [
+        7,
+        0.55,
+        -0.8
+      ],
+      "fov": 66
+    },
+    {
+      "name": "east-quarter-extensions",
+      "position": [
+        13,
+        2,
+        7
+      ],
+      "target": [
+        20,
+        1,
+        0
+      ],
+      "fov": 65
+    },
+    {
+      "name": "shade-parking",
+      "position": [
+        1,
+        1.65,
+        12.5
+      ],
+      "target": [
+        0,
+        2,
+        30
+      ],
+      "fov": 66
+    }
+  ]
+}

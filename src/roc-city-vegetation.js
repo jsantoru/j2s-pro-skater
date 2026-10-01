@@ -129,12 +129,13 @@ function windMaterial(mat, clock, kind, lowfx) {
 }
 
 /** Adds four vegetation batches, with every material/map owned by the caller. */
-export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledMaterials, ownedMaterials, lowfx = false, layout }) {
+export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledMaterials, ownedMaterials, lowfx = false, layout, planting = null }) {
   const rng = randomSeed(73490), sprays = [], mulchParts = [], grassPositions = [], grassColors = [];
   const trunks = [], groundPatches = [], plantingPockets = [], windTime = { value: 0 };
-  const trail = new THREE.CatmullRomCurve3(layout.trail.map(([x, z]) => new THREE.Vector3(x, 0, z))).getPoints(280).map(p => [p.x, p.z]);
+  const trail = planting?.safeGround ? [] : new THREE.CatmullRomCurve3(layout.trail.map(([x, z]) => new THREE.Vector3(x, 0, z))).getPoints(280).map(p => [p.x, p.z]);
   const outline = layout.mainPerimeter || layout.perimeter;
   const safeGround = (x, z, clearance = .2) => {
+    if(planting?.safeGround)return planting.safeGround(x,z,clearance);
     if (x < -39.5 || (x > 17.55 && x < 33.7) || (z > layout.bridge.minZ - 1.4 && z < layout.bridge.maxZ + 2)) return false;
     if (insidePolygon(x, z, outline)) return false;
     for (let i = 0; i < outline.length; i++) if (segmentDistance(x, z, outline[i], outline[(i + 1) % outline.length]) < clearance) return false;
@@ -275,17 +276,17 @@ export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledM
 
   // Retain the established planting areas, moving four anchors clear of the
   // elevated western approach. The final tree also stays north of I-490.
-  const mature = [[-25, -43], [-25, -50], [-21, -52], [-16, -57], [-7, -61], [4, -60], [15, -58],
+  const mature = planting?.mature ?? [[-25, -43], [-25, -50], [-21, -52], [-16, -57], [-7, -61], [4, -60], [15, -58],
     [38, -49], [39, -29], [38, -6], [39, 14], [-25.5, -28], [-36.6, -2], [-28, 13], [-32, 18]];
   for (const [x, z] of mature) tree(x, z, 7.5 + rng() * 2.6);
-  for (const [x, z] of [[16.7, -29], [16.7, -10], [16.7, 11], [-1.5, -52], [7, -52], [-26, -13], [-27, 5]]) tree(x, z, 3.5 + rng() * .9, true, x > 15);
+  for (const [x, z] of planting?.young ?? [[16.7, -29], [16.7, -10], [16.7, 11], [-1.5, -52], [7, -52], [-26, -13], [-27, 5]]) tree(x, z, 3.5 + rng() * .9, true, x > 15);
   // An estimated distant tree line gives the southern exit depth. It begins
   // beyond the bridge, with the road and the actual skating footprint clear.
-  for (const [x, z] of [[-12, 65], [-4, 72], [3, 66], [10, 74], [13, 63]]) tree(x, z, 7.2 + rng() * 1.7, false, false, true);
+  for (const [x, z] of planting?.distant ?? [[-12, 65], [-4, 72], [3, 66], [10, 74], [13, 63]]) tree(x, z, 7.2 + rng() * 1.7, false, false, true);
 
   // Broken clumps along the outside of the trail, not a continuous card wall.
   // Each candidate checks the actual spline and concrete perimeter before use.
-  for (const [x, z, rx, rz] of [[-25, -31, 1.2, 3], [-26, -15, 1.3, 3.5], [-27, 1, 1.4, 3.5],
+  for (const [x, z, rx, rz] of planting?.tufts ?? [[-25, -31, 1.2, 3], [-26, -15, 1.3, 3.5], [-27, 1, 1.4, 3.5],
     [-21, 13, 1.2, 1.6], [-9, -54, 2.3, 1.4], [8, -46, .8, 1.1], [16.6, -5, .5, 2]]) {
     for (let i = 0; i < (lowfx ? 35 : 68); i++) {
       const a = rng() * Math.PI * 2, r = Math.sqrt(rng());
@@ -311,7 +312,7 @@ export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledM
       triangle(base,top,[cx + dz * .009,y,cz - dx * .009]);
     }
   };
-  for (const [x,z,rx,rz] of [[-25.7,-29,1.0,1.8],[-26.3,-13,1.1,1.7],[-27,4,1.0,1.6],
+  for (const [x,z,rx,rz] of planting?.pockets ?? [[-25.7,-29,1.0,1.8],[-26.3,-13,1.1,1.7],[-27,4,1.0,1.6],
     [-22.8,11,1.0,1.5],[-9,-53,1.4,1.0],[8,-46,.65,1.0],
     [16.55,-35,.46,1.8],[16.55,-20,.46,1.6],[16.55,-4,.46,1.5],[16.55,7,.46,1.4],[16.55,16,.46,1.0]]) {
     let shrubs = 0;
@@ -333,7 +334,7 @@ export function addRiverwayVegetation({ group, add, material, surfaceMap, tiledM
   // Small mown spaces around the stationary neighbours and the bench bag.
   // Filter only intersecting low plants after generation: the seeded trees and
   // every distant planting pocket keep their exact accepted positions.
-  const standingClearings = [[8.5,-46.3],[9.7,-45.5],[16.12,-6.6],[16.35,-5.5],[9.25,-44.15]];
+  const standingClearings = planting?.clearings ?? [[8.5,-46.3],[9.7,-45.5],[16.12,-6.6],[16.35,-5.5],[9.25,-44.15]];
   const clearRadius = .40;
   let kept = 0;
   for (const s of sprays) {

@@ -25,7 +25,7 @@ const targetLabel = (goal) => goal.type === 'score' || goal.type === 'combo' ? f
 const RUN_NAMES = { 'high-score': 'High Score', 'pro-score': 'Pro Score', 'sick-score': 'Sick Score', combo: 'Big Combo', skate: 'SKATE', caps: 'Bottle Caps', tape: 'Secret Tape' };
 
 export class LevelUI {
-  constructor(goals, { onStart, onBoard, onLevels, onHome } = {}) {
+  constructor(goals, { onStart, onBoard, onLevels, onHome, onResetGoals, onResetModalChange } = {}) {
     this.goals = goals;
     this.config = LEVELS[0];
     this.selectedByLevel = new Map();
@@ -33,6 +33,10 @@ export class LevelUI {
     this.onBoard = onBoard;
     this.onLevels = onLevels;
     this.onHome = onHome;
+    this.onResetGoals = onResetGoals;
+    this.onResetModalChange = onResetModalChange;
+    this.resetDialog = $('goal-reset-dialog');
+    this.resetLevelId = null;
     this.selectedGoal = goals[0]?.id || 'high-score';
     this.progress = { completed: [], bestScore: 0, bestCombo: 0 };
     this.display = null;
@@ -54,7 +58,30 @@ export class LevelUI {
     });
     $('level-select-nav').addEventListener('click', () => this.onLevels?.());
     $('home-nav').addEventListener('click', () => this.onHome?.());
+    $('reset-goals').addEventListener('click', () => this.openResetDialog());
+    $('goal-reset-cancel').addEventListener('click', () => this.closeResetDialog());
+    $('goal-reset-confirm').addEventListener('click', () => {
+      const id = this.resetLevelId;
+      if (!this.resetDialogOpen || id !== this.config.id) return;
+      this.closeResetDialog(false);
+      this.onResetGoals?.(id);
+    });
+    // Main consumes Escape with priority over level navigation. Prevent native
+    // Escape from closing first and exposing the same key edge to the board.
+    this.resetDialog.addEventListener('cancel', event => event.preventDefault());
+    this.resetDialog.addEventListener('close', () => { if (!this.resetDialogOpen) this.closeResetDialog(); });
+    this.resetDialog.addEventListener('click', event => {
+      if (event.target === this.resetDialog) this.closeResetDialog();
+    });
     window.addEventListener('keydown', (event) => {
+      if (this.resetDialogOpen) {
+        if (event.code === 'Escape') event.preventDefault();
+        if (['Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) {
+          event.preventDefault();
+          this.moveResetFocus(event.code === 'ArrowUp' || event.code === 'ArrowLeft' || (event.code === 'Tab' && event.shiftKey) ? -1 : 1);
+        }
+        return;
+      }
       if (!this.acceptsInput) return;
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.code)) {
         event.preventDefault();
@@ -64,6 +91,7 @@ export class LevelUI {
   }
 
   setLevel(config, progress = { completed: [], bestScore: 0, bestCombo: 0 }) {
+    this.closeResetDialog(false);
     this.selectedByLevel.set(this.config.id, this.selectedGoal);
     this.config = { ...LEVELS[0], ...config };
     this.goals = config.goals || this.goals;
@@ -123,8 +151,42 @@ export class LevelUI {
   }
 
   get isOpen() { return this.display !== null && !$('overlay').classList.contains('hidden'); }
+  get resetDialogOpen() { return this.resetDialog.open; }
+  openResetDialog() {
+    if (!this.acceptsInput || this.display !== 'board' || !this.onResetGoals || !this.progress.completed?.length) return false;
+    this.resetLevelId = this.config.id;
+    this.resetReturnFocus = document.activeElement;
+    $('goal-reset-level').textContent = this.config.title;
+    this.resetInert = [$('overlay'), $('front-end'), $('start-btn')].filter(Boolean).map(element => [element, element.inert]);
+    this.resetDialog.showModal();
+    for (const [element] of this.resetInert) element.inert = true;
+    $('goal-reset-cancel').focus({ preventScroll: true });
+    this.onResetModalChange?.(true);
+    return true;
+  }
+  closeResetDialog(restoreFocus = true) {
+    if (!this.resetDialogOpen && this.resetLevelId === null) return;
+    if (this.resetDialogOpen) this.resetDialog.close();
+    this.resetLevelId = null;
+    for (const [element, inert] of this.resetInert || []) element.inert = inert;
+    this.resetInert = null;
+    this.onResetModalChange?.(false);
+    const target = this.resetReturnFocus;
+    this.resetReturnFocus = null;
+    if (restoreFocus && target?.isConnected && !target.disabled && !target.hidden && !target.closest('.hidden, [inert]')) target.focus({ preventScroll: true });
+  }
+  moveResetFocus(direction) {
+    const buttons = [$('goal-reset-cancel'), $('goal-reset-confirm')], index = buttons.indexOf(document.activeElement);
+    buttons[(index + direction + buttons.length) % buttons.length].focus();
+  }
+  updateResetInput(input) {
+    if (!this.resetDialogOpen) return;
+    if (input.menuCancel || input.pausePressed || input.startPressed) this.closeResetDialog();
+    else if (input.menuMove) this.moveResetFocus(input.menuMove);
+    else if (input.menuConfirm && [$('goal-reset-cancel'), $('goal-reset-confirm')].includes(document.activeElement)) document.activeElement.click();
+  }
   get acceptsInput() {
-    return this.isOpen && !$('overlay').inert && $('settings-panel').classList.contains('hidden') && $('controls-panel').classList.contains('hidden');
+    return !this.resetDialogOpen && this.isOpen && !$('overlay').inert && $('settings-panel').classList.contains('hidden') && $('controls-panel').classList.contains('hidden');
   }
   buttons() {
     return [...$('overlay').querySelectorAll('button, summary')].filter(button => !button.disabled && !button.hidden && !button.closest('.hidden'));
@@ -175,6 +237,7 @@ export class LevelUI {
     return next;
   }
   hide() {
+    this.closeResetDialog(false);
     this.display = null;
     $('overlay').classList.add('hidden');
     this.clearNotifications();
@@ -200,6 +263,7 @@ export class LevelUI {
     $('board-completion-fill').style.width = `${completed.size / this.goals.length * 100}%`;
     $('board-best-score').textContent = progress.bestScore ? fmt(progress.bestScore) : '—';
     $('board-best-combo').textContent = progress.bestCombo ? fmt(progress.bestCombo) : '—';
+    $('reset-goals').hidden = completed.size === 0;
     for (const goal of this.goals) {
       const button = this.goalButtons.get(goal.id);
       const done = completed.has(goal.id);

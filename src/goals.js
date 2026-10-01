@@ -90,6 +90,15 @@ export class GoalProgress {
     };
   }
 
+  // Replay this career's goals without deleting its records or any other save.
+  // The caller must end/reset the current GoalRun before returning to the board.
+  resetCompleted() {
+    this.completed.clear();
+    const result = this.snapshot();
+    try { this.storage?.setItem(this.key, JSON.stringify(result)); } catch { /* memory fallback */ }
+    return result;
+  }
+
   // Saves only improvements. A blocked/full store never prevents in-memory progress.
   record({ completed = [], score = 0, bestCombo = 0 } = {}) {
     let changed = false;
