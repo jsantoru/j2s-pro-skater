@@ -56,8 +56,10 @@ captures using the same relative camera angle.
 | ![Switch 5-0 loads the wrong end](screenshots/switch-stance/before/joe-east-switch-5-0-side.png) | ![Switch 5-0 loads the trailing truck](screenshots/switch-stance/after/joe-east-switch-5-0-side.png) |
 | ![Regular Manual loads the wrong wheels](screenshots/switch-stance/before/joe-east-regular-manual-side.png) | ![Regular Manual loads the trailing wheels](screenshots/switch-stance/after/joe-east-regular-manual-side.png) |
 
-[Normal-speed switch manual and live revert](screenshots/switch-stance/after/paced-switch-manual.webm)
-uses the gameplay camera. Close views and native touch evidence accompany
+[Recorded switch manual and live revert](screenshots/switch-stance/after/paced-switch-manual.webm)
+uses the gameplay camera and was replayed at 1×. The capture is 3.117 seconds
+for a 4.091-second paced input sequence, so the clip is pose evidence rather
+than a frame-timing measurement. Close views and native touch evidence accompany
 [`after/report.json`](screenshots/switch-stance/after/report.json).
 
 The existing procedural rig still uses simplified joints and mirrored authored
