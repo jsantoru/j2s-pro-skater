@@ -70,6 +70,52 @@ check('bowl has two connected depths, open support hole and matching closed copi
   return { deep: deep.point.y, shallow: shallow.point.y };
 });
 
+check('longer bowl keeps its depths, clear deck and supported outer pickup lane', () => {
+  const size = new THREE.Box3().setFromObject(level.bowl).getSize(new THREE.Vector3());
+  assert(size.x > 14.1 && size.x < 14.3, 'Only the bowl long axis gains room');
+  assert(size.z > 8.15 && size.z < 8.25 && Math.abs(size.y - 1.8) < .001);
+  assert.equal(PERINTON_LAYOUT.bowl.shallow, 1.25);
+  // Only the coping boundary may be open. In particular, the fine lip strip
+  // and coarser interior must share actual indices, not nearly matching edges.
+  const positions = level.bowl.geometry.attributes.position, indices = level.bowl.geometry.index, edges = new Map();
+  for (let i = 0; i < indices.count; i += 3) for (let j = 0; j < 3; j++) {
+    const a = indices.getX(i + j), b = indices.getX(i + (j + 1) % 3), key = a < b ? `${a},${b}` : `${b},${a}`;
+    const edge = edges.get(key); if (edge) edge.count++; else edges.set(key, { a, b, count: 1 });
+  }
+  for (const edge of edges.values()) {
+    assert(edge.count <= 2, 'Bowl contains an overlapping/nonmanifold edge');
+    if (edge.count === 1) assert(Math.abs(positions.getY(edge.a)) < .001 && Math.abs(positions.getY(edge.b)) < .001, 'Open seam inside bowl');
+  }
+  for (let i = 0; i < positions.count; i++) assert(Math.abs(positions.getY(i) - level.bowlHeightAt(positions.getX(i), positions.getZ(i))) < .003, 'Tessellation changed the analytic bowl profile');
+  // These points lie in the newly opened wings, beyond the former bowl rim.
+  // Raycast the complete level so a stale slab or landscape plane cannot pass.
+  for (const x of [2.3, 3, 5.4, 9, 12.5, 15.5, 16.05]) {
+    assert.equal(support(x, -11).object, level.bowl, `Hidden surface across wider bowl at ${x}`);
+    ray.set(new THREE.Vector3(x, 2, -11), new THREE.Vector3(0, -1, 0)); ray.far = 5;
+    assert.equal(ray.intersectObject(level.turf, false).length, 0, 'Turf cutout follows the wider bowl');
+  }
+  const segmentDistance = (p, a, b) => {
+    const dx = b[0] - a[0], dz = b[1] - a[1];
+    const t = THREE.MathUtils.clamp(((p[0] - a[0]) * dx + (p[1] - a[1]) * dz) / (dx * dx + dz * dz), 0, 1);
+    return Math.hypot(p[0] - a[0] - dx * t, p[1] - a[1] - dz * t);
+  };
+  let clearance = Infinity;
+  for (const p of level.bowlDeckOutline) for (let i = 0; i < level.pumpOutline.length; i++)
+    clearance = Math.min(clearance, segmentDistance(p, level.pumpOutline[i], level.pumpOutline[(i + 1) % level.pumpOutline.length]));
+  assert(clearance > .6, `Deck must not intersect the pump ribbon: ${clearance}`);
+  const letter = PERINTON_PICKUPS.find(p => p.id === 'letter-t');
+  assert(Math.abs(support(letter.position[0], letter.position[2]).point.y) < .001);
+  for (const z of [-12, -11, -10, -9]) for (const x of [17.1, 17.3, 17.5, 17.7, 17.9]) {
+    ray.set(new THREE.Vector3(x, 2, z), new THREE.Vector3(0, -1, 0)); ray.far = 3;
+    const hits = ray.intersectObjects([level.floor, level.bowlDeck], false);
+    assert.equal(new Set(hits.map(h => h.object)).size, 1, `Deck/plaza seam has a gap or coplanar overlap at ${x},${z}`);
+    assert(hits.every(h => Math.abs(h.point.y) < .001));
+  }
+  const cap = PERINTON_PICKUPS.find(p => p.id === 'cap-3');
+  assert.equal(cap.position[0], 5.4); assert(Math.abs(support(cap.position[0], cap.position[2]).point.y + 1.8) < .001);
+  return { opening: size.toArray(), deckPumpClearance: clearance };
+});
+
 check('pump ribbon is open, supported, has rollers and distinct outer berms', () => {
   const first = level.pumpPoints[0], last = level.pumpPoints.at(-1);
   assert(Math.hypot(first[0]-last[0],first[2]-last[2]) > 30);
@@ -144,12 +190,32 @@ check('pump track traverses both open connections using real push and steering',
 });
 
 check('both bowl pockets permit natural transition airs and returns', () => {
-  for(const [x,z,dx,dz]of [[6,-11,0,-1],[12.5,-11,1,0]]){
+  // Start at the same relative points in the two widened pockets.
+  for(const [x,z,dx,dz]of [[5.4,-11,0,-1],[13.2,-11,1,0]]){
     const sk=rider(x,z,dx,dz,7),bails=[];let peak=sk.pos.y,air=0,landings=0;
     sk.events.bail=reason=>bails.push(reason);sk.events.land=()=>landings++;
     for(let i=0;i<6/dt;i++){const input=makeState();input.push=1;sk.update(dt,input);peak=Math.max(peak,sk.pos.y);if(sk.state==='air')air+=dt;}
     assert(!bails.length&&air>.2&&landings,JSON.stringify({x,z,bails,peak,air,landings,position:sk.pos.toArray()}));
   }
+});
+
+check('nearby shallow approaches return inside the bowl and settle without bails', () => {
+  let cases = 0, minimumAir = Infinity;
+  for (const z of [-11.2, -11, -10.8]) for (const degrees of [-5, 0, 5]) {
+    const angle = degrees * Math.PI / 180, sk = rider(13.2, z, Math.cos(angle), Math.sin(angle), 7), bails = [];
+    let elapsed = 0, air = 0, landing = null;
+    sk.events.bail = reason => bails.push(reason);
+    sk.events.land = () => { landing ??= { elapsed, position: sk.pos.toArray(), inside: support(sk.pos.x, sk.pos.z).object === level.bowl }; };
+    while (elapsed < 4 && !bails.length) {
+      const input = makeState(); input.push = landing ? 0 : 1; input.brake = landing ? .65 : 0;
+      sk.update(dt, input); if (sk.state === 'air') air += dt; elapsed += dt;
+      if (landing && elapsed > landing.elapsed + 1.2) break;
+    }
+    assert(!bails.length && air > .5 && landing?.inside && landing.position[1] < -.1, JSON.stringify({ z, degrees, bails, air, landing }));
+    assert.equal(sk.state, 'ride'); assert.equal(support(sk.pos.x, sk.pos.z).object, level.bowl, 'Controlled return must settle inside the bowl, not on the exterior deck');
+    cases++; minimumAir = Math.min(minimumAir, air);
+  }
+  return { cases, minimumAir: +minimumAir.toFixed(3) };
 });
 
 check('A-frame joins the street bank and its linked kink rail grinds both ways', () => {
@@ -174,7 +240,8 @@ check('A-frame joins the street bank and its linked kink rail grinds both ways',
 
 check('five bottle caps form a continuous attainable route including the bowl', () => {
   const goals=new GoalRun(new GoalProgress(null),PERINTON_PICKUPS);
-  const result=route([[-5,13],[-16,10,'cap-1'],[-16,-7,'cap-2'],[-11,-7],[1,-7],[3.1,-9],[6,-11,'cap-3'],[9,-11],[12.5,-11],[17,-11],[17,-5],[15,2,'cap-5'],[13,1.6],[9.5,1.6],[4,-1,'cap-4']],{goals,speed:5.5,seconds:115});
+  const cap3=PERINTON_PICKUPS.find(p=>p.id==='cap-3');
+  const result=route([[-5,13],[-16,10,'cap-1'],[-16,-7,'cap-2'],[-11,-7],[1,-7],[3.1,-9],[cap3.position[0],cap3.position[2],'cap-3'],[9,-11],[12.5,-11],[17,-11],[17,-5],[15,2,'cap-5'],[13,1.6],[9.5,1.6],[4,-1,'cap-4']],{goals,speed:5.5,seconds:115});
   assert(goals.completed.has('caps')&&!result.bails.length,JSON.stringify(result));return result;
 });
 

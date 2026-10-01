@@ -13,11 +13,14 @@ export const PERINTON_LAYOUT = freeze({
   publishedArea: { squareFeet: 13500, squareMetres: 1254.19 },
   spawn: { position: [-5, 0, 13], heading: [0, 0, -1] },
   mainOutline: [[-22,-7],[-11,-7],[-10,-5],[17,-5],[17,-15],[19,-17],[21,-13],[22,-7],[22,14],[7,14],[7,19],[-7,19],[-7,14],[-22,14]],
-  turfOutline: [[-18,-17.8],[-12,-17.8],[0,-17.8],[16.8,-17.8],[18,-15],[17,-5],[-10,-5],[-10,-7],[-6,-9],[-6,-12],[-9,-14],[-18,-14],[-20,-16]],
+  turfOutline: [[-18,-17.8],[-12,-17.8],[0,-17.8],[16.8,-17.8],[18,-15],[18.1,-11],[17,-5],[-10,-5],[-10,-7],[-6,-9],[-6,-12],[-9,-14],[-18,-14],[-20,-16]],
   bowl: {
-    rimY: 0, deep: 1.8, shallow: 1.25, blend: [8, 11],
-    outline: [[3.6,-13.8],[4.5,-15],[7.9,-15],[9.5,-14.1],[10.1,-13.75],[12.1,-14.1],[14.2,-13.1],[15,-11.2],[14.6,-8.9],[12.9,-7.7],[10.8,-7.8],[9.8,-8.25],[8.6,-7.35],[5.8,-7.1],[3.8,-8.1],[3.2,-10.4]],
-    deck: [[2.5,-14.4],[3.7,-16],[8.3,-16],[9.9,-15.15],[11,-15.1],[13.2,-15],[15.4,-13.6],[16.2,-11.2],[15.7,-8.1],[13.5,-6.5],[10.7,-6.6],[9.6,-7],[8.9,-6.3],[5.2,-6],[2.7,-7.3],[2,-10.6]],
+    // Photo33's bowl/plaza proportions support a longer pocket than the first
+    // estimate: these X coordinates are +20% about x=9. Z, depths and physical
+    // transition runs stay unchanged; this is not a whole-park scale factor.
+    rimY: 0, deep: 1.8, shallow: 1.25, blend: [7.8, 11.4],
+    outline: [[2.52,-13.8],[3.6,-15],[7.68,-15],[9.6,-14.1],[10.32,-13.75],[12.72,-14.1],[15.24,-13.1],[16.2,-11.2],[15.72,-8.9],[13.68,-7.7],[11.16,-7.8],[9.96,-8.25],[8.52,-7.35],[5.16,-7.1],[2.76,-8.1],[2.04,-10.4]],
+    deck: [[1.2,-14.4],[2.64,-16],[8.16,-16],[10.08,-15.15],[11.4,-15.1],[14.04,-15],[16.68,-13.6],[17.64,-11.2],[17.04,-8.1],[14.4,-6.5],[11.04,-6.6],[9.72,-7],[8.88,-6.3],[4.44,-6],[1.44,-7.3],[.6,-10.6]],
   },
   pump: {
     width: 2.15, bermHeight: 1.05, segments: 480,
@@ -33,7 +36,7 @@ export const PERINTON_LAYOUT = freeze({
   stairs: { start: [8,0,-1.9], direction: [1,0], width: 2.6, count: 4, rise: .17, treads: [.45,1.125,.45], feature: 'two-flat-two' },
   features: {
     entry: { name: 'Entry plaza', position: [0,0,15] },
-    bowl: { name: 'Two-depth bowl', position: [8.8,-1.6,-11] },
+    bowl: { name: 'Two-depth bowl', position: [8.76,-1.6,-11] },
     pump: { name: 'Rollers and banked turns', position: [0,.25,-19] },
     flow: { name: 'Inverted-C transition deck', position: [-1.4,1.2,0] },
     stairs: { name: 'Two-flat-two stair and bank', position: [9,.34,-1.9] },
@@ -57,7 +60,7 @@ export const PERINTON_PICKUPS = freeze([
   { id:'letter-e',goalId:'skate',type:'letter',label:'E',position:[15,.95,8],surfaceY:0,hint:'Return past the stair and bank.' },
   { id:'cap-1',goalId:'caps',type:'cap',label:'1',position:[-16,.95,10],surfaceY:0,hint:'Near the western entry quarter.' },
   { id:'cap-2',goalId:'caps',type:'cap',label:'2',position:[-16,.95,-7],surfaceY:0,hint:'At the western pump-track entrance.' },
-  { id:'cap-3',goalId:'caps',type:'cap',label:'3',position:[6,-.85,-11],surfaceY:-1.8,hint:'Drop into the larger bowl pocket.' },
+  { id:'cap-3',goalId:'caps',type:'cap',label:'3',position:[5.4,-.85,-11],surfaceY:-1.8,hint:'Drop into the larger bowl pocket.' },
   { id:'cap-4',goalId:'caps',type:'cap',label:'4',position:[4,1.63,-1],surfaceY:.68,hint:'Climb the central street platform.' },
   { id:'cap-5',goalId:'caps',type:'cap',label:'5',position:[15,.95,2],surfaceY:0,hint:'Beside the eastern quarter wall.' },
   { id:'secret-tape',goalId:'tape',type:'tape',label:'SECRET',position:[-.65,2.15,-2],surfaceY:1.2,hint:'Air onto the raised spine of the curved transition deck.' },

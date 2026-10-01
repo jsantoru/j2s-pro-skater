@@ -26,6 +26,49 @@ export function perintonPolygon(outline, holes = [], height = 0) {
   result.computeVertexNormals(); surfaceUV(result, 3); return result;
 }
 
+// Subtract a partly intersecting outline without passing overlapping holes to
+// ShapeGeometry. The strip boundaries include every crossing, so each interval
+// has an unambiguous inside/outside order and the shared edge remains exact.
+function polygonDifference(outline, cutout, height = 0) {
+  const polygons = [outline, cutout], edges = [], stations = [];
+  polygons.forEach((polygon, owner) => polygon.forEach((a, i) => {
+    const b = polygon[(i + 1) % polygon.length]; stations.push(a[0]);
+    if (Math.abs(b[0] - a[0]) > 1e-9) edges.push({ a, b, owner, z: x => a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]) });
+  }));
+  for (const a of edges.filter(e => e.owner === 0)) for (const b of edges.filter(e => e.owner === 1)) {
+    const dx = a.b[0] - a.a[0], dz = a.b[1] - a.a[1], ex = b.b[0] - b.a[0], ez = b.b[1] - b.a[1], denominator = dx * ez - dz * ex;
+    if (Math.abs(denominator) < 1e-9) continue;
+    const ox = b.a[0] - a.a[0], oz = b.a[1] - a.a[1], t = (ox * ez - oz * ex) / denominator, u = (ox * dz - oz * dx) / denominator;
+    if (t > 0 && t < 1 && u > 0 && u < 1) stations.push(a.a[0] + t * dx);
+  }
+  const xs = [...new Set(stations.map(x => Math.round(x * 1e7) / 1e7))].sort((a, b) => a - b), positions = [], indices = [];
+  const triangle = (a, b, c) => {
+    if (Math.abs((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])) < 1e-9) return;
+    const n = positions.length / 3; positions.push(a[0], height, a[1], b[0], height, b[1], c[0], height, c[1]); indices.push(n, n + 1, n + 2);
+  };
+  const strip = (x0, x1, low, high) => {
+    triangle([x0, low.z(x0)], [x0, high.z(x0)], [x1, low.z(x1)]);
+    triangle([x1, low.z(x1)], [x0, high.z(x0)], [x1, high.z(x1)]);
+  };
+  for (let i = 1; i < xs.length; i++) {
+    const x0 = xs[i - 1], x1 = xs[i], mid = (x0 + x1) / 2;
+    const boundaries = [0, 1].map(owner => edges.filter(e => e.owner === owner && mid > Math.min(e.a[0], e.b[0]) && mid < Math.max(e.a[0], e.b[0])).sort((a, b) => a.z(mid) - b.z(mid)));
+    for (let j = 0; j + 1 < boundaries[0].length; j += 2) {
+      let low = boundaries[0][j]; const high = boundaries[0][j + 1];
+      for (let k = 0; k + 1 < boundaries[1].length; k += 2) {
+        const a = boundaries[1][k], b = boundaries[1][k + 1];
+        if (b.z(mid) <= low.z(mid)) continue;
+        if (a.z(mid) >= high.z(mid)) break;
+        if (a.z(mid) > low.z(mid)) strip(x0, x1, low, a);
+        if (b.z(mid) > low.z(mid)) low = b;
+        if (low.z(mid) >= high.z(mid)) break;
+      }
+      if (high.z(mid) > low.z(mid) + 1e-9) strip(x0, x1, low, high);
+    }
+  }
+  return geometry(positions, indices);
+}
+
 function samplePath(points, segments = 120, closed = true) {
   return new THREE.CatmullRomCurve3(points.map(([x, z]) => V([x, 0, z])), closed, 'centripetal').getSpacedPoints(segments).slice(0, closed ? -1 : undefined).map(p => [p.x, p.z]);
 }
@@ -81,6 +124,52 @@ function clippedHeightField(outline, heightAt, cell = .24) {
     }
   }
   return geometry(positions, indices);
+}
+
+// Resolve the steep rim by its curvature instead of the accident of where a
+// square grid meets the coping. The analytic profile remains unchanged. The
+// interior keeps coarse cells, and the final strip reuses its boundary indices
+// so there are no independently interpolated edges or cracks between surfaces.
+function bowlHeightField(outline, heightAt) {
+  const count = outline.length, width = .24;
+  const area = outline.reduce((sum, a, i) => { const b = outline[(i + 1) % count]; return sum + a[0] * b[1] - b[0] * a[1]; }, 0);
+  const sign = area > 0 ? 1 : -1;
+  const inset = outline.map((p, i) => {
+    const a = outline[(i + count - 1) % count], b = outline[(i + 1) % count];
+    const u = new THREE.Vector2(p[0] - a[0], p[1] - a[1]).normalize(), v = new THREE.Vector2(b[0] - p[0], b[1] - p[1]).normalize();
+    return [p[0] - (u.y + v.y) * sign * width / (1 + u.dot(v)), p[1] + (u.x + v.x) * sign * width / (1 + u.dot(v))];
+  });
+  const interior = clippedHeightField(inset, heightAt), positions = [...interior.attributes.position.array], indices = [...interior.index.array], edges = new Map();
+  for (let i = 0; i < indices.length; i += 3) for (let j = 0; j < 3; j++) {
+    const a = indices[i + j], b = indices[i + (j + 1) % 3], key = a < b ? `${a},${b}` : `${b},${a}`;
+    const edge = edges.get(key); if (edge) edge.count++; else edges.set(key, { a, b, count: 1 });
+  }
+  const boundaryIndices = new Set();
+  for (const edge of edges.values()) if (edge.count === 1) { boundaryIndices.add(edge.a); boundaryIndices.add(edge.b); }
+  const boundary = [...boundaryIndices].map(index => {
+    const x = positions[index * 3], z = positions[index * 3 + 2]; let closest = Infinity, segment = 0, fraction = 0;
+    for (let i = 0; i < count; i++) {
+      const a = inset[i], b = inset[(i + 1) % count], dx = b[0] - a[0], dz = b[1] - a[1];
+      const t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz), 0, 1);
+      const distance = Math.hypot(x - a[0] - t * dx, z - a[1] - t * dz);
+      if (distance < closest) { closest = distance; segment = i; fraction = t; }
+    }
+    const a = outline[segment], b = outline[(segment + 1) % count];
+    return { index, order: (segment + fraction) % count, outer: [THREE.MathUtils.lerp(a[0], b[0], fraction), THREE.MathUtils.lerp(a[1], b[1], fraction)], inner: [x, z] };
+  }).sort((a, b) => a.order - b.order);
+  // Millimetre spacing at the nearly vertical lip resolves its tangent; rows
+  // spread out toward the .24 m interior where the same curve is much flatter.
+  // Uniform XZ cells otherwise launch from arbitrary shallow rim facets.
+  const rows = [0, .002, .008, .018, .032, .05, .075, .1, .15].map(distance => boundary.map(point => {
+    const x = THREE.MathUtils.lerp(point.outer[0], point.inner[0], distance / width), z = THREE.MathUtils.lerp(point.outer[1], point.inner[1], distance / width);
+    const index = positions.length / 3; positions.push(x, heightAt(x, z), z); return index;
+  }));
+  rows.push(boundary.map(point => point.index));
+  for (let j = 0; j < rows.length - 1; j++) for (let i = 0; i < boundary.length; i++) {
+    const next = (i + 1) % boundary.length, a = rows[j][i], b = rows[j][next], c = rows[j + 1][i], d = rows[j + 1][next];
+    if (sign > 0) indices.push(a, c, b, b, c, d); else indices.push(a, b, c, b, d, c);
+  }
+  interior.dispose(); return geometry(positions, indices);
 }
 
 function gridSurface(rows) {
@@ -254,7 +343,7 @@ export class PerintonLevel {
       const t = clamp(distanceToBoundary(this.bowlOutline, x, z) / width, 0, 1);
       return spec.rimY - depth * Math.sqrt(Math.max(0, 1 - (1 - t) ** 2));
     };
-    const g = clippedHeightField(this.bowlOutline, this.bowlHeightAt), p = g.attributes.position;
+    const g = bowlHeightField(this.bowlOutline, this.bowlHeightAt), p = g.attributes.position;
     // One continuous surface, tan walls and a gray poured floor, as built.
     // Interpolate the pour colour through the same vertices instead of choosing
     // whole triangles: a sloping floor must not acquire a saw-toothed paint edge.
@@ -448,7 +537,9 @@ export class PerintonLevel {
     // than relying on a camera-dependent polygon offset to hide duplicate faces.
     const c=L.centralTransition;
     const floorOutline=L.mainOutline.flatMap(p=>p[0]===c.minX&&p[1]===c.minZ?[p,[c.minX,c.maxZ],[c.maxX,c.maxZ],[c.maxX,c.minZ]]:[p]);
-    this.floor=this.add(new THREE.Mesh(perintonPolygon(floorOutline,[],0),this.mats.floor),true,false);this.floor.name='Perinton street plaza';
+    // The wider bowl deck meets the eastern plaza. Give their shared area to
+    // the deck once rather than rendering two coplanar concrete sheets.
+    this.floor=this.add(new THREE.Mesh(polygonDifference(floorOutline,this.bowlDeckOutline,0),this.mats.floor),true,false);this.floor.name='Perinton street plaza';
     this.turf=this.add(new THREE.Mesh(perintonPolygon(L.turfOutline,[this.bowlDeckOutline],-.012),this.mats.turf),false,false);this.turf.name='Artificial turf island';
     // The lawn is slightly lower than the turf. Close that exposed 2.5 cm edge
     // so a grazing camera cannot see the sky through the two separate sheets.

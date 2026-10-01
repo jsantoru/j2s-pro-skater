@@ -35,6 +35,12 @@ Coordinates follow Grand Opening 33: **+X is image-right, +Z is toward the front
 
 The visitor lists quarter heights of approximately 3–5 feet and a 4-foot central transition. Those are helpful scale checks. The model’s bowl depths, exact radii, pump roller counts/heights and street riser dimensions remain estimates. The stair topology is visually established; its estimated 0.17-metre rise is not an official measurement.
 
+### Bowl proportion audit
+
+A second comparison with Grand Opening 33, the [visitor's bowl photograph 10](https://skatebuffalo.com/skateparks/perinton/images/10.jpg), and the construction aerial on printed page 18 of the [Town's 2023 annual report](https://perinton.gov/wp-content/uploads/2023-Perinton-Rec-Parks-Annual-Report_Reduced-Size.pdf) found the bowl compressed along its long axis. Its opening occupied about 27% of the modeled 44 m park width; the aerial suggests approximately 29–32%, with perspective uncertainty. The corrected plan extends the bowl and deck 20% along X about x=9, placing that ratio around 32%. Z dimensions, depth and transition runs are retained. This is a photo-informed proportion correction, not a newly verified measurement.
+
+ROC City's existing 1.25 multiplier applies to both horizontal axes only. Reusing it throughout Perinton would add 56.25% to plan area; the published total area does not justify that adjustment. Likewise, published area alone cannot validate an individual feature. Joe measures approximately 1.756 m in both rendered worlds, so the perceived discrepancy was not an enlarged player model. No dimensioned bowl drawing was found in the additional audit.
+
 ## Materials and surroundings
 
 The completed park uses tan/buff concrete on transition faces, bowl walls and many raised features; neutral pale-gray concrete on flat skating areas and bowl bottoms; and galvanized silver rails, coping and metal trim. ROC City’s blue/yellow trim palette does not belong here. Artificial-green islands surround the bowl and pump route, without invented interior trees blocking those lines.
