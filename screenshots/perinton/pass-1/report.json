@@ -1,0 +1,1027 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-10-01T04:06:48.423Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "native level catalog contains three playable spots and launches Perinton",
+      "passed": true,
+      "detail": {
+        "cards": [
+          {
+            "id": "genesee-warehouse",
+            "label": "01READY TO SKATEROCHESTER, NEW YORKGENESEE WAREHOUSEOld brick. New lines. Make the warehouse yours.YOUR GOALS 0 / 7ENTER SPOT ",
+            "disabled": false
+          },
+          {
+            "id": "roc-city-skatepark",
+            "label": "02READY TO SKATEROCHESTER RIVERWAYROC CITY SKATEPARKConcrete curves. Riverway lines. Take it outside.YOUR GOALS 0 / 7ENTER SPOT ",
+            "disabled": false
+          },
+          {
+            "id": "perinton-skatepark",
+            "label": "03READY TO SKATEFAIRPORT, NEW YORKPERINTON SKATEPARKPump the rollers. Find your flow. Make another lap.YOUR GOALS 0 / 7ENTER SPOT ",
+            "disabled": false
+          }
+        ],
+        "board": {
+          "title": "PERINTON SKATEPARK",
+          "id": "perinton-skatepark",
+          "goals": [
+            {
+              "id": "high-score",
+              "target": 5000
+            },
+            {
+              "id": "pro-score",
+              "target": 15000
+            },
+            {
+              "id": "sick-score",
+              "target": 35000
+            },
+            {
+              "id": "combo",
+              "target": 5000
+            },
+            {
+              "id": "skate",
+              "target": 5
+            },
+            {
+              "id": "caps",
+              "target": 5
+            },
+            {
+              "id": "tape",
+              "target": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fixed aerial and ground reference views render the actual completed level",
+      "passed": true,
+      "detail": {
+        "views": 11,
+        "rendering": [
+          {
+            "name": "aerial-photo33",
+            "calls": 149,
+            "triangles": 178896,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "plan-overhead",
+            "calls": 149,
+            "triangles": 178896,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "plaza-from-entry",
+            "calls": 125,
+            "triangles": 174652,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "central-transition",
+            "calls": 132,
+            "triangles": 175112,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "bowl-overview",
+            "calls": 50,
+            "triangles": 158220,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "bowl-interior",
+            "calls": 48,
+            "triangles": 158360,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "pump-west",
+            "calls": 59,
+            "triangles": 171600,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "pump-rear-straight",
+            "calls": 77,
+            "triangles": 172368,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "stairs-and-bank",
+            "calls": 118,
+            "triangles": 175056,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "east-quarter-extensions",
+            "calls": 50,
+            "triangles": 158550,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          },
+          {
+            "name": "shade-parking",
+            "calls": 31,
+            "triangles": 133605,
+            "memory": {
+              "geometries": 406,
+              "textures": 88
+            },
+            "programs": 83,
+            "webglError": 0
+          }
+        ]
+      }
+    }
+  ],
+  "screenshots": [
+    "level-select-desktop.png",
+    "goal-board-desktop.png",
+    "aerial-photo33.png",
+    "plan-overhead.png",
+    "plaza-from-entry.png",
+    "central-transition.png",
+    "bowl-overview.png",
+    "bowl-interior.png",
+    "pump-west.png",
+    "pump-rear-straight.png",
+    "stairs-and-bank.png",
+    "east-quarter-extensions.png",
+    "shade-parking.png"
+  ],
+  "audit": {
+    "views": [
+      {
+        "name": "aerial-photo33",
+        "position": [
+          0,
+          38,
+          37
+        ],
+        "target": [
+          0,
+          0,
+          -1
+        ],
+        "fov": 57
+      },
+      {
+        "name": "plan-overhead",
+        "position": [
+          0,
+          68,
+          -1
+        ],
+        "target": [
+          0,
+          0,
+          -1
+        ],
+        "up": [
+          0,
+          0,
+          -1
+        ],
+        "fov": 47
+      },
+      {
+        "name": "plaza-from-entry",
+        "position": [
+          -5,
+          1.7,
+          13
+        ],
+        "target": [
+          -1,
+          0.9,
+          -2
+        ],
+        "fov": 68
+      },
+      {
+        "name": "central-transition",
+        "position": [
+          -14,
+          2.7,
+          9
+        ],
+        "target": [
+          -3,
+          0.5,
+          0
+        ],
+        "fov": 65
+      },
+      {
+        "name": "bowl-overview",
+        "position": [
+          1,
+          5.8,
+          -4
+        ],
+        "target": [
+          9,
+          -0.8,
+          -11
+        ],
+        "fov": 64
+      },
+      {
+        "name": "bowl-interior",
+        "position": [
+          5,
+          -0.4,
+          -10
+        ],
+        "target": [
+          12,
+          -0.2,
+          -11
+        ],
+        "fov": 70
+      },
+      {
+        "name": "pump-west",
+        "position": [
+          -20.5,
+          2.4,
+          -7.5
+        ],
+        "target": [
+          -11,
+          0.5,
+          -14
+        ],
+        "fov": 66
+      },
+      {
+        "name": "pump-rear-straight",
+        "position": [
+          -18,
+          2.2,
+          -19
+        ],
+        "target": [
+          18,
+          0.4,
+          -19
+        ],
+        "fov": 63
+      },
+      {
+        "name": "stairs-and-bank",
+        "position": [
+          15.5,
+          2.2,
+          4.5
+        ],
+        "target": [
+          7,
+          0.55,
+          -0.8
+        ],
+        "fov": 66
+      },
+      {
+        "name": "east-quarter-extensions",
+        "position": [
+          13,
+          2,
+          7
+        ],
+        "target": [
+          20,
+          1,
+          0
+        ],
+        "fov": 65
+      },
+      {
+        "name": "shade-parking",
+        "position": [
+          1,
+          1.65,
+          12.5
+        ],
+        "target": [
+          0,
+          2,
+          30
+        ],
+        "fov": 66
+      }
+    ],
+    "baseline": null,
+    "sourceLayout": {
+      "bounds": {
+        "minX": -22,
+        "maxX": 22,
+        "minZ": -21,
+        "maxZ": 19
+      },
+      "publishedArea": {
+        "squareFeet": 13500,
+        "squareMetres": 1254.19
+      },
+      "spawn": {
+        "position": [
+          -5,
+          0,
+          13
+        ],
+        "heading": [
+          0,
+          0,
+          -1
+        ]
+      },
+      "mainOutline": [
+        [
+          -22,
+          -7
+        ],
+        [
+          -11,
+          -7
+        ],
+        [
+          -10,
+          -5
+        ],
+        [
+          17,
+          -5
+        ],
+        [
+          17,
+          -15
+        ],
+        [
+          19,
+          -17
+        ],
+        [
+          21,
+          -13
+        ],
+        [
+          22,
+          -7
+        ],
+        [
+          22,
+          14
+        ],
+        [
+          7,
+          14
+        ],
+        [
+          7,
+          19
+        ],
+        [
+          -7,
+          19
+        ],
+        [
+          -7,
+          14
+        ],
+        [
+          -22,
+          14
+        ]
+      ],
+      "turfOutline": [
+        [
+          -18,
+          -17.8
+        ],
+        [
+          -12,
+          -17.8
+        ],
+        [
+          0,
+          -17.8
+        ],
+        [
+          16.8,
+          -17.8
+        ],
+        [
+          18,
+          -15
+        ],
+        [
+          17,
+          -5
+        ],
+        [
+          -10,
+          -5
+        ],
+        [
+          -10,
+          -7
+        ],
+        [
+          -6,
+          -9
+        ],
+        [
+          -6,
+          -12
+        ],
+        [
+          -9,
+          -14
+        ],
+        [
+          -18,
+          -14
+        ],
+        [
+          -20,
+          -16
+        ]
+      ],
+      "bowl": {
+        "rimY": 0,
+        "deep": 1.8,
+        "shallow": 1.25,
+        "blend": [
+          8,
+          11
+        ],
+        "outline": [
+          [
+            3.6,
+            -13.8
+          ],
+          [
+            4.5,
+            -15
+          ],
+          [
+            7.9,
+            -15
+          ],
+          [
+            9.5,
+            -14.1
+          ],
+          [
+            10.1,
+            -13.75
+          ],
+          [
+            12.1,
+            -14.1
+          ],
+          [
+            14.2,
+            -13.1
+          ],
+          [
+            15,
+            -11.2
+          ],
+          [
+            14.6,
+            -8.9
+          ],
+          [
+            12.9,
+            -7.7
+          ],
+          [
+            10.8,
+            -7.8
+          ],
+          [
+            9.8,
+            -8.25
+          ],
+          [
+            8.6,
+            -7.35
+          ],
+          [
+            5.8,
+            -7.1
+          ],
+          [
+            3.8,
+            -8.1
+          ],
+          [
+            3.2,
+            -10.4
+          ]
+        ],
+        "deck": [
+          [
+            2.5,
+            -14.4
+          ],
+          [
+            3.7,
+            -16
+          ],
+          [
+            8.3,
+            -16
+          ],
+          [
+            9.9,
+            -15.15
+          ],
+          [
+            11,
+            -15.1
+          ],
+          [
+            13.2,
+            -15
+          ],
+          [
+            15.4,
+            -13.6
+          ],
+          [
+            16.2,
+            -11.2
+          ],
+          [
+            15.7,
+            -8.1
+          ],
+          [
+            13.5,
+            -6.5
+          ],
+          [
+            10.7,
+            -6.6
+          ],
+          [
+            9.6,
+            -7
+          ],
+          [
+            8.9,
+            -6.3
+          ],
+          [
+            5.2,
+            -6
+          ],
+          [
+            2.7,
+            -7.3
+          ],
+          [
+            2,
+            -10.6
+          ]
+        ]
+      },
+      "pump": {
+        "width": 2.15,
+        "bermHeight": 1.05,
+        "segments": 480,
+        "path": [
+          [
+            -17,
+            -7
+          ],
+          [
+            -14,
+            -8
+          ],
+          [
+            -9,
+            -9.5
+          ],
+          [
+            -7.5,
+            -11
+          ],
+          [
+            -8,
+            -12.6
+          ],
+          [
+            -11,
+            -13.1
+          ],
+          [
+            -15,
+            -13.1
+          ],
+          [
+            -18,
+            -13.4
+          ],
+          [
+            -20,
+            -15.2
+          ],
+          [
+            -20.1,
+            -17.6
+          ],
+          [
+            -18,
+            -19
+          ],
+          [
+            -13,
+            -19
+          ],
+          [
+            0,
+            -19
+          ],
+          [
+            12,
+            -19
+          ],
+          [
+            17.4,
+            -19
+          ],
+          [
+            19.8,
+            -17.4
+          ],
+          [
+            20,
+            -14.5
+          ],
+          [
+            19.5,
+            -11
+          ],
+          [
+            19,
+            -7
+          ]
+        ],
+        "rollers": [
+          {
+            "start": 12,
+            "end": 24,
+            "count": 3,
+            "height": 0.33
+          },
+          {
+            "start": 34,
+            "end": 68,
+            "count": 8,
+            "height": 0.38
+          }
+        ]
+      },
+      "centralTransition": {
+        "minX": -10,
+        "maxX": 0,
+        "minZ": -5,
+        "maxZ": 6.6,
+        "lipX": -1.4,
+        "backLipZ": -3.6,
+        "frontLipZ": 2.8,
+        "height": 1.2,
+        "radius": 1.35
+      },
+      "platform": {
+        "minX": 0,
+        "maxX": 8,
+        "minZ": -4,
+        "maxZ": 3,
+        "height": 0.68,
+        "bankRun": 3
+      },
+      "stairs": {
+        "start": [
+          8,
+          0,
+          -1.9
+        ],
+        "direction": [
+          1,
+          0
+        ],
+        "width": 2.6,
+        "count": 4,
+        "rise": 0.17,
+        "treads": [
+          0.45,
+          1.125,
+          0.45
+        ],
+        "feature": "two-flat-two"
+      },
+      "features": {
+        "entry": {
+          "name": "Entry plaza",
+          "position": [
+            0,
+            0,
+            15
+          ]
+        },
+        "bowl": {
+          "name": "Two-depth bowl",
+          "position": [
+            8.8,
+            -1.6,
+            -11
+          ]
+        },
+        "pump": {
+          "name": "Rollers and banked turns",
+          "position": [
+            0,
+            0.25,
+            -19
+          ]
+        },
+        "flow": {
+          "name": "Inverted-C transition deck",
+          "position": [
+            -1.4,
+            1.2,
+            0
+          ]
+        },
+        "stairs": {
+          "name": "Two-flat-two stair and bank",
+          "position": [
+            9,
+            0.34,
+            -1.9
+          ]
+        },
+        "bank": {
+          "name": "Bank and kinked handrail",
+          "position": [
+            9.5,
+            0.3,
+            1.7
+          ]
+        },
+        "flatbar": {
+          "name": "Flatbar",
+          "position": [
+            4,
+            0.56,
+            10
+          ]
+        },
+        "manual": {
+          "name": "Low manual pad",
+          "position": [
+            -5.5,
+            0.24,
+            7.1
+          ]
+        },
+        "westQuarter": {
+          "name": "West quarter pipe",
+          "position": [
+            -20.3,
+            1.3,
+            2
+          ]
+        },
+        "eastQuarter": {
+          "name": "East quarter pipe and extensions",
+          "position": [
+            20.3,
+            1.3,
+            2
+          ]
+        }
+      },
+      "walkways": {
+        "frontZ": 21.5,
+        "eastX": 25
+      }
+    },
+    "coordinateSpace": "Unscaled authored metres; +X photo33 right, +Z toward entry",
+    "limitations": "Estimated photo-derived dimensions, not a surveyed twin. Deterministic application frames and emulated gamepad/touch are not a physical-device performance test.",
+    "rendering": [
+      {
+        "name": "aerial-photo33",
+        "calls": 149,
+        "triangles": 178896,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "plan-overhead",
+        "calls": 149,
+        "triangles": 178896,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "plaza-from-entry",
+        "calls": 125,
+        "triangles": 174652,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "central-transition",
+        "calls": 132,
+        "triangles": 175112,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "bowl-overview",
+        "calls": 50,
+        "triangles": 158220,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "bowl-interior",
+        "calls": 48,
+        "triangles": 158360,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "pump-west",
+        "calls": 59,
+        "triangles": 171600,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "pump-rear-straight",
+        "calls": 77,
+        "triangles": 172368,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "stairs-and-bank",
+        "calls": 118,
+        "triangles": 175056,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "east-quarter-extensions",
+        "calls": 50,
+        "triangles": 158550,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      },
+      {
+        "name": "shade-parking",
+        "calls": 31,
+        "triangles": 133605,
+        "memory": {
+          "geometries": 406,
+          "textures": 88
+        },
+        "programs": 83,
+        "webglError": 0
+      }
+    ],
+    "thumbnail": {
+      "path": "C:\\Users\\Joe\\Documents\\coding\\j2s-pro-skater\\public\\textures\\levels\\perinton-skatepark.webp",
+      "view": {
+        "name": "aerial-photo33",
+        "position": [
+          -23,
+          28,
+          31
+        ],
+        "target": [
+          0,
+          -0.1,
+          -2
+        ],
+        "fov": 59
+      },
+      "width": 1000,
+      "height": 560
+    }
+  },
+  "assets": [
+    "http://127.0.0.1:4176/assets/index-jCOOcSTv.js",
+    "http://127.0.0.1:4176/assets/main-Td6g4qwj.js"
+  ],
+  "browserErrors": [],
+  "passed": true
+}

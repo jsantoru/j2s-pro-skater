@@ -1,0 +1,60 @@
+{
+  "baseline": "screenshots/perinton-scale/before/report.json",
+  "candidate": "screenshots/perinton-scale/after/report.json",
+  "perinton": {
+    "before": [
+      11.842231512069702,
+      1.7999999523162842,
+      8.193297863006592
+    ],
+    "after": [
+      14.204519510269165,
+      1.7999999523162842,
+      8.210800647735596
+    ],
+    "openingAreaSquareMeters": {
+      "before": 76.95964291820904,
+      "after": 92.37424466377291
+    },
+    "floorAreasSquareMeters": {
+      "gentle": {
+        "before": 39.33736165388723,
+        "after": 50.42259798353524,
+        "percentIncrease": 28.1799181835892
+      },
+      "flat": {
+        "before": 16.815760150133656,
+        "after": 22.513375007410275,
+        "percentIncrease": 33.88258875250034
+      },
+      "deepFlat": {
+        "before": 10.051198395538222,
+        "after": 13.852799784850959,
+        "percentIncrease": 37.82236943009987
+      }
+    }
+  },
+  "rocPixelControls": [
+    {
+      "image": "roc-rim-joe.png",
+      "hashes": [
+        "e36a279f42152906038e7b8d9948f0dc46c5d42cfcf4ebbb20c225673af8b466",
+        "e36a279f42152906038e7b8d9948f0dc46c5d42cfcf4ebbb20c225673af8b466"
+      ],
+      "identical": true
+    },
+    {
+      "image": "roc-inside-joe.png",
+      "hashes": [
+        "f7b1fe4093452f979972728f480a639577678eab54339f97b1f3c3f242c4cc06",
+        "f7b1fe4093452f979972728f480a639577678eab54339f97b1f3c3f242c4cc06"
+      ],
+      "identical": true
+    }
+  ],
+  "notes": [
+    "Viewed matched fixed-camera and rider-relative images; longer connected floor is visible with unchanged character height and vertical depths.",
+    "Only the bowl long axis increases20%; depths, human size and the wider park are not scaled. The sampled spline produces a smallZ-bound drift.",
+    "This is a photo-proportion/playability estimate, not surveyed construction dimensions."
+  ]
+}

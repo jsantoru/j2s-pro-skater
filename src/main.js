@@ -4,6 +4,10 @@ import { RocCityLevel } from './roc-city-level.js';
 import { ROC_PICKUPS } from './roc-city-layout.js';
 import { createRocCityArt } from './roc-city-art.js';
 import { upgradeRocCityConcrete } from './roc-city-concrete.js';
+import { PerintonLevel } from './perinton-level.js';
+import { PERINTON_PICKUPS } from './perinton-layout.js';
+import { createPerintonArt, registerPerintonArtFixtures } from './perinton-art.js';
+import { upgradePerintonConcrete } from './perinton-concrete.js';
 import { Skater } from './skater.js';
 import { Character } from './character.js';
 import { CHARACTERS, CharacterSelection } from './characters.js';
@@ -55,8 +59,16 @@ scene.fog = new THREE.Fog(0x35405a, 50, 120);
 }
 
 const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
+const worldDefinitions={
+  'genesee-warehouse':{pickups:PICKUPS,build:()=>new Level(),light:lightWarehouse,
+    floor:level=>new ConcreteFloor(level.floor,{lowfx:LOWFX,level})},
+  'roc-city-skatepark':{pickups:ROC_PICKUPS,build:()=>new RocCityLevel(),light:createRocCityArt,floor:upgradeRocCityConcrete},
+  'perinton-skatepark':{pickups:PERINTON_PICKUPS,build:()=>{
+    const level=new PerintonLevel();registerPerintonArtFixtures(level);return level;
+  },light:createPerintonArt,floor:upgradePerintonConcrete},
+};
 const careers = new Map(LEVELS.map(metadata => {
-  const config = { ...metadata, ...LEVEL_GOAL_CONFIGS[metadata.id], pickups: metadata.id === 'genesee-warehouse' ? PICKUPS : ROC_PICKUPS };
+  const config = { ...metadata, ...LEVEL_GOAL_CONFIGS[metadata.id], pickups: worldDefinitions[metadata.id].pickups };
   const progress = new GoalProgress(undefined, { key: config.progressKey, goals: config.goals });
   const highScores = new HighScores(undefined, { key: config.highScoresKey });
   // Preserve the original recorded warehouse best without awarding new goals.
@@ -69,12 +81,11 @@ const levelRuntimes = new Map();
 function runtimeFor(id) {
   if (levelRuntimes.has(id)) return levelRuntimes.get(id);
   const root = new THREE.Group(); root.name = `Level: ${id}`;
-  const warehouse = id === 'genesee-warehouse';
-  const level = warehouse ? new Level() : new RocCityLevel();
+  const definition=worldDefinitions[id];
+  const level = definition.build();
   root.add(level.group);
-  const atmosphere = warehouse ? lightWarehouse(root, level, { lowfx: LOWFX }) : createRocCityArt(root, level, { lowfx: LOWFX });
-  const floorSurface = warehouse ? new ConcreteFloor(level.floor, { lowfx: LOWFX, level })
-    : upgradeRocCityConcrete(level, levelRuntimes.get('genesee-warehouse').floorSurface);
+  const atmosphere = definition.light(root, level, { lowfx: LOWFX });
+  const floorSurface = definition.floor(level,levelRuntimes.get('genesee-warehouse')?.floorSurface);
   const config = careers.get(id).config;
   const collectibles = new Collectibles(root, { pickups: config.pickups, name: `${config.title} goal pickups` });
   const runtime = { root, level, atmosphere, floorSurface, collectibles,
@@ -113,7 +124,8 @@ const audio = new Audio();
 const settings = new Settings();
 const fx = new Effects(scene, { level, lowfx: LOWFX });
 const sessionClock = new SessionClock(RUN_TIME);
-const levelUI = new LevelUI(activeConfig.goals, { onStart: startRun, onBoard: showGoalBoard, onLevels: showLevelSelect, onHome: showHome });
+const levelUI = new LevelUI(activeConfig.goals, { onStart: startRun, onBoard: showGoalBoard, onLevels: showLevelSelect, onHome: showHome,
+  onResetGoals: resetLevelGoals, onResetModalChange: () => { input.stopHaptics(); accumulator=0; last=performance.now(); } });
 levelUI.setLevel(activeConfig, progress.snapshot());
 const frontEnd = new FrontEnd({
   onLevels: showLevelSelect, onHome: showHome,
@@ -382,6 +394,17 @@ function showGoalBoard() {
   enterMenu('title');
   levelUI.showBoard(progress.snapshot());
 }
+function resetLevelGoals(id) {
+  if(mode!=='title'||id!==activeLevelId)return false;
+  // Discard the previous run before clearing career flags. Its old completed
+  // snapshot must never write those flags back during a later menu transition.
+  goals.reset();
+  progress.resetCompleted();
+  levelUI.focusUnfinished(progress.snapshot());
+  focusGoal=levelUI.selectedGoal;activeCareer.focusGoal=focusGoal;
+  showGoalBoard();
+  return true;
+}
 function navigateBack() {
   if (mode === 'characters') leaveCharacterSelect();
   else if (mode === 'over') showGoalBoard();
@@ -418,6 +441,10 @@ function frame(now) {
   let dt = Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now;
   const inp = input.poll(dt);
   if (inp.anyPressed && !audio.enabled) audio.init();
+  if(levelUI.resetDialogOpen){
+    levelUI.updateResetInput(inp);
+    audio.update(skater);renderer.render(scene,camera);return;
+  }
   if (hud.controlsOpen && !hud.settingsOpen) {
     if (inp.selectPressed || inp.pausePressed || inp.menuCancel || inp.startPressed) hud.toggleControls(false);
     audio.update(skater);
@@ -484,6 +511,10 @@ function frame(now) {
         camera.lookAt(-1 * scale, 0, -5 * scale);
       }
       camera.fov = 60;
+    } else if (activeLevelId==='perinton-skatepark') {
+      const view=mode==='home'?(level.homeCamera||level.menuCamera):level.menuCamera;
+      camera.position.fromArray(view.position);camera.position.x+=Math.sin(t)*1.3;camera.position.z+=Math.cos(t)*.7;
+      camera.lookAt(...view.target);camera.fov=view.fov||58;
     } else if (mode === 'home') {
       camera.position.set(-9 + Math.sin(t) * 1.6, 3.1, 23 + Math.cos(t) * 0.7);
       camera.lookAt(4.5, 1.25, 2);

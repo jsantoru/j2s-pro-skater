@@ -1,0 +1,177 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-10-01T04:22:03.593Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "bowl clip decodes and plays at normal speed",
+      "passed": true,
+      "detail": {
+        "elapsed": 2977,
+        "samples": [
+          {
+            "time": 0.412108,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 18,
+              "droppedVideoFrames": 0
+            }
+          },
+          {
+            "time": 1.161026,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 41,
+              "droppedVideoFrames": 0
+            }
+          },
+          {
+            "time": 1.565196,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 52,
+              "droppedVideoFrames": 0
+            }
+          },
+          {
+            "time": 2.293229,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 81,
+              "droppedVideoFrames": 2
+            }
+          },
+          {
+            "time": 2.573141,
+            "ended": true,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 87,
+              "droppedVideoFrames": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "pump clip decodes and plays at normal speed",
+      "passed": true,
+      "detail": {
+        "elapsed": 5439,
+        "samples": [
+          {
+            "time": 0.405028,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 18,
+              "droppedVideoFrames": 1
+            }
+          },
+          {
+            "time": 1.123427,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 41,
+              "droppedVideoFrames": 2
+            }
+          },
+          {
+            "time": 1.52822,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 54,
+              "droppedVideoFrames": 2
+            }
+          },
+          {
+            "time": 2.194664,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 77,
+              "droppedVideoFrames": 2
+            }
+          },
+          {
+            "time": 2.598715,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 92,
+              "droppedVideoFrames": 2
+            }
+          },
+          {
+            "time": 3.279593,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 113,
+              "droppedVideoFrames": 2
+            }
+          },
+          {
+            "time": 3.683645,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 127,
+              "droppedVideoFrames": 2
+            }
+          },
+          {
+            "time": 4.368596,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 160,
+              "droppedVideoFrames": 4
+            }
+          },
+          {
+            "time": 4.771325,
+            "ended": false,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 176,
+              "droppedVideoFrames": 4
+            }
+          },
+          {
+            "time": 5.134397,
+            "ended": true,
+            "rate": 1,
+            "quality": {
+              "totalVideoFrames": 186,
+              "droppedVideoFrames": 5
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "screenshots": [
+    "replay-bowl-0.png",
+    "replay-bowl-2.png",
+    "replay-bowl-4.png",
+    "replay-pump-0.png",
+    "replay-pump-2.png",
+    "replay-pump-4.png",
+    "replay-pump-6.png",
+    "replay-pump-8.png"
+  ],
+  "browserErrors": [],
+  "passed": true
+}

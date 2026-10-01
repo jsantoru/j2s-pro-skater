@@ -1,7 +1,8 @@
-// Two-level integration, isolation, touch controls and rendered ROC City evidence.
+// Multi-level integration, isolation, touch controls and rendered ROC City evidence.
 // node sim/roccitycheck.js [url] [output-directory]
 // Uses a disposable, unsigned-in Edge profile; no existing browser is controlled.
 import assert from 'node:assert/strict';
+import { LEVELS } from '../src/levels.js';
 import { spawn } from 'node:child_process';
 import { mkdtemp, readFile, mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -147,7 +148,7 @@ try {
 
   await check('both real levels have independent cards and ROC opens its own goal board',async()=>{
     await click('#fe-play');await step();
-    assert.equal(await evaluate('document.querySelectorAll(".fe-level-card").length'),2);
+    assert.equal(await evaluate('document.querySelectorAll(".fe-level-card").length'),LEVELS.length);
     const images=await evaluate('Promise.all([...document.querySelectorAll(".fe-card-image img")].map(async i=>{await i.decode();return{ready:i.complete,width:i.naturalWidth,height:i.naturalHeight};}))');
     for(const image of images)assert.ok(image.ready&&image.width===1000&&image.height===560,'actual level thumbnails are loaded');
     await shot('level-select-desktop');

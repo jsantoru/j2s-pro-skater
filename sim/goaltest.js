@@ -355,5 +355,52 @@ check('snapshot arrays cannot mutate the run or saved career', () => {
   assert.ok(run.progress.has('high-score'));
 });
 
+check('resetting completed goals persists an empty board and preserves best records', () => {
+  const store = storage(), progress = new GoalProgress(store);
+  progress.record({ completed: GOALS.map(goal => goal.id), score: 42000, bestCombo: 18000 });
+  const reset = progress.resetCompleted();
+  assert.deepEqual(reset, { completed: [], bestScore: 42000, bestCombo: 18000 });
+  assert.deepEqual(new GoalProgress(store).snapshot(), reset);
+  reset.completed.push('caps');
+  assert.ok(!progress.has('caps'), 'the returned snapshot cannot alter career state');
+  assert.deepEqual(progress.resetCompleted(), { completed: [], bestScore: 42000, bestCombo: 18000 }, 'a repeated reset is safe');
+});
+
+check('a fresh run after reset restores every goal and collectible without using historic bests', () => {
+  const store = storage(), progress = new GoalProgress(store), run = new GoalRun(progress).start();
+  run.bankCombo(40000);
+  for (const pickup of PICKUPS) visit(run, pickup);
+  assert.equal(progress.completed.size, GOALS.length);
+  run.finish();
+  run.reset();
+  progress.resetCompleted();
+  assert.deepEqual(run.bankCombo(10000), [], 'discarded old run cannot restore cleared achievements');
+  run.start();
+  assert.deepEqual(run.snapshot().availableGoals, GOALS.map(goal => goal.id));
+  assert.deepEqual(run.snapshot().completed, []);
+  assert.deepEqual(run.snapshot().collected, []);
+  assert.deepEqual(run.bankCombo(1), [], 'old best score cannot re-complete new score goals');
+  const events = PICKUPS.flatMap(pickup => visit(run, pickup));
+  assert.equal(events.filter(event => event.type === 'pickup').length, 11);
+  assert.deepEqual(events.filter(event => event.type === 'goal').map(event => event.goal.id), ['skate', 'caps', 'tape']);
+  assert.ok(events.filter(event => event.type === 'goal').every(event => event.newCareer));
+  assert.deepEqual(run.bankCombo(2999).map(event => event.goal.id), ['high-score']);
+  assert.equal(progress.bestScore, 40000);
+  assert.equal(progress.bestCombo, 40000);
+  assert.ok(new GoalProgress(store).has('caps'), 'replayed achievements save normally');
+});
+
+check('reset works in memory when storage is blocked and does not make free skate award goals', () => {
+  const progress = new GoalProgress({ getItem() { throw Error('blocked'); }, setItem() { throw Error('blocked'); } });
+  progress.record({ completed: ['caps', 'tape'], score: 9000, bestCombo: 4000 });
+  assert.deepEqual(progress.resetCompleted(), { completed: [], bestScore: 9000, bestCombo: 4000 });
+  const run = new GoalRun(progress).start({ mode: 'free' });
+  for (const pickup of PICKUPS) visit(run, pickup);
+  assert.deepEqual(run.bankCombo(50000), []);
+  assert.deepEqual(progress.snapshot(), { completed: [], bestScore: 9000, bestCombo: 4000 });
+  run.start();
+  assert.equal(run.availableGoals.size, GOALS.length);
+});
+
 console.log(`\n${checks - failures}/${checks} goal checks passed.`);
 if (failures) process.exitCode = 1;

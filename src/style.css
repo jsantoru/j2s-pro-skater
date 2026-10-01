@@ -264,6 +264,37 @@ body[data-mode="title"] #hud, body[data-mode="over"] #hud { visibility: hidden; 
 .goal-row:disabled .goal-icon { color: #819a83; }
 .goal-row:disabled .goal-target { color: #738977; }
 .goal-board-note { margin: 14px 0 0; color: #8fa398; font-size: 10px; line-height: 1.5; }
+.goal-reset-action { display: flex; align-items: center; gap: 9px; min-height: 44px; width: 100%; margin-top: 9px; padding: 9px 0;
+  background: transparent; border: 0; border-top: 1px solid #c5d2c619; color: #bdc9ba; font: 700 9px var(--font-ui); letter-spacing: 1px; text-align: left; cursor: pointer; touch-action: manipulation; }
+.goal-reset-action > span { color: #b8d4aa; font-size: 20px; line-height: 1; }
+.goal-reset-action small { margin-left: auto; color: #7f958e; font-size: 7px; letter-spacing: .8px; }
+.goal-reset-action:hover { color: #edb66b; }
+.goal-reset-action[hidden] { display: none; }
+#goal-reset-dialog { width: min(460px, calc(100% - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 0; overflow: auto;
+  border: 1px solid #d2c5a64d; border-top: 3px solid #edb66b; border-radius: 4px; background: #172720; color: #f2eedc; box-shadow: 0 28px 100px #0008; }
+#goal-reset-dialog::backdrop { background: #06130fea; backdrop-filter: blur(5px); }
+.goal-reset-card { padding: 27px 29px 20px; }
+.goal-reset-eyebrow { color: #edb66b; font: 700 9px var(--font-ui); letter-spacing: 2px; }
+#goal-reset-title { margin: 10px 0 15px; font: 700 34px/1.05 var(--font-display); letter-spacing: .6px; }
+#goal-reset-description { margin: 0; color: #c5d0c1; font: 12px/1.7 var(--font-ui); }
+#goal-reset-level { color: #f2eedc; font-weight: 700; }
+#goal-reset-preserved { margin: 16px 0 22px; padding: 12px 14px; border-left: 2px solid #b8d4aa; background: #b8d4aa0b; color: #adc3a5; font: 11px/1.65 var(--font-ui); }
+.goal-reset-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.goal-reset-buttons button { min-width: 0; min-height: 48px; padding: 11px 10px; border: 1px solid #c5d2c644; border-radius: 2px; background: #21372d;
+  color: #f2eedc; font: 700 9px var(--font-ui); letter-spacing: .6px; cursor: pointer; touch-action: manipulation; }
+.goal-reset-buttons button:hover { border-color: #edb66b; }
+#goal-reset-confirm { border-color: #edb66b; background: #edb66b; color: #172720; }
+#goal-reset-confirm:hover { background: #f6ca8e; }
+#goal-reset-confirm span { margin-left: 7px; font-size: 15px; vertical-align: -1px; }
+.goal-reset-buttons button:focus-visible { outline: 2px solid #f1ecdf; outline-offset: 3px; }
+.goal-reset-hint { display: block; margin-top: 17px; text-align: center; color: #8fa398; font: 7px var(--font-ui); letter-spacing: .8px; }
+@media (max-width: 380px), (max-height: 400px) {
+  .goal-reset-card { padding: 19px 19px 15px; }
+  #goal-reset-title { font-size: 29px; margin: 8px 0 10px; }
+  #goal-reset-description { font-size: 11px; line-height: 1.6; }
+  #goal-reset-preserved { margin: 12px 0 15px; padding: 9px 11px; font-size: 10px; }
+  .goal-reset-hint { margin-top: 12px; }
+}
 .mission-panel { position: relative; min-width: 0; padding: 22px 25px 17px; background: linear-gradient(145deg, #23322dec, #142420ed);
   border: 1px solid #d2c5a633; border-top: 2px solid #edb66b; border-radius: 2px; display: flex; flex-direction: column; overflow: hidden; }
 .mission-topline { display: flex; justify-content: space-between; gap: 10px; position: relative; z-index: 1; font-size: 7px; font-weight: 700; letter-spacing: 1.3px; color: #9eaf9f; }

@@ -1,0 +1,15 @@
+PASS unscaled human dimensions, valid indexed surfaces and distinct park identity {"colliders":31,"railSegments":255}
+PASS bowl has two connected depths, open support hole and matching closed coping {"deep":-1.7999999523162842,"shallow":-1.25}
+PASS pump ribbon is open, supported, has rollers and distinct outer berms {"crests":11,"berm":1.3788756132125854}
+PASS four actual stair risers, long middle landing, solid bank and platform access
+PASS all eleven collectibles have actual support at their declared heights
+PASS SKATE completes from entry with ordinary steering in one timed run {"reached":true,"index":12,"bails":[],"elapsed":16.61,"low":-0.03999999910593033,"high":0.17735188847033007,"position":[15.294384183654433,0,7.01193217062823]}
+PASS both quarter walls support repeated real push/air/return cycles
+PASS flatbar captures with actual grind input and banks a clean dismount
+PASS pump track traverses both open connections using real push and steering
+PASS both bowl pockets permit natural transition airs and returns
+PASS A-frame joins the street bank and its linked kink rail grinds both ways
+PASS five bottle caps form a continuous attainable route including the bowl {"reached":true,"index":15,"bails":[],"elapsed":18.62,"low":-1.7999999523162842,"high":0.6800000071525574,"position":[4.838246346731189,0.6800000071525574,-0.4256367007098681]}
+PASS secret tape is reachable from the street bank onto the raised spine {"reached":true,"index":6,"bails":[],"elapsed":3.38,"low":0,"high":1.1275296695306858,"position":[0.33447845047635233,1.1275296695306858,-1.6914473872499542]}
+PASS real linked bowl grind line reaches Sick Score and the five-thousand combo goal {"score":44910,"best":44910,"captures":4,"elapsed":48.93,"bails":[]}
+14/14 Perinton geometry and riding checks passed

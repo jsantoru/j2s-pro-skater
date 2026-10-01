@@ -1,7 +1,7 @@
 # J2S Pro Skater
 
 A gamepad-first 3D skateboarding game in the spirit of Tony Hawk's Pro Skater 1,
-with Genesee Warehouse and ROC City Skatepark in Rochester, New York.
+with Genesee Warehouse, ROC City Skatepark, and Perinton Skatepark in the Rochester, New York area.
 The point of this build is **game feel**: the skater controller, camera and animation are one
 hand-tuned kinematic system (no rigid-body physics), and every number in it was play-tested.
 
@@ -26,7 +26,7 @@ Keyboard works as a fallback. Press **Back** (gamepad) or **Tab** to show the fu
 
 The home screen opens on a live view of the warehouse. **Play** opens the level selector,
 where each playable spot shows its saved goal progress. Genesee Warehouse is Level 01;
-ROC City Skatepark is Level 02. Each has an independent career and score table.
+ROC City Skatepark is Level 02; Perinton Skatepark is Level 03. Each has an independent career and score table.
 The home screen returns to the last selected spot during the session.
 
 Use **Home** or **Level Select** from the goal board, results, or pause menu to leave the current
@@ -41,7 +41,7 @@ then **Select Skater**. Back cancels the preview. Joe is the original character;
 Aaron is a stylized KRUDCO placeholder based on the supplied reference, with an
 olive cap, black glasses, salt-and-pepper beard and plaid overshirt over a red tee.
 
-Both use the same board, animation rig, tricks and handling in both parks.
+Both use the same board, animation rig, tricks and handling in every level.
 Character selection is cosmetic: careers and high scores stay with each level.
 The selected skater persists under `j2s-pro-skater.character.v1`; inaccessible or
 malformed storage falls back safely without touching existing progress.
@@ -75,7 +75,11 @@ to navigate, Enter / A to select, and Start to drop in.
 Between runs, the focus stays on your selected goal while it is unfinished. Once earned, the
 next run highlights the first unfinished career goal on the board, including after a restart
 or reload. Results show that next focus before you drop in. Completed goals stay checked off on
-the board as achievements, and cannot be selected again. After all seven are done, drop into Free Skate.
+the board as achievements, and cannot be selected again. After all seven are done, drop into Free Skate
+or choose **Reset Goals** on that level's goal board. Confirming clears only that level's completed
+goals and restores its collectible sets for the next run. Best scores, best combo, score tables,
+settings, skater selection, and the other levels' progress remain saved. Cancel, Escape, or
+controller B leaves progress untouched. This works with keyboard, controller, and touch.
 
 | Goal | Target |
 |---|---|
@@ -116,6 +120,9 @@ and attainable score/combo targets using actual skating physics. With the dev se
 `npm run qa:level` checks the integrated browser flow in an isolated Edge profile and captures the UI.
 `npm run qa:checklist` checks every live goal row, completion and restart behavior, and desktop/phone layouts.
 `npm run qa:navigation` checks the home/level/run flow, menu input, saved progress, and responsive layouts.
+`npm run qa:goal-reset -- <preview-url>` checks reset confirmation, cancellation, input priority,
+save isolation, and phone layouts.
+
 `npm run sim:roccity` checks the outdoor park's actual surfaces, transitions, collection routes,
 separate progression, and below-grade bail recovery. `npm run qa:roccity` checks both parks in the
 browser, repeated switching, saved careers, and phone layouts.
@@ -147,6 +154,25 @@ The [ambient-life pass](ENVIRONMENT-LIFE.md) adds spectators, sidewalk walkers, 
 parked bikes and gently moving planting, with a reduced-motion option inherited from the operating system.
 
 ![ROC City Skatepark](screenshots/environment/final/desktop-wide-establishing.png)
+
+## Perinton Skatepark
+
+The third level reconstructs the completed park at 99 O'Connor Road from the Town's overhead
+photographs and independent ground photographs. Its open pump lane, two-depth bowl, central
+curved transition, two-flat-two stairs, banks, quarters, rails, and plaza use shared visible and
+collision surfaces. Tan transitions, gray slabs, silver coping, green shade canopy, picnic area,
+parking, and wooded surroundings follow the photographed setting.
+
+It has the same two-minute goal runs, Free Skate, seven goals, two skaters, controls, trick system,
+and independent saved career as the other outdoor level. The model is calibrated against the
+published 13,500-square-foot skating area; individual dimensions remain photo estimates rather
+than surveyed measurements. See [the reference record](PERINTON-REFERENCES.md) for sources and confidence.
+
+`npm run sim:perinton` checks physical routes, surface support, grinds, collectibles, and scenery
+resource ownership. `npm run qa:perinton -- <preview-url> <output-directory>` captures matching
+viewpoints and checks level integration, traversal, touch controls, and rendering.
+
+![Perinton Skatepark](screenshots/perinton/final/aerial-photo33.png)
 
 ## Controls (gamepad)
 

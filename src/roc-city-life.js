@@ -75,7 +75,7 @@ function deckGeometry() {
  * world metres; only route placement inherits the park's horizontal scaling.
  * Every GPU resource belongs to group / ownedMaterials, matching art disposal.
  */
-export function addRocCityLife({ group, ownedMaterials, lowfx=false, horizontalScale=1, layout }={}) {
+export function addRocCityLife({ group, ownedMaterials, lowfx=false, horizontalScale=1, layout, peopleDefinitions=PEOPLE }={}) {
   if(!group || !ownedMaterials)throw new TypeError('Ambient life needs an art group and material owner.');
   const scale=Number.isFinite(horizontalScale)&&horizontalScale>0?horizontalScale:1;
   const life=new THREE.Group();life.name='Riverway people — decorative, outside riding lines';
@@ -196,7 +196,7 @@ export function addRocCityLife({ group, ownedMaterials, lowfx=false, horizontalS
     }
     return result;
   }
-  PEOPLE.forEach(buildPerson);
+  peopleDefinitions.forEach(buildPerson);
   let triangles=0;
   for(const [name,bucket] of Object.entries(buckets)) {
     if(!bucket.parts.length){bucket.geometry.dispose();continue;}
@@ -300,7 +300,7 @@ export function addRocCityLife({ group, ownedMaterials, lowfx=false, horizontalS
 
   const metadata={
     coordinateSpace:'authored; bodies compensate horizontalScale',
-    decorativeOnly:true,people:PEOPLE.map(person=>({id:person.id,kind:person.kind,height:person.height,position:person.position?[...person.position]:null,route:person.route?[...person.route]:null})),
+    decorativeOnly:true,people:peopleDefinitions.map(person=>({id:person.id,kind:person.kind,height:person.height,position:person.position?[...person.position]:null,route:person.route?[...person.route]:null})),
     bounds:{min:bounds.min.toArray(),max:bounds.max.toArray()},
     drawCalls:life.children.length,triangles,horizontalScale:scale,
   };

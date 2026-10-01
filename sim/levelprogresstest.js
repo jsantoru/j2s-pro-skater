@@ -4,6 +4,9 @@ import { GOALS, PICKUPS, GOAL_STORAGE_KEY, GoalProgress, GoalRun } from '../src/
 import { HIGH_SCORE_STORAGE_KEY, HighScores } from '../src/highscores.js';
 import { LEVEL_GOAL_CONFIGS, ROC_GOALS } from '../src/level-goals.js';
 import { ROC_PICKUPS } from '../src/roc-city-layout.js';
+import { PERINTON_PICKUPS } from '../src/perinton-layout.js';
+
+const parkPickups = { 'genesee-warehouse': PICKUPS, 'roc-city-skatepark': ROC_PICKUPS, 'perinton-skatepark': PERINTON_PICKUPS };
 
 let failures = 0, checks = 0;
 function check(name, run) {
@@ -15,7 +18,7 @@ function storage() {
   const values = new Map();
   return { values, getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value), removeItem: key => values.delete(key) };
 }
-function career(id, store, pickups = id === 'genesee-warehouse' ? PICKUPS : ROC_PICKUPS) {
+function career(id, store, pickups = parkPickups[id]) {
   const config = LEVEL_GOAL_CONFIGS[id];
   const progress = new GoalProgress(store, { key: config.progressKey, goals: config.goals });
   return { progress, run: new GoalRun(progress, { goals: config.goals, pickups }), scores: new HighScores(store, { key: config.highScoresKey }) };
@@ -115,6 +118,46 @@ check('blocked storage preserves independent in-memory careers', () => {
   assert.equal(warehouse.scores.best,3000);assert.equal(roc.scores.best,5000);
   roc.run.start({mode:'free'}).bankCombo(50000);
   assert.equal(roc.progress.bestScore,5000);
+});
+
+check('resetting any of three parks clears only its achievements while every other save stays byte-identical', () => {
+  for (const resetId of Object.keys(parkPickups)) {
+    const store = storage(), parks = new Map(Object.keys(parkPickups).map(id => [id, career(id, store)]));
+    for (const [id, current] of parks) {
+      current.progress.record({ completed: LEVEL_GOAL_CONFIGS[id].goals.map(goal => goal.id), score: 45000, bestCombo: 17000 });
+      current.scores.submit(45000);
+    }
+    store.setItem('j2s-pro-skater.character.v1', JSON.stringify({ version: 1, characterId: 'aaron' }));
+    store.setItem('j2s-pro-skater.settings.v1', JSON.stringify({ music: true }));
+    const before = new Map(store.values), target = parks.get(resetId), config = LEVEL_GOAL_CONFIGS[resetId];
+    target.run.finish(); target.run.reset(); target.progress.resetCompleted();
+    assert.equal(store.values.size, before.size, 'reset does not remove or add unrelated keys');
+    for (const [key, value] of before) if (key !== config.progressKey) assert.equal(store.getItem(key), value, key);
+    const reloaded = career(resetId, store);
+    assert.deepEqual(reloaded.progress.snapshot(), { completed: [], bestScore: 45000, bestCombo: 17000 });
+    assert.deepEqual(reloaded.scores.list, target.scores.list);
+    reloaded.run.start();
+    assert.deepEqual(reloaded.run.snapshot().availableGoals, config.goals.map(goal => goal.id));
+    for (const pickup of reloaded.run.pickups) collect(reloaded.run, pickup);
+    assert.deepEqual(reloaded.progress.snapshot().completed, ['skate', 'caps', 'tape']);
+    for (const otherId of parks.keys()) if (otherId !== resetId)
+      assert.equal(career(otherId, store).progress.completed.size, LEVEL_GOAL_CONFIGS[otherId].goals.length);
+  }
+});
+
+check('Perinton supports the same seven goals and eleven pickups without consuming either previous career', () => {
+  const store = storage(), park = career('perinton-skatepark',store);
+  const config = LEVEL_GOAL_CONFIGS['perinton-skatepark'];
+  assert.equal(config.goals.length,7);
+  assert.equal(new Set(PERINTON_PICKUPS.map(p=>p.id)).size,11);
+  for(const goal of config.goals.filter(g=>g.type==='collection'))
+    assert.equal(PERINTON_PICKUPS.filter(p=>p.goalId===goal.id).length,goal.target);
+  park.run.start().bankCombo(35000);
+  for(const pickup of PERINTON_PICKUPS)collect(park.run,pickup);
+  assert.equal(park.progress.completed.size,7);
+  for(const id of ['genesee-warehouse','roc-city-skatepark'])
+    assert.deepEqual(career(id,store).progress.snapshot().completed,[]);
+  assert.equal(new Set(Object.values(LEVEL_GOAL_CONFIGS).flatMap(c=>[c.progressKey,c.highScoresKey])).size,6);
 });
 
 console.log(`\n${checks-failures}/${checks} per-level progression checks passed.`);
