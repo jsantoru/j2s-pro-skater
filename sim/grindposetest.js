@@ -63,12 +63,16 @@ function support(c,sk) {
     assert.ok(hits.length,'actual deck underside above rail');
     assert.ok(Math.abs(hits[0].distance-.02)<.001,`actual underside touches rail: ${hits[0].distance}`);
   } else {
-    for(const z of type==='both'?[-.24,.24]:[type==='front'?.24:-.24])
+    const loadedZ=(type==='front'?.24:-.24)*sk.stance;
+    for(const z of type==='both'?[-.24,.24]:[loadedZ])
       assert.ok(Math.abs(hangerGap(c,sk,z))<.0001,'loaded actual truck touches rail');
-    if(type!=='both')assert.ok(hangerGap(c,sk,type==='front'?-.24:.24)>-.001,
-      `${sk.grind.name} ${sk.stance} ${sk.grind.dir} ${sk.grind.rail.dir.y}: free truck clears bar at ${g.weight}; gap ${hangerGap(c,sk,type==='front'?-.24:.24)}`);
+    if(type!=='both')assert.ok(hangerGap(c,sk,-loadedZ)>-.001,
+      `${sk.grind.name} ${sk.stance} ${sk.grind.dir} ${sk.grind.rail.dir.y}: free truck clears bar at ${g.weight}; gap ${hangerGap(c,sk,-loadedZ)}`);
     if(type!=='both' && g.weight>=.9999) {
-      const other=hanger(c,type==='front'?-.24:.24).getWorldPosition(V());
+      const travel=sk.grind.rail.dir.clone().multiplyScalar(sk.grind.dir);
+      const actual=hanger(c,loadedZ).getWorldPosition(V()).sub(c.board.getWorldPosition(V()));
+      assert.ok(actual.dot(travel)*(type==='front'?1:-1)>.14,'the loaded truck is at the semantic travel-leading/trailing end');
+      const other=hanger(c,-loadedZ).getWorldPosition(V());
       const relative=other.sub(g.contact.railPoint),along=g.contact.railDirection;
       const fromLine=relative.addScaledVector(along,-relative.dot(along));
       assert.ok(fromLine.length()>.12,'unloaded truck visibly clears rail');

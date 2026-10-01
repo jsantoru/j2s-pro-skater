@@ -61,6 +61,9 @@ grindable. Ollie near an edge and use Grind; Ollie again to dismount. See
 Grinds and grabs use individual contact-driven board and body poses for both
 characters. See [TRICK-ANIMATION.md](TRICK-ANIMATION.md) for all seventeen tricks,
 the anatomical contact references, comparisons and validation commands.
+Switch poses follow the direction of travel, including manuals, grabs, pushing
+and flips. Feeble is down-left and Smith is down-right. See
+[switch stance corrections and validation](SWITCH-STANCE.md).
 
 ## Genesee Warehouse goals
 

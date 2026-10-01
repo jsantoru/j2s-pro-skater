@@ -10,7 +10,7 @@ const output=resolve(process.argv[3]||'screenshots/trick-visuals/before');
 const baseline=process.env.QA_BASELINE==='1';
 const qa=await browserQA({url,output,name:'trick-visuals'});
 qa.report.fixtureMethod='Static close views use real Character.update and real Skater.startGrind on actual rails, with simulation stopped. Static grabs represent rising air (+3 m/s vertical velocity) so landing anticipation is not falsely triggered by a frozen falling pose. Native-controller cases advance the real application separately.';
-const grinds=[['C','50-50'],['N','Nosegrind'],['S','5-0'],['W','Boardslide'],['E','Lipslide'],['NW','Crooked Grind'],['NE','Overcrook'],['SW','Smith Grind'],['SE','Feeble Grind']];
+const grinds=[['C','50-50'],['N','Nosegrind'],['S','5-0'],['W','Boardslide'],['E','Lipslide'],['NW','Crooked Grind'],['NE','Overcrook'],['SW',baseline?'Smith Grind':'Feeble Grind'],['SE',baseline?'Feeble Grind':'Smith Grind']];
 const grabs=[['C','Indy'],['W','Melon'],['N','Nosegrab'],['S','Tailgrab'],['NW','Method'],['NE','Stalefish'],['SW','Judo'],['SE','Airwalk']];
 const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-');
 try {

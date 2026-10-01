@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mirrorSwitchPose } from './stance-pose.js';
 
 // Pose references: original team photographs and instructional sequences, inspected
 // 2026-09-29. Angles below are readable animation choices, not measured photo data.
@@ -31,8 +32,8 @@ const AXLE = .24, HANGER_Y = .043, HANGER_RADIUS = .017, DECK_BOTTOM = .114;
 const ENTRY_TIME = .18, EXIT_RATE = 19;
 const CAR_BODY_TILT = 22 * D, CAR_BODY_RATE = 18;
 
-// +Z remains the anatomical nose even when travelling fakie. Pitch is about
-// local X (negative raises the nose); yaw is around the rail's surface normal.
+// Profiles describe the travel-leading nose and trailing tail. Root +Z stays
+// anatomical; switch rendering mirrors the longitudinal pose/contact only.
 export const GRIND_POSES = Object.freeze({
   '50-50':         { pivot: 'both', yaw: 0, pitch: 0, weight: 0, twist: 0, arms: [65, -62] },
   '5-0':           { pivot: 'rear', yaw: 0, pitch: -21, weight: -.13, twist: 3, arms: [58, -73] },
@@ -44,6 +45,14 @@ export const GRIND_POSES = Object.freeze({
   'Smith Grind':   { pivot: 'rear', yaw: -26, pitch: 17, weight: -.12, twist: 17, arms: [59, -80] },
   'Feeble Grind':  { pivot: 'rear', yaw: 29, pitch: 17, weight: -.12, twist: -15, arms: [79, -53] },
 });
+
+const GRIND_BODY_POSES=Object.fromEntries(Object.entries(GRIND_POSES).map(([name,p])=>{
+  const regular={torsoY:p.twist,torsoZ:-p.pitch*.5,hipsSide:p.weight,
+    lArmZ:p.arms[0]-75,rArmZ:p.arms[1]+75,
+    lElbow:p.pivot==='front'?12:3,rElbow:p.pivot==='rear'?13:2,
+    headY:p.yaw*.5-p.twist*.35};
+  return [name,[regular,mirrorSwitchPose({...regular})]];
+}));
 
 /** Render-only board/body transform. Apply after Character's normal board/body
  * transforms, BEFORE anchorFeet. Character.root stays at sk.pos/modelQuat.
@@ -124,7 +133,7 @@ export class GrindAnimation {
       this._right.crossVectors(this._up, this._nose).normalize();
     }
     this._frameQ.setFromRotationMatrix(this._matrix.makeBasis(this._right, this._up, this._nose));
-    this._turnQ.setFromEuler(this._angles.set(p.pitch * D, p.yaw * D, 0));
+    this._turnQ.setFromEuler(this._angles.set(p.pitch * D * this._stance, p.yaw * D * this._stance, 0));
     this._targetQ.copy(this._frameQ).multiply(this._turnQ);
     if (g.rail.category === 'car') {
       // The board follows a steep windshield, but the rider balances above it.
@@ -156,14 +165,14 @@ export class GrindAnimation {
     // A Smith/Feeble turns its free truck aside BEFORE lowering the nose.
     const pitchWeight = p.pivot === 'rear' && p.pitch > 0
       ? Math.max(0,(this.weight-.68)/.32) : this.weight;
-    this._turnQ.setFromEuler(this._angles.set(p.pitch * D * pitchWeight, p.yaw * D * this.weight, 0));
+    this._turnQ.setFromEuler(this._angles.set(p.pitch * D * pitchWeight * this._stance, p.yaw * D * this.weight * this._stance, 0));
     this._worldQ.copy(this._frameQ).multiply(this._turnQ);
 
     // Cylinder/cylinder contact uses their common perpendicular, not board up:
     // pitched hangers otherwise hover by several millimetres. Deck slides use
     // the underside plane. Solve the pivot AFTER blending to keep it locked.
     this._pivot.set(0, p.pivot === 'deck' ? DECK_BOTTOM : HANGER_Y,
-      p.pivot === 'front' ? AXLE : p.pivot === 'rear' ? -AXLE : 0);
+      (p.pivot === 'front' ? AXLE : p.pivot === 'rear' ? -AXLE : 0) * this._stance);
     if (p.pivot === 'deck') c.normal.copy(UP).applyQuaternion(this._worldQ);
     else {
       this._axle.copy(X).applyQuaternion(this._worldQ);
@@ -193,16 +202,8 @@ export class GrindAnimation {
 
   pose(target) {
     if (!this._spec || this.weight <= .0001) return target;
-    const p = this._spec, w = this.weight;
-    target.torsoY += p.twist * w;
-    target.torsoZ -= p.pitch * .5 * w;
-    target.hipsSide += p.weight * w;
-    target.lArmZ += (p.arms[0] - 75) * w;
-    target.rArmZ += (p.arms[1] + 75) * w;
-    target.lElbow += (p.pivot === 'front' ? 12 : 3) * w;
-    target.rElbow += (p.pivot === 'rear' ? 13 : 2) * w;
-    // Head looks down the rail rather than following a diagonal nose blindly.
-    target.headY += (p.yaw * .5 - p.twist * .35) * w;
+    const pose=GRIND_BODY_POSES[this.name][this._stance<0?1:0];
+    for(const [key,value]of Object.entries(pose))target[key]=(target[key]||0)+value*this.weight;
     return target;
   }
 

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mirrorSwitchPose } from './stance-pose.js';
 
 const DOWN=new THREE.Vector3(0,-1,0);
 // Physical point on the sculpted palm, rather than the wrist-group origin.
@@ -6,8 +7,9 @@ export const GRAB_PALM_CONTACT=Object.freeze([0,-.052,.013]);
 const BASE_POSE={torsoX:14,torsoY:0,torsoZ:0,headX:-8,headY:-48,lArmX:0,lArmZ:68,lElbow:24,rArmX:0,rArmZ:-68,rElbow:24,
   lHip:65,lKnee:115,lLegZ:0,rHip:65,rKnee:115,rLegZ:0,hipsX:0,hipsZ:0,hipsYaw:0,hipsSide:0,hipsY:.65,hipsFwd:0};
 
-// The regular rig's left hand/foot are anatomically front, even in fakie.
-// Root +Z is nose; root -X is toe edge. Grip coordinates lie on the actual
+// Regular profiles use the anatomical left hand/foot as travel-front. Switch
+// variants swap limb roles and reflect root Z, retaining the same toe/heel edge.
+// Root -X is toe edge. Grip coordinates lie on the actual
 // concave deck rim (skater-art.js), including the raised nose/tail tips.
 // Sources: TWS Trujillo Indy / Vallely Melon / Starting Point Stalefish;
 // Skateboard Deutschland Judge Manual 2020 pp24–26 (incl. Judo front-foot kick);
@@ -34,12 +36,31 @@ export const GRAB_DEFINITIONS=Object.freeze({
     feet:[{position:[-.22,.62,.80],rotation:[.20,-1.32,.12]},{position:[.32,.45,-.73],rotation:[-.19,-1.68,-.12]}]},
 });
 const NAMES=Object.keys(GRAB_DEFINITIONS),POSE_KEYS=Object.keys(BASE_POSE);
-const PROFILES=NAMES.map(name=>{
+const reflectZ=([x,y,z])=>[x,y,-z];
+function reflectedRotation(rotation,shoe=false) {
+  const q=new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation));
+  q.set(-q.x,-q.y,q.z,q.w);
+  // A shoe's local forward remains its toe. Reflect the up/forward basis and
+  // rebuild handedness, rather than reversing the toes along with board Z.
+  if(shoe)q.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI));
+  const e=new THREE.Euler().setFromQuaternion(q);return [e.x,e.y,e.z];
+}
+const SWITCH_GRAB_DEFINITIONS=Object.fromEntries(NAMES.map(name=>{
   const d=GRAB_DEFINITIONS[name];
-  return {...d,name,pose:{...BASE_POSE,...d.pose},point:new THREE.Vector3(...d.grip),normal:new THREE.Vector3(...d.inward),
+  return [name,{...d,hand:d.hand==='left'?'right':'left',grip:reflectZ(d.grip),inward:reflectZ(d.inward),
+    pole:[-d.pole[0],d.pole[1],d.pole[2]],board:reflectZ(d.board),rotation:reflectedRotation(d.rotation),
+    pose:mirrorSwitchPose({...BASE_POSE,...d.pose}),
+    feet:d.feet?[d.feet[1],d.feet[0]].map(foot=>foot?{position:reflectZ(foot.position),rotation:reflectedRotation(foot.rotation,true)}:null):undefined}];
+}));
+export function getGrabDefinition(name,stance=1) {return (stance<0?SWITCH_GRAB_DEFINITIONS:GRAB_DEFINITIONS)[name];}
+// Separate variant weights retain an outgoing grab's actual hand and pose even
+// when landing changes stance or a new opposite-stance grab begins immediately.
+const PROFILES=[1,-1].flatMap(stance=>NAMES.map(name=>{
+  const d=getGrabDefinition(name,stance);
+  return {...d,name,stance,pose:{...BASE_POSE,...d.pose},point:new THREE.Vector3(...d.grip),normal:new THREE.Vector3(...d.inward),
     position:new THREE.Vector3(...d.board),quaternion:new THREE.Quaternion().setFromEuler(new THREE.Euler(...d.rotation)),
     elbowPole:new THREE.Vector3(...d.pole),feet:d.feet?.map(foot=>foot?{position:new THREE.Vector3(...foot.position),quaternion:new THREE.Quaternion().setFromEuler(new THREE.Euler(...foot.rotation))}:null)};
-});
+}));
 
 function contact(hand) {
   return {name:null,hand,site:null,weight:0,attached:false,error:0,boardLocal:new THREE.Vector3(),targetWorld:new THREE.Vector3(),palmWorld:new THREE.Vector3(),
@@ -74,6 +95,7 @@ function prepareGripMorph(hand) {
 export class GrabAnimation {
   constructor() {
     this.weights=new Float64Array(PROFILES.length);this.weight=0;this.name=null;this.state='ride';this.allowBoard=false;this.stance=1;
+    this.activeTrick=null;this.activeProfile=-1;
     this.contacts=[contact('left'),contact('right')];this.contact=this.contacts[0];
     this.restHands=new WeakMap();
     this.gripMeshes=new WeakMap();
@@ -89,6 +111,7 @@ export class GrabAnimation {
 
   reset() {
     this.weights.fill(0);this.weight=0;this.name=null;this.allowBoard=false;
+    this.activeTrick=null;this.activeProfile=-1;
     this.landingFactor=1;this.hasBoardCorrection=false;this.exitBoard=false;this.boardOffset.set(0,0,0);this.boardCorrection.identity();
     for(const c of this.contacts){c.weight=0;c.attached=false;c.name=null;c.error=0;}
   }
@@ -171,7 +194,13 @@ export class GrabAnimation {
 
   update(sk,dt) {
     this.dt=Math.max(0,Math.min(Number.isFinite(dt)?dt:0,.1));
-    const active=sk.state==='air'&&sk.trick?.kind==='grab' ? NAMES.indexOf(sk.trick.name) : -1;
+    const trick=sk.state==='air'&&sk.trick?.kind==='grab'?sk.trick:null;
+    if(trick!==this.activeTrick) {
+      this.activeTrick=trick;
+      const index=trick?NAMES.indexOf(trick.name):-1;
+      this.activeProfile=index<0?-1:index+(sk.stance<0?NAMES.length:0);
+    }
+    const active=this.activeProfile;
     const allow=sk.state==='air'&&sk.trick?.kind!=='flip';
     if(this.allowBoard&&!allow) {
       for(const c of this.contacts)c.releaseStart=Math.max(.001,c.weight);
@@ -194,7 +223,7 @@ export class GrabAnimation {
       if(w<.0001)w=0;else if(w>.9999)w=1;
       this.weights[i]=w;this.weight+=w;if(w>bestWeight){best=i;bestWeight=w;}
     }
-    this.name=best>=0?NAMES[best]:null;
+    this.name=best>=0?PROFILES[best].name:null;
     for(const c of this.contacts) {
       c.weight=0;c.boardLocal.set(0,0,0);c.normal.set(0,0,0);c.pole.set(0,0,0);let largest=0;
       for(let i=0;i<PROFILES.length;i++) {
@@ -214,11 +243,6 @@ export class GrabAnimation {
     for(const key of POSE_KEYS) {
       let value=(T[key]??0)*(1-this.weight);
       for(let i=0;i<PROFILES.length;i++)value+=PROFILES[i].pose[key]*this.weights[i];
-      // Fakie changes the glance, never the anatomical grab hand/edge.
-      if(key==='headY'&&this.stance<0) {
-        value=(T[key]??0)*(1-this.weight);
-        for(let i=0;i<PROFILES.length;i++)value-=PROFILES[i].pose[key]*this.weights[i];
-      }
       T[key]=value;
     }
     return T;

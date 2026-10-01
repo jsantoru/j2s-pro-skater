@@ -23,7 +23,7 @@ export const GRABS = {
 // Grinds: basic 100, advanced (crook / feeble / smith / overcrook) 125, slides 200.
 export const GRINDS = {
   C: ['50-50', 100], N: ['Nosegrind', 100], S: ['5-0', 100], W: ['Boardslide', 200], E: ['Lipslide', 200],
-  NW: ['Crooked Grind', 125], NE: ['Overcrook', 125], SW: ['Smith Grind', 125], SE: ['Feeble Grind', 125],
+  NW: ['Crooked Grind', 125], NE: ['Overcrook', 125], SW: ['Feeble Grind', 125], SE: ['Smith Grind', 125],
 };
 
 // Manuals are connective tissue: they hold a combo open for almost no points of their own.

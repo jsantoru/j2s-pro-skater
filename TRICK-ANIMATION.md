@@ -1,8 +1,9 @@
 # Grind and grab contact animation
 
 The rendered rider now performs the trick selected by the existing scoring state.
-This is a visual change: trick definitions, inputs, scoring, collision, jump
-trajectories, level progress and the regular/fakie simulation are unchanged.
+Scoring, collision, jump trajectories, level progress and the regular/switch
+simulation are unchanged. Smith and Feeble now use down-right and down-left,
+respectively, including the controls reference.
 
 ## Grind coverage
 
@@ -18,8 +19,8 @@ trajectories, level progress and the regular/fakie simulation are unchanged.
 | Smith Grind | Rear hanger loaded; nose lowered beside the rail. |
 | Feeble Grind | Rear hanger loaded; front truck lowered on the opposite side. |
 
-`src/grind-animation.js` constructs a frame from the actual rail axis, preserves
-the anatomical nose while travelling fakie, and solves the board translation
+`src/grind-animation.js` constructs a frame from the actual rail axis, selects
+the supporting end relative to travel in either stance, and solves the board translation
 around the loaded hanger or deck contact. Cylinder contact accounts for hanger
 radius, rail radius and ROC City's nonuniform XZ scaling. Painted rectangular
 ledges use their actual top surface instead of an assumed round tube.
@@ -31,8 +32,11 @@ rail corrections decay underneath the next air trick rather than replacing it.
 
 ## Grab coverage
 
-The current rig is regular: left hand/foot lead, right hand/foot trail. Fakie
-reverses travel, not anatomy.
+The rig's local frame remains anatomical: left hand/foot lead in regular stance;
+right hand/foot lead in switch. The scored trick's front/rear roles follow travel.
+Switch profiles mirror board pitch/yaw, grips, released feet and balance poses,
+while preserving the toe/heel edges. Outgoing grabs retain their original hand
+through release, even when a landing changes stance.
 
 | Scored trick | Hand contact | Body and feet |
 | --- | --- | --- |

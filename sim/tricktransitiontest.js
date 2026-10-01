@@ -138,9 +138,9 @@ for(const characterId of ['joe','aaron'])for(const [dir,[name]]of grabs)check(`$
   for(const result of results)validateMotion(result);
 });
 
-function grindExit(characterId,dir,name,kind) {
-  const world=fixture({rail:true}),{sk,events}=world,c=new Character({characterId});
-  const result={name:`${characterId} ${name} ollie to ${kind}`,motion:metrics()};
+function grindExit(characterId,dir,name,kind,stance) {
+  const world=fixture({rail:true,stance}),{sk,events}=world,c=new Character({characterId});
+  const result={name:`${characterId} ${stance<0?'switch ':''}${name} ollie to ${kind}`,motion:metrics()};
   let previous,capturedAt=null,poppedAt=null,newTrickAt=null;
   try {
     sk.state='air';sk.popped=true;sk.pos.set(0,2.6,-4.7);sk.vel.set(0,-1,7);sk.speed=7;
@@ -173,13 +173,13 @@ function grindExit(characterId,dir,name,kind) {
 }
 for(const characterId of ['joe','aaron'])check(`${characterId}: all nine real grind captures, charged exits into grab and flip`,()=>{
   const results=[];
-  for(const [dir,[name]]of Object.entries(GRINDS))for(const kind of ['grab','flip'])results.push(grindExit(characterId,dir,name,kind));
+  for(const stance of [1,-1])for(const [dir,[name]]of Object.entries(GRINDS))for(const kind of ['grab','flip'])results.push(grindExit(characterId,dir,name,kind,stance));
   for(const result of results)validateMotion(result,entryLimits);
 });
 
-for(const characterId of ['joe','aaron'])check(`${characterId}: Method to Kickflip to Indy immediately reattaches without a latent release pose`,()=>{
-  const world=fixture(),{sk,events}=world,c=new Character({characterId});
-  const result={name:`${characterId} Method to Kickflip to Indy`,motion:metrics()};
+for(const characterId of ['joe','aaron'])for(const stance of [1,-1])check(`${characterId}: ${stance<0?'switch ':''}Method to Kickflip to Indy immediately reattaches without a latent release pose`,()=>{
+  const world=fixture({stance}),{sk,events}=world,c=new Character({characterId});
+  const result={name:`${characterId} ${stance<0?'switch ':''}Method to Kickflip to Indy`,motion:metrics()};
   let previous,secondGrabAt=null,completeTucks=0;
   try {
     // A high drop leaves enough physical air time for all three minimum trick
@@ -198,8 +198,9 @@ for(const characterId of ['joe','aaron'])check(`${characterId}: Method to Kickfl
         previous=next;
         if(sk.trick?.name==='Indy'&&sk.trick.t>.20&&c.grabAnimation.weight>.98) {
           assert.ok(c.board.position.y>.30,'new Indy visibly tucks the board instead of inheriting the expired flip offset');
-          const palm=c.rArm.hand.localToWorld(new THREE.Vector3(...GRAB_PALM_CONTACT));
-          const rim=c.board.localToWorld(V(-.11,.126,-.015));
+          const arm=stance<0?c.lArm:c.rArm;
+          const palm=arm.hand.localToWorld(new THREE.Vector3(...GRAB_PALM_CONTACT));
+          const rim=c.board.localToWorld(V(-.11,.126,-.015*stance));
           assert.ok(palm.distanceTo(rim)<.04,'newly held grab reaches the actual toe-side rim');completeTucks++;
         }
       }
@@ -246,10 +247,10 @@ for(const characterId of ['joe','aaron'])check(`${characterId}: held grab extend
   }
 });
 
-for(const characterId of ['joe','aaron'])check(`${characterId}: held grab prepares for real rail capture without adding a board reset`,()=>{
-  const world=fixture({rail:true}),{sk,events}=world,c=new Character({characterId}),rail=sk.level.rails[0];
+for(const characterId of ['joe','aaron'])for(const stance of [1,-1])check(`${characterId}: ${stance<0?'switch ':''}held grab prepares for real rail capture without adding a board reset`,()=>{
+  const world=fixture({rail:true,stance}),{sk,events}=world,c=new Character({characterId}),rail=sk.level.rails[0];
   rail.a.y=rail.b.y=1;
-  const result={name:`${characterId} held Indy to automatic 50-50 capture`,motion:metrics()};
+  const result={name:`${characterId} ${stance<0?'switch ':''}held Indy to automatic 50-50 capture`,motion:metrics()};
   let previous,capture=null;
   try {
     sk.state='air';sk.popped=true;sk.pos.set(0,3,-4);sk.vel.set(0,1,7);sk.speed=7;settle(c,sk);

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { Character } from '../src/character.js';
-import { GRAB_DEFINITIONS, GRAB_PALM_CONTACT } from '../src/grab-animation.js';
+import { GRAB_DEFINITIONS, GRAB_PALM_CONTACT, getGrabDefinition } from '../src/grab-animation.js';
 
 const dt=1/120,names=Object.keys(GRAB_DEFINITIONS);
 let checks=0;
@@ -12,18 +12,24 @@ function begin(character,sk,name) {character.grabAnimation.reset();sk.state='air
 const point=new THREE.Vector3(),expected=new THREE.Vector3();
 const characters=['joe','aaron'].map(characterId=>new Character({characterId}));
 
-test('Eight grab identities use the correct anatomical hand and physical edge, including Judo nose grip',()=>{
+test('Eight grab identities retain physical toe/heel edges and swap front/back limb roles in switch',()=>{
   assert.deepEqual(names,['Indy','Melon','Nosegrab','Tailgrab','Method','Stalefish','Judo','Airwalk']);
   const sites={Indy:['right','toe-edge'],Melon:['left','heel-edge'],Nosegrab:['left','nose'],Tailgrab:['right','tail'],Method:['left','heel-edge'],Stalefish:['right','heel-edge'],Judo:['left','nose'],Airwalk:['left','nose']};
   for(const [name,[hand,site]]of Object.entries(sites))assert.deepEqual([GRAB_DEFINITIONS[name].hand,GRAB_DEFINITIONS[name].site],[hand,site]);
+  for(const name of names){
+    const regular=GRAB_DEFINITIONS[name],sw=getGrabDefinition(name,-1);
+    assert.equal(sw.hand,regular.hand==='left'?'right':'left');assert.equal(sw.site,regular.site);
+    assert.equal(sw.grip[0],regular.grip[0],'toe/heel edge stays relative to the rider');
+    assert.equal(sw.grip[2],-regular.grip[2],'front/rear grip follows the travel-leading/trailing end');
+  }
   assert.equal(new Set(names.map(name=>JSON.stringify([GRAB_DEFINITIONS[name].board,GRAB_DEFINITIONS[name].rotation,GRAB_DEFINITIONS[name].pose]))).size,8,'No profile is an alias');
 });
 
-for(const character of characters)test(`${character.characterId}: real palms meet the intended deck rim under rotations and fakie`,()=>{
+for(const character of characters)test(`${character.characterId}: real palms meet the intended deck rim under rotations and switch`,()=>{
   const sk=state();
   for(const stance of [1,-1])for(const angles of [[0,0,0],[.65,1.1,-.3],[-1.2,2.2,.8]])for(const name of names) {
     sk.stance=stance;character.root.position.set(4,3,-5);character.root.quaternion.setFromEuler(new THREE.Euler(...angles));begin(character,sk,name);
-    const definition=GRAB_DEFINITIONS[name],arm=definition.hand==='left'?character.lArm:character.rArm;
+    const definition=getGrabDefinition(name,stance),arm=definition.hand==='left'?character.lArm:character.rArm;
     expected.fromArray(definition.grip);character.board.localToWorld(expected);
     point.fromArray(GRAB_PALM_CONTACT);arm.hand.localToWorld(point);
     assert.ok(point.distanceTo(expected)<.006,`${name} ${stance} palm error ${point.distanceTo(expected)}`);
@@ -39,8 +45,8 @@ for(const character of characters)test(`${character.characterId}: real palms mee
 
 for(const character of characters)test(`${character.characterId}: ordinary grabs retain both feet; Judo and Airwalk deliberately release the correct feet`,()=>{
   const sk=state();character.root.position.set(0,0,0);character.root.quaternion.identity();
-  for(const name of names) {
-    begin(character,sk,name);const definition=GRAB_DEFINITIONS[name];
+  for(const stance of [1,-1])for(const name of names) {
+    sk.stance=stance;begin(character,sk,name);const definition=getGrabDefinition(name,stance);
     for(const [i,leg]of[character.lLeg,character.rLeg].entries()) {
       leg.an.getWorldPosition(point);
       if(!definition.feet?.[i]) {
@@ -89,6 +95,26 @@ test('Minimum-duration released taps still visibly reach the board, with continu
     }
     assert.ok(nearest<.025,`${name} released tap still visibly completes its minimum tuck (${nearest})`);
     sk.trick=null;advance(character,sk,80);assert.equal(character.grabAnimation.weight,0);
+  }
+});
+
+test('Landing stance changes retain the outgoing grab hand; a new switch grab blends to its own hand',()=>{
+  for(const character of characters)for(const name of names)for(const stance of [1,-1]) {
+    const sk=state();sk.stance=stance;character.root.position.set(0,0,0);character.root.quaternion.identity();begin(character,sk,name);
+    const outgoing=getGrabDefinition(name,stance).hand;
+    const before=character.grabAnimation.contacts.find(c=>c.hand===outgoing).boardLocal.clone();
+    sk.state='ride';sk.trick=null;sk.stance=-stance;
+    character.update(sk,dt,0);
+    const contact=character.grabAnimation.contacts.find(c=>c.hand===outgoing);
+    assert.ok(contact.weight>.8,'landing begins releasing the same anatomical hand');
+    assert.ok(contact.boardLocal.distanceTo(before)<1e-7,'landing cannot reinterpret the outgoing physical grip');
+    assert.equal(character.grabAnimation.contacts.find(c=>c.hand!==outgoing).weight,0,'no sudden opposite-hand grab on landing');
+    sk.state='air';sk.trick={kind:'grab',name,t:0,dur:.3,held:true};
+    character.update(sk,dt,dt);
+    assert.ok(character.grabAnimation.contacts.every(c=>c.weight>0),'new opposite-stance grab crossfades instead of transferring a contact instantly');
+    advance(character,sk);
+    assert.equal(character.grabAnimation.contact.hand,getGrabDefinition(name,-stance).hand);
+    assert.ok(character.grabAnimation.contact.error<.006,'new variant reaches its own physical rim');
   }
 });
 

@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { buildDetailedBoard, buildDetailedBody } from './skater-art.js';
 import { GrindAnimation } from './grind-animation.js';
 import { GrabAnimation } from './grab-animation.js';
+import { mirrorSwitchPose } from './stance-pose.js';
 
 const L1 = 0.42, L2 = 0.42, BOARD_TOP = 0.13;
 const BOARD_TRACK = 0.05;   // how far the board may chase the feet sideways in the air
@@ -220,7 +221,7 @@ export class Character {
       if (Math.abs(ml) > 0.01) {
         // blend from the neutral ride into the manual as the board rocks over
         const w = Math.min(1, Math.abs(ml));
-        mix(ml > 0 ? POSES.manual : POSES.noseManual, w * (1 - c));
+        mix(ml < 0 ? POSES.manual : POSES.noseManual, w * (1 - c));
         mix(POSES.ride, (1 - w) * (1 - c));
       } else if (sk.pushing > 0 && c < 0.3) {
         // one cycle = 2π: first half the foot is on the ground stroking plant -> back, second half it
@@ -240,17 +241,20 @@ export class Character {
     }
     // normalise weights
     if (T._w && Math.abs(T._w - 1) > 1e-3) for (const k of KEYS) T[k] /= T._w;
-    // fakie: look (and turn the push) the other way
-    if (sk.stance < 0 && st !== 'bail') { T.headY = -T.headY; T.torsoY = -T.torsoY; T.hipsYaw = -T.hipsYaw; T.hipsSide = -T.hipsSide; }
+    // Switch uses the other foot as the leading foot. Mirror the complete base
+    // pose once; the contact helpers apply their own stance-aware contributions.
+    const stance=sk.stance<0?-1:1;
+    if (stance<0 && st!=='bail') mirrorSwitchPose(T);
     // carve lean: tilt sideways into the turn (about the body's nose axis)
-    T.hipsX += sk.lean * 40;
+    T.hipsX += sk.lean * 40 * stance;
     // leg drop / hips height from the front (standing) leg, so an extended pushing leg reaches the ground
-    const drop = legDrop(T.lHip, T.lKnee);
+    const leadHip=stance<0?T.rHip:T.lHip,leadKnee=stance<0?T.rKnee:T.lKnee;
+    const drop = legDrop(leadHip, leadKnee);
     T.hipsY = st === 'air' ? STAND_DROP - 0.06 : drop;
     // Flexing the hip swings the foot toward the toe side, which would walk the feet off the deck as you
     // crouch. On the ground, slide the pelvis back by the same amount so the front foot stays planted and
     // the hips travel back-and-down like a real squat. Airborne poses keep the old free-swinging look.
-    T.hipsFwd = (st === 'air' || st === 'bail') ? 0 : -legReach(T.lHip, T.lKnee);
+    T.hipsFwd = (st === 'air' || st === 'bail') ? 0 : -legReach(leadHip, leadKnee);
     // With the pelvis opened for a push, balance over the leading truck instead of
     // retaining the sideways squat offset from the normal riding stance.
     T.hipsFwd = THREE.MathUtils.lerp(T.hipsFwd, -.025, Math.abs(T.hipsYaw) / 60);
@@ -300,7 +304,17 @@ export class Character {
     // so the grounded wheels sit on the floor instead of sinking through it
     const ml = sk.manualLean || 0;
     if (Math.abs(ml) > 0.001 && sk.state === 'ride') {
-      const pitch = ml * MANUAL_PITCH * D2R;
+      // Physics uses negative lean for Manual, positive for Nose Manual.
+      // The supporting end follows travel even when the root faces backwards.
+      let visualStance=sk.stance<0?-1:1;
+      if(sk.revertT>0){
+        // Stance changes at the start of a revert; the visible wheel slide takes
+        // time. Rock through level as the rider turns instead of swapping axles
+        // in one frame. The lift below keeps a wheel pair grounded throughout.
+        const t=THREE.MathUtils.clamp(1-sk.revertT/sk.T.revertDuration,0,1);
+        visualStance*=2*t*t*(3-2*t)-1;
+      }
+      const pitch = -ml * visualStance * MANUAL_PITCH * D2R;
       b.rotation.x = -pitch;                       // root +z is the nose, so -x rotation lifts it
       b.position.y = Math.abs(Math.sin(pitch)) * AXLE_Z;
       this.hips.position.y += b.position.y;        // the skater rides up with it
@@ -313,9 +327,10 @@ export class Character {
         const [r, y, p] = FLIP_SPIN[tr.name] || [1, 0, 0];
         const t = Math.min(1, tr.t / tr.dur);
         const e = t < 1 ? 1 - Math.pow(1 - t, 1.6) : 1; // snappy start, settle at the end
-        // the stance flip mirrored the skater across the board's long axis, so roll and yaw invert
-        // (pitch is about that axis and is unchanged) to keep each trick flipping the way it should
-        b.rotation.set(p * e * Math.PI * 2, -y * e * Math.PI * 2, r * e * Math.PI * 2);
+        // Longitudinal reflection preserves toe/heel roll, reverses yaw/pitch,
+        // and pairs the rotation with the switch foot's mirrored flick pose.
+        const stance=sk.stance<0?-1:1;
+        b.rotation.set(p * stance * e * Math.PI * 2, -y * stance * e * Math.PI * 2, r * e * Math.PI * 2);
         b.position.y += Math.sin(t * Math.PI) * 0.08;
       }
     } else if (sk.state === 'bail') {
