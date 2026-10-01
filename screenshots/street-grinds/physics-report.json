@@ -1,0 +1,1592 @@
+{
+  "passed": true,
+  "method": "Real Skater.update inputs from supported approaches; no direct attachment to rails",
+  "checks": [
+    {
+      "name": "1x: street targets remain finite, supported and identical with desktop or low-effects dressing",
+      "passed": true,
+      "detail": {
+        "rails": 51,
+        "visibleSurfaceSamples": 306,
+        "maxGap": 0.0022776966094970597
+      }
+    },
+    {
+      "name": "1x: car approach, sustained grind and bank in both directions and stances",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-car-1",
+              "dir": 1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 5,
+          "longest": 0.9083333333333325,
+          "banked": [
+            {
+              "points": 190,
+              "text": "50-50"
+            }
+          ],
+          "score": 190,
+          "state": "ride",
+          "position": [
+            31,
+            -0.017999999999998278,
+            -34.10139015099558
+          ],
+          "seconds": 2.1416666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": 1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-car-1",
+              "dir": 1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 5,
+          "longest": 0.9083333333333325,
+          "banked": [
+            {
+              "points": 210,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 210,
+          "state": "ride",
+          "position": [
+            31,
+            -0.017999999999998278,
+            -34.10139015099558
+          ],
+          "seconds": 2.1416666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-car-1",
+              "dir": -1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 5,
+          "longest": 0.9083333333333325,
+          "banked": [
+            {
+              "points": 190,
+              "text": "50-50"
+            }
+          ],
+          "score": 190,
+          "state": "ride",
+          "position": [
+            31,
+            -0.017999999999997834,
+            -41.90506258518705
+          ],
+          "seconds": 2.1416666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-car-1",
+              "dir": -1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 5,
+          "longest": 0.9083333333333325,
+          "banked": [
+            {
+              "points": 210,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 210,
+          "state": "ride",
+          "position": [
+            31,
+            -0.017999999999997834,
+            -41.90506258518705
+          ],
+          "seconds": 2.1416666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        }
+      ]
+    },
+    {
+      "name": "1x: fence approach, sustained grind and bank in both directions and stances",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "west-deck-railing",
+              "dir": 1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 4,
+          "longest": 8.141666666666845,
+          "banked": [
+            {
+              "points": 910,
+              "text": "50-50"
+            }
+          ],
+          "score": 910,
+          "state": "ride",
+          "position": [
+            -11.380202874615955,
+            0,
+            7.691822926918875
+          ],
+          "seconds": 9.158333333333333,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": 1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "west-deck-railing",
+              "dir": 1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 4,
+          "longest": 8.141666666666845,
+          "banked": [
+            {
+              "points": 930,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 930,
+          "state": "ride",
+          "position": [
+            -11.380202874615955,
+            0,
+            7.691822926918875
+          ],
+          "seconds": 9.158333333333333,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "west-deck-railing",
+              "dir": -1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 4,
+          "longest": 7.241666666666816,
+          "banked": [
+            {
+              "points": 820,
+              "text": "50-50"
+            }
+          ],
+          "score": 820,
+          "state": "ride",
+          "position": [
+            -9.40833575544312,
+            -0.03999999910593027,
+            -36.86202720522505
+          ],
+          "seconds": 8.266666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "west-deck-railing",
+              "dir": -1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 4,
+          "longest": 7.241666666666816,
+          "banked": [
+            {
+              "points": 840,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 840,
+          "state": "ride",
+          "position": [
+            -9.40833575544312,
+            -0.03999999910593027,
+            -36.86202720522505
+          ],
+          "seconds": 8.266666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        }
+      ]
+    },
+    {
+      "name": "1x: bench approach, sustained grind and bank in both directions and stances",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-entry-bench",
+              "dir": 1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 0.3833333333333337,
+          "banked": [
+            {
+              "points": 130,
+              "text": "50-50"
+            }
+          ],
+          "score": 130,
+          "state": "ride",
+          "position": [
+            -4.606284103831955,
+            0,
+            15.616267141112582
+          ],
+          "seconds": 1.6333333333333333,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": 1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-entry-bench",
+              "dir": 1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 0.3833333333333337,
+          "banked": [
+            {
+              "points": 150,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 150,
+          "state": "ride",
+          "position": [
+            -4.606284103831955,
+            0,
+            15.616267141112582
+          ],
+          "seconds": 1.6333333333333333,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-entry-bench",
+              "dir": -1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 0.3833333333333337,
+          "banked": [
+            {
+              "points": 130,
+              "text": "50-50"
+            }
+          ],
+          "score": 130,
+          "state": "ride",
+          "position": [
+            -9.793571626299961,
+            0,
+            12.435914118262938
+          ],
+          "seconds": 1.6333333333333333,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-entry-bench",
+              "dir": -1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 0.3833333333333337,
+          "banked": [
+            {
+              "points": 150,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 150,
+          "state": "ride",
+          "position": [
+            -9.793571626299961,
+            0,
+            12.435914118262938
+          ],
+          "seconds": 1.6333333333333333,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        }
+      ]
+    },
+    {
+      "name": "1x: curb approach, sustained grind and bank in both directions and stances",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-west-curb",
+              "dir": 1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 1.7749999999999961,
+          "banked": [
+            {
+              "points": 270,
+              "text": "50-50"
+            }
+          ],
+          "score": 270,
+          "state": "ride",
+          "position": [
+            17.79,
+            -0.03999999910593033,
+            9.631012804198352
+          ],
+          "seconds": 3.5,
+          "airAfterExit": true,
+          "availableAfterLanding": "south-avenue-west-curb"
+        },
+        {
+          "dir": 1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-west-curb",
+              "dir": 1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 1.7749999999999961,
+          "banked": [
+            {
+              "points": 290,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 290,
+          "state": "ride",
+          "position": [
+            17.79,
+            -0.03999999910593033,
+            9.631012804198352
+          ],
+          "seconds": 3.5,
+          "airAfterExit": true,
+          "availableAfterLanding": "south-avenue-west-curb"
+        },
+        {
+          "dir": -1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-west-curb",
+              "dir": -1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 1.7749999999999961,
+          "banked": [
+            {
+              "points": 270,
+              "text": "50-50"
+            }
+          ],
+          "score": 270,
+          "state": "ride",
+          "position": [
+            18.009999999999998,
+            -0.01000000178813934,
+            -21.78407402463919
+          ],
+          "seconds": 3.5,
+          "airAfterExit": true,
+          "availableAfterLanding": "south-avenue-west-curb"
+        },
+        {
+          "dir": -1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-west-curb",
+              "dir": -1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 1.7749999999999961,
+          "banked": [
+            {
+              "points": 290,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 290,
+          "state": "ride",
+          "position": [
+            18.009999999999998,
+            -0.01000000178813934,
+            -21.78407402463919
+          ],
+          "seconds": 3.5,
+          "airAfterExit": true,
+          "availableAfterLanding": "south-avenue-west-curb"
+        }
+      ]
+    },
+    {
+      "name": "1x: a curb Ollie dismount ignores held grind, permits a fresh press and becomes available after landing",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "held": {
+            "captures": [
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": 1,
+                "stance": 1
+              }
+            ],
+            "bails": [],
+            "visited": 1,
+            "longest": 1.7749999999999961,
+            "banked": [
+              {
+                "points": 270,
+                "text": "50-50"
+              }
+            ],
+            "score": 270,
+            "state": "ride",
+            "position": [
+              17.79,
+              -0.03999999910593033,
+              -47.76898719580238
+            ],
+            "seconds": 3.5,
+            "airAfterExit": true,
+            "availableAfterLanding": "south-avenue-west-curb"
+          },
+          "deliberate": {
+            "captures": [
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": 1,
+                "stance": 1
+              },
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": 1,
+                "stance": 1
+              }
+            ],
+            "bails": [],
+            "visited": 2,
+            "longest": 1.7749999999999961,
+            "banked": [],
+            "score": 0,
+            "state": "grind",
+            "position": [
+              18.009999999999998,
+              0.13999999999999999,
+              -47.06109382833959
+            ],
+            "seconds": 3.6333333333333333,
+            "airAfterExit": true,
+            "availableAfterLanding": null
+          }
+        },
+        {
+          "dir": -1,
+          "held": {
+            "captures": [
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": -1,
+                "stance": 1
+              }
+            ],
+            "bails": [],
+            "visited": 1,
+            "longest": 1.7749999999999961,
+            "banked": [
+              {
+                "points": 270,
+                "text": "50-50"
+              }
+            ],
+            "score": 270,
+            "state": "ride",
+            "position": [
+              18.009999999999998,
+              0,
+              35.76530512730133
+            ],
+            "seconds": 3.5,
+            "airAfterExit": true,
+            "availableAfterLanding": "south-avenue-west-curb"
+          },
+          "deliberate": {
+            "captures": [
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": -1,
+                "stance": 1
+              },
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": -1,
+                "stance": 1
+              }
+            ],
+            "bails": [],
+            "visited": 2,
+            "longest": 1.7749999999999961,
+            "banked": [],
+            "score": 0,
+            "state": "grind",
+            "position": [
+              17.79,
+              0.13999999999999999,
+              35.00987209927793
+            ],
+            "seconds": 3.6416666666666666,
+            "airAfterExit": true,
+            "availableAfterLanding": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "1x: parked cars remain solid, support landings and retain human-sized dimensions",
+      "passed": true,
+      "detail": [
+        {
+          "id": "south-avenue-car-1",
+          "bodySize": [
+            1.6599999666214025,
+            0.49000000953674316,
+            4.059999942779541
+          ],
+          "approaches": [
+            {
+              "side": -1,
+              "closest": 1.2452275979839378,
+              "state": "ride"
+            },
+            {
+              "side": 1,
+              "closest": 1.1573024366990445,
+              "state": "ride"
+            }
+          ],
+          "roofLanding": [
+            31.7,
+            1.3740133838932425,
+            -37.94920310392381
+          ]
+        },
+        {
+          "id": "south-avenue-car-2",
+          "bodySize": [
+            1.6599999666214025,
+            0.49000000953674316,
+            4.059999942779541
+          ],
+          "approaches": [
+            {
+              "side": -1,
+              "closest": 1.2452275979839378,
+              "state": "ride"
+            },
+            {
+              "side": 1,
+              "closest": 1.1573024366990445,
+              "state": "ride"
+            }
+          ],
+          "roofLanding": [
+            31.7,
+            1.3740133838932418,
+            -7.949203103923754
+          ]
+        },
+        {
+          "id": "south-avenue-car-3",
+          "bodySize": [
+            1.6599999666214025,
+            0.49000000953674316,
+            4.059999942779541
+          ],
+          "approaches": [
+            {
+              "side": -1,
+              "closest": 1.2452275979839378,
+              "state": "ride"
+            },
+            {
+              "side": 1,
+              "closest": 1.1573024366990445,
+              "state": "ride"
+            }
+          ],
+          "roofLanding": [
+            31.7,
+            1.3740133838932425,
+            12.050796896076196
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1x: new street fences block riders from both sides and their posts stay below the grinding surface",
+      "passed": true,
+      "detail": {
+        "approaches": [
+          {
+            "side": -1,
+            "closest": 0.46741652966550085,
+            "state": "ride"
+          },
+          {
+            "side": 1,
+            "closest": 0.46741652966550085,
+            "state": "ride"
+          }
+        ],
+        "postsBelowRailSurface": 163
+      }
+    },
+    {
+      "name": "1x: street grinds require intentional input and do not steal ordinary bridge-quarter airs",
+      "passed": true,
+      "detail": {
+        "ordinaryStreetPasses": 3,
+        "quarterLanding": [
+          7.50000000000001,
+          -0.4401692047715552,
+          48.87907122029602
+        ]
+      }
+    },
+    {
+      "name": "1.25x: street targets remain finite, supported and identical with desktop or low-effects dressing",
+      "passed": true,
+      "detail": {
+        "rails": 51,
+        "visibleSurfaceSamples": 306,
+        "maxGap": 0.0022776966094970597
+      }
+    },
+    {
+      "name": "1.25x: car approach, sustained grind and bank in both directions and stances",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-car-1",
+              "dir": 1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 5,
+          "longest": 0.9083333333333325,
+          "banked": [
+            {
+              "points": 190,
+              "text": "50-50"
+            }
+          ],
+          "score": 190,
+          "state": "ride",
+          "position": [
+            38.925,
+            -0.017999999999998222,
+            -43.601390150995584
+          ],
+          "seconds": 2.1416666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": 1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-car-1",
+              "dir": 1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 5,
+          "longest": 0.9083333333333325,
+          "banked": [
+            {
+              "points": 210,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 210,
+          "state": "ride",
+          "position": [
+            38.925,
+            -0.017999999999998222,
+            -43.601390150995584
+          ],
+          "seconds": 2.1416666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-car-1",
+              "dir": -1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 5,
+          "longest": 0.9083333333333325,
+          "banked": [
+            {
+              "points": 190,
+              "text": "50-50"
+            }
+          ],
+          "score": 190,
+          "state": "ride",
+          "position": [
+            38.925,
+            -0.01799999999999789,
+            -51.40506258518705
+          ],
+          "seconds": 2.1416666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-car-1",
+              "dir": -1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 5,
+          "longest": 0.9083333333333325,
+          "banked": [
+            {
+              "points": 210,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 210,
+          "state": "ride",
+          "position": [
+            38.925,
+            -0.01799999999999789,
+            -51.40506258518705
+          ],
+          "seconds": 2.1416666666666666,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        }
+      ]
+    },
+    {
+      "name": "1.25x: fence approach, sustained grind and bank in both directions and stances",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "west-deck-railing",
+              "dir": 1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 4,
+          "longest": 10.783333333333362,
+          "banked": [
+            {
+              "points": 1170,
+              "text": "50-50"
+            }
+          ],
+          "score": 1170,
+          "state": "ride",
+          "position": [
+            -14.638649270068482,
+            0,
+            8.82041049538852
+          ],
+          "seconds": 11.8,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": 1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "west-deck-railing",
+              "dir": 1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 4,
+          "longest": 10.783333333333362,
+          "banked": [
+            {
+              "points": 1190,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 1190,
+          "state": "ride",
+          "position": [
+            -14.638649270068482,
+            0,
+            8.82041049538852
+          ],
+          "seconds": 11.8,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "west-deck-railing",
+              "dir": -1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 4,
+          "longest": 9.475000000000103,
+          "banked": [
+            {
+              "points": 1040,
+              "text": "50-50"
+            }
+          ],
+          "score": 1040,
+          "state": "ride",
+          "position": [
+            -12.32426493298981,
+            -0.03999999910593033,
+            -45.34842378409283
+          ],
+          "seconds": 10.5,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "west-deck-railing",
+              "dir": -1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 4,
+          "longest": 9.475000000000103,
+          "banked": [
+            {
+              "points": 1060,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 1060,
+          "state": "ride",
+          "position": [
+            -12.32426493298981,
+            -0.03999999910593033,
+            -45.34842378409283
+          ],
+          "seconds": 10.5,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        }
+      ]
+    },
+    {
+      "name": "1.25x: bench approach, sustained grind and bank in both directions and stances",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-entry-bench",
+              "dir": 1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 0.483333333333334,
+          "banked": [
+            {
+              "points": 140,
+              "text": "50-50"
+            }
+          ],
+          "score": 140,
+          "state": "ride",
+          "position": [
+            -6.184787303638409,
+            0,
+            19.25857958488387
+          ],
+          "seconds": 1.7333333333333334,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": 1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-entry-bench",
+              "dir": 1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 0.483333333333334,
+          "banked": [
+            {
+              "points": 160,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 160,
+          "state": "ride",
+          "position": [
+            -6.184787303638409,
+            0,
+            19.25857958488387
+          ],
+          "seconds": 1.7333333333333334,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-entry-bench",
+              "dir": -1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 0.483333333333334,
+          "banked": [
+            {
+              "points": 140,
+              "text": "50-50"
+            }
+          ],
+          "score": 140,
+          "state": "ride",
+          "position": [
+            -11.815032359026574,
+            0,
+            15.806646989335547
+          ],
+          "seconds": 1.7333333333333334,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        },
+        {
+          "dir": -1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-entry-bench",
+              "dir": -1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 0.483333333333334,
+          "banked": [
+            {
+              "points": 160,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 160,
+          "state": "ride",
+          "position": [
+            -11.815032359026574,
+            0,
+            15.806646989335547
+          ],
+          "seconds": 1.7333333333333334,
+          "airAfterExit": true,
+          "availableAfterLanding": null
+        }
+      ]
+    },
+    {
+      "name": "1.25x: curb approach, sustained grind and bank in both directions and stances",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-west-curb",
+              "dir": 1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 1.7749999999999961,
+          "banked": [
+            {
+              "points": 270,
+              "text": "50-50"
+            }
+          ],
+          "score": 270,
+          "state": "ride",
+          "position": [
+            22.237499999999997,
+            -0.03999999910593033,
+            8.131012804197917
+          ],
+          "seconds": 3.5,
+          "airAfterExit": true,
+          "availableAfterLanding": "south-avenue-west-curb"
+        },
+        {
+          "dir": 1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-west-curb",
+              "dir": 1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 1.7749999999999961,
+          "banked": [
+            {
+              "points": 290,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 290,
+          "state": "ride",
+          "position": [
+            22.237499999999997,
+            -0.03999999910593033,
+            8.131012804197917
+          ],
+          "seconds": 3.5,
+          "airAfterExit": true,
+          "availableAfterLanding": "south-avenue-west-curb"
+        },
+        {
+          "dir": -1,
+          "stance": 1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-west-curb",
+              "dir": -1,
+              "stance": 1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 1.7749999999999961,
+          "banked": [
+            {
+              "points": 270,
+              "text": "50-50"
+            }
+          ],
+          "score": 270,
+          "state": "ride",
+          "position": [
+            22.5125,
+            -0.01000000178813934,
+            -23.28407402463931
+          ],
+          "seconds": 3.5,
+          "airAfterExit": true,
+          "availableAfterLanding": "south-avenue-west-curb"
+        },
+        {
+          "dir": -1,
+          "stance": -1,
+          "captures": [
+            {
+              "name": "50-50",
+              "target": true,
+              "feature": "south-avenue-west-curb",
+              "dir": -1,
+              "stance": -1
+            }
+          ],
+          "bails": [],
+          "visited": 1,
+          "longest": 1.7749999999999961,
+          "banked": [
+            {
+              "points": 290,
+              "text": "Switch 50-50"
+            }
+          ],
+          "score": 290,
+          "state": "ride",
+          "position": [
+            22.5125,
+            -0.01000000178813934,
+            -23.28407402463931
+          ],
+          "seconds": 3.5,
+          "airAfterExit": true,
+          "availableAfterLanding": "south-avenue-west-curb"
+        }
+      ]
+    },
+    {
+      "name": "1.25x: a curb Ollie dismount ignores held grind, permits a fresh press and becomes available after landing",
+      "passed": true,
+      "detail": [
+        {
+          "dir": 1,
+          "held": {
+            "captures": [
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": 1,
+                "stance": 1
+              }
+            ],
+            "bails": [],
+            "visited": 1,
+            "longest": 1.7749999999999961,
+            "banked": [
+              {
+                "points": 270,
+                "text": "50-50"
+              }
+            ],
+            "score": 270,
+            "state": "ride",
+            "position": [
+              22.237499999999997,
+              -0.03999999910593033,
+              -63.61898719580276
+            ],
+            "seconds": 3.5,
+            "airAfterExit": true,
+            "availableAfterLanding": "south-avenue-west-curb"
+          },
+          "deliberate": {
+            "captures": [
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": 1,
+                "stance": 1
+              },
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": 1,
+                "stance": 1
+              }
+            ],
+            "bails": [],
+            "visited": 2,
+            "longest": 1.7749999999999961,
+            "banked": [],
+            "score": 0,
+            "state": "grind",
+            "position": [
+              22.512499999999996,
+              0.13999999999999999,
+              -62.911092705512736
+            ],
+            "seconds": 3.6333333333333333,
+            "airAfterExit": true,
+            "availableAfterLanding": null
+          }
+        },
+        {
+          "dir": -1,
+          "held": {
+            "captures": [
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": -1,
+                "stance": 1
+              }
+            ],
+            "bails": [],
+            "visited": 1,
+            "longest": 1.7749999999999961,
+            "banked": [
+              {
+                "points": 270,
+                "text": "50-50"
+              }
+            ],
+            "score": 270,
+            "state": "ride",
+            "position": [
+              22.512499999999996,
+              0,
+              48.615305127302946
+            ],
+            "seconds": 3.5,
+            "airAfterExit": true,
+            "availableAfterLanding": "south-avenue-west-curb"
+          },
+          "deliberate": {
+            "captures": [
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": -1,
+                "stance": 1
+              },
+              {
+                "name": "50-50",
+                "target": true,
+                "feature": "south-avenue-west-curb",
+                "dir": -1,
+                "stance": 1
+              }
+            ],
+            "bails": [],
+            "visited": 2,
+            "longest": 1.7749999999999961,
+            "banked": [],
+            "score": 0,
+            "state": "grind",
+            "position": [
+              22.237499999999997,
+              0.13999999999999999,
+              47.85987097645224
+            ],
+            "seconds": 3.6416666666666666,
+            "airAfterExit": true,
+            "availableAfterLanding": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "1.25x: parked cars remain solid, support landings and retain human-sized dimensions",
+      "passed": true,
+      "detail": [
+        {
+          "id": "south-avenue-car-1",
+          "bodySize": [
+            1.659999966621399,
+            0.49000000953674316,
+            4.059999942779541
+          ],
+          "approaches": [
+            {
+              "side": -1,
+              "closest": 1.2452275979839484,
+              "state": "ride"
+            },
+            {
+              "side": 1,
+              "closest": 1.2452275979839484,
+              "state": "ride"
+            }
+          ],
+          "roofLanding": [
+            39.625,
+            1.3740133838932425,
+            -47.44920310392381
+          ]
+        },
+        {
+          "id": "south-avenue-car-2",
+          "bodySize": [
+            1.659999966621399,
+            0.49000000953674316,
+            4.059999942779541
+          ],
+          "approaches": [
+            {
+              "side": -1,
+              "closest": 1.2452275979839484,
+              "state": "ride"
+            },
+            {
+              "side": 1,
+              "closest": 1.2452275979839484,
+              "state": "ride"
+            }
+          ],
+          "roofLanding": [
+            39.625,
+            1.3740133838932425,
+            -9.949203103923804
+          ]
+        },
+        {
+          "id": "south-avenue-car-3",
+          "bodySize": [
+            1.659999966621399,
+            0.49000000953674316,
+            4.059999942779541
+          ],
+          "approaches": [
+            {
+              "side": -1,
+              "closest": 1.2452275979839484,
+              "state": "ride"
+            },
+            {
+              "side": 1,
+              "closest": 1.2452275979839484,
+              "state": "ride"
+            }
+          ],
+          "roofLanding": [
+            39.625,
+            1.3740133838932425,
+            15.050796896076196
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1.25x: new street fences block riders from both sides and their posts stay below the grinding surface",
+      "passed": true,
+      "detail": {
+        "approaches": [
+          {
+            "side": -1,
+            "closest": 0.4749165294978539,
+            "state": "ride"
+          },
+          {
+            "side": 1,
+            "closest": 0.4749165294978681,
+            "state": "ride"
+          }
+        ],
+        "postsBelowRailSurface": 163
+      }
+    },
+    {
+      "name": "1.25x: street grinds require intentional input and do not steal ordinary bridge-quarter airs",
+      "passed": true,
+      "detail": {
+        "ordinaryStreetPasses": 3,
+        "quarterLanding": [
+          9.374999999999998,
+          -0.2851374944748367,
+          61.33116346559706
+        ]
+      }
+    }
+  ]
+}

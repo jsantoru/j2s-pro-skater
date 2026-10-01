@@ -1,0 +1,1384 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-10-01T01:11:41.636Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "joe-east-regular: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "ride",
+          "stance": 1,
+          "kind": "Manual",
+          "label": "Manual",
+          "hud": "Manual",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            1.8791794228529775,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.23874354053621283,
+            "world": [
+              2.1179229633891903,
+              0.03990483878876565,
+              15
+            ],
+            "lowestY": 0.02010575342540234
+          },
+          "trailingTruck": {
+            "along": -0.2067058226872549,
+            "world": [
+              1.6724736001657226,
+              0.218720008178298,
+              15
+            ],
+            "lowestY": 0.1989209228149347
+          },
+          "leadingWheelY": -0.0022193794855756635,
+          "trailingWheelY": 0.1765957899039567,
+          "railY": 0,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 0,
+          "banks": [
+            [
+              135,
+              "Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 135
+        }
+      }
+    },
+    {
+      "name": "joe-east-regular: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -16,
+            0,
+            10
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "grind",
+          "stance": 1,
+          "kind": "5-0",
+          "label": "5-0",
+          "hud": "5-0",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -5.7075045377637235,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2086494805288801,
+            "world": [
+              -5.498855057234843,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -5.9469736619535,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "leadingWheelY": 0.7318028247809122,
+          "trailingWheelY": 0.5597862089991681,
+          "railY": 0.5850000000000001,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 0,
+          "banks": [
+            [
+              200,
+              "5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 200
+        }
+      }
+    },
+    {
+      "name": "joe-east-switch: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Manual",
+          "label": "Switch Manual",
+          "hud": "Switch Manual",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            4.036064368668486,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268715432,
+            "world": [
+              4.24277019135564,
+              0.218720008178298,
+              14.999999795802397
+            ],
+            "lowestY": 0.19892092281493468
+          },
+          "trailingTruck": {
+            "along": -0.23874354053609625,
+            "world": [
+              3.7973208281323894,
+              0.03990483878876565,
+              15.000000235846569
+            ],
+            "lowestY": 0.020105753425402318
+          },
+          "leadingWheelY": 0.1765849477259159,
+          "trailingWheelY": -0.002230221663616437,
+          "railY": 0,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 1,
+          "banks": [
+            [
+              155,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 155
+        }
+      }
+    },
+    {
+      "name": "joe-east-switch: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -16,
+            0,
+            10
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "grind",
+          "stance": -1,
+          "kind": "5-0",
+          "label": "Switch 5-0",
+          "hud": "Switch 5-0",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -6.126556228197886,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2394691241897764,
+            "world": [
+              -5.88708710400811,
+              0.602,
+              10
+            ],
+            "lowestY": 0.5822462332106374
+          },
+          "trailingTruck": {
+            "along": -0.2086494805288801,
+            "world": [
+              -6.335205708726766,
+              0.7740166157817442,
+              10
+            ],
+            "lowestY": 0.7542628489923816
+          },
+          "leadingWheelY": 0.5599809804105811,
+          "trailingWheelY": 0.7319975961923253,
+          "railY": 0.5850000000000001,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              230,
+              "Switch 5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 230
+        }
+      }
+    },
+    {
+      "name": "joe-west-regular: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "ride",
+          "stance": 1,
+          "kind": "Manual",
+          "label": "Manual",
+          "hud": "Manual",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -5.823649042149999,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.2387435405362126,
+            "world": [
+              -6.062392582686211,
+              0.03990483878876565,
+              15
+            ],
+            "lowestY": 0.02010575342540234
+          },
+          "trailingTruck": {
+            "along": -0.20670582268725468,
+            "world": [
+              -5.616943219462744,
+              0.218720008178298,
+              15
+            ],
+            "lowestY": 0.1989209228149347
+          },
+          "leadingWheelY": -0.0022649441735915973,
+          "trailingWheelY": 0.17655022521594077,
+          "railY": 0,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 0,
+          "banks": [
+            [
+              135,
+              "Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 135
+        }
+      }
+    },
+    {
+      "name": "joe-west-regular: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            7,
+            0,
+            10
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "grind",
+          "stance": 1,
+          "kind": "5-0",
+          "label": "5-0",
+          "hud": "5-0",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -3.3914002256206244,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.20864948052888055,
+            "world": [
+              -3.600049706149505,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -3.151931101430848,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "leadingWheelY": 0.7317610845889707,
+          "trailingWheelY": 0.5597444688072266,
+          "railY": 0.5850000000000001,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 0,
+          "banks": [
+            [
+              200,
+              "5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 200
+        }
+      }
+    },
+    {
+      "name": "joe-west-switch: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Manual",
+          "label": "Switch Manual",
+          "hud": "Switch Manual",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -8.03606436866848,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268715343,
+            "world": [
+              -8.242770191355634,
+              0.218720008178298,
+              15.000000204197605
+            ],
+            "lowestY": 0.19892092281493473
+          },
+          "trailingTruck": {
+            "along": -0.23874354053609625,
+            "world": [
+              -7.797320828132384,
+              0.03990483878876565,
+              14.999999764153431
+            ],
+            "lowestY": 0.020105753425402356
+          },
+          "leadingWheelY": 0.1767552940004667,
+          "trailingWheelY": -0.0020598753890656643,
+          "railY": 0,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 1,
+          "banks": [
+            [
+              155,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 155
+        }
+      }
+    },
+    {
+      "name": "joe-west-switch: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            7,
+            0,
+            10
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "grind",
+          "stance": -1,
+          "kind": "5-0",
+          "label": "Switch 5-0",
+          "hud": "Switch 5-0",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -2.9249562433413416,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2394691241897764,
+            "world": [
+              -3.164425367531118,
+              0.602,
+              10
+            ],
+            "lowestY": 0.5822462332106374
+          },
+          "trailingTruck": {
+            "along": -0.20864948052888055,
+            "world": [
+              -2.716306762812461,
+              0.7740166157817442,
+              10
+            ],
+            "lowestY": 0.7542628489923816
+          },
+          "leadingWheelY": 0.5598441132186951,
+          "trailingWheelY": 0.7318607290004393,
+          "railY": 0.5850000000000001,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              230,
+              "Switch 5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 230
+        }
+      }
+    },
+    {
+      "name": "aaron-east-regular: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": 1,
+          "kind": "Manual",
+          "label": "Manual",
+          "hud": "Manual",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            1.8791794228529775,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.23874354053621283,
+            "world": [
+              2.1179229633891903,
+              0.03990483878876565,
+              15
+            ],
+            "lowestY": 0.02010575342540234
+          },
+          "trailingTruck": {
+            "along": -0.2067058226872549,
+            "world": [
+              1.6724736001657226,
+              0.218720008178298,
+              15
+            ],
+            "lowestY": 0.1989209228149347
+          },
+          "leadingWheelY": -0.0021478818792353555,
+          "trailingWheelY": 0.176667287510297,
+          "railY": 0,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 0,
+          "banks": [
+            [
+              135,
+              "Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 135
+        }
+      }
+    },
+    {
+      "name": "aaron-east-regular: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -16,
+            0,
+            10
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "grind",
+          "stance": 1,
+          "kind": "5-0",
+          "label": "5-0",
+          "hud": "5-0",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -5.533623260685156,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2086494805288801,
+            "world": [
+              -5.3249737801562755,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -5.773092384874932,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "leadingWheelY": 0.7317703843704965,
+          "trailingWheelY": 0.5597537685887524,
+          "railY": 0.5850000000000001,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 0,
+          "banks": [
+            [
+              200,
+              "5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 200
+        }
+      }
+    },
+    {
+      "name": "aaron-east-switch: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Manual",
+          "label": "Switch Manual",
+          "hud": "Switch Manual",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            4.036064368668486,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268715432,
+            "world": [
+              4.24277019135564,
+              0.218720008178298,
+              14.999999795802397
+            ],
+            "lowestY": 0.19892092281493468
+          },
+          "trailingTruck": {
+            "along": -0.23874354053609625,
+            "world": [
+              3.7973208281323894,
+              0.03990483878876565,
+              15.000000235846569
+            ],
+            "lowestY": 0.020105753425402318
+          },
+          "leadingWheelY": 0.1766156603452317,
+          "trailingWheelY": -0.002199509044300642,
+          "railY": 0,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 1,
+          "banks": [
+            [
+              155,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 155
+        }
+      }
+    },
+    {
+      "name": "aaron-east-switch: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -16,
+            0,
+            10
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "grind",
+          "stance": -1,
+          "kind": "5-0",
+          "label": "Switch 5-0",
+          "hud": "Switch 5-0",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -6.126556228197886,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2394691241897764,
+            "world": [
+              -5.88708710400811,
+              0.602,
+              10
+            ],
+            "lowestY": 0.5822462332106374
+          },
+          "trailingTruck": {
+            "along": -0.2086494805288801,
+            "world": [
+              -6.335205708726766,
+              0.7740166157817442,
+              10
+            ],
+            "lowestY": 0.7542628489923816
+          },
+          "leadingWheelY": 0.5598687501746474,
+          "trailingWheelY": 0.7318853659563916,
+          "railY": 0.5850000000000001,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              230,
+              "Switch 5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 230
+        }
+      }
+    },
+    {
+      "name": "aaron-west-regular: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": 1,
+          "kind": "Manual",
+          "label": "Manual",
+          "hud": "Manual",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -5.823649042149999,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.2387435405362126,
+            "world": [
+              -6.062392582686211,
+              0.03990483878876565,
+              15
+            ],
+            "lowestY": 0.02010575342540234
+          },
+          "trailingTruck": {
+            "along": -0.20670582268725468,
+            "world": [
+              -5.616943219462744,
+              0.218720008178298,
+              15
+            ],
+            "lowestY": 0.1989209228149347
+          },
+          "leadingWheelY": -0.00216600650918284,
+          "trailingWheelY": 0.17664916288034951,
+          "railY": 0,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 0,
+          "banks": [
+            [
+              135,
+              "Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 135
+        }
+      }
+    },
+    {
+      "name": "aaron-west-regular: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            7,
+            0,
+            10
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "grind",
+          "stance": 1,
+          "kind": "5-0",
+          "label": "5-0",
+          "hud": "5-0",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -3.344130380584825,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.20864948052888055,
+            "world": [
+              -3.5527798611137054,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -3.1046612563950484,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "leadingWheelY": 0.7318327015089705,
+          "trailingWheelY": 0.5598160857272265,
+          "railY": 0.5850000000000001,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 0,
+          "banks": [
+            [
+              200,
+              "5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 200
+        }
+      }
+    },
+    {
+      "name": "aaron-west-switch: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Manual",
+          "label": "Switch Manual",
+          "hud": "Switch Manual",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -7.990085885260562,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268712145,
+            "world": [
+              -8.196791707947684,
+              0.218720008178298,
+              15.00000023561262
+            ],
+            "lowestY": 0.19892092281493473
+          },
+          "trailingTruck": {
+            "along": -0.23874354053605806,
+            "world": [
+              -7.751342344724504,
+              0.03990483878876565,
+              14.999999727869344
+            ],
+            "lowestY": 0.020105753425402356
+          },
+          "leadingWheelY": 0.17655350205202672,
+          "trailingWheelY": -0.0022616673375056504,
+          "railY": 0,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 1,
+          "banks": [
+            [
+              155,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 155
+        }
+      }
+    },
+    {
+      "name": "aaron-west-switch: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            7,
+            0,
+            10
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "grind",
+          "stance": -1,
+          "kind": "5-0",
+          "label": "Switch 5-0",
+          "hud": "Switch 5-0",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -2.8734437718020693,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2394691241897764,
+            "world": [
+              -3.1129128959918457,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "trailingTruck": {
+            "along": -0.20864948052888055,
+            "world": [
+              -2.664794291273189,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "leadingWheelY": 0.559838592939138,
+          "trailingWheelY": 0.7318552087208821,
+          "railY": 0.5850000000000001,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              230,
+              "Switch 5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 230
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    "joe-east-regular-manual-gameplay.png",
+    "joe-east-regular-manual-side.png",
+    "joe-east-regular-5-0-gameplay.png",
+    "joe-east-regular-5-0-side.png",
+    "joe-east-switch-manual-gameplay.png",
+    "joe-east-switch-manual-side.png",
+    "joe-east-switch-5-0-gameplay.png",
+    "joe-east-switch-5-0-side.png",
+    "joe-west-regular-manual-gameplay.png",
+    "joe-west-regular-manual-side.png",
+    "joe-west-regular-5-0-gameplay.png",
+    "joe-west-regular-5-0-side.png",
+    "joe-west-switch-manual-gameplay.png",
+    "joe-west-switch-manual-side.png",
+    "joe-west-switch-5-0-gameplay.png",
+    "joe-west-switch-5-0-side.png",
+    "aaron-east-regular-manual-gameplay.png",
+    "aaron-east-regular-manual-side.png",
+    "aaron-east-regular-5-0-gameplay.png",
+    "aaron-east-regular-5-0-side.png",
+    "aaron-east-switch-manual-gameplay.png",
+    "aaron-east-switch-manual-side.png",
+    "aaron-east-switch-5-0-gameplay.png",
+    "aaron-east-switch-5-0-side.png",
+    "aaron-west-regular-manual-gameplay.png",
+    "aaron-west-regular-manual-side.png",
+    "aaron-west-regular-5-0-gameplay.png",
+    "aaron-west-regular-5-0-side.png",
+    "aaron-west-switch-manual-gameplay.png",
+    "aaron-west-switch-manual-side.png",
+    "aaron-west-switch-5-0-gameplay.png",
+    "aaron-west-switch-5-0-side.png"
+  ],
+  "method": "Actual gamepad API input through the normal application: RT ground revert, stick-flick manual or charged ollie and directional grind. Only the initial supported ground approach is seeded. Visible leading/trailing wheels and hangers are independently ordered along physical travel; support is sampled from rendered mesh vertices, not animation contact metadata.",
+  "entryAssets": [
+    "http://127.0.0.1:4176/assets/index-DFf2tvG_.js",
+    "http://127.0.0.1:4176/assets/main-DPtAxrCx.js"
+  ],
+  "browserErrors": [],
+  "passed": true,
+  "baseline": true,
+  "visualAssertionsActive": false,
+  "baselineInterpretation": "Passing baseline checks confirm native inputs, labels, captures and banked exits only. Travel-relative visual support is recorded without enforcing the fix, and reveals the regular Manual and switch5-0 defects."
+}

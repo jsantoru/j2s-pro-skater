@@ -58,10 +58,23 @@ for (const stance of [1, -1]) for (const lean of [-0.6, 0, 0.6]) {
   }
 }
 for (const state of ['grind', 'air']) for (const name of [null, 'Indy', 'Melon', 'Nosegrab', 'Tailgrab', 'Method', 'Stalefish', 'Judo', 'Airwalk']) {
+  // Finish the previous grab's release before measuring a different trick.
+  for (let i = 0; i < 60; i++) step(sk());
   const s = sk({ state, trick: name ? { kind: 'grab', name } : null });
   for (let i = 0; i < 60; i++) {
-    step(s); contact(c.lLeg, 0.235, name); contact(c.rLeg, -0.255, name);
+    step(s);
+    const frontOff = state === 'air' && (name === 'Judo' || name === 'Airwalk');
+    const backOff = state === 'air' && name === 'Airwalk';
+    if (!frontOff) contact(c.lLeg, 0.235, name);
+    if (!backOff) contact(c.rLeg, -0.255, name);
+    if (i === 59) for (const [off, leg, z] of [[frontOff,c.lLeg,.235],[backOff,c.rLeg,-.255]]) {
+      if (!off) continue;
+      point.set(0,-.0405,0);leg.an.localToWorld(point);c.board.worldToLocal(point);
+      assert.ok(point.distanceTo(new THREE.Vector3(0,.132,z))>.30, `${name}: released foot visibly leaves the deck`);
+    }
   }
+  for (let i = 0; i < 60; i++) step(sk());
+  contact(c.lLeg,.235,'grab recovery');contact(c.rLeg,-.255,'grab recovery');
 }
 for (let i = 0; i < 240; i++) {
   step(sk({ pushing: 1 })); contact(c.lLeg, 0.235, 'pushing front');

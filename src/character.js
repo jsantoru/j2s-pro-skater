@@ -5,6 +5,9 @@
 // nose (+) / tail (-); keys ending in X fold limbs toward the chest (+).
 import * as THREE from 'three';
 import { buildDetailedBoard, buildDetailedBody } from './skater-art.js';
+import { GrindAnimation } from './grind-animation.js';
+import { GrabAnimation } from './grab-animation.js';
+import { mirrorSwitchPose } from './stance-pose.js';
 
 const L1 = 0.42, L2 = 0.42, BOARD_TOP = 0.13;
 const BOARD_TRACK = 0.05;   // how far the board may chase the feet sideways in the air
@@ -27,11 +30,6 @@ export const POSES = {
   kickflip: P({ torsoX: 12, headY: -55, headX: 15, lArmX: 10, lArmZ: 70, lElbow: 30, rArmX: -10, rArmZ: -70, rElbow: 30, lHip: 25, lKnee: 12, lLegZ: 42, rHip: 60, rKnee: 105 }),
   heelflip: P({ torsoX: 10, headY: -55, headX: 15, lArmX: 10, lArmZ: 70, lElbow: 30, rArmX: -10, rArmZ: -70, rElbow: 30, lHip: 55, lKnee: 20, lLegZ: -30, rHip: 60, rKnee: 105 }),
   shoveit: P({ torsoX: 10, headY: -55, headX: 12, lArmX: 10, lArmZ: 65, lElbow: 30, rArmX: -10, rArmZ: -65, rElbow: 30, lHip: 40, lKnee: 60, lLegZ: 20, rHip: 45, rKnee: 95, rLegZ: -15 }),
-  indy: P({ torsoX: 42, headY: -50, headX: -10, lArmX: -10, lArmZ: 75, lElbow: 20, rArmX: 78, rArmZ: -10, rElbow: 55, lHip: 70, lKnee: 118, rHip: 72, rKnee: 120, hipsZ: 8 }),
-  melon: P({ torsoX: 30, torsoZ: -12, headY: -50, lArmX: 65, lArmZ: 8, lElbow: 55, rArmX: -10, rArmZ: -80, rElbow: 20, lHip: 70, lKnee: 118, rHip: 72, rKnee: 120 }),
-  nosegrab: P({ torsoX: 45, torsoY: -30, headY: -60, lArmX: 95, lArmZ: 5, lElbow: 25, rArmX: -20, rArmZ: -70, rElbow: 30, lHip: 65, lKnee: 110, rHip: 75, rKnee: 125 }),
-  tailgrab: P({ torsoX: 40, torsoY: 30, headY: -40, lArmX: -20, lArmZ: 70, lElbow: 30, rArmX: 95, rArmZ: -5, rElbow: 25, lHip: 75, lKnee: 125, rHip: 65, rKnee: 110 }),
-  method: P({ torsoX: -18, headY: -50, headX: -25, lArmX: 70, lArmZ: 10, lElbow: 45, rArmX: -30, rArmZ: -80, rElbow: 20, lHip: 15, lKnee: 135, rHip: 12, rKnee: 130 }),
   grind: P({ torsoX: 18, headY: -55, lArmX: 0, lArmZ: 75, lElbow: 25, rArmX: 0, rArmZ: -75, rElbow: 25, lHip: 48, lKnee: 68, rHip: 46, rKnee: 64 }),
   // manuals: weight over the back foot with the front leg reaching out, arms wide. hipsZ leans the whole
   // upper body back over the tail (negative) or forward over the nose (positive).
@@ -44,7 +42,6 @@ export const POSES = {
   pushStroke: P({ hipsYaw: 60, hipsSide: .12, torsoX: 16, torsoY: -20, headY: -10, headX: -12, lArmX: 20, lArmZ: 12, lElbow: 30, rArmX: -25, rArmZ: -12, rElbow: 30, lHip: 45, lKnee: 68, rHip: 14, rKnee: 5, rLegZ: -22 }),
   pushReturn: P({ hipsYaw: 60, hipsSide: .12, torsoX: 12, torsoY: -20, headY: -10, headX: -10, lArmX: 5, lArmZ: 12, lElbow: 30, rArmX: 0, rArmZ: -12, rElbow: 30, lHip: 42, lKnee: 64, rHip: 40, rKnee: 70, rLegZ: -4 }),
 };
-const GRAB_POSE = { Indy: 'indy', Melon: 'melon', Nosegrab: 'nosegrab', Tailgrab: 'tailgrab', Method: 'method', Stalefish: 'melon', Judo: 'method', Airwalk: 'nosegrab' };
 const FLIP_POSE = { Kickflip: 'kickflip', Heelflip: 'heelflip', 'Pop Shove-it': 'shoveit', Impossible: 'shoveit', '360 Flip': 'kickflip', 'Varial Heelflip': 'heelflip', Hardflip: 'kickflip', 'Inward Heelflip': 'heelflip' };
 // [rollTurns (around z), yawTurns (around y), pitchTurns (around x)]
 const FLIP_SPIN = { Kickflip: [1, 0, 0], Heelflip: [-1, 0, 0], 'Pop Shove-it': [0, 0.5, 0], Impossible: [0, 0, 1], '360 Flip': [1, 1, 0], 'Varial Heelflip': [-1, -0.5, 0], Hardflip: [1, -0.5, 0], 'Inward Heelflip': [-1, 0.5, 0] };
@@ -89,6 +86,8 @@ export class Character {
     this.wheelSpeed = 0;
     this.contactWeight = 1;
     this.pushContact = 0;
+    this.grindAnimation = new GrindAnimation();
+    this.grabAnimation = new GrabAnimation();
     this.buildBoard(); this.buildBody();
     this.ik = { target: new THREE.Vector3(), direction: new THREE.Vector3(), bend: new THREE.Vector3(),
       knee: new THREE.Vector3(), lower: new THREE.Vector3(), worldQ: new THREE.Quaternion(),
@@ -125,7 +124,10 @@ export class Character {
     this.hips.worldToLocal(v.target); v.target.sub(leg.hp.position);
     const distance = THREE.MathUtils.clamp(v.target.length(), 0.02, L1 + L2 - 0.0001);
     v.direction.copy(v.target).normalize();
-    v.bend.set(0, 0, 1).addScaledVector(v.direction, -v.direction.z).normalize();
+    v.bend.set(0, 0, 1);
+    v.bend.addScaledVector(v.direction, -v.direction.dot(v.bend));
+    if (v.bend.lengthSq() < 1e-8) v.bend.set(1, 0, 0).addScaledVector(v.direction, -v.direction.x);
+    v.bend.normalize();
     const along = (L1 * L1 - L2 * L2 + distance * distance) / (2 * distance);
     v.knee.copy(v.direction).multiplyScalar(along).addScaledVector(v.bend, Math.sqrt(Math.max(0, L1 * L1 - along * along)));
     leg.hp.quaternion.setFromUnitVectors(DOWN, v.lower.copy(v.knee).normalize());
@@ -180,6 +182,7 @@ export class Character {
         this.ik.footQ.setFromEuler(new THREE.Euler(0, sk.stance < 0 ? Math.PI : 0, 0)).premultiply(this.root.getWorldQuaternion(this.ik.worldQ));
         orientations[i].slerp(this.ik.footQ, this.pushContact);
       }
+      this.grabAnimation.adjustFootTarget(this, i, targets[i], orientations[i]);
     }
     // Lower the pelvis just enough to keep both ankles within physical leg reach.
     // This also absorbs the animation bob and balances manuals over the planted wheels.
@@ -194,8 +197,8 @@ export class Character {
       if (excess <= 0.0001) break;
       this.hips.position.y -= excess * 1.12; this.root.updateMatrixWorld(true);
     }
-    this.plantFoot(this.lLeg, targets[0], orientations[0], this.contactWeight);
-    this.plantFoot(this.rLeg, targets[1], orientations[1], this.contactWeight);
+    this.plantFoot(this.lLeg, targets[0], orientations[0], this.grabAnimation.footContactWeight(0, this.contactWeight));
+    this.plantFoot(this.rLeg, targets[1], orientations[1], this.grabAnimation.footContactWeight(1, this.contactWeight));
   }
 
   // ---- animation ----
@@ -207,7 +210,7 @@ export class Character {
     else if (st === 'grind') { mix(POSES.grind, 1 - sk.crouch); mix(POSES.crouch, sk.crouch); }
     else if (st === 'air') {
       const tr = sk.trick;
-      if (tr && tr.kind === 'grab') mix(POSES[GRAB_POSE[tr.name] || 'indy'], 1);
+      if (tr && tr.kind === 'grab') mix(POSES.air, 1); // Contact helper owns the reach, hold and release pose.
       else if (tr && tr.kind === 'flip') {
         const w = Math.sin(Math.min(1, tr.t / tr.dur) * Math.PI); // ease in/out of the kick
         mix(POSES[FLIP_POSE[tr.name] || 'kickflip'], w); mix(POSES.air, 1 - w);
@@ -218,7 +221,7 @@ export class Character {
       if (Math.abs(ml) > 0.01) {
         // blend from the neutral ride into the manual as the board rocks over
         const w = Math.min(1, Math.abs(ml));
-        mix(ml > 0 ? POSES.manual : POSES.noseManual, w * (1 - c));
+        mix(ml < 0 ? POSES.manual : POSES.noseManual, w * (1 - c));
         mix(POSES.ride, (1 - w) * (1 - c));
       } else if (sk.pushing > 0 && c < 0.3) {
         // one cycle = 2π: first half the foot is on the ground stroking plant -> back, second half it
@@ -238,17 +241,20 @@ export class Character {
     }
     // normalise weights
     if (T._w && Math.abs(T._w - 1) > 1e-3) for (const k of KEYS) T[k] /= T._w;
-    // fakie: look (and turn the push) the other way
-    if (sk.stance < 0 && st !== 'bail') { T.headY = -T.headY; T.torsoY = -T.torsoY; T.hipsYaw = -T.hipsYaw; T.hipsSide = -T.hipsSide; }
+    // Switch uses the other foot as the leading foot. Mirror the complete base
+    // pose once; the contact helpers apply their own stance-aware contributions.
+    const stance=sk.stance<0?-1:1;
+    if (stance<0 && st!=='bail') mirrorSwitchPose(T);
     // carve lean: tilt sideways into the turn (about the body's nose axis)
-    T.hipsX += sk.lean * 40;
+    T.hipsX += sk.lean * 40 * stance;
     // leg drop / hips height from the front (standing) leg, so an extended pushing leg reaches the ground
-    const drop = legDrop(T.lHip, T.lKnee);
+    const leadHip=stance<0?T.rHip:T.lHip,leadKnee=stance<0?T.rKnee:T.lKnee;
+    const drop = legDrop(leadHip, leadKnee);
     T.hipsY = st === 'air' ? STAND_DROP - 0.06 : drop;
     // Flexing the hip swings the foot toward the toe side, which would walk the feet off the deck as you
     // crouch. On the ground, slide the pelvis back by the same amount so the front foot stays planted and
     // the hips travel back-and-down like a real squat. Airborne poses keep the old free-swinging look.
-    T.hipsFwd = (st === 'air' || st === 'bail') ? 0 : -legReach(T.lHip, T.lKnee);
+    T.hipsFwd = (st === 'air' || st === 'bail') ? 0 : -legReach(leadHip, leadKnee);
     // With the pelvis opened for a push, balance over the leading truck instead of
     // retaining the sideways squat offset from the normal riding stance.
     T.hipsFwd = THREE.MathUtils.lerp(T.hipsFwd, -.025, Math.abs(T.hipsYaw) / 60);
@@ -259,10 +265,14 @@ export class Character {
     const reachAvg = (legReach(T.lHip, T.lKnee) + legReach(T.rHip, T.rKnee)) / 2;
     T._boardLift = st === 'air' ? Math.max(0, STAND_DROP - 0.06 - dropAvg) : 0;
     T._boardFwd = st === 'air' ? THREE.MathUtils.clamp(reachAvg, -BOARD_TRACK, BOARD_TRACK) : 0;
+    this.grindAnimation.pose(T);
+    this.grabAnimation.modifyTarget(T);
     return T;
   }
 
   update(sk, dt, time) {
+    this.grindAnimation.update(sk, dt);
+    this.grabAnimation.update(sk, dt);
     const T = this.computeTarget(sk, dt);
     const rate = sk.state === 'bail' ? 10 : (sk.state === 'air' ? 16 : 13);
     const a = Math.min(1, dt * rate);
@@ -294,7 +304,17 @@ export class Character {
     // so the grounded wheels sit on the floor instead of sinking through it
     const ml = sk.manualLean || 0;
     if (Math.abs(ml) > 0.001 && sk.state === 'ride') {
-      const pitch = ml * MANUAL_PITCH * D2R;
+      // Physics uses negative lean for Manual, positive for Nose Manual.
+      // The supporting end follows travel even when the root faces backwards.
+      let visualStance=sk.stance<0?-1:1;
+      if(sk.revertT>0){
+        // Stance changes at the start of a revert; the visible wheel slide takes
+        // time. Rock through level as the rider turns instead of swapping axles
+        // in one frame. The lift below keeps a wheel pair grounded throughout.
+        const t=THREE.MathUtils.clamp(1-sk.revertT/sk.T.revertDuration,0,1);
+        visualStance*=2*t*t*(3-2*t)-1;
+      }
+      const pitch = -ml * visualStance * MANUAL_PITCH * D2R;
       b.rotation.x = -pitch;                       // root +z is the nose, so -x rotation lifts it
       b.position.y = Math.abs(Math.sin(pitch)) * AXLE_Z;
       this.hips.position.y += b.position.y;        // the skater rides up with it
@@ -307,12 +327,11 @@ export class Character {
         const [r, y, p] = FLIP_SPIN[tr.name] || [1, 0, 0];
         const t = Math.min(1, tr.t / tr.dur);
         const e = t < 1 ? 1 - Math.pow(1 - t, 1.6) : 1; // snappy start, settle at the end
-        // the stance flip mirrored the skater across the board's long axis, so roll and yaw invert
-        // (pitch is about that axis and is unchanged) to keep each trick flipping the way it should
-        b.rotation.set(p * e * Math.PI * 2, -y * e * Math.PI * 2, r * e * Math.PI * 2);
+        // Longitudinal reflection preserves toe/heel roll, reverses yaw/pitch,
+        // and pairs the rotation with the switch foot's mirrored flick pose.
+        const stance=sk.stance<0?-1:1;
+        b.rotation.set(p * stance * e * Math.PI * 2, -y * stance * e * Math.PI * 2, r * e * Math.PI * 2);
         b.position.y += Math.sin(t * Math.PI) * 0.08;
-      } else if (tr && tr.kind === 'grab') {
-        b.rotation.x = (tr.name === 'Nosegrab' ? 0.25 : tr.name === 'Tailgrab' ? -0.25 : 0);
       }
     } else if (sk.state === 'bail') {
       const t = sk.bailT;
@@ -327,7 +346,10 @@ export class Character {
     } else {
       this.body.rotation.set(0, -Math.PI / 2, 0); this.body.position.set(0, 0, 0);
     }
+    this.grabAnimation.applyBoard(this);
+    this.grindAnimation.applyBoard(this);
     this.anchorFeet(sk, dt);
+    this.grabAnimation.applyHands(this);
     const rolling = sk.state === 'ride';
     this.wheelSpeed = rolling ? sk.speed / .032 * (sk.stance || 1) : this.wheelSpeed * Math.exp(-dt * .8);
     for (const wheel of this.board.userData.wheels || []) {

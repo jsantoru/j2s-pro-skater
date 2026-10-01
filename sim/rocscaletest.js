@@ -17,6 +17,15 @@ const scale = 1.25, dt = 1 / 120, down = new THREE.Vector3(0, -1, 0), up = down.
 const ray = new THREE.Raycaster(), root = new THREE.Group(); root.add(level.group);
 const art = createRocCityArt(root, level, { lowfx: true }); root.updateMatrixWorld(true);
 const world = point => new THREE.Vector3(point[0] * scale, point[1], point[2] * scale);
+// Cars are placed in the enlarged city but retain their physical dimensions.
+// Their center translates with the layout; every local body/rail offset stays
+// unchanged. All other park geometry still follows the original X/Z scale.
+function worldGeometry(point, metadata) {
+  if (metadata.category !== 'car') return world(point);
+  const car = authored.environment.cars.find(item => item.id === metadata.feature);
+  assert(car, `Known parked-car anchor for ${metadata.feature}`);
+  return new THREE.Vector3(point[0] + car.x * (scale - 1), point[1], point[2] + car.z * (scale - 1));
+}
 const close = (a, b, message, tolerance = 1e-6) => assert(Math.abs(a - b) < tolerance, `${message}: ${a} versus ${b}`);
 let passed = 0, failed = 0;
 function test(name, run) {
@@ -93,10 +102,15 @@ test('Default scale expands X/Z once while authoring data and human-sized height
     if (feature.secondEntry) assert.deepEqual(level.features[id].secondEntry, world(feature.secondEntry).toArray());
   }
   assert.equal(level.colliders.length, authored.colliders.length);
+  assert.deepEqual(level.environment.cars, authored.environment.cars, 'Car authoring anchors do not change with world scale');
   for (let i = 0; i < level.colliders.length; i++) {
     const before = new THREE.Box3().setFromObject(authored.colliders[i]), after = new THREE.Box3().setFromObject(level.colliders[i]);
-    for (const bound of ['min', 'max']) for (const axis of ['x', 'y', 'z']) {
-      close(after[bound][axis], before[bound][axis] * (axis === 'y' ? 1 : scale), `${level.colliders[i].name} ${bound}.${axis}`);
+    const metadata = authored.colliders[i].userData;
+    assert.equal(level.colliders[i].userData.category, metadata.category);
+    assert.equal(level.colliders[i].userData.feature, metadata.feature);
+    for (const bound of ['min', 'max']) {
+      const expected = worldGeometry(before[bound].toArray(), metadata);
+      for (const axis of ['x', 'y', 'z']) close(after[bound][axis], expected[axis], `${level.colliders[i].name} ${bound}.${axis}`);
     }
   }
   for (const [feature, count] of [['E', 7], ['G', 9]]) {
@@ -140,7 +154,9 @@ test('World rails preserve every link and coincide with their scaled rods, bars 
   let rods = 0;
   for (let i = 0; i < level.rails.length; i++) {
     const rail = level.rails[i], before = authored.rails[i];
-    assert(rail.a.distanceTo(world(before.a.toArray())) < 1e-7); assert(rail.b.distanceTo(world(before.b.toArray())) < 1e-7);
+    assert.equal(rail.category, before.category); assert.equal(rail.feature, before.feature);
+    assert(rail.a.distanceTo(worldGeometry(before.a.toArray(), before)) < 1e-7, `${rail.feature} start follows its world placement`);
+    assert(rail.b.distanceTo(worldGeometry(before.b.toArray(), before)) < 1e-7, `${rail.feature} end follows its world placement`);
     close(rail.a.distanceTo(rail.b), rail.len, 'rail length'); close(rail.dir.length(), 1, 'normalized rail tangent');
     assert(rail.a.clone().addScaledVector(rail.dir, rail.len).distanceTo(rail.b) < 1e-7);
     for (const end of ['a', 'b']) {

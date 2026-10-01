@@ -252,18 +252,24 @@ const bankI = level.rails.find(rail => rail.kind === 'rail' && rail.a.x === 10 &
   });
   check('L: both quarter copings accept a charged approach and bank the grind on exit', () => {
     for (const x of [7.5, 13]) {
-      const skater = rider(x, 43, 0, 1, 7), bails = [], copings = []; let previous = false, released = false, longest = 0;
+      const skater = rider(x, 43, 0, 1, 7), bails = [], copings = []; let previous = false, released = false, longest = 0, targetExited = false;
       skater.events.bail = reason => bails.push(reason);
       skater.events.grindStart = () => copings.push({ kind: skater.grind.rail.kind, height: skater.grind.rail.a.y });
+      skater.events.grindEnd = () => {
+        const rail = skater.grind?.rail;
+        if (rail?.kind === 'coping' && Math.abs(rail.a.y - (x < 11 ? 1.4 : 2)) < .001) targetExited = true;
+      };
       for (let i = 0; i < 480; i++) {
-        const input = makeState(); input.push = 1; input.grind = true;
+        // Finish the intended quarter line. Continuing to hold Grind would now
+        // deliberately transfer onto the newly grindable street curb nearby.
+        const input = makeState(); input.push = 1; input.grind = !targetExited;
         input.ollie = !released && skater.pos.z < 47.5; if (!input.ollie) released = true;
         input.olliePressed = input.ollie && !previous; input.ollieReleased = !input.ollie && previous; previous = input.ollie;
         if (skater.state === 'grind') { longest = Math.max(longest, skater.grind.time); input.steer = THREE.MathUtils.clamp(-skater.balance.x * 3 - skater.balance.v, -1, 1); }
         skater.update(dt, input); if (skater.score > 0) break;
       }
       assert(copings.some(coping => coping.kind === 'coping' && Math.abs(coping.height - (x < 11 ? 1.4 : 2)) < .001));
-      assert.deepEqual(bails, []); assert(longest > .5); assert(skater.score > 100);
+      assert.deepEqual(bails, []); assert(longest > .5); assert(targetExited); assert(skater.score > 100);
     }
   });
 }

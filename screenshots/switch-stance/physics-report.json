@@ -1,0 +1,71 @@
+{
+  "passed": true,
+  "method": "Actual input detection plus world-space rendered truck/wheel measurements",
+  "checks": [
+    {
+      "name": "joe: real manual flicks load the named travel-relative wheels in either stance, direction and grade",
+      "passed": true,
+      "detail": {
+        "cases": 24,
+        "minimumLift": 0.1774370714176462
+      }
+    },
+    {
+      "name": "joe: captured truck grinds load leading or trailing trucks by travel, with switch scoring intact",
+      "passed": true,
+      "detail": {
+        "cases": 72,
+        "minimumFreeTruckGap": 0.09727680986758856
+      }
+    },
+    {
+      "name": "joe: reverting during a held manual changes the supporting end without a one-frame board snap",
+      "passed": true,
+      "detail": {
+        "cases": 16,
+        "maxWheelStep": 0.07290536492416295,
+        "maxNormalStep": 0.08576150861909561
+      }
+    },
+    {
+      "name": "aaron: real manual flicks load the named travel-relative wheels in either stance, direction and grade",
+      "passed": true,
+      "detail": {
+        "cases": 24,
+        "minimumLift": 0.1774370714176462
+      }
+    },
+    {
+      "name": "aaron: captured truck grinds load leading or trailing trucks by travel, with switch scoring intact",
+      "passed": true,
+      "detail": {
+        "cases": 72,
+        "minimumFreeTruckGap": 0.09727680986758856
+      }
+    },
+    {
+      "name": "aaron: reverting during a held manual changes the supporting end without a one-frame board snap",
+      "passed": true,
+      "detail": {
+        "cases": 16,
+        "maxWheelStep": 0.07290536492416295,
+        "maxNormalStep": 0.08576150861909561
+      }
+    },
+    {
+      "name": "SW selects Feeble and SE selects Smith without changing either 125-point base",
+      "passed": true,
+      "detail": {
+        "SW": [
+          "Feeble Grind",
+          125
+        ],
+        "SE": [
+          "Smith Grind",
+          125
+        ]
+      }
+    }
+  ],
+  "renderFrames": 9136
+}

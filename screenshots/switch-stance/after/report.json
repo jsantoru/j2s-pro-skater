@@ -1,0 +1,3832 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "recordedAt": "2026-10-01T01:23:37.305Z",
+  "environment": {
+    "browser": "Microsoft Edge (isolated headless)",
+    "platform": "win32",
+    "animation": "Deterministic real application RAF",
+    "mobile": "Touch emulation; no physical device test"
+  },
+  "checks": [
+    {
+      "name": "joe-east-regular: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "ride",
+          "stance": 1,
+          "kind": "Manual",
+          "label": "Manual",
+          "hud": "Manual",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            1.8791794228529775,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.2067058226872549,
+            "world": [
+              2.0858852455402324,
+              0.218720008178298,
+              15
+            ],
+            "lowestY": 0.1989209228149347
+          },
+          "trailingTruck": {
+            "along": -0.23874354053621283,
+            "world": [
+              1.6404358823167646,
+              0.03990483878876565,
+              15
+            ],
+            "lowestY": 0.02010575342540234
+          },
+          "leadingWheelY": 0.17665426293038883,
+          "trailingWheelY": -0.002160906459143512,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 1,
+              "world": [
+                1.5933602770583888,
+                0.11691060084302746,
+                14.999999999999998
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13200000000000012,
+                -0.2550000000000001
+              ],
+              "along": -0.28581914579458867
+            },
+            {
+              "leg": 0,
+              "world": [
+                2.0480898353490122,
+                0.2994510862615084,
+                14.999999999999998
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13200000000000006,
+                0.2350000000000001
+              ],
+              "along": 0.16891041249603478
+            }
+          ],
+          "pushPhase": 0.3750000000000018,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 0,
+          "banks": [
+            [
+              135,
+              "Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 135
+        }
+      }
+    },
+    {
+      "name": "joe-east-regular: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -16,
+            0,
+            10
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "grind",
+          "stance": 1,
+          "kind": "5-0",
+          "label": "5-0",
+          "hud": "5-0",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -5.7075045377637235,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2086494805288801,
+            "world": [
+              -5.498855057234843,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -5.9469736619535,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "leadingWheelY": 0.7318028247809122,
+          "trailingWheelY": 0.5597862089991681,
+          "railY": 0.5850000000000001,
+          "feet": [
+            {
+              "leg": 1,
+              "world": [
+                -5.99287211586049,
+                0.6797131387150706,
+                10.000000000000002
+              ],
+              "boardLocal": [
+                -1.7763568394002505e-15,
+                0.13199999999999967,
+                -0.2550000000000008
+              ],
+              "along": -0.2853675780967668
+            },
+            {
+              "leg": 0,
+              "world": [
+                -5.535417706876859,
+                0.8553134339922686,
+                10.000000000000002
+              ],
+              "boardLocal": [
+                -1.7763568394002505e-15,
+                0.13199999999999967,
+                0.2350000000000012
+              ],
+              "along": 0.17208683088686438
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 0,
+          "banks": [
+            [
+              200,
+              "5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 200
+        }
+      }
+    },
+    {
+      "name": "joe-east-switch: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Manual",
+          "label": "Switch Manual",
+          "hud": "Switch Manual",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            4.036064368668486,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268715432,
+            "world": [
+              4.24277019135564,
+              0.218720008178298,
+              14.999999795802397
+            ],
+            "lowestY": 0.19892092281493468
+          },
+          "trailingTruck": {
+            "along": -0.23874354053609625,
+            "world": [
+              3.7973208281323894,
+              0.03990483878876565,
+              15.000000235846569
+            ],
+            "lowestY": 0.020105753425402318
+          },
+          "leadingWheelY": 0.1765849477259159,
+          "trailingWheelY": -0.002230221663616437,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                3.7688056130083387,
+                0.12436123290092485,
+                15.000000264015773
+              ],
+              "boardLocal": [
+                0,
+                0.13200000000000034,
+                0.2350000000000012
+              ],
+              "along": -0.2672587556601469
+            },
+            {
+              "leg": 1,
+              "world": [
+                4.223535171298741,
+                0.3069017183194059,
+                14.999999814804012
+              ],
+              "boardLocal": [
+                -3.552713678800501e-15,
+                0.13200000000000012,
+                -0.2549999999999999
+              ],
+              "along": 0.18747080263025495
+            }
+          ],
+          "pushPhase": 0.37500000000000683,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 1,
+          "banks": [
+            [
+              155,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 155
+        }
+      }
+    },
+    {
+      "name": "joe-east-switch: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -16,
+            0,
+            10
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "grind",
+          "stance": -1,
+          "kind": "5-0",
+          "label": "Switch 5-0",
+          "hud": "Switch 5-0",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -6.126556228197886,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2086494805288801,
+            "world": [
+              -5.917906747669006,
+              0.7740166157817442,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -6.366025352387663,
+              0.602,
+              10
+            ],
+            "lowestY": 0.5822462332106373
+          },
+          "leadingWheelY": 0.7318607774378935,
+          "trailingWheelY": 0.5598441616561493,
+          "railY": 0.5850000000000001,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                -6.393252197764708,
+                0.6868804977059769,
+                10
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13199999999999967,
+                0.23500000000000032
+              ],
+              "along": -0.26669596956682184
+            },
+            {
+              "leg": 1,
+              "world": [
+                -5.935797788781077,
+                0.862480792983175,
+                10
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13199999999999967,
+                -0.25500000000000167
+              ],
+              "along": 0.19075843941680937
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              230,
+              "Switch 5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 230
+        }
+      }
+    },
+    {
+      "name": "joe-west-regular: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "ride",
+          "stance": 1,
+          "kind": "Manual",
+          "label": "Manual",
+          "hud": "Manual",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -5.823649042149999,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268725468,
+            "world": [
+              -6.030354864837253,
+              0.218720008178298,
+              15
+            ],
+            "lowestY": 0.1989209228149347
+          },
+          "trailingTruck": {
+            "along": -0.2387435405362126,
+            "world": [
+              -5.584905501613786,
+              0.03990483878876565,
+              15
+            ],
+            "lowestY": 0.02010575342540234
+          },
+          "leadingWheelY": 0.17652353334518062,
+          "trailingWheelY": -0.0022916360443517303,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 1,
+              "world": [
+                -5.53782989635541,
+                0.11691060084302779,
+                15
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13200000000000056,
+                -0.2550000000000008
+              ],
+              "along": -0.2858191457945889
+            },
+            {
+              "leg": 0,
+              "world": [
+                -5.992559454646034,
+                0.2994510862615086,
+                15
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13200000000000012,
+                0.23499999999999943
+              ],
+              "along": 0.168910412496035
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 0,
+          "banks": [
+            [
+              135,
+              "Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 135
+        }
+      }
+    },
+    {
+      "name": "joe-west-regular: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            7,
+            0,
+            10
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "grind",
+          "stance": 1,
+          "kind": "5-0",
+          "label": "5-0",
+          "hud": "5-0",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -3.3914002256206244,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.20864948052888055,
+            "world": [
+              -3.600049706149505,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -3.151931101430848,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "leadingWheelY": 0.7317610845889707,
+          "trailingWheelY": 0.5597444688072266,
+          "railY": 0.5850000000000001,
+          "feet": [
+            {
+              "leg": 1,
+              "world": [
+                -3.106032647523858,
+                0.6797131387150716,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.132,
+                -0.25500000000000034
+              ],
+              "along": -0.2853675780967664
+            },
+            {
+              "leg": 0,
+              "world": [
+                -3.5634870565074865,
+                0.8553134339922686,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.13200000000000023,
+                0.23499999999999943
+              ],
+              "along": 0.17208683088686216
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 0,
+          "banks": [
+            [
+              200,
+              "5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 200
+        }
+      }
+    },
+    {
+      "name": "joe-west-switch: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Manual",
+          "label": "Switch Manual",
+          "hud": "Switch Manual",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -8.03606436866848,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268715343,
+            "world": [
+              -8.242770191355634,
+              0.218720008178298,
+              15.000000204197605
+            ],
+            "lowestY": 0.19892092281493473
+          },
+          "trailingTruck": {
+            "along": -0.23874354053609625,
+            "world": [
+              -7.797320828132384,
+              0.03990483878876565,
+              14.999999764153431
+            ],
+            "lowestY": 0.020105753425402356
+          },
+          "leadingWheelY": 0.1767552940004667,
+          "trailingWheelY": -0.0020598753890656643,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                -7.768805613008335,
+                0.12436123290092466,
+                14.999999735984229
+              ],
+              "boardLocal": [
+                -1.7763568394002505e-15,
+                0.13199999999999878,
+                0.23499999999999766
+              ],
+              "along": -0.2672587556601451
+            },
+            {
+              "leg": 1,
+              "world": [
+                -8.223535171298737,
+                0.3069017183194058,
+                15.000000185195983
+              ],
+              "boardLocal": [
+                3.552713678800501e-15,
+                0.13199999999999923,
+                -0.25500000000000345
+              ],
+              "along": 0.18747080263025673
+            }
+          ],
+          "pushPhase": 0.3750000000000273,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 1,
+          "banks": [
+            [
+              155,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 155
+        }
+      }
+    },
+    {
+      "name": "joe-west-switch: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            7,
+            0,
+            10
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "joe",
+          "state": "grind",
+          "stance": -1,
+          "kind": "5-0",
+          "label": "Switch 5-0",
+          "hud": "Switch 5-0",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -2.9249562433413416,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.20864948052888055,
+            "world": [
+              -3.133605723870222,
+              0.7740166157817442,
+              10
+            ],
+            "lowestY": 0.7542628489923816
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -2.6854871191515652,
+              0.602,
+              10
+            ],
+            "lowestY": 0.5822462332106374
+          },
+          "leadingWheelY": 0.7319976657193021,
+          "trailingWheelY": 0.5599810499375579,
+          "railY": 0.5850000000000001,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                -2.6582602737745193,
+                0.6868804977059776,
+                9.999999999999998
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13200000000000023,
+                0.23499999999999988
+              ],
+              "along": -0.2666959695668223
+            },
+            {
+              "leg": 1,
+              "world": [
+                -3.115714682758149,
+                0.862480792983175,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.13200000000000034,
+                -0.2550000000000008
+              ],
+              "along": 0.19075843941680715
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              230,
+              "Switch 5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 230
+        }
+      }
+    },
+    {
+      "name": "aaron-east-regular: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": 1,
+          "kind": "Manual",
+          "label": "Manual",
+          "hud": "Manual",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            1.8791794228529775,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.2067058226872549,
+            "world": [
+              2.0858852455402324,
+              0.218720008178298,
+              15
+            ],
+            "lowestY": 0.1989209228149347
+          },
+          "trailingTruck": {
+            "along": -0.23874354053621283,
+            "world": [
+              1.6404358823167646,
+              0.03990483878876565,
+              15
+            ],
+            "lowestY": 0.02010575342540234
+          },
+          "leadingWheelY": 0.17674402422660973,
+          "trailingWheelY": -0.0020711451629226232,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 1,
+              "world": [
+                1.5933602770583888,
+                0.1169106008430274,
+                14.999999999999998
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13200000000000006,
+                -0.2550000000000001
+              ],
+              "along": -0.28581914579458867
+            },
+            {
+              "leg": 0,
+              "world": [
+                2.0480898353490122,
+                0.2994510862615082,
+                15.000000000000002
+              ],
+              "boardLocal": [
+                -1.7763568394002505e-15,
+                0.1319999999999999,
+                0.2350000000000001
+              ],
+              "along": 0.16891041249603478
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 0,
+          "banks": [
+            [
+              135,
+              "Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 135
+        }
+      }
+    },
+    {
+      "name": "aaron-east-regular: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -16,
+            0,
+            10
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "grind",
+          "stance": 1,
+          "kind": "5-0",
+          "label": "5-0",
+          "hud": "5-0",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -5.533623260685156,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2086494805288801,
+            "world": [
+              -5.3249737801562755,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -5.773092384874932,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "leadingWheelY": 0.7317703843704965,
+          "trailingWheelY": 0.5597537685887524,
+          "railY": 0.5850000000000001,
+          "feet": [
+            {
+              "leg": 1,
+              "world": [
+                -5.8189908387819225,
+                0.6797131387150707,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.13199999999999967,
+                -0.2550000000000008
+              ],
+              "along": -0.2853675780967668
+            },
+            {
+              "leg": 0,
+              "world": [
+                -5.361536429798291,
+                0.8553134339922686,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.13199999999999967,
+                0.2350000000000012
+              ],
+              "along": 0.17208683088686438
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 0,
+          "banks": [
+            [
+              200,
+              "5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 200
+        }
+      }
+    },
+    {
+      "name": "aaron-east-switch: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Manual",
+          "label": "Switch Manual",
+          "hud": "Switch Manual",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            4.036064368668486,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268715432,
+            "world": [
+              4.24277019135564,
+              0.218720008178298,
+              14.999999795802397
+            ],
+            "lowestY": 0.19892092281493468
+          },
+          "trailingTruck": {
+            "along": -0.23874354053609625,
+            "world": [
+              3.7973208281323894,
+              0.03990483878876565,
+              15.000000235846569
+            ],
+            "lowestY": 0.020105753425402318
+          },
+          "leadingWheelY": 0.1766156603452317,
+          "trailingWheelY": -0.002199509044300642,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                3.7688056130083387,
+                0.12436123290092418,
+                15.000000264015771
+              ],
+              "boardLocal": [
+                -1.7763568394002505e-15,
+                0.13199999999999967,
+                0.2350000000000012
+              ],
+              "along": -0.2672587556601469
+            },
+            {
+              "leg": 1,
+              "world": [
+                4.223535171298741,
+                0.3069017183194056,
+                14.999999814804012
+              ],
+              "boardLocal": [
+                -3.552713678800501e-15,
+                0.1319999999999999,
+                -0.254999999999999
+              ],
+              "along": 0.18747080263025495
+            }
+          ],
+          "pushPhase": 0.3750000000000273,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 1,
+          "banks": [
+            [
+              155,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 155
+        }
+      }
+    },
+    {
+      "name": "aaron-east-switch: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -16,
+            0,
+            10
+          ],
+          "target": [
+            -8,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "grind",
+          "stance": -1,
+          "kind": "5-0",
+          "label": "Switch 5-0",
+          "hud": "Switch 5-0",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -6.126556228197886,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2086494805288801,
+            "world": [
+              -5.917906747669006,
+              0.7740166157817442,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -6.366025352387663,
+              0.602,
+              10
+            ],
+            "lowestY": 0.5822462332106373
+          },
+          "leadingWheelY": 0.7317735864980448,
+          "trailingWheelY": 0.5597569707163006,
+          "railY": 0.5850000000000001,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                -6.393252197764708,
+                0.6868804977059775,
+                10.000000000000002
+              ],
+              "boardLocal": [
+                3.552713678800501e-15,
+                0.13200000000000012,
+                0.23500000000000032
+              ],
+              "along": -0.26669596956682184
+            },
+            {
+              "leg": 1,
+              "world": [
+                -5.935797788781077,
+                0.8624807929831754,
+                10.000000000000002
+              ],
+              "boardLocal": [
+                3.552713678800501e-15,
+                0.13200000000000012,
+                -0.25500000000000167
+              ],
+              "along": 0.19075843941680937
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              230,
+              "Switch 5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 230
+        }
+      }
+    },
+    {
+      "name": "aaron-west-regular: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": 1,
+          "kind": "Manual",
+          "label": "Manual",
+          "hud": "Manual",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -5.823649042149999,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268725468,
+            "world": [
+              -6.030354864837253,
+              0.218720008178298,
+              15
+            ],
+            "lowestY": 0.1989209228149347
+          },
+          "trailingTruck": {
+            "along": -0.2387435405362126,
+            "world": [
+              -5.584905501613786,
+              0.03990483878876565,
+              15
+            ],
+            "lowestY": 0.02010575342540234
+          },
+          "leadingWheelY": 0.1765918825247727,
+          "trailingWheelY": -0.0022232868647596438,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 1,
+              "world": [
+                -5.537829896355409,
+                0.11691060084302779,
+                14.999999999999998
+              ],
+              "boardLocal": [
+                0,
+                0.13200000000000056,
+                -0.25500000000000167
+              ],
+              "along": -0.2858191457945898
+            },
+            {
+              "leg": 0,
+              "world": [
+                -5.992559454646035,
+                0.29945108626150857,
+                15.000000000000002
+              ],
+              "boardLocal": [
+                3.552713678800501e-15,
+                0.13199999999999967,
+                0.23500000000000032
+              ],
+              "along": 0.1689104124960359
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 0,
+          "banks": [
+            [
+              135,
+              "Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 135
+        }
+      }
+    },
+    {
+      "name": "aaron-west-regular: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            7,
+            0,
+            10
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "grind",
+          "stance": 1,
+          "kind": "5-0",
+          "label": "5-0",
+          "hud": "5-0",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            -3.344130380584825,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.20864948052888055,
+            "world": [
+              -3.5527798611137054,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -3.1046612563950484,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "leadingWheelY": 0.7318327015089705,
+          "trailingWheelY": 0.5598160857272265,
+          "railY": 0.5850000000000001,
+          "feet": [
+            {
+              "leg": 1,
+              "world": [
+                -3.0587628024880584,
+                0.6797131387150712,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.13199999999999978,
+                -0.25500000000000034
+              ],
+              "along": -0.2853675780967664
+            },
+            {
+              "leg": 0,
+              "world": [
+                -3.5162172114716874,
+                0.8553134339922688,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.13200000000000023,
+                0.23499999999999988
+              ],
+              "along": 0.1720868308868626
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 0,
+          "banks": [
+            [
+              200,
+              "5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 200
+        }
+      }
+    },
+    {
+      "name": "aaron-west-switch: native manual label matches supporting wheels",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            -2,
+            0,
+            15
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Manual",
+          "label": "Switch Manual",
+          "hud": "Switch Manual",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -7.990085885260562,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20670582268712145,
+            "world": [
+              -8.196791707947684,
+              0.218720008178298,
+              15.00000023561262
+            ],
+            "lowestY": 0.19892092281493473
+          },
+          "trailingTruck": {
+            "along": -0.23874354053605806,
+            "world": [
+              -7.751342344724504,
+              0.03990483878876565,
+              14.999999727869344
+            ],
+            "lowestY": 0.020105753425402356
+          },
+          "leadingWheelY": 0.17655350205202672,
+          "trailingWheelY": -0.0022616673375056504,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                -7.722827129600459,
+                0.12436123290092457,
+                14.999999695366416
+              ],
+              "boardLocal": [
+                0,
+                0.13200000000000012,
+                0.23499999999999854
+              ],
+              "along": -0.2672587556601034
+            },
+            {
+              "leg": 1,
+              "world": [
+                -8.177556687890783,
+                0.3069017183194049,
+                15.000000213687677
+              ],
+              "boardLocal": [
+                -1.7763568394002505e-15,
+                0.13200000000000056,
+                -0.25499999999999723
+              ],
+              "along": 0.1874708026302212
+            }
+          ],
+          "pushPhase": 0.37499999999994543,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 1,
+          "banks": [
+            [
+              155,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 155
+        }
+      }
+    },
+    {
+      "name": "aaron-west-switch: native 5-0 label matches the travel-trailing truck",
+      "passed": true,
+      "detail": {
+        "start": {
+          "pos": [
+            7,
+            0,
+            10
+          ],
+          "target": [
+            -1,
+            0.55,
+            10
+          ]
+        },
+        "held": {
+          "character": "aaron",
+          "state": "grind",
+          "stance": -1,
+          "kind": "5-0",
+          "label": "Switch 5-0",
+          "hud": "Switch 5-0",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -2.8734437718020693,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.20864948052888055,
+            "world": [
+              -3.08209325233095,
+              0.7740166157817441,
+              10
+            ],
+            "lowestY": 0.7542628489923815
+          },
+          "trailingTruck": {
+            "along": -0.2394691241897764,
+            "world": [
+              -2.633974647612293,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5822462332106375
+          },
+          "leadingWheelY": 0.7320060271799791,
+          "trailingWheelY": 0.5599894113982351,
+          "railY": 0.5850000000000001,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                -2.6067478022352475,
+                0.6868804977059776,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.1319999999999999,
+                0.23499999999999988
+              ],
+              "along": -0.26669596956682184
+            },
+            {
+              "leg": 1,
+              "world": [
+                -3.0642022112188765,
+                0.8624807929831745,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.13199999999999956,
+                -0.25500000000000034
+              ],
+              "along": 0.19075843941680715
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "5-0"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              230,
+              "Switch 5-0",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 230
+        }
+      }
+    },
+    {
+      "name": "SW: native diagonal input selects Feeble Grind in both stances",
+      "passed": true,
+      "detail": [
+        {
+          "held": {
+            "character": "joe",
+            "state": "grind",
+            "stance": 1,
+            "kind": "Feeble Grind",
+            "label": "Feeble Grind",
+            "hud": "Feeble Grind",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              1,
+              0,
+              0
+            ],
+            "position": [
+              -5.655342273241381,
+              0.5700000000000001,
+              10
+            ],
+            "leadingTruck": {
+              "along": 0.21173242089783528,
+              "world": [
+                -5.443609852343545,
+                0.4616615817330864,
+                9.777459642122462
+              ],
+              "lowestY": 0.44217418044376944
+            },
+            "trailingTruck": {
+              "along": -0.18974101218843753,
+              "world": [
+                -5.845083285429818,
+                0.6020000000000001,
+                10
+              ],
+              "lowestY": 0.5825125987106831
+            },
+            "leadingWheelY": 0.4191499313847441,
+            "trailingWheelY": 0.5594883496516578,
+            "railY": 0.5850000000000001,
+            "feet": [
+              {
+                "leg": 1,
+                "world": [
+                  -5.8348707793400845,
+                  0.6914966988515518,
+                  9.994339115436448
+                ],
+                "boardLocal": [
+                  -3.552713678800501e-15,
+                  0.13200000000000056,
+                  -0.2550000000000008
+                ],
+                "along": -0.17952850609870374
+              },
+              {
+                "leg": 0,
+                "world": [
+                  -5.425033316397848,
+                  0.548234563537411,
+                  9.767162500103124
+                ],
+                "boardLocal": [
+                  -8.881784197001252e-16,
+                  0.13200000000000056,
+                  0.23499999999999943
+                ],
+                "along": 0.23030895684353236
+              }
+            ],
+            "pushPhase": 0,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          "finish": {
+            "bails": [],
+            "grinds": [
+              [
+                "Feeble Grind"
+              ]
+            ],
+            "manuals": [],
+            "reverts": 0,
+            "banks": [
+              [
+                225,
+                "Feeble Grind",
+                1,
+                false
+              ]
+            ],
+            "state": "ride",
+            "score": 225
+          }
+        },
+        {
+          "held": {
+            "character": "joe",
+            "state": "grind",
+            "stance": -1,
+            "kind": "Feeble Grind",
+            "label": "Switch Feeble Grind",
+            "hud": "Switch Feeble Grind",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              -1,
+              0,
+              0
+            ],
+            "position": [
+              -6.126330801965942,
+              0.5700000000000001,
+              10
+            ],
+            "leadingTruck": {
+              "along": 0.21173242089783528,
+              "world": [
+                -5.914598381068107,
+                0.46166158173308636,
+                10.222540357877538
+              ],
+              "lowestY": 0.4421741804437693
+            },
+            "trailingTruck": {
+              "along": -0.18974101218843753,
+              "world": [
+                -6.3160718141543795,
+                0.6020000000000001,
+                9.999999999999998
+              ],
+              "lowestY": 0.5825125987106831
+            },
+            "leadingWheelY": 0.4191993419713552,
+            "trailingWheelY": 0.5595377602382691,
+            "railY": 0.5850000000000001,
+            "feet": [
+              {
+                "leg": 0,
+                "world": [
+                  -6.289131248352717,
+                  0.6856492647570958,
+                  10.014933399475119
+                ],
+                "boardLocal": [
+                  1.77635683940025e-15,
+                  0.13199999999999903,
+                  0.2350000000000007
+                ],
+                "along": -0.16280044638677538
+              },
+              {
+                "leg": 1,
+                "world": [
+                  -5.87929378541048,
+                  0.5423871294429546,
+                  10.242110014808441
+                ],
+                "boardLocal": [
+                  1.77635683940025e-15,
+                  0.13199999999999915,
+                  -0.2549999999999994
+                ],
+                "along": 0.24703701655546162
+              }
+            ],
+            "pushPhase": 0,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          "finish": {
+            "bails": [],
+            "grinds": [
+              [
+                "Feeble Grind"
+              ]
+            ],
+            "manuals": [],
+            "reverts": 1,
+            "banks": [
+              [
+                260,
+                "Switch Feeble Grind",
+                1,
+                false
+              ]
+            ],
+            "state": "ride",
+            "score": 260
+          }
+        }
+      ]
+    },
+    {
+      "name": "SE: native diagonal input selects Smith Grind in both stances",
+      "passed": true,
+      "detail": [
+        {
+          "held": {
+            "character": "joe",
+            "state": "grind",
+            "stance": 1,
+            "kind": "Smith Grind",
+            "label": "Smith Grind",
+            "hud": "Smith Grind",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              1,
+              0,
+              0
+            ],
+            "position": [
+              -5.655342273241381,
+              0.5700000000000001,
+              10
+            ],
+            "leadingTruck": {
+              "along": 0.21758466880869598,
+              "world": [
+                -5.437757604432685,
+                0.4616615817330864,
+                10.201223878024654
+              ],
+              "lowestY": 0.44217418044376944
+            },
+            "trailingTruck": {
+              "along": -0.19498542132273844,
+              "world": [
+                -5.850327694564119,
+                0.6020000000000001,
+                10
+              ],
+              "lowestY": 0.5825125987106831
+            },
+            "leadingWheelY": 0.4191672867652108,
+            "trailingWheelY": 0.5595057050321244,
+            "railY": 0.5850000000000001,
+            "feet": [
+              {
+                "leg": 1,
+                "world": [
+                  -5.839832916552236,
+                  0.691496698851551,
+                  10.00511864524616
+                ],
+                "boardLocal": [
+                  1.7763568394002505e-15,
+                  0.13199999999999956,
+                  -0.2550000000000011
+                ],
+                "along": -0.18449064331085552
+              },
+              {
+                "leg": 0,
+                "world": [
+                  -5.4186676162097305,
+                  0.5482345635374098,
+                  10.210534687396327
+                ],
+                "boardLocal": [
+                  1.7763568394002505e-15,
+                  0.13199999999999923,
+                  0.2349999999999991
+                ],
+                "along": 0.23667465703165025
+              }
+            ],
+            "pushPhase": 0,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          "finish": {
+            "bails": [],
+            "grinds": [
+              [
+                "Smith Grind"
+              ]
+            ],
+            "manuals": [],
+            "reverts": 0,
+            "banks": [
+              [
+                225,
+                "Smith Grind",
+                1,
+                false
+              ]
+            ],
+            "state": "ride",
+            "score": 225
+          }
+        },
+        {
+          "held": {
+            "character": "joe",
+            "state": "grind",
+            "stance": -1,
+            "kind": "Smith Grind",
+            "label": "Switch Smith Grind",
+            "hud": "Switch Smith Grind",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              -1,
+              0,
+              0
+            ],
+            "position": [
+              -6.126330801965942,
+              0.5700000000000001,
+              10
+            ],
+            "leadingTruck": {
+              "along": 0.21758466880869598,
+              "world": [
+                -5.908746133157246,
+                0.4616615817330864,
+                9.798776121975346
+              ],
+              "lowestY": 0.44217418044376944
+            },
+            "trailingTruck": {
+              "along": -0.19498542132273844,
+              "world": [
+                -6.32131622328868,
+                0.6020000000000001,
+                10
+              ],
+              "lowestY": 0.5825125987106831
+            },
+            "leadingWheelY": 0.41937725235041556,
+            "trailingWheelY": 0.5597156706173292,
+            "railY": 0.5850000000000001,
+            "feet": [
+              {
+                "leg": 0,
+                "world": [
+                  -6.293631024854654,
+                  0.6856492647570958,
+                  9.986497026502814
+                ],
+                "boardLocal": [
+                  0,
+                  0.13199999999999878,
+                  0.23499999999999766
+                ],
+                "along": -0.16730022288871194
+              },
+              {
+                "leg": 1,
+                "world": [
+                  -5.872465724512147,
+                  0.542387129442955,
+                  9.781080984352645
+                ],
+                "boardLocal": [
+                  0,
+                  0.13199999999999923,
+                  -0.2550000000000008
+                ],
+                "along": 0.2538650774537947
+              }
+            ],
+            "pushPhase": 0,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          "finish": {
+            "bails": [],
+            "grinds": [
+              [
+                "Smith Grind"
+              ]
+            ],
+            "manuals": [],
+            "reverts": 1,
+            "banks": [
+              [
+                260,
+                "Switch Smith Grind",
+                1,
+                false
+              ]
+            ],
+            "state": "ride",
+            "score": 260
+          }
+        }
+      ]
+    },
+    {
+      "name": "joe: switch push and Indy retain planted feet and the mirrored grab hand",
+      "passed": true,
+      "detail": {
+        "push": {
+          "character": "joe",
+          "state": "ride",
+          "stance": -1,
+          "label": "",
+          "hud": "",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            2.0764367239985266,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.2399999540919655,
+            "world": [
+              2.316436678090492,
+              0.042999999999996666,
+              14.999851555213814
+            ],
+            "lowestY": 0.02300000044703146
+          },
+          "trailingTruck": {
+            "along": -0.2399999540919655,
+            "world": [
+              1.8364367699065611,
+              0.042999999999996666,
+              15.000148444786186
+            ],
+            "lowestY": 0.02300000044703146
+          },
+          "leadingWheelY": 0.000006311934770755756,
+          "trailingWheelY": 0.000006311934770755756,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                2.009992967044816,
+                0.006126668573149606,
+                14.717069987523265
+              ],
+              "boardLocal": [
+                -0.2829710551456248,
+                0.006126668573152874,
+                0.0662687463890852
+              ],
+              "along": -0.06644375695371085
+            },
+            {
+              "leg": 1,
+              "world": [
+                2.3314366752212385,
+                0.13199999999999673,
+                14.999842277414679
+              ],
+              "boardLocal": [
+                0,
+                0.13200000000000006,
+                -0.25499999999999856
+              ],
+              "along": 0.2549999512227119
+            }
+          ],
+          "pushPhase": 1.7499999999997453,
+          "pushContact": 0.9757622591228462,
+          "grab": null,
+          "webgl": 0
+        },
+        "grab": {
+          "character": "joe",
+          "state": "air",
+          "stance": -1,
+          "kind": "Indy",
+          "label": "",
+          "hud": "Indy…",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            6.620565274040367,
+            1.4565416666666633,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.24287866592802843,
+            "world": [
+              6.863443939968396,
+              1.8273038313825276,
+              14.853581193019176
+            ],
+            "lowestY": 1.8002939567561582
+          },
+          "trailingTruck": {
+            "along": -0.23518358147715102,
+            "world": [
+              6.385381692563216,
+              1.870390808546584,
+              14.853579008201784
+            ],
+            "lowestY": 1.8433809339202145
+          },
+          "leadingWheelY": 1.7838470725552544,
+          "trailingWheelY": 1.8269340497193105,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                6.398325032729588,
+                1.9582999183939622,
+                14.860682412398306
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13200000000000056,
+                0.2350000000000012
+              ],
+              "along": -0.22224024131077957
+            },
+            {
+              "leg": 1,
+              "world": [
+                6.886346910289041,
+                1.9143152958723215,
+                14.860684642732728
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13200000000000012,
+                -0.2549999999999999
+              ],
+              "along": 0.2657816362486738
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": {
+            "name": "Indy",
+            "hand": "left",
+            "error": 0.0030478458521908986,
+            "boardLocal": [
+              -0.11,
+              0.12600000000000003,
+              0.015
+            ]
+          },
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              360,
+              "Switch Indy",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 360
+        }
+      }
+    },
+    {
+      "name": "aaron: switch push and Indy retain planted feet and the mirrored grab hand",
+      "passed": true,
+      "detail": {
+        "push": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": -1,
+          "label": "",
+          "hud": "",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            2.123824324974246,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.23999996551796476,
+            "world": [
+              2.363824290492211,
+              0.042999999999996666,
+              14.99987134784993
+            ],
+            "lowestY": 0.02300000044703146
+          },
+          "trailingTruck": {
+            "along": -0.23999996551796499,
+            "world": [
+              1.8838243594562811,
+              0.042999999999996666,
+              15.00012865215007
+            ],
+            "lowestY": 0.02300000044703146
+          },
+          "leadingWheelY": 0.00018472347384056176,
+          "trailingWheelY": 0.00018472347384056176,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                2.0574039012951375,
+                0.006126668573143951,
+                14.717064508913209
+              ],
+              "boardLocal": [
+                -0.28297105514563725,
+                0.006126668573147219,
+                0.06626874638922997
+              ],
+              "along": -0.06642042367910861
+            },
+            {
+              "leg": 1,
+              "world": [
+                2.3788242883370843,
+                0.13199999999999668,
+                14.999863307090552
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.132,
+                -0.2550000000000008
+              ],
+              "along": 0.25499996336283814
+            }
+          ],
+          "pushPhase": 1.7500000000005096,
+          "pushContact": 0.9757622591228913,
+          "grab": null,
+          "webgl": 0
+        },
+        "grab": {
+          "character": "aaron",
+          "state": "air",
+          "stance": -1,
+          "kind": "Indy",
+          "label": "",
+          "hud": "Indy…",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            6.666070036628347,
+            1.4565416666666633,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.24287866639757727,
+            "world": [
+              6.908948703025924,
+              1.8273038313825287,
+              14.853581193798062
+            ],
+            "lowestY": 1.8002939567561593
+          },
+          "trailingTruck": {
+            "along": -0.23518358100759507,
+            "world": [
+              6.430886455620752,
+              1.870390808546585,
+              14.853579007447575
+            ],
+            "lowestY": 1.8433809339202156
+          },
+          "leadingWheelY": 1.7839416225377152,
+          "trailingWheelY": 1.8270285997017712,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                6.443829795764345,
+                1.9582999183939627,
+                14.860682411685604
+              ],
+              "boardLocal": [
+                3.5527136788005e-15,
+                0.13199999999999965,
+                0.2349999999999985
+              ],
+              "along": -0.22224024086400185
+            },
+            {
+              "leg": 1,
+              "world": [
+                6.931851673323791,
+                1.9143152958723217,
+                14.86068464358506
+              ],
+              "boardLocal": [
+                1.77635683940025e-15,
+                0.13199999999999965,
+                -0.2550000000000007
+              ],
+              "along": 0.2657816366954444
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": {
+            "name": "Indy",
+            "hand": "left",
+            "error": 0.003047845852181432,
+            "boardLocal": [
+              -0.11,
+              0.12599999999999997,
+              0.015
+            ]
+          },
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              360,
+              "Switch Indy",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 360
+        }
+      }
+    },
+    {
+      "name": "switch Nose Manual and Nosegrind load the travel-leading wheels and hanger",
+      "passed": true,
+      "detail": {
+        "manual": {
+          "character": "aaron",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Nose Manual",
+          "label": "Switch Nose Manual",
+          "hud": "Switch Nose Manual",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -7.51953319521529,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.23874354053609625,
+            "world": [
+              -7.758276735751386,
+              0.03990483878876565,
+              15.000000235846569
+            ],
+            "lowestY": 0.020105753425402356
+          },
+          "trailingTruck": {
+            "along": -0.20670582268715432,
+            "world": [
+              -7.312827372528136,
+              0.218720008178298,
+              14.999999795802397
+            ],
+            "lowestY": 0.19892092281493473
+          },
+          "leadingWheelY": -0.0020698455203597976,
+          "trailingWheelY": 0.17674532386917255,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                -7.350622782719338,
+                0.2994510862615088,
+                14.999999833139189
+              ],
+              "boardLocal": [
+                0,
+                0.13200000000000012,
+                0.23500000000000032
+              ],
+              "along": -0.1689104124959524
+            },
+            {
+              "leg": 1,
+              "world": [
+                -7.80535234100974,
+                0.11691060084302779,
+                15.000000282350944
+              ],
+              "boardLocal": [
+                1.7763568394002505e-15,
+                0.13200000000000056,
+                -0.2549999999999999
+              ],
+              "along": 0.28581914579444945
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "grind": {
+          "character": "aaron",
+          "state": "grind",
+          "stance": -1,
+          "kind": "Nosegrind",
+          "label": "Switch Nosegrind",
+          "hud": "Switch Nosegrind",
+          "travel": [
+            -1,
+            0,
+            0
+          ],
+          "facing": [
+            1,
+            0,
+            0
+          ],
+          "position": [
+            -2.9249562433413416,
+            0.5700000000000001,
+            10
+          ],
+          "leadingTruck": {
+            "along": 0.2420851247342064,
+            "world": [
+              -3.167041368075548,
+              0.6020000000000001,
+              10
+            ],
+            "lowestY": 0.5825125987106831
+          },
+          "trailingTruck": {
+            "along": -0.21694115812805093,
+            "world": [
+              -2.7080150852132907,
+              0.7423384182669137,
+              10
+            ],
+            "lowestY": 0.7228510169775967
+          },
+          "leadingWheelY": 0.5595745522430086,
+          "trailingWheelY": 0.6999129705099222,
+          "railY": 0.5850000000000001,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                -2.7388176907134287,
+                0.82598768302401,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.13199999999999945,
+                0.2350000000000012
+              ],
+              "along": -0.1861385526279129
+            },
+            {
+              "leg": 1,
+              "world": [
+                -3.207407021135317,
+                0.6827255477098689,
+                10
+              ],
+              "boardLocal": [
+                0,
+                0.13199999999999945,
+                -0.25499999999999945
+              ],
+              "along": 0.2824507777939753
+            }
+          ],
+          "pushPhase": 0,
+          "pushContact": 0,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [
+            [
+              "Nosegrind"
+            ]
+          ],
+          "manuals": [],
+          "reverts": 1,
+          "banks": [
+            [
+              230,
+              "Switch Nosegrind",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 230
+        }
+      }
+    },
+    {
+      "name": "paced switch manual and live revert remain continuous at normal speed",
+      "passed": true,
+      "detail": {
+        "elapsed": 4091,
+        "seconds": 4,
+        "samples": [
+          {
+            "frame": 28,
+            "character": "joe",
+            "state": "ride",
+            "stance": -1,
+            "label": "",
+            "hud": "",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              -1,
+              0,
+              0
+            ],
+            "position": [
+              0.8649010747554532,
+              -3.3306690738754696e-15,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.23998128907942295,
+              "world": [
+                1.1048823638348761,
+                0.042999999999996666,
+                14.99700318639577
+              ],
+              "lowestY": 0.02300000044703146
+            },
+            "trailingTruck": {
+              "along": -0.23998128907942284,
+              "world": [
+                0.6249197856760303,
+                0.042999999999996666,
+                15.00299681360423
+              ],
+              "lowestY": 0.02300000044703146
+            },
+            "leadingWheelY": 0.00021601617517109928,
+            "trailingWheelY": 0.00021601617517109928,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 0,
+                "world": [
+                  0.7478639075212447,
+                  0.10189999999998789,
+                  14.933789582154555
+                ],
+                "boardLocal": [
+                  -0.06766666666668719,
+                  0.1018999999999912,
+                  0.1162012915922016
+                ],
+                "along": -0.11703716723420854
+              },
+              {
+                "leg": 1,
+                "world": [
+                  1.1198811944023401,
+                  0.1319999999999966,
+                  14.996815885545502
+                ],
+                "boardLocal": [
+                  -3.552713678800501e-15,
+                  0.13199999999999992,
+                  -0.2550000000000001
+                ],
+                "along": 0.25498011964688694
+              }
+            ],
+            "pushPhase": 0.1250000000000364,
+            "pushContact": 0.23333333333340123,
+            "grab": null,
+            "webgl": 0
+          },
+          {
+            "frame": 32,
+            "character": "joe",
+            "state": "ride",
+            "stance": -1,
+            "kind": "Manual",
+            "label": "Switch Manual",
+            "hud": "Switch Manual",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              -1,
+              0,
+              0
+            ],
+            "position": [
+              1.2662573745278585,
+              -3.3306690738754696e-15,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.23431389130103986,
+              "world": [
+                1.5005712658288983,
+                0.092062514975382,
+                14.999068727356688
+              ],
+              "lowestY": 0.0721682413502659
+            },
+            "trailingTruck": {
+              "along": -0.24314491532799276,
+              "world": [
+                1.0231124591998657,
+                0.04277268925004031,
+                15.0009663712499
+              ],
+              "lowestY": 0.02287841562492421
+            },
+            "leadingWheelY": 0.04915255511201052,
+            "trailingWheelY": -0.00013727061333116547,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 0,
+                "world": [
+                  1.1693204819527026,
+                  0.09013024999010619,
+                  14.907701926597126
+                ],
+                "boardLocal": [
+                  -0.09268261378475628,
+                  0.075055586563195,
+                  0.08933429857778341
+                ],
+                "along": -0.09693689257515592
+              },
+              {
+                "leg": 1,
+                "world": [
+                  1.5050679680927754,
+                  0.18202534527316605,
+                  14.999697635925852
+                ],
+                "boardLocal": [
+                  0.0006467754520294022,
+                  0.13202576694003668,
+                  -0.25370843516522346
+                ],
+                "along": 0.23881059356491696
+              }
+            ],
+            "pushPhase": 0.37500000000010913,
+            "pushContact": 0.3229076954732642,
+            "grab": null,
+            "webgl": 0
+          },
+          {
+            "frame": 60,
+            "character": "joe",
+            "state": "ride",
+            "stance": -1,
+            "kind": "Manual",
+            "label": "Switch Manual",
+            "hud": "Switch Manual",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              -1,
+              0,
+              0
+            ],
+            "position": [
+              3.9456716198404655,
+              -3.3306690738754696e-15,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.2068781642065809,
+              "world": [
+                4.152549784047046,
+                0.2181468777803009,
+                14.99999972791262
+              ],
+              "lowestY": 0.19835158276459164
+            },
+            "trailingTruck": {
+              "along": -0.2388093734108092,
+              "world": [
+                3.7068622464296563,
+                0.039926175244922396,
+                15.000000314083493
+              ],
+              "lowestY": 0.020130880229213124
+            },
+            "leadingWheelY": 0.17602821023981613,
+            "trailingWheelY": -0.0021924922955623635,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 0,
+                "world": [
+                  3.6785514762348117,
+                  0.12439645823311282,
+                  14.999950388494074
+                ],
+                "boardLocal": [
+                  -0.00004996282391012129,
+                  0.13194357868462367,
+                  0.23492375885293665
+                ],
+                "along": -0.26712014360565384
+              },
+              {
+                "leg": 1,
+                "world": [
+                  4.133430157809183,
+                  0.3063532634660609,
+                  15.000001754216528
+                ],
+                "boardLocal": [
+                  0.0000020011576626899337,
+                  0.13200000012343358,
+                  -0.2549975518452427
+                ],
+                "along": 0.18775853796871766
+              }
+            ],
+            "pushPhase": 0.37500000000010913,
+            "pushContact": 0.00018969796478939725,
+            "grab": null,
+            "webgl": 0
+          },
+          {
+            "frame": 65,
+            "character": "joe",
+            "state": "ride",
+            "stance": 1,
+            "kind": "Manual",
+            "label": "Switch Manual",
+            "hud": "Switch Manual",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              1,
+              0,
+              0
+            ],
+            "position": [
+              4.386767389483067,
+              -3.3306690738754696e-15,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.20692608699303783,
+              "world": [
+                4.593693476476105,
+                0.217986670973368,
+                15.000261353111771
+              ],
+              "lowestY": 0.1981924413103861
+            },
+            "trailingTruck": {
+              "along": -0.23882750119150487,
+              "world": [
+                4.147939888291562,
+                0.039932124125398816,
+                14.999698354559737
+              ],
+              "lowestY": 0.020137894462416924
+            },
+            "leadingWheelY": 0.17578476961048062,
+            "trailingWheelY": -0.0022697772374885503,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 0,
+                "world": [
+                  4.119568900606504,
+                  0.12443706938748637,
+                  14.999662521253155
+                ],
+                "boardLocal": [
+                  3.552713678800501e-15,
+                  0.13200000000000012,
+                  0.23500000000000076
+                ],
+                "along": -0.26719848887656283
+              },
+              {
+                "leg": 1,
+                "world": [
+                  4.574609021878224,
+                  0.30620108596145496,
+                  15.000237248941687
+                ],
+                "boardLocal": [
+                  -1.7763568394002505e-15,
+                  0.13200000000000012,
+                  -0.254999999999999
+                ],
+                "along": 0.18784163239515728
+              }
+            ],
+            "pushPhase": 0.37500000000010913,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          {
+            "frame": 68,
+            "character": "joe",
+            "state": "ride",
+            "stance": 1,
+            "kind": "Manual",
+            "label": "Switch Manual",
+            "hud": "Switch Manual",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              1,
+              0,
+              0
+            ],
+            "position": [
+              4.614164884900593,
+              -3.3306690738754696e-15,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.2163766941066223,
+              "world": [
+                4.830541579007216,
+                0.17603608965383252,
+                15.028715765346147
+              ],
+              "lowestY": 0.15660463812259198
+            },
+            "trailingTruck": {
+              "along": -0.24031234506405674,
+              "world": [
+                4.373852539836537,
+                0.04127043181364057,
+                14.96810768858849
+              ],
+              "lowestY": 0.02183898028240004
+            },
+            "leadingWheelY": 0.1336166665950067,
+            "trailingWheelY": -0.001148991245185263,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 0,
+                "world": [
+                  4.3538391018021825,
+                  0.12809443682887856,
+                  14.965451666909553
+                ],
+                "boardLocal": [
+                  1.77635683940025e-15,
+                  0.13199999999999987,
+                  0.23499999999999938
+                ],
+                "along": -0.2603257830984109
+              },
+              {
+                "leg": 1,
+                "world": [
+                  4.820042495955584,
+                  0.265667712540741,
+                  15.027322411932996
+                ],
+                "boardLocal": [
+                  3.5527136788005e-15,
+                  0.13199999999999942,
+                  -0.2550000000000007
+                ],
+                "along": 0.2058776110549907
+              }
+            ],
+            "pushPhase": 0.37500000000010913,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          {
+            "frame": 72,
+            "character": "joe",
+            "state": "ride",
+            "stance": 1,
+            "kind": "Manual",
+            "label": "Switch Manual",
+            "hud": "Switch Manual",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              1,
+              0,
+              0
+            ],
+            "position": [
+              4.913620991615682,
+              -3.3306690738754696e-15,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.17000905365780916,
+              "world": [
+                5.083630045273491,
+                0.05360124778027094,
+                15.16796868456916
+              ],
+              "lowestY": 0.03360613638502653
+            },
+            "trailingTruck": {
+              "along": -0.17136154832690575,
+              "world": [
+                4.742259443288776,
+                0.042989490460662104,
+                14.830695052769721
+              ],
+              "lowestY": 0.022994379065417694
+            },
+            "leadingWheelY": 0.010742394663360653,
+            "trailingWheelY": 0.0001306373437518077,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 0,
+                "world": [
+                  4.744415712343757,
+                  0.132078277297064,
+                  14.832825443292755
+                ],
+                "boardLocal": [
+                  1.7763568394002505e-15,
+                  0.13199999999999965,
+                  0.23499999999999766
+                ],
+                "along": -0.16920527927192452
+              },
+              {
+                "leg": 1,
+                "world": [
+                  5.092898201869819,
+                  0.14291111289416536,
+                  15.177125609088016
+                ],
+                "boardLocal": [
+                  2.6645352591003757e-15,
+                  0.13200000000000034,
+                  -0.25500000000000256
+                ],
+                "along": 0.17927721025413668
+              }
+            ],
+            "pushPhase": 0.37500000000010913,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          {
+            "frame": 79,
+            "character": "joe",
+            "state": "ride",
+            "stance": 1,
+            "kind": "Manual",
+            "label": "Switch Manual",
+            "hud": "Switch Manual",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              1,
+              0,
+              0
+            ],
+            "position": [
+              5.427414827870289,
+              -3.3306690738754696e-15,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.16105247959183622,
+              "world": [
+                5.588467307462126,
+                0.21490727128772413,
+                14.868619213719837
+              ],
+              "lowestY": 0.1951340127944768
+            },
+            "trailingTruck": {
+              "along": -0.18532888606939313,
+              "world": [
+                5.242085941800896,
+                0.04004517771974412,
+                15.151184600410572
+              ],
+              "lowestY": 0.0202719192264968
+            },
+            "leadingWheelY": 0.1726791569278743,
+            "trailingWheelY": -0.0021829366401056767,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 1,
+                "world": [
+                  5.206138266257674,
+                  0.11746494234359428,
+                  15.180509413600543
+                ],
+                "boardLocal": [
+                  1.776356839400251e-15,
+                  0.1319999999999997,
+                  -0.25499999999999906
+                ],
+                "along": -0.22127656161261555
+              },
+              {
+                "leg": 0,
+                "world": [
+                  5.559735910370178,
+                  0.2959699961942405,
+                  14.89205724802042
+                ],
+                "boardLocal": [
+                  1.776356839400251e-15,
+                  0.1320000000000006,
+                  0.2349999999999986
+                ],
+                "along": 0.13232108249988883
+              }
+            ],
+            "pushPhase": 0.37500000000010913,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          {
+            "frame": 100,
+            "character": "joe",
+            "state": "ride",
+            "stance": 1,
+            "kind": "Manual",
+            "label": "Switch Manual",
+            "hud": "Switch Manual",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              1,
+              0,
+              0
+            ],
+            "position": [
+              6.891031350216193,
+              -3.3306690738754696e-15,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.20641665525162445,
+              "world": [
+                7.097448005467817,
+                0.21967707459762464,
+                14.999652356404873
+              ],
+              "lowestY": 0.1998717326912566
+            },
+            "trailingTruck": {
+              "along": -0.2386322196571955,
+              "world": [
+                6.652399130558997,
+                0.03986901825419912,
+                15.000401900528102
+              ],
+              "lowestY": 0.02006367634783107
+            },
+            "leadingWheelY": 0.17763653777192756,
+            "trailingWheelY": -0.0021715185714979712,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 1,
+                "world": [
+                  6.605151990054193,
+                  0.11676961241495623,
+                  15.00048147339864
+                ],
+                "boardLocal": [
+                  -3.552713678800501e-15,
+                  0.13200000000000012,
+                  -0.254999999999999
+                ],
+                "along": -0.2858793601620002
+              },
+              {
+                "leg": 0,
+                "world": [
+                  7.059472716523612,
+                  0.30032366993220294,
+                  14.999716313772844
+                ],
+                "boardLocal": [
+                  -3.552713678800501e-15,
+                  0.13200000000000012,
+                  0.23499999999999943
+                ],
+                "along": 0.16844136630741957
+              }
+            ],
+            "pushPhase": 0.37500000000010913,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          {
+            "frame": 140,
+            "character": "joe",
+            "state": "air",
+            "stance": 1,
+            "label": "Switch Manual",
+            "hud": "Switch Manual",
+            "travel": [
+              1,
+              0,
+              0
+            ],
+            "facing": [
+              1,
+              0,
+              0
+            ],
+            "position": [
+              9.405099934967655,
+              1.1077638888888848,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.24000000056987858,
+              "world": [
+                9.645099935537534,
+                1.1989912864659473,
+                15.033652166667915
+              ],
+              "lowestY": 1.1789912869129822
+            },
+            "trailingTruck": {
+              "along": -0.23999999943012185,
+              "world": [
+                9.165099935537533,
+                1.1989912864659473,
+                15.033652174796407
+              ],
+              "lowestY": 1.1789912869129822
+            },
+            "leadingWheelY": 1.1560253560397173,
+            "trailingWheelY": 1.1560253560397173,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 1,
+                "world": [
+                  9.150099935537531,
+                  1.2879912864659475,
+                  15.03365217505042
+                ],
+                "boardLocal": [
+                  1.7763568394002505e-15,
+                  0.13200000000000012,
+                  -0.25500000000000256
+                ],
+                "along": -0.2549999994301242
+              },
+              {
+                "leg": 0,
+                "world": [
+                  9.640099935537533,
+                  1.2879912864659475,
+                  15.033652166752587
+                ],
+                "boardLocal": [
+                  0,
+                  0.13200000000000012,
+                  0.23499999999999943
+                ],
+                "along": 0.2350000005698778
+              }
+            ],
+            "pushPhase": 0.37500000000010913,
+            "pushContact": 0,
+            "grab": null,
+            "webgl": 0
+          },
+          {
+            "frame": 180,
+            "character": "joe",
+            "state": "ride",
+            "stance": 1,
+            "label": "",
+            "hud": "Switch Manual",
+            "travel": [
+              1,
+              -1.6124048439956533e-31,
+              7.261625854589207e-16
+            ],
+            "facing": [
+              1,
+              0,
+              7.261625854589207e-16
+            ],
+            "position": [
+              12.310603489120068,
+              -3.3306690738754696e-15,
+              15
+            ],
+            "leadingTruck": {
+              "along": 0.2400000000000002,
+              "world": [
+                12.550603489120068,
+                0.042999999999996666,
+                14.999999995935754
+              ],
+              "lowestY": 0.02300000044703148
+            },
+            "trailingTruck": {
+              "along": -0.2400000000000002,
+              "world": [
+                12.070603489120067,
+                0.042999999999996666,
+                15.000000004064246
+              ],
+              "lowestY": 0.02300000044703148
+            },
+            "leadingWheelY": 0.000013971025223318001,
+            "trailingWheelY": 0.000013971025223318001,
+            "railY": 0,
+            "feet": [
+              {
+                "leg": 1,
+                "world": [
+                  12.351150305225119,
+                  0.04756727037035119,
+                  15.189810011659077
+                ],
+                "boardLocal": [
+                  -0.1898100123457116,
+                  0.04756727037035452,
+                  0.04054681289074047
+                ],
+                "along": 0.0405468161050512
+              },
+              {
+                "leg": 0,
+                "world": [
+                  12.545603489120067,
+                  0.1319999999999966,
+                  14.999999996020426
+                ],
+                "boardLocal": [
+                  0,
+                  0.13199999999999992,
+                  0.23499999999999943
+                ],
+                "along": 0.23499999999999943
+              }
+            ],
+            "pushPhase": 0.5000000000001456,
+            "pushContact": 0.6545172839507396,
+            "grab": null,
+            "webgl": 0
+          }
+        ],
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 2,
+          "banks": [
+            [
+              190,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 190
+        }
+      }
+    },
+    {
+      "name": "touch switch manual renders correctly with native revert and joystick flick",
+      "passed": true,
+      "detail": {
+        "held": {
+          "character": "joe",
+          "state": "ride",
+          "stance": -1,
+          "kind": "Manual",
+          "label": "Switch Manual",
+          "hud": "Switch Manual",
+          "travel": [
+            1,
+            0,
+            0
+          ],
+          "facing": [
+            -1,
+            0,
+            0
+          ],
+          "position": [
+            4.110040294674963,
+            -3.3306690738754696e-15,
+            15
+          ],
+          "leadingTruck": {
+            "along": 0.20675461733008493,
+            "world": [
+              4.316794912005048,
+              0.21855790274721185,
+              14.999999795754194
+            ],
+            "lowestY": 0.19875988614018109
+          },
+          "trailingTruck": {
+            "along": -0.2387622084911687,
+            "world": [
+              3.8712780861837945,
+              0.039910882313170144,
+              15.00000023586501
+            ],
+            "lowestY": 0.02011286570613939
+          },
+          "leadingWheelY": 0.1764747784464762,
+          "trailingWheelY": -0.0021722419875655,
+          "railY": 0,
+          "feet": [
+            {
+              "leg": 0,
+              "world": [
+                3.8428555626066903,
+                0.1243611728064096,
+                14.999965285451282
+              ],
+              "boardLocal": [
+                -0.00003497849136557817,
+                0.13196171771738482,
+                0.23494983270648445
+              ],
+              "along": -0.267184732068273
+            },
+            {
+              "leg": 1,
+              "world": [
+                4.297591582584603,
+                0.3067462273365933,
+                15.000001219671386
+              ],
+              "boardLocal": [
+                0.000001404946880612101,
+                0.1320000000608341,
+                -0.25499828136612507
+              ],
+              "along": 0.18755128790964015
+            }
+          ],
+          "pushPhase": 0.5000000000000023,
+          "pushContact": 0.00013284087301249583,
+          "grab": null,
+          "webgl": 0
+        },
+        "finish": {
+          "bails": [],
+          "grinds": [],
+          "manuals": [
+            [
+              "Manual"
+            ]
+          ],
+          "reverts": 1,
+          "banks": [
+            [
+              155,
+              "Switch Manual",
+              1,
+              false
+            ]
+          ],
+          "state": "ride",
+          "score": 155,
+          "lowfx": true,
+          "pointers": 0
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    "joe-east-regular-manual-gameplay.png",
+    "joe-east-regular-manual-side.png",
+    "joe-east-regular-5-0-gameplay.png",
+    "joe-east-regular-5-0-side.png",
+    "joe-east-switch-manual-gameplay.png",
+    "joe-east-switch-manual-side.png",
+    "joe-east-switch-5-0-gameplay.png",
+    "joe-east-switch-5-0-side.png",
+    "joe-west-regular-manual-gameplay.png",
+    "joe-west-regular-manual-side.png",
+    "joe-west-regular-5-0-gameplay.png",
+    "joe-west-regular-5-0-side.png",
+    "joe-west-switch-manual-gameplay.png",
+    "joe-west-switch-manual-side.png",
+    "joe-west-switch-5-0-gameplay.png",
+    "joe-west-switch-5-0-side.png",
+    "aaron-east-regular-manual-gameplay.png",
+    "aaron-east-regular-manual-side.png",
+    "aaron-east-regular-5-0-gameplay.png",
+    "aaron-east-regular-5-0-side.png",
+    "aaron-east-switch-manual-gameplay.png",
+    "aaron-east-switch-manual-side.png",
+    "aaron-east-switch-5-0-gameplay.png",
+    "aaron-east-switch-5-0-side.png",
+    "aaron-west-regular-manual-gameplay.png",
+    "aaron-west-regular-manual-side.png",
+    "aaron-west-regular-5-0-gameplay.png",
+    "aaron-west-regular-5-0-side.png",
+    "aaron-west-switch-manual-gameplay.png",
+    "aaron-west-switch-manual-side.png",
+    "aaron-west-switch-5-0-gameplay.png",
+    "aaron-west-switch-5-0-side.png",
+    "joe-regular-sw-gameplay.png",
+    "joe-regular-sw-side.png",
+    "joe-switch-sw-gameplay.png",
+    "joe-switch-sw-side.png",
+    "joe-regular-se-gameplay.png",
+    "joe-regular-se-side.png",
+    "joe-switch-se-gameplay.png",
+    "joe-switch-se-side.png",
+    "joe-switch-push-gameplay.png",
+    "joe-switch-push-side.png",
+    "joe-switch-indy-gameplay.png",
+    "joe-switch-indy-side.png",
+    "aaron-switch-push-gameplay.png",
+    "aaron-switch-push-side.png",
+    "aaron-switch-indy-gameplay.png",
+    "aaron-switch-indy-side.png",
+    "aaron-west-switch-nose-manual-gameplay.png",
+    "aaron-west-switch-nose-manual-side.png",
+    "aaron-west-switch-nosegrind-gameplay.png",
+    "aaron-west-switch-nosegrind-side.png",
+    "paced-manual-28.png",
+    "paced-manual-32.png",
+    "paced-manual-60.png",
+    "paced-manual-65.png",
+    "paced-manual-68.png",
+    "paced-manual-72.png",
+    "paced-manual-79.png",
+    "paced-manual-100.png",
+    "paced-manual-140.png",
+    "paced-manual-180.png",
+    "touch-switch-manual.png",
+    "touch-switch-rollaway.png"
+  ],
+  "baseline": false,
+  "visualAssertionsActive": true,
+  "method": "Actual gamepad API input through the normal application: RT ground revert, stick-flick manual or charged ollie and directional grind. Only the initial supported ground approach is seeded. Visible leading/trailing wheels and hangers are independently ordered along physical travel; support is sampled from rendered mesh vertices, not animation contact metadata.",
+  "entryAssets": [
+    "http://127.0.0.1:4176/assets/index-mqCEV4Y2.js",
+    "http://127.0.0.1:4176/assets/main-CXjQ7dPp.js"
+  ],
+  "browserErrors": [],
+  "passed": true
+}

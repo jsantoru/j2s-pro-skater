@@ -71,7 +71,9 @@ export class Level {
   addRail(a, b, kind = 'rail', visual = true) {
     const A = a.clone(), B = b.clone();
     const dir = B.clone().sub(A); const len = dir.length(); dir.normalize();
-    this.rails.push({ a: A, b: B, dir, len, kind });
+    // Render contact surface only; detection continues to use the centreline.
+    const radius = kind === 'coping' ? .05 : kind === 'rail' ? .035 : 0;
+    this.rails.push({ a: A, b: B, dir, len, kind, radius, surface: radius ? 'round' : 'flat' });
     if (visual && kind === 'rail') {
       const g = new THREE.CylinderGeometry(0.035, 0.035, len, 20);
       const m = new THREE.Mesh(g, this.mats.rail);

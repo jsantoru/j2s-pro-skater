@@ -1,0 +1,6811 @@
+{
+  "passed": true,
+  "physicsHz": 120,
+  "renderHz": 60,
+  "checks": [
+    {
+      "name": "joe: Indy held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "joe: Melon held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "joe: Nosegrab held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "joe: Tailgrab held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "joe: Method held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "joe: Stalefish held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "joe: Judo held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "joe: Airwalk held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "aaron: Indy held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "aaron: Melon held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "aaron: Nosegrab held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "aaron: Tailgrab held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "aaron: Method held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "aaron: Stalefish held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "aaron: Judo held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "aaron: Airwalk held landing and immediate flip, both stances",
+      "passed": true
+    },
+    {
+      "name": "joe: all nine real grind captures, charged exits into grab and flip",
+      "passed": true
+    },
+    {
+      "name": "aaron: all nine real grind captures, charged exits into grab and flip",
+      "passed": true
+    },
+    {
+      "name": "joe: Method to Kickflip to Indy immediately reattaches without a latent release pose",
+      "passed": true
+    },
+    {
+      "name": "aaron: Method to Kickflip to Indy immediately reattaches without a latent release pose",
+      "passed": true
+    },
+    {
+      "name": "joe: held grab extends before a real steep quarter-pipe landing",
+      "passed": true
+    },
+    {
+      "name": "aaron: held grab extends before a real steep quarter-pipe landing",
+      "passed": true
+    },
+    {
+      "name": "joe: held grab prepares for real rail capture without adding a board reset",
+      "passed": true
+    },
+    {
+      "name": "aaron: held grab prepares for real rail capture without adding a board reset",
+      "passed": true
+    }
+  ],
+  "trajectories": [
+    {
+      "name": "joe Indy held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079024,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.11810761371903324,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22979683476390195,
+          "time": 0.45,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.014120600589945475,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Indy immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.06337249666185427,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.149461719753643,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12851103512080275,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.4073084123158633,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.31326692071323864,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Indy",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Indy + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Indy held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079025,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.1205534572358331,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22979683476389615,
+          "time": 0.45,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.014120600589976925,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Indy immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.06337249666185427,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.149461719753643,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13068426378350698,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.40730841231585996,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3132669207132358,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Indy",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Indy + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Melon held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079024,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.11727303455880145,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.33411082445325513,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Melon"
+        },
+        "footAngle": {
+          "value": 0.03223993143328969,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Melon"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Melon"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Melon"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Melon immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.06378971723633137,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.1607823987684682,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12358624067772937,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.3011988334112875,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3308535171161047,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Melon",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Melon + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Melon held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079025,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.11837431281542019,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.33411082445325246,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Melon"
+        },
+        "footAngle": {
+          "value": 0.032239931433262134,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Melon"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Melon"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Melon"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Melon immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.06378971723633137,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.1607823987684682,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12173159668333677,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.3011988334112875,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3308535171161047,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Melon",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Melon + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Nosegrab held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.058842170480790344,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.11942270493199465,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2885444958492697,
+          "time": 0.3833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Nosegrab"
+        },
+        "footAngle": {
+          "value": 0.04723088865110321,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Nosegrab"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Nosegrab"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Nosegrab"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Nosegrab immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.06555557015239553,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.1278971844793182,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12357980726432957,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22284887400973508,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.27081544452731954,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Nosegrab",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Nosegrab + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Nosegrab held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079054,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12161439067645342,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2885444958492697,
+          "time": 0.3833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Nosegrab"
+        },
+        "footAngle": {
+          "value": 0.047230888651122016,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Nosegrab"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Nosegrab"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Nosegrab"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Nosegrab immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.06555557015239553,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.12789718447931825,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1217267561098758,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22284887400973508,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.2708154445273162,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Nosegrab",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Nosegrab + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Tailgrab held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12029355053322235,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.3971193102777785,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Tailgrab"
+        },
+        "footAngle": {
+          "value": 0.04956427674154067,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Tailgrab"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Tailgrab"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Tailgrab"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Tailgrab immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.14581978821509425,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12852196127153673,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22281364662858108,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.28710215732431266,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Tailgrab",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Tailgrab + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Tailgrab held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.058842170480790164,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12269064866532431,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.3971193102777785,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Tailgrab"
+        },
+        "footAngle": {
+          "value": 0.04956427674154067,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Tailgrab"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Tailgrab"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Tailgrab"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Tailgrab immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.14581978821509342,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13069487618287368,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22281364662858108,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.28710215732431266,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Tailgrab",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Tailgrab + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Method held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.058842170480790386,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12598365014814525,
+          "time": 0.45,
+          "from": "air",
+          "to": "air",
+          "trick": "Method"
+        },
+        "arms": {
+          "value": 0.23919264853888378,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.10790737928223708,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Method"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Method"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Method"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Method immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.0718051950642312,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.14726156015757427,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.19247084914541646,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.39202739651167196,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3324030250932293,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Method",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Method + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Method held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.058842170480790545,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.1262831483387657,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.23919264853888378,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.10790737928223708,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Method"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Method"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Method"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Method immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.0718051950642312,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.14726156015757405,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.19247084914541687,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.39202739651167423,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3324030250932293,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Method",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Method + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Stalefish held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079024,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12826267265043098,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.5151606846876903,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Stalefish"
+        },
+        "footAngle": {
+          "value": 0.028945260303274503,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Stalefish"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Stalefish"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Stalefish"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Stalefish immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.06358570636181857,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.14031931023948166,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1285686756675564,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22737485913531116,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3373520989133946,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Stalefish",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Stalefish + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Stalefish held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079025,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.13036074805855524,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.5151606846876938,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Stalefish"
+        },
+        "footAngle": {
+          "value": 0.028945260303289845,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Stalefish"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Stalefish"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Stalefish"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Stalefish immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.06358570636181857,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.1403193102394817,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13074058913793346,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2273748591353053,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3373520989133946,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Stalefish",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Stalefish + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Judo held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.09180048657954477,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        },
+        "palms": {
+          "value": 0.11951523063640127,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.4071045794058643,
+          "time": 0.3833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        },
+        "footAngle": {
+          "value": 0.039110004013588565,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 380,
+      "events": {
+        "tricks": [
+          "Judo"
+        ],
+        "land": [
+          {
+            "points": 380,
+            "text": "Judo"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Judo immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.13456050995570126,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12359642910537531,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22285396761605136,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.2710316002627276,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 940,
+      "events": {
+        "tricks": [
+          "Judo",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 940,
+            "text": "Judo + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Judo held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.09180048657954458,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        },
+        "palms": {
+          "value": 0.12015428734843885,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.40710457940586536,
+          "time": 0.3833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        },
+        "footAngle": {
+          "value": 0.039110004013588565,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 456,
+      "events": {
+        "tricks": [
+          "Judo"
+        ],
+        "land": [
+          {
+            "points": 456,
+            "text": "Switch Judo"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Judo immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1345605099557011,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1228785938252347,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22285396761605136,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.2710316002627309,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1128,
+      "events": {
+        "tricks": [
+          "Judo",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1128,
+            "text": "Switch Judo + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Airwalk held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.08262600325407532,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        },
+        "palms": {
+          "value": 0.11917397004122761,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.33221536319177736,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        },
+        "footAngle": {
+          "value": 0.044070157003374626,
+          "time": 0.4166666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 80,
+      "events": {
+        "tricks": [
+          "Airwalk"
+        ],
+        "land": [
+          {
+            "points": 80,
+            "text": "Airwalk"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Airwalk immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1675147871928003,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12359360291010461,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2813230567322246,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.11792996597467392,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 340,
+      "events": {
+        "tricks": [
+          "Airwalk",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 340,
+            "text": "Airwalk + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Airwalk held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.08262600325407476,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        },
+        "palms": {
+          "value": 0.12014578173670977,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.33221536319177736,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        },
+        "footAngle": {
+          "value": 0.04407015700335447,
+          "time": 0.4166666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 96,
+      "events": {
+        "tricks": [
+          "Airwalk"
+        ],
+        "land": [
+          {
+            "points": 96,
+            "text": "Switch Airwalk"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe Airwalk immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1675147871928003,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12174133301502628,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2813230567322214,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.11792996597467016,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 408,
+      "events": {
+        "tricks": [
+          "Airwalk",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 408,
+            "text": "Switch Airwalk + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Indy held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079024,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.11810761371903324,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22979683476390195,
+          "time": 0.45,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.014120600589945475,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Indy immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.06337249666185427,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.149461719753643,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12851103512080275,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.4073084123158633,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.31326692071323864,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Indy",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Indy + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Indy held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079025,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.1205534572358331,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22979683476389615,
+          "time": 0.45,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.014120600589976925,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Indy immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.06337249666185427,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.149461719753643,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13068426378350698,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.40730841231585996,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3132669207132358,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Indy",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Indy + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Melon held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079024,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.11727303455880145,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.33411082445325513,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Melon"
+        },
+        "footAngle": {
+          "value": 0.03223993143328969,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Melon"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Melon"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Melon"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Melon immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.06378971723633137,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.1607823987684682,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12358624067772937,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.3011988334112875,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3308535171161047,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Melon",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Melon + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Melon held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079025,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.11837431281542019,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.33411082445325246,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Melon"
+        },
+        "footAngle": {
+          "value": 0.032239931433262134,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Melon"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Melon"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Melon"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Melon immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.06378971723633137,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.1607823987684682,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12173159668333677,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.3011988334112875,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3308535171161047,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Melon",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Melon + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Nosegrab held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.058842170480790344,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.11942270493199465,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2885444958492697,
+          "time": 0.3833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Nosegrab"
+        },
+        "footAngle": {
+          "value": 0.04723088865110321,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Nosegrab"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Nosegrab"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Nosegrab"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Nosegrab immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.06555557015239553,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.1278971844793182,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12357980726432957,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22284887400973508,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.27081544452731954,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Nosegrab",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Nosegrab + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Nosegrab held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079054,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12161439067645342,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2885444958492697,
+          "time": 0.3833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Nosegrab"
+        },
+        "footAngle": {
+          "value": 0.047230888651122016,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Nosegrab"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Nosegrab"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Nosegrab"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Nosegrab immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.06555557015239553,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.12789718447931825,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1217267561098758,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22284887400973508,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.2708154445273162,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Nosegrab",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Nosegrab + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Tailgrab held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12029355053322235,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.3971193102777785,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Tailgrab"
+        },
+        "footAngle": {
+          "value": 0.04956427674154067,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Tailgrab"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Tailgrab"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Tailgrab"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Tailgrab immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.14581978821509425,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12852196127153673,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22281364662858108,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.28710215732431266,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Tailgrab",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Tailgrab + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Tailgrab held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.058842170480790164,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12269064866532431,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.3971193102777785,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Tailgrab"
+        },
+        "footAngle": {
+          "value": 0.04956427674154067,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Tailgrab"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Tailgrab"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Tailgrab"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Tailgrab immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.14581978821509342,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13069487618287368,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22281364662858108,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.28710215732431266,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Tailgrab",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Tailgrab + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Method held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.058842170480790386,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12598365014814525,
+          "time": 0.45,
+          "from": "air",
+          "to": "air",
+          "trick": "Method"
+        },
+        "arms": {
+          "value": 0.23919264853888378,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.10790737928223708,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Method"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Method"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Method"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Method immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.0718051950642312,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.14726156015757427,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.19247084914541646,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.39202739651167196,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3324030250932293,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Method",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Method + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Method held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.058842170480790545,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.1262831483387657,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.23919264853888378,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.10790737928223708,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Method"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Method"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Method"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Method immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.0718051950642312,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.14726156015757405,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.19247084914541687,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.39202739651167423,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3324030250932293,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Method",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Method + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Stalefish held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079024,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12826267265043098,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.5151606846876903,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Stalefish"
+        },
+        "footAngle": {
+          "value": 0.028945260303274503,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Stalefish"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 330,
+      "events": {
+        "tricks": [
+          "Stalefish"
+        ],
+        "land": [
+          {
+            "points": 330,
+            "text": "Stalefish"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Stalefish immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.06358570636181857,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.14031931023948166,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1285686756675564,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22737485913531116,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3373520989133946,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 840,
+      "events": {
+        "tricks": [
+          "Stalefish",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 840,
+            "text": "Stalefish + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Stalefish held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048079025,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.13036074805855524,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.5151606846876938,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Stalefish"
+        },
+        "footAngle": {
+          "value": 0.028945260303289845,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Stalefish"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 396,
+      "events": {
+        "tricks": [
+          "Stalefish"
+        ],
+        "land": [
+          {
+            "points": 396,
+            "text": "Switch Stalefish"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Stalefish immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.06358570636181857,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "feet": {
+          "value": 0.1403193102394817,
+          "time": 0.9,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13074058913793346,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2273748591353053,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.3373520989133946,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1008,
+      "events": {
+        "tricks": [
+          "Stalefish",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1008,
+            "text": "Switch Stalefish + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Judo held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.09180048657954477,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        },
+        "palms": {
+          "value": 0.11951523063640127,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.4071045794058643,
+          "time": 0.3833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        },
+        "footAngle": {
+          "value": 0.039110004013588565,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 380,
+      "events": {
+        "tricks": [
+          "Judo"
+        ],
+        "land": [
+          {
+            "points": 380,
+            "text": "Judo"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Judo immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.13456050995570126,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12359642910537531,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22285396761605136,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.2710316002627276,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 940,
+      "events": {
+        "tricks": [
+          "Judo",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 940,
+            "text": "Judo + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Judo held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.09180048657954458,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        },
+        "palms": {
+          "value": 0.12015428734843885,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.40710457940586536,
+          "time": 0.3833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        },
+        "footAngle": {
+          "value": 0.039110004013588565,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Judo"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 456,
+      "events": {
+        "tricks": [
+          "Judo"
+        ],
+        "land": [
+          {
+            "points": 456,
+            "text": "Switch Judo"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Judo immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1345605099557011,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1228785938252347,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22285396761605136,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.2710316002627309,
+          "time": 0.5333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 1128,
+      "events": {
+        "tricks": [
+          "Judo",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 1128,
+            "text": "Switch Judo + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Airwalk held landing regular",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.08262600325407532,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        },
+        "palms": {
+          "value": 0.11917397004122761,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.33221536319177736,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        },
+        "footAngle": {
+          "value": 0.044070157003374626,
+          "time": 0.4166666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 80,
+      "events": {
+        "tricks": [
+          "Airwalk"
+        ],
+        "land": [
+          {
+            "points": 80,
+            "text": "Airwalk"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Airwalk immediate flip regular",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1675147871928003,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12359360291010461,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2813230567322246,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.11792996597467392,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 340,
+      "events": {
+        "tricks": [
+          "Airwalk",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 340,
+            "text": "Airwalk + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Airwalk held landing fakie",
+      "motion": {
+        "board": {
+          "value": 0.05884217048079034,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.08262600325407476,
+          "time": 0.4666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        },
+        "palms": {
+          "value": 0.12014578173670977,
+          "time": 0.6,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.33221536319177736,
+          "time": 0.4,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        },
+        "footAngle": {
+          "value": 0.04407015700335447,
+          "time": 0.4166666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Airwalk"
+        }
+      },
+      "landing": 0.6,
+      "flipAt": null,
+      "score": 96,
+      "events": {
+        "tricks": [
+          "Airwalk"
+        ],
+        "land": [
+          {
+            "points": 96,
+            "text": "Switch Airwalk"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron Airwalk immediate flip fakie",
+      "motion": {
+        "board": {
+          "value": 0.05838098009224066,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1675147871928003,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12174133301502628,
+          "time": 1.1166666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2813230567322214,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "footAngle": {
+          "value": 0.11792996597467016,
+          "time": 0.5166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "landing": 1.1166666666666667,
+      "flipAt": 0.5166666666666666,
+      "score": 408,
+      "events": {
+        "tricks": [
+          "Airwalk",
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 408,
+            "text": "Switch Airwalk + Switch Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe 50-50 ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.12173284883366114,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.1263184229539586,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.17058048685821264,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.49817674837390546,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.03412906391935518,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 880,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 880,
+            "text": "50-50 + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "50-50"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe 50-50 ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.13305467883444574,
+          "time": 0.9166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1279295039037853,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22046516185636583,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.07440910724535346,
+          "time": 0.9166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 480,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 480,
+            "text": "50-50 + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "50-50"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Nosegrind ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.10452796776156098,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.11490861745623537,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.17054279976404435,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.4725506457469216,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.05952494365825269,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 880,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 880,
+            "text": "Nosegrind + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Nosegrind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Nosegrind ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.11948407023328984,
+          "time": 0.9166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13140883504140474,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046513434082055,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.2824459541389002,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 480,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 480,
+            "text": "Nosegrind + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Nosegrind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe 5-0 ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.10093020115407042,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.12970859400337378,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.1925153387600605,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "arms": {
+          "value": 0.5026401828813463,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.12702196532696872,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 880,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 880,
+            "text": "5-0 + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "5-0"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe 5-0 ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1380005367084203,
+          "time": 0.9166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13160476579680785,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046518937191378,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.35325349135310447,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 480,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 480,
+            "text": "5-0 + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "5-0"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Boardslide ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.1439213787871639,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.16199110403029104,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.1698502041669496,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.45881146451682975,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.1991939898987956,
+          "time": 0.5666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 1080,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 1080,
+            "text": "Boardslide + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Boardslide"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Boardslide ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.13833949271057275,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12792951640422323,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2204651368422326,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.46387455147908924,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 680,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 680,
+            "text": "Boardslide + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Boardslide"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Lipslide ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.1439213787871639,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.16199110403029104,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.18405914109046814,
+          "time": 0.55,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "arms": {
+          "value": 0.5841580310860909,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.19919398989879336,
+          "time": 0.5666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 1080,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 1080,
+            "text": "Lipslide + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Lipslide"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Lipslide ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.13829071017300473,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.16069077786537617,
+          "time": 0.5666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046519687615204,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.46414245844614627,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 680,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 680,
+            "text": "Lipslide + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Lipslide"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Crooked Grind ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.1253355401572133,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.13490449489849232,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.17045203587457472,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.5689750431093902,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.16408079701667438,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 930,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 930,
+            "text": "Crooked Grind + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Crooked Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Crooked Grind ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1850707208518817,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.14362573994597744,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046511683092923,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.5903513074692783,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 530,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 530,
+            "text": "Crooked Grind + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Crooked Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Overcrook ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.09837469304933483,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.1228882328159401,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.1707788756528262,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.45882489187978553,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.16872709695952212,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 930,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 930,
+            "text": "Overcrook + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Overcrook"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Overcrook ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1682569885119433,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.14746299501423732,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046520187897675,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.6525214936842593,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 530,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 530,
+            "text": "Overcrook + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Overcrook"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Smith Grind ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.13027447066058329,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.14247612981795743,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.1708347283052482,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.5962992726830161,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.1405313110853509,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 930,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 930,
+            "text": "Smith Grind + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Smith Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Smith Grind ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1701162691699521,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13182670029517213,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.2204652068818054,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.5219433544897172,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 530,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 530,
+            "text": "Smith Grind + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Smith Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Feeble Grind ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.1485713724964856,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.1781011270731351,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.17551850960235496,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "arms": {
+          "value": 0.46557485624287004,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.14547258535651478,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 930,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 930,
+            "text": "Feeble Grind + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Feeble Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Feeble Grind ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.20458526119217568,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1982324827487301,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046513934364667,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.5781754614107931,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 530,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 530,
+            "text": "Feeble Grind + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Feeble Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron 50-50 ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.12173284883366114,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.1263184229539586,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.17058048685821264,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.49817674837390546,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.03412906391935518,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 880,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 880,
+            "text": "50-50 + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "50-50"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron 50-50 ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.13305467883444574,
+          "time": 0.9166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1279295039037853,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22046516185636583,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.07440910724535346,
+          "time": 0.9166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 480,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 480,
+            "text": "50-50 + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "50-50"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Nosegrind ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.10452796776156098,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.11490861745623537,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.17054279976404435,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.4725506457469216,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.05952494365825269,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 880,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 880,
+            "text": "Nosegrind + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Nosegrind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Nosegrind ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.11948407023328984,
+          "time": 0.9166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13140883504140474,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046513434082055,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.2824459541389002,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 480,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 480,
+            "text": "Nosegrind + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Nosegrind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron 5-0 ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.10093020115407042,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.12970859400337378,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.1925153387600605,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "arms": {
+          "value": 0.5026401828813463,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.12702196532696872,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 880,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 880,
+            "text": "5-0 + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "5-0"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron 5-0 ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1380005367084203,
+          "time": 0.9166666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13160476579680785,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046518937191378,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.35325349135310447,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 480,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 480,
+            "text": "5-0 + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "5-0"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Boardslide ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.1439213787871639,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.16199110403029104,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.1698502041669496,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.45881146451682975,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.1991939898987956,
+          "time": 0.5666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 1080,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 1080,
+            "text": "Boardslide + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Boardslide"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Boardslide ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.13833949271057275,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.12792951640422323,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.2204651368422326,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.46387455147908924,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 680,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 680,
+            "text": "Boardslide + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Boardslide"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Lipslide ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.1439213787871639,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.16199110403029104,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.18405914109046814,
+          "time": 0.55,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "arms": {
+          "value": 0.5841580310860909,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.19919398989879336,
+          "time": 0.5666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 1080,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 1080,
+            "text": "Lipslide + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Lipslide"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Lipslide ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.13829071017300473,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.16069077786537617,
+          "time": 0.5666666666666667,
+          "from": "air",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046519687615204,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.46414245844614627,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 680,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 680,
+            "text": "Lipslide + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Lipslide"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Crooked Grind ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.1253355401572133,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.13490449489849232,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.17045203587457472,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.5689750431093902,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.16408079701667438,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 930,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 930,
+            "text": "Crooked Grind + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Crooked Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Crooked Grind ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1850707208518817,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.14362573994597744,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046511683092923,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.5903513074692783,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 530,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 530,
+            "text": "Crooked Grind + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Crooked Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Overcrook ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.09837469304933483,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.1228882328159401,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.1707788756528262,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.45882489187978553,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.16872709695952212,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 930,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 930,
+            "text": "Overcrook + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Overcrook"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Overcrook ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1682569885119433,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.14746299501423732,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046520187897675,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.6525214936842593,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 530,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 530,
+            "text": "Overcrook + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Overcrook"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Smith Grind ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.13027447066058329,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.14247612981795743,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.1708347283052482,
+          "time": 0.8333333333333334,
+          "from": "air",
+          "to": "air",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.5962992726830161,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.1405313110853509,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 930,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 930,
+            "text": "Smith Grind + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Smith Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Smith Grind ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.1701162691699521,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.13182670029517213,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.2204652068818054,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.5219433544897172,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 530,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 530,
+            "text": "Smith Grind + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Smith Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Feeble Grind ollie to grab",
+      "motion": {
+        "board": {
+          "value": 0.1485713724964856,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.1781011270731351,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.17551850960235496,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "arms": {
+          "value": 0.46557485624287004,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.14547258535651478,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 930,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 930,
+            "text": "Feeble Grind + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Feeble Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Feeble Grind ollie to flip",
+      "motion": {
+        "board": {
+          "value": 0.058838887582117236,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.20458526119217568,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "palms": {
+          "value": 0.1982324827487301,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        },
+        "arms": {
+          "value": 0.22046513934364667,
+          "time": 1.4,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "footAngle": {
+          "value": 0.5781754614107931,
+          "time": 0.5333333333333333,
+          "from": "grind",
+          "to": "air",
+          "trick": "Kickflip"
+        }
+      },
+      "score": 530,
+      "events": {
+        "tricks": [
+          "Kickflip"
+        ],
+        "land": [
+          {
+            "points": 530,
+            "text": "Feeble Grind + Kickflip"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "Feeble Grind"
+        ]
+      },
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe Method to Kickflip to Indy",
+      "motion": {
+        "board": {
+          "value": 0.09897228866096024,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.10429449256636278,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.22793483675693674,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "arms": {
+          "value": 0.4915727823988605,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.034545700609042496,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 2190,
+      "events": {
+        "tricks": [
+          "Method",
+          "Kickflip",
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 2190,
+            "text": "Method + Kickflip + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "completeTucks": 2,
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "aaron Method to Kickflip to Indy",
+      "motion": {
+        "board": {
+          "value": 0.09897228866096024,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "feet": {
+          "value": 0.10429449256636278,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "palms": {
+          "value": 0.22793483675693674,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "arms": {
+          "value": 0.4915727823988605,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.034545700609042496,
+          "time": 0.95,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "score": 2190,
+      "events": {
+        "tricks": [
+          "Method",
+          "Kickflip",
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 2190,
+            "text": "Method + Kickflip + Indy"
+          }
+        ],
+        "bails": [],
+        "grinds": []
+      },
+      "completeTucks": 2,
+      "limits": {
+        "board": 0.18,
+        "feet": 0.23,
+        "palms": 0.25,
+        "arms": 0.8,
+        "footAngle": 0.8
+      }
+    },
+    {
+      "name": "joe held Indy to steep Warehouse quarter",
+      "motion": {
+        "board": {
+          "value": 0.058842170480717215,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048071887,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.10739807198322107,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22521408730657075,
+          "time": 0.3333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.013831518319770737,
+          "time": 0.35,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "motionSpace": "physical root translation and rotation removed",
+      "normalY": 0.2768353081280697,
+      "score": 310,
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron held Indy to steep Warehouse quarter",
+      "motion": {
+        "board": {
+          "value": 0.058842170480717215,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.05884217048071887,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.10739807198322107,
+          "time": 0.48333333333333334,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.22521408730657075,
+          "time": 0.3333333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.013831518319770737,
+          "time": 0.35,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "motionSpace": "physical root translation and rotation removed",
+      "normalY": 0.2768353081280697,
+      "score": 310,
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "joe held Indy to automatic 50-50 capture",
+      "motion": {
+        "board": {
+          "value": 0.06815441978039193,
+          "time": 0.4166666666666667,
+          "from": "air",
+          "to": "grind",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.0681544197803923,
+          "time": 0.4166666666666667,
+          "from": "air",
+          "to": "grind",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12385908451512324,
+          "time": 1.0666666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.23872258933613108,
+          "time": 0.26666666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.014763649209690427,
+          "time": 0.2833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "capture": {
+        "time": 0.4166666666666667,
+        "physicalRootDelta": [
+          0,
+          -0.5833333333333333,
+          0.058333333333333126
+        ],
+        "additionalBoardMotion": 0.06815441978039193
+      },
+      "score": 880,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 880,
+            "text": "Indy + 50-50"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "50-50"
+        ]
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    },
+    {
+      "name": "aaron held Indy to automatic 50-50 capture",
+      "motion": {
+        "board": {
+          "value": 0.06815441978039193,
+          "time": 0.4166666666666667,
+          "from": "air",
+          "to": "grind",
+          "trick": null
+        },
+        "feet": {
+          "value": 0.0681544197803923,
+          "time": 0.4166666666666667,
+          "from": "air",
+          "to": "grind",
+          "trick": null
+        },
+        "palms": {
+          "value": 0.12385908451512324,
+          "time": 1.0666666666666667,
+          "from": "air",
+          "to": "ride",
+          "trick": null
+        },
+        "arms": {
+          "value": 0.23872258933613108,
+          "time": 0.26666666666666666,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        },
+        "footAngle": {
+          "value": 0.014763649209690427,
+          "time": 0.2833333333333333,
+          "from": "air",
+          "to": "air",
+          "trick": "Indy"
+        }
+      },
+      "capture": {
+        "time": 0.4166666666666667,
+        "physicalRootDelta": [
+          0,
+          -0.5833333333333333,
+          0.058333333333333126
+        ],
+        "additionalBoardMotion": 0.06815441978039193
+      },
+      "score": 880,
+      "events": {
+        "tricks": [
+          "Indy"
+        ],
+        "land": [
+          {
+            "points": 880,
+            "text": "Indy + 50-50"
+          }
+        ],
+        "bails": [],
+        "grinds": [
+          "50-50"
+        ]
+      },
+      "limits": {
+        "board": 0.1,
+        "feet": 0.17,
+        "palms": 0.22,
+        "arms": 0.7,
+        "footAngle": 0.65
+      }
+    }
+  ],
+  "renderedFrames": 22260,
+  "unchangedSimulationChecks": 22260
+}
